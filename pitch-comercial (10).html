@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explora FP × Ucademy · Pitch comercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f1f3f0;
+    --surface: #ffffff;
+    --surface-2: #f6f7f4;
+    --surface-3: #eaece7;
+    --line: #e0e3dd;
+    --line-soft: #ebede8;
+    --ink: #18211c;
+    --ink-soft: #586057;
+    --ink-faint: #939c93;
+    --brand: #16633f;
+    --brand-deep: #0e4a2e;
+    --accent: #18a06a;
+    --accent-soft: #e4f3ea;
+    --accent-strong: #0f6e49;
+    --warm: #d98324;
+    --warm-soft: #fbeede;
+    --obj: #2563c4;       --obj-bg: #e8f0fd;
+    --vis: #0f9268;       --vis-bg: #e3f4ee;
+    --ext: #b06a0d;       --ext-bg: #fbf0dd;
+    --danger: #d4493c;    --danger-bg: #fbe9e7;
+    --r: 13px;
+    --shadow: 0 1px 2px rgba(20,40,30,.04), 0 6px 22px rgba(20,40,30,.06);
+    --shadow-sm: 0 1px 2px rgba(20,40,30,.06);
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .app { min-height: 100vh; }
+
+  /* Brand (in topbar) */
+  .brand-logo { display: flex; align-items: center; gap: 11px; }
+  .brand-mark { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(145deg, var(--brand) 0%, var(--brand-deep) 100%); color: #fff; display: grid; place-items: center; font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -.02em; flex-shrink: 0; box-shadow: 0 2px 8px rgba(14,74,46,.25); }
+  .brand-name { font-family: var(--display); font-size: 18px; font-weight: 600; letter-spacing: -.01em; line-height: 1.1; }
+  .brand-name span { color: var(--accent); font-style: italic; }
+  .brand-tag { font-size: 11px; color: var(--ink-faint); letter-spacing: .04em; text-transform: uppercase; margin-top: 2px; }
+
+  /* Main */
+  .main { min-width: 0; display: flex; flex-direction: column; }
+  .topbar { display: flex; align-items: center; gap: 14px; padding: 12px 28px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(241,243,240,.85); backdrop-filter: saturate(160%) blur(10px); z-index: 5; }
+  .topbar-brand { flex-shrink: 0; margin-right: 4px; }
+  .topbar-brand-text .brand-name { font-size: 15px; line-height: 1.05; }
+  .topbar-brand-text .brand-tag { font-size: 9.5px; margin-top: 1px; }
+  @media (max-width: 720px) { .topbar-brand-text { display: none; } }
+  .area-strip { display: flex; gap: 7px; align-items: center; padding: 11px 28px; border-bottom: 1px solid var(--line-soft); background: var(--surface); overflow-x: auto; position: sticky; top: 57px; z-index: 4; }
+  .area-strip::-webkit-scrollbar { height: 0; }
+  .area-chip { flex-shrink: 0; display: flex; align-items: center; gap: 8px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 99px; padding: 7px 14px 7px 9px; cursor: pointer; transition: all .15s; font: inherit; }
+  .area-chip:hover { border-color: var(--accent); }
+  .area-chip.active { background: linear-gradient(150deg, var(--brand) 0%, var(--brand-deep) 100%); border-color: var(--brand-deep); box-shadow: 0 3px 10px rgba(14,74,46,.2); }
+  .area-chip.active .ac-num { background: rgba(255,255,255,.22); color: #fff; }
+  .area-chip.active .ac-name { color: #fff; }
+  .ac-num { width: 22px; height: 22px; border-radius: 50%; background: var(--surface-3); color: var(--ink-soft); display: grid; place-items: center; font-family: var(--display); font-size: 12px; font-style: italic; font-weight: 600; flex-shrink: 0; }
+  .area-chip.done .ac-num { background: var(--accent-soft); color: var(--accent-strong); }
+  .ac-name { font-size: 13.5px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .ac-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-faint); flex-shrink: 0; }
+  .area-chip.done .ac-dot, .area-chip.active .ac-dot { background: var(--accent); }
+  .area-chip.active .ac-dot { background: #fff; }
+  .ac-add { flex-shrink: 0; background: transparent; border: 1px dashed var(--line); color: var(--ink-faint); border-radius: 99px; padding: 7px 14px; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; transition: all .15s; }
+  .ac-add:hover { border-color: var(--accent); color: var(--accent); }
+  .crumb { font-size: 12px; color: var(--ink-faint); font-weight: 500; }
+  .crumb b { color: var(--ink-soft); font-weight: 700; }
+  .topbar .spacer { flex: 1; }
+  .pager { display: flex; gap: 5px; }
+  .pager button { width: 32px; height: 32px; padding: 0; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--ink-soft); border-radius: 8px; cursor: pointer; transition: all .12s; }
+  .pager button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .pager button:disabled { opacity: .4; cursor: default; }
+  .pager svg { width: 15px; height: 15px; }
+  .save-state { font-size: 12px; color: var(--ink-faint); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+  .save-state .pip { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); opacity: .35; transition: opacity .3s; }
+  .save-state.dirty .pip { opacity: 1; }
+  .btn { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 9px; padding: 8px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all .12s; box-shadow: var(--shadow-sm); }
+  .btn:hover { border-color: var(--ink-faint); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+  .btn.ghost { background: transparent; box-shadow: none; border-color: transparent; }
+  .btn.ghost:hover { background: var(--surface-2); border-color: var(--line); }
+  .btn svg { width: 15px; height: 15px; }
+  .icon-btn { background: transparent; border: 0; color: var(--ink-faint); cursor: pointer; padding: 6px; border-radius: 7px; display: inline-flex; transition: all .12s; }
+  .icon-btn:hover { color: var(--danger); background: var(--danger-bg); }
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  .editor { padding: 30px 36px 80px; max-width: 920px; width: 100%; margin: 0 auto; }
+  .area-head { margin-bottom: 18px; }
+  .area-title-row { display: flex; align-items: center; gap: 12px; }
+  .area-title-input { flex: 1; background: transparent; border: 0; color: var(--ink); font-family: var(--display); font-size: 30px; font-weight: 600; letter-spacing: -.02em; padding: 3px 0; outline: none; border-bottom: 2px solid transparent; }
+  .area-title-input:hover { border-bottom-color: var(--line); }
+  .area-title-input:focus { border-bottom-color: var(--accent); }
+  .area-sub { margin: 6px 0 0; font-size: 13px; color: var(--ink-faint); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .expand-toggle { background: transparent; border: 0; color: var(--accent); font-family: var(--sans); font-size: 12.5px; font-weight: 600; cursor: pointer; padding: 0; }
+  .expand-toggle:hover { text-decoration: underline; }
+
+  /* Subareas */
+  .subarea { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 14px; overflow: hidden; box-shadow: var(--shadow-sm); transition: box-shadow .15s; }
+  .subarea.open { box-shadow: var(--shadow); }
+  .sa-head { display: flex; align-items: center; gap: 11px; padding: 15px 17px; cursor: pointer; user-select: none; }
+  .sa-head:hover { background: var(--surface-2); }
+  .sa-chevron { color: var(--ink-faint); transition: transform .2s; flex-shrink: 0; display: inline-flex; }
+  .subarea.open .sa-chevron { transform: rotate(90deg); color: var(--accent); }
+  .sa-chevron svg { width: 17px; height: 17px; }
+  .sa-name-input { flex: 1; background: transparent; border: 0; color: var(--ink); font-family: var(--sans); font-size: 16px; font-weight: 700; letter-spacing: -.01em; outline: none; padding: 4px 8px; border-radius: 7px; transition: background .12s; }
+  .sa-name-input:hover { background: var(--surface-3); }
+  .sa-name-input:focus { background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--accent); }
+  .sa-count { font-size: 11px; font-weight: 600; color: var(--ink-soft); background: var(--surface-3); padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+  .sa-body { padding: 6px 18px 20px; border-top: 1px solid var(--line-soft); display: none; }
+  .subarea.open .sa-body { display: block; }
+
+  .label-row { display: flex; align-items: center; gap: 9px; margin: 18px 0 8px; }
+  .chip { font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 4px 10px; border-radius: 7px; white-space: nowrap; }
+  .chip.obj { color: var(--obj); background: var(--obj-bg); }
+  .chip.vis { color: var(--vis); background: var(--vis-bg); }
+  .chip.ext { color: var(--ext); background: var(--ext-bg); }
+  .label-desc { font-size: 12px; color: var(--ink-faint); }
+
+  textarea, .txt-input { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 9px; color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; padding: 11px 13px; resize: none; outline: none; transition: border-color .15s, box-shadow .15s; }
+  textarea { overflow: hidden; }
+  textarea:focus, .txt-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  textarea::placeholder, .txt-input::placeholder { color: var(--ink-faint); }
+  .obj-area { min-height: 52px; background: var(--surface-2); }
+
+  .visions { margin-top: 6px; }
+  .vision { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 13px; margin-bottom: 11px; transition: border-color .12s; }
+  .vision:hover { border-color: var(--line-soft); }
+  .vision-top { display: flex; align-items: flex-start; gap: 9px; }
+  .role-box { background: var(--obj-bg); border-radius: 9px; padding: 9px 12px; display: flex; align-items: flex-start; gap: 10px; }
+  .role-area { margin-top: 12px; }
+  .role-sub { margin: 2px 0 4px; }
+  .role-label { flex-shrink: 0; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--obj); padding-top: 8px; white-space: nowrap; }
+  .role-text { font-size: 13px; min-height: 32px; padding: 6px 9px; background: var(--surface); border-color: transparent; }
+  .role-text:focus { border-color: var(--obj); box-shadow: 0 0 0 2px var(--obj-bg); }
+  .v-goal { flex-shrink: 0; width: 210px; background: var(--obj-bg); border-radius: 8px; padding: 7px 9px; }
+  .v-goal-label { display: block; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--obj); margin-bottom: 3px; }
+  .v-goal .v-goal-text { font-size: 12.5px; min-height: 30px; padding: 6px 8px; background: var(--surface); border-color: transparent; }
+  .v-goal .v-goal-text:focus { border-color: var(--obj); box-shadow: 0 0 0 2px var(--obj-bg); }
+  @media (max-width: 700px) { .vision-top { flex-wrap: wrap; } .v-goal { width: 100%; } .role-box { flex-direction: column; gap: 4px; } .role-label { padding-top: 0; } }
+
+  /* ===== Copiloto de llamada (modo guiado) ===== */
+  .cop { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 22px; align-items: start; padding: 24px 36px 70px; max-width: 1200px; width: 100%; margin: 0 auto; }
+  .cop-main { min-width: 0; }
+  .cop-side { position: sticky; top: 76px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .cop-intro { margin-bottom: 14px; }
+  .cop-intro h2 { font-family: var(--display); font-size: 26px; font-weight: 600; letter-spacing: -.015em; margin: 0 0 3px; }
+  .cop-intro p { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.45; }
+  .cop-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+  .cop-step { text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 13px; cursor: pointer; transition: all .18s; position: relative; }
+  .cop-step:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .cop-step.on { background: linear-gradient(150deg, var(--brand) 0%, var(--brand-deep) 100%); border-color: var(--brand-deep); box-shadow: 0 4px 14px rgba(14,74,46,.22); }
+  .cop-step.on .cs-n { color: rgba(255,255,255,.65); }
+  .cop-step.on .cs-t { color: #fff; }
+  .cop-step.done { border-color: var(--accent); background: var(--accent-soft); }
+  .cs-n { font-family: var(--display); font-size: 13px; font-weight: 600; font-style: italic; color: var(--ink-faint); }
+  .cop-step.done .cs-n { color: var(--accent-strong); }
+  .cs-t { font-size: 13px; font-weight: 700; margin-top: 1px; color: var(--ink); line-height: 1.2; }
+  .cop-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px; box-shadow: var(--shadow); }
+  .cop-card h3 { font-family: var(--display); font-size: 21px; font-weight: 600; margin: 0 0 3px; letter-spacing: -.01em; }
+  .cop-card .lead { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 16px; line-height: 1.45; }
+  .cop-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-strong); margin-bottom: 6px; }
+  .cop-eyebrow .eb-num { font-family: var(--display); font-style: italic; font-size: 13px; letter-spacing: 0; }
+  .cop-block { margin-bottom: 16px; }
+  .cop-block:last-child { margin-bottom: 0; }
+  .cop-block-h { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+  .say { background: var(--vis-bg); border-left: 3px solid var(--vis); border-radius: 8px; padding: 9px 13px; font-size: 14.5px; margin-bottom: 7px; line-height: 1.45; }
+  .say .say-k { display: block; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--vis); margin-bottom: 2px; }
+  .sig { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 9px; padding: 10px 13px; cursor: pointer; transition: all .14s; margin-bottom: 7px; }
+  .sig:hover { border-color: var(--ink-faint); }
+  .sig.on { background: var(--accent-soft); border-color: var(--accent); }
+  .sig-check { flex-shrink: 0; width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--ink-faint); display: grid; place-items: center; margin-top: 1px; transition: all .14s; }
+  .sig.on .sig-check { background: var(--accent); border-color: var(--accent); }  .sig-check svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 3.5; opacity: 0; transition: opacity .14s; }
+  .sig.on .sig-check svg { opacity: 1; }
+  .sig-body { flex: 1; }
+  .sig-t { font-size: 14.5px; font-weight: 600; line-height: 1.35; }
+  .sig-tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; padding: 2px 7px; border-radius: 5px; margin-top: 6px; }
+  .followup { margin: -2px 0 9px 30px; background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 9px 13px; font-size: 14px; line-height: 1.45; color: var(--ink); }  .followup .fu-k { display: block; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent-strong); margin-bottom: 2px; }
+  .cl-tabs { display: flex; gap: 6px; margin-bottom: 16px; background: var(--surface-2); padding: 4px; border-radius: 10px; }
+  .cl-tab { flex: 1; padding: 9px 12px; border: 0; background: none; border-radius: 7px; font-size: 14px; font-weight: 700; color: var(--ink-soft); cursor: pointer; transition: all .15s; }
+  .cl-tab:hover { color: var(--ink); }
+  .cl-tab.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+  .tag-seguridad { background: var(--obj-bg); color: var(--obj); }
+  .tag-ego { background: var(--ext-bg); color: var(--ext); }
+  .tag-social { background: var(--vis-bg); color: var(--vis); }
+  .tag-insercion { background: #e7eefc; color: #2456c0; }
+  .tag-autonomia { background: #ede7fb; color: #6b3fc0; }
+  .tag-accesibilidad { background: #fdeede; color: #b5750d; }
+  .cop-nav { display: flex; gap: 10px; margin-top: 22px; }
+  .cop-btn { flex: 1; padding: 13px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 15px; font-weight: 700; cursor: pointer; transition: all .15s; color: var(--ink); }
+  .cop-btn:hover { border-color: var(--ink-faint); }
+  .cop-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cop-btn.primary:hover { background: var(--accent-strong); }
+  .cop-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .w { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 15px; box-shadow: var(--shadow-sm); }
+  .w-h { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+  .thermo-deg { font-family: var(--display); font-size: 38px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+  .thermo-deg sup { font-size: 17px; font-weight: 600; vertical-align: super; }
+  .thermo-lbl { font-size: 12px; font-weight: 600; color: var(--ink-soft); margin: 4px 0 12px; line-height: 1.3; }
+  .thermo-track { height: 11px; border-radius: 99px; background: linear-gradient(90deg, #3b82f6 0%, #36b37e 35%, #f5b301 65%, #e3493c 100%); position: relative; box-shadow: inset 0 1px 2px rgba(0,0,0,.08); }
+  .thermo-knob { position: absolute; top: 50%; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 3px solid var(--ink); transform: translate(-50%,-50%); transition: left .45s cubic-bezier(.34,1.4,.5,1); box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+  .thermo-scale { display: flex; justify-content: space-between; font-size: 10px; color: var(--ink-faint); margin-top: 8px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
+  .meter { margin-bottom: 9px; }
+  .meter:last-child { margin-bottom: 0; }
+  .meter-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
+  .meter-name { font-size: 13px; font-weight: 700; }
+  .meter-pct { font-size: 11.5px; color: var(--ink-faint); font-weight: 600; }
+  .meter-track { height: 7px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
+  .lead-result { font-size: 13px; color: var(--ink-soft); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+  .lead-result b { color: var(--ink); }
+  .pill-lead { display: inline-block; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 99px; margin: 2px 4px 2px 0; }
+  .nba { background: linear-gradient(155deg, #1c2b22 0%, #11201a 100%); color: #fff; border: 0; }
+  .nba .w-h { color: rgba(255,255,255,.5); }
+  .nba-text { font-size: 14.5px; line-height: 1.5; font-weight: 500; }
+  .nba-text b { color: #6fe0ad; font-weight: 700; }
+  .empty-side { color: var(--ink-faint); font-size: 13px; font-style: italic; }
+  .strongpoint { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+  .sp-name { font-size: 15px; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .sp-dot { color: var(--accent); font-size: 11px; }
+  .sp-line { font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); padding: 7px 12px; border-left: 2px solid var(--accent); background: var(--surface); border-radius: 0 7px 7px 0; margin-bottom: 6px; }
+  .sp-line:last-child { margin-bottom: 0; }
+  @media (max-width: 960px) {
+    .cop { grid-template-columns: 1fr; padding: 22px 18px 90px; }
+    .cop-side { position: static; }
+  }
+  .vision-top .v-num { font-size: 11px; font-weight: 700; color: var(--vis); background: var(--vis-bg); width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; flex-shrink: 0; margin-top: 3px; }
+  .vision-top textarea { min-height: 44px; background: var(--surface); }
+  .extras { margin: 10px 0 0 33px; }
+  .extra-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .extra-row .txt-input { font-size: 13px; padding: 8px 11px; background: var(--surface); }
+  .extra-card { background: var(--surface); border: 1px solid var(--line); border-radius: 9px; padding: 11px 12px; margin-bottom: 9px; }
+  .extra-card-head { display: flex; align-items: center; margin-bottom: 7px; }
+  .extra-card-head .icon-btn { margin-left: auto; }
+  .extra-card .ec-desc { font-size: 14px; font-weight: 500; min-height: 36px; }
+  .ec-examples { margin-top: 9px; padding-left: 11px; border-left: 2px solid var(--ext); display: flex; flex-direction: column; gap: 6px; }
+  .ec-ex-row { display: flex; align-items: flex-start; gap: 7px; }
+  .ec-ex-num { font-size: 10.5px; font-weight: 700; color: var(--ext); background: var(--ext-bg); min-width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; flex-shrink: 0; margin-top: 9px; }
+  .ec-ex-row .ec-ex-text { font-size: 13.5px; font-style: italic; min-height: 34px; background: var(--surface-2); }
+  .add-mini { background: transparent; border: 1px dashed var(--line); color: var(--ink-faint); border-radius: 8px; padding: 7px 12px; cursor: pointer; font-size: 12.5px; font-weight: 600; font-family: var(--sans); display: inline-flex; align-items: center; gap: 6px; transition: all .12s; }
+  .add-mini:hover { border-color: var(--ext); color: var(--ext); background: var(--ext-bg); }
+  .add-mini.vis-add:hover { border-color: var(--vis); color: var(--vis); background: var(--vis-bg); }
+  .add-sa { width: 100%; border: 1px dashed var(--line); background: transparent; color: var(--ink-soft); border-radius: var(--r); padding: 13px; cursor: pointer; font-size: 13.5px; font-weight: 600; font-family: var(--sans); transition: all .12s; }
+  .add-sa:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+  .view-tabs { display: flex; gap: 2px; background: var(--surface-3); padding: 3px; border-radius: 9px; }
+  .view-tab { font-family: var(--sans); font-size: 12.5px; font-weight: 600; color: var(--ink-soft); background: transparent; border: 0; padding: 6px 13px; border-radius: 7px; cursor: pointer; transition: all .12s; display: inline-flex; align-items: center; gap: 5px; }
+  .view-tab .lock-ico { display: none; font-size: 10px; opacity: .6; }
+  .view-tab.locked .lock-ico { display: inline; }
+  .view-tab:hover { color: var(--ink); }
+  .view-tab.active { background: var(--surface); color: var(--accent-strong); box-shadow: var(--shadow-sm); }
+
+  .guide { padding: 0; width: 100%; }
+  .guide-intro h2 { margin: 0 0 6px; font-size: 26px; font-weight: 700; letter-spacing: -.025em; }
+  .guide-intro p { margin: 0 0 22px; font-size: 14px; color: var(--ink-soft); max-width: 600px; }
+  .motive-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 8px; }
+  .motive-card { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r); padding: 16px; cursor: pointer; transition: all .14s; box-shadow: var(--shadow-sm); position: relative; }
+  .mc-rank { margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--accent-strong); background: var(--accent-soft); display: inline-block; padding: 3px 9px; border-radius: 6px; }
+  .motive-card.m-seguridad .mc-rank { color: #1b4f96; background: #e8f0fd; }
+  .motive-card.m-ego .mc-rank { color: #8a5208; background: #fbf0dd; }
+  .motive-card.m-social .mc-rank { color: #0b6e4f; background: #e3f4ee; }
+  .motive-card:hover { border-color: var(--ink-faint); }
+  .motive-card.sel { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .motive-card .m-name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+  .motive-card .m-desc { font-size: 12.5px; color: var(--ink-faint); margin-top: 3px; line-height: 1.4; }
+  .motive-card .m-dot { width: 10px; height: 10px; border-radius: 50%; margin-bottom: 10px; }
+  .m-seguridad .m-dot { background: #2563c4; } .motive-card.m-seguridad.sel { box-shadow: 0 0 0 3px #e8f0fd; border-color: #2563c4; }
+  .m-ego .m-dot { background: #b06a0d; } .motive-card.m-ego.sel { box-shadow: 0 0 0 3px #fbf0dd; border-color: #b06a0d; }
+  .m-social .m-dot { background: #0f9268; } .motive-card.m-social.sel { box-shadow: 0 0 0 3px #e3f4ee; border-color: #0f9268; }
+
+  .guide-hint { font-size: 12.5px; color: var(--ink-faint); margin: 4px 0 26px; }
+  .guide-result { display: none; }
+  .guide-result.show { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .guide-step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
+  .guide-step .gs-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .guide-step .gs-num { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .guide-step h3 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .guide-step .gs-tag { font-size: 11px; color: var(--ink-faint); margin-left: auto; }
+  .gs-line { padding: 10px 0; border-top: 1px solid var(--line-soft); }
+  .gs-line:first-of-type { border-top: 0; }
+  .gs-line .gl-what { font-size: 14.5px; font-weight: 600; line-height: 1.45; }
+  .gs-pillars { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .gs-pill { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; color: var(--ink-soft); line-height: 1.45; }
+  .gs-ex { display: block; margin-top: 3px; font-style: italic; color: var(--ink); font-size: 13px; }
+  .gs-pill .pill-dot { color: var(--ext); flex-shrink: 0; margin-top: 1px; }
+  .gs-empty { font-size: 13px; color: var(--ink-faint); font-style: italic; }
+  @media (max-width: 860px) { .motive-pick { grid-template-columns: 1fr; } .guide { padding: 24px 18px 80px; } .view-tab { padding: 6px 10px; } }
+
+  .step-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .step-pill { display: inline-flex; align-items: center; gap: 7px; font-family: var(--sans); font-size: 12.5px; font-weight: 600; color: var(--ink-soft); background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 6px 13px 6px 6px; cursor: pointer; transition: all .12s; }
+  .step-pill .sp-num { width: 20px; height: 20px; border-radius: 50%; background: var(--surface-3); color: var(--ink-soft); display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+  .step-pill.on { border-color: var(--accent); color: var(--accent-strong); background: var(--accent-soft); }
+  .step-pill.on .sp-num { background: var(--accent); color: #fff; }
+  .step-pill.lock { opacity: .45; cursor: default; }
+  .step-sep { color: var(--ink-faint); font-size: 14px; }
+
+  .live-score { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 18px; }
+  .ls-chip { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink-soft); background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 6px 13px; box-shadow: var(--shadow-sm); }
+  .ls-chip .m-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .ls-chip b { font-size: 14px; color: var(--ink); }
+  .ls-chip.m-seguridad .m-dot { background: #2563c4; }
+  .ls-chip.m-ego .m-dot { background: #b06a0d; }
+  .ls-chip.m-social .m-dot { background: #0f9268; }
+
+  .qlist { display: flex; flex-direction: column; gap: 12px; }
+  .qcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; box-shadow: var(--shadow-sm); }
+  .q-head { display: flex; gap: 11px; align-items: flex-start; margin-bottom: 12px; }
+  .q-num { width: 24px; height: 24px; border-radius: 7px; background: var(--accent-soft); color: var(--accent-strong); display: grid; place-items: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .q-text { font-size: 15px; font-weight: 700; letter-spacing: -.01em; line-height: 1.35; }
+  .q-note { font-size: 12px; color: var(--ink-faint); margin-top: 3px; }
+  .q-type { margin-left: auto; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); background: var(--surface-3); padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+  .q-opts { display: flex; flex-direction: column; gap: 7px; }
+  .q-opt { display: flex; align-items: center; gap: 10px; text-align: left; width: 100%; background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 9px; padding: 10px 13px; font-family: var(--sans); font-size: 13.5px; color: var(--ink); cursor: pointer; transition: all .12s; line-height: 1.35; }
+  .q-opt:hover { border-color: var(--ink-faint); }
+  .q-opt .qo-dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; transition: all .12s; }
+  .q-opt.on { background: var(--surface); }
+  .q-opt.m-seguridad.on { border-color: #2563c4; } .q-opt.m-seguridad.on .qo-dot { background: #2563c4; border-color: #2563c4; }
+  .q-opt.m-ego.on { border-color: #b06a0d; } .q-opt.m-ego.on .qo-dot { background: #b06a0d; border-color: #b06a0d; }
+  .q-opt.m-social.on { border-color: #0f9268; } .q-opt.m-social.on .qo-dot { background: #0f9268; border-color: #0f9268; }
+
+  .guide-actions { display: flex; gap: 10px; justify-content: space-between; margin-top: 22px; flex-wrap: wrap; }
+  .guide-actions .btn:only-child { margin-left: auto; }
+
+  .confirm-lead { display: flex; align-items: center; gap: 13px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; margin-bottom: 6px; box-shadow: var(--shadow-sm); }
+  .confirm-lead .m-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .confirm-lead .cl-name { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .confirm-lead .cl-meta { font-size: 12.5px; color: var(--ink-faint); margin-top: 2px; }
+  .confirm-lead.m-seguridad .m-dot { background: #2563c4; }
+  .confirm-lead.m-ego .m-dot { background: #b06a0d; }
+  .confirm-lead.m-social .m-dot { background: #0f9268; }
+  .mc-score { font-size: 11px; font-weight: 700; background: var(--surface-3); color: var(--ink-soft); padding: 1px 7px; border-radius: 99px; vertical-align: middle; }
+  .close-opt:first-of-type { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  @media (max-width: 860px) { .live-score { gap: 6px; } }
+
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); border: 1px solid var(--ink); color: #fff; padding: 11px 20px; border-radius: 10px; font-size: 13.5px; font-weight: 500; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 50; box-shadow: var(--shadow); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .pass-overlay { position: fixed; inset: 0; background: rgba(16,28,22,.5); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .pass-overlay.show { display: flex; }
+  .pass-card { background: var(--surface); border-radius: 18px; box-shadow: 0 24px 60px rgba(10,30,20,.3); padding: 30px 30px 24px; width: 100%; max-width: 380px; text-align: center; animation: passIn .2s ease; }
+  @keyframes passIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+  .pass-icon { font-size: 26px; margin-bottom: 6px; }
+  .pass-title { font-family: var(--display); font-size: 23px; font-weight: 600; margin: 0 0 6px; letter-spacing: -.01em; }
+  .pass-sub { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 18px; line-height: 1.45; }
+  .pass-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; font-size: 16px; font-family: var(--sans); outline: none; transition: border-color .15s; }
+  .pass-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .pass-err { display: none; color: var(--danger); font-size: 13px; font-weight: 600; margin-top: 9px; }
+  .pass-actions { display: flex; gap: 9px; margin-top: 18px; }
+  .pass-actions .btn { flex: 1; justify-content: center; padding: 11px; }
+
+  @media (max-width: 860px) {
+    .editor { padding: 24px 18px 80px; }
+    .topbar { padding: 11px 18px; gap: 10px; }
+    .area-strip { padding: 10px 18px; top: 55px; }
+    .area-title-input { font-size: 23px; }
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <main class="main">
+    <div class="topbar">
+      <div class="brand-logo topbar-brand">
+        <div class="brand-mark">FP</div>
+        <div class="topbar-brand-text">
+          <div class="brand-name">Explora FP <span>× Ucademy</span></div>
+          <div class="brand-tag">Pitch comercial</div>
+        </div>
+      </div>
+      <div class="view-tabs">
+        <button class="view-tab" id="tabEditor"><span class="lock-ico" aria-hidden="true">🔒</span>Editor</button>
+        <button class="view-tab active" id="tabGuide">Modo guiado</button>
+      </div>
+      <span class="crumb" id="crumb"></span>
+      <div class="pager" id="pager">
+        <button id="prevArea" title="Área anterior (flecha izquierda)" aria-label="Área anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button id="nextArea" title="Área siguiente (flecha derecha)" aria-label="Área siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <span class="spacer"></span>
+      <span class="save-state" id="saveState"><span class="pip"></span><span id="saveText">Guardado</span></span>
+      <button class="btn primary" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</button>
+      <button class="btn" id="exportXlsxBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>Excel</button>
+    </div>
+    <div class="area-strip" id="areaStrip"></div>
+    <div class="editor" id="editor"></div>
+    <div class="guide" id="guide" style="display:none;"></div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<div class="pass-overlay" id="passModal">
+  <div class="pass-card">
+    <div class="pass-icon">🔒</div>
+    <h3 class="pass-title">Editar el pitch</h3>
+    <p class="pass-sub">Esta sección es solo para el responsable. Introduce la contraseña para editar.</p>
+    <input type="password" id="passInput" class="pass-input" placeholder="Contraseña" autocomplete="off">
+    <div class="pass-err" id="passErr">Contraseña incorrecta. Inténtalo de nuevo.</div>
+    <div class="pass-actions">
+      <button class="btn" id="passCancel">Cancelar</button>
+      <button class="btn primary" id="passSubmit">Entrar a editar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "pitch_comercial_v31";
+
+function uid() { return Math.random().toString(36).slice(2, 9); }
+function mkEx(t) { return { id: uid(), text: t || "" }; }
+function mkExtra(t, examples) { return { id: uid(), text: t || "", examples: (examples || []).map(mkEx) }; }
+function mkVision(t, ex, goal) { return { id: uid(), text: t || "", extras: ex || [], goal: goal || "" }; }
+function mkSub(n, o, v, e) { return { id: uid(), name: n || "Nueva subárea", objDesc: o || "", visions: v || [], extras: e || [] }; }
+function mkArea(n, s, role) { return { id: uid(), name: n || "Nueva área", subs: s || [], role: role || "" }; }
+
+const seed = [
+  mkArea("Bienvenida", [
+    mkSub("Apertura", "Empezar la llamada transmitiendo buena energía, como un perrito. No desapegarnos de la venta por bajar pulsaciones: ellos ya dejaron sus datos, así que entramos con seguridad.", [
+      mkVision("¡Hola (Lead)! + silencio + Sí (dígame)", [], "Saludar con energía y dejar el silencio para que responda él."),
+      mkVision("¿Cómo va la mañana/tarde?", [], "Romper el hielo y crear cercanía."),
+      mkVision("Te llamo por la solicitud que has hecho para estudiar (Formación) / te quieres dedicar al sector XXX.", [], "Justificar la llamada apoyándote en su propia solicitud, sin pedir permiso.")
+    ])
+  ], "Romper el hielo con buena energía y entrar con seguridad."),
+  mkArea("Prospección", [
+    mkSub("Cualificación", "Verificar que cumple los requisitos y medir si su interés es real antes de invertir tiempo en la llamada.", [
+      mkVision("¿Tenemos los requisitos de acceso para este Grado?", [
+        mkExtra("Titulación", [
+          "Tienes ESO, Bachillerato o un título equivalente homologado.",
+          "Si es de fuera: ¿tienes la titulación homologada en España?"
+        ]),
+        mkExtra("Documentación", [
+          "¿Tienes DNI, NIE o pasaporte en vigor?",
+          "Si no cumple el mínimo, no hay venta: mejor detectarlo ahora."
+        ])
+      ], "Confirmar que puede matricularse; si no, no hay venta."),
+      mkVision("¿Qué sabes sobre esta formación?", [
+        mkExtra("Nivel de conocimiento", [
+          "«¿Has mirado ya el temario o el plan de estudios?»",
+          "«¿Te lo ha recomendado alguien o lo viste por tu cuenta?»"
+        ]),
+        mkExtra("Interés real vs. clic", [
+          "Si apenas sabe nada, mide si fue un clic por curiosidad o hay intención real."
+        ])
+      ], "Medir si hay interés real o solo fue un clic por curiosidad."),
+      mkVision("¿Por qué quieres estudiar (Formación)?", [
+        mkExtra("Primera pista de motivación", [
+          "«¿Qué es lo que te atrae de dedicarte a esto?»",
+          "Escucha si habla de estabilidad, de mejorar/ascender o de vocación: primer indicio del motivo."
+        ])
+      ], "Captar la primera pista de su motivación.")
+    ]),
+    mkSub("Contexto personal + Motivación ulterior", "Entender su situación actual y, sobre todo, descubrir el porqué de fondo: por qué lo hace de corazón y no de palabra. Aquí detectas si el motivo es seguridad, ego o social.", [
+      mkVision("¿Qué cambiará en tu vida cuando consigas un trabajo gracias a este FP?", [
+        mkExtra("Proyección a futuro", [
+          "«Imagínate dentro de un año ya trabajando de esto: ¿qué es lo primero que cambia para ti?»",
+          "«¿Qué te permitiría hacer ese nuevo trabajo que ahora no puedes?»",
+          "«¿Y para los tuyos, qué cambiaría?»"
+        ])
+      ], "Que verbalice el premio emocional: ahí está su motivo real."),
+      mkVision("Llevas X tiempo con la idea en la cabeza, ¿qué te ha pasado para decidir que ahora sí es el momento?", [
+        mkExtra("Detonante", [
+          "«¿Pasó algo concreto —el trabajo, casa, un cambio— que te hizo decir 'hasta aquí'?»",
+          "«¿Por qué ahora y no hace un año?»",
+          "El «por qué ahora» es la llave del cierre: anótalo y úsalo al final."
+        ])
+      ], "Sacar el detonante real que lo mueve a actuar ya."),
+      mkVision("¿Cuál es tu mayor preocupación con el FP?", [
+        mkExtra("Detectar el freno", [
+          "«¿Qué es lo que más te frena o te preocupa de dar el paso?»",
+          "«¿El tiempo, el dinero, no ser capaz, las prácticas...?»",
+          "Lo que diga aquí es la objeción que tendrás que desactivar después."
+        ])
+      ], "Destapar pronto la objeción principal para trabajarla."),
+      mkVision("Ese trabajo del que hemos hablado… ¿tiene que llegar en 2027 o te da igual si llega en 2029?", [
+        mkExtra("Medir la urgencia", [
+          "«¿Para cuándo necesitas estar ya trabajando de esto?»",
+          "«¿Te corre prisa o no tienes ninguna presión de tiempo?»",
+          "Si hay urgencia real, es tu mejor palanca para el cierre."
+        ])
+      ], "Medir la urgencia real y crear sensación de tiempo."),
+      mkVision("De lo que has visto, ¿qué es lo que más te ha gustado de Explora FP × Ucademy?", [
+        mkExtra("Sacar su pilar", [
+          "«¿Qué fue lo que te hizo dejarnos tus datos y no irte con otra escuela?»",
+          "«¿Lo de las prácticas, la flexibilidad, el precio...?»",
+          "Lo que destaque te dice qué pilar usar en la propuesta de valor."
+        ])
+      ], "Descubrir qué le atrae de nosotros para reforzarlo."),
+      mkVision("¿En quién te apoyas a la hora de tomar la decisión?", [
+        mkExtra("Detectar al decisor", [
+          "«¿Lo decides tú o lo habláis en casa?»",
+          "Si hay un tercero (pareja, familia), tenlo en cuenta para el cierre."
+        ])
+      ], "Identificar quién decide de verdad."),
+      mkVision("¿Estás dispuesto a invertir tiempo y dinero para cambiar tu situación?", [
+        mkExtra("Pregunta eliminatoria", [
+          "«Para conseguir lo que quieres hace falta compromiso de tiempo y de inversión, ¿lo tienes claro?»",
+          "Si duda mucho aquí, aún no está listo: no avances al cierre todavía."
+        ])
+      ], "Medir el compromiso real (eliminatoria).")
+    ])
+  ], "Cazar el motivo de fondo del lead: seguridad, ego o social."),
+  mkArea("Propuesta de valor", [
+    mkSub("Seguridad", "Objetivo: dar certeza y tranquilidad. Conectar con quien busca estabilidad, salir del sector que le quema y proteger a los suyos. Frase killer: acercamiento al mundo laboral, garantía real de empleo.", [
+      mkVision("Accesibilidad en precios", [
+        mkExtra("Online", [
+          "«Nacimos 100% online, así que nos ahorramos el coste de las aulas y ese ahorro va directo a tu bolsillo.»",
+          "«No tienes que dejar de trabajar para formarte: sigues ingresando mientras estudias, sin agujero en la economía de casa.»",
+          "«Está pensado para que te lo puedas permitir hoy, no cuando te toque la lotería.»"
+        ]),
+        mkExtra("Becas educativas", [
+          "«Miramos tu caso concreto para ver a qué becas o ayudas puedes acceder; aquí el dinero no va a ser lo que te frene.»",
+          "«Y si hace falta, fraccionamos el pago en cuotas que encajen con lo que ingresas cada mes.»"
+        ]),
+        mkExtra("Matrícula gratuita", [
+          "«La matrícula es gratuita: cada euro que pones va a tu formación, no a papeleo.»",
+          "«Hoy es el momento de menos barrera para empezar: sin coste de matrícula y con el precio más bajo del año.»"
+        ])
+      ]),
+      mkVision("Inserción laboral", [
+        mkExtra("Empleabilidad probada", [
+          "«9 de cada 10 alumnos están trabajando en menos de 3 meses. No es una promesa de folleto: es nuestro dato real.»",
+          "«Por eso el paso que vas a dar es seguro: no estudias por estudiar, estudias para salir de donde estás.»"
+        ]),
+        mkExtra("Entrevistas garantizadas", [
+          "«Como centro oficial te garantizamos entrevistas de prácticas: no sales a buscar trabajo a ciegas.»",
+          "«Eres tú quien elige dónde quieres entrar, no el que suplica una oportunidad.»"
+        ]),
+        mkExtra("Profes que contratan", [
+          "«Tus profes son los que contratan en el sector: te formas con la gente que mañana te puede dar el puesto.»",
+          "«Terminas conociendo por dentro a las empresas que buscan justo perfiles como el tuyo.»"
+        ])
+      ]),
+      mkVision("Autonomía de estudio (flexibilidad)", [
+        mkExtra("Estudiar sin dejar tu vida", [
+          "«Tú marcas el ritmo: te formas sin dejar tu trabajo ni desatender a los tuyos.»",
+          "«Si un día no puedes conectarte, no pasa nada: el contenido te espera y lo retomas cuando puedas.»"
+        ]),
+        mkExtra("Acompañamiento", [
+          "«Sé que llevas tiempo sin estudiar; por eso empiezas con un módulo introductorio para coger confianza desde cero.»",
+          "«Y no estás solo en ningún momento: tienes un tutor que te guía para que no te pierdas ni te agobies.»"
+        ])
+      ])
+    ]),
+    mkSub("Social", "Objetivo: hacerle sentir parte de algo. Conectar con la vocación, el querer ayudar y el pertenecer a un colectivo. Frase killer: cercanía y comunidad, coach personalizado y una red que te acompaña.", [
+      mkVision("Accesibilidad en precios", [
+        mkExtra("Comunidad incluida", [
+          "«La comunidad, el networking y los eventos van incluidos: perteneces desde el primer día, sin pagar nada aparte.»",
+          "«Entrar no es matricularte en un curso: es meterte en una red de gente como tú.»"
+        ]),
+        mkExtra("Abierto a todos", [
+          "«Está pensado para que pueda entrar cualquiera que tenga ganas, no solo unos pocos con dinero.»",
+          "«No queremos que el precio deje fuera a quien tiene vocación de verdad.»"
+        ])
+      ]),
+      mkVision("Inserción laboral", [
+        mkExtra("Red de profesionales", [
+          "«Entras a una red de profesionales en activo, no a un aula aislada: gente que ya vive lo que tú quieres hacer.»",
+          "«Te rodeas de compañeros y profes con los que vas a seguir en contacto mucho después del curso.»"
+        ]),
+        mkExtra("Aprender de quien lo vive", [
+          "«Tus profes están metidos en el sector hoy: aprendes el oficio real, el del día a día, no la teoría de un libro.»",
+          "«Vas a saber cómo se trabaja de verdad antes de pisar tu primer empleo.»"
+        ])
+      ]),
+      mkVision("Autonomía de estudio (flexibilidad)", [
+        mkExtra("Coach personalizado", [
+          "«Tienes un coach personal desde el día uno: alguien pendiente de cómo avanzas y de cómo te sientes.»",
+          "«Nunca vas a estar solo frente a la pantalla, que es justo lo que asusta de lo online.»"
+        ]),
+        mkExtra("Trato cercano", [
+          "«Aquí eres una persona, no un número de expediente: nos adaptamos a ti y a tus dudas.»",
+          "«Cuando te venga un bajón o una duda, vas a tener a quién acudir de verdad.»"
+        ])
+      ])
+    ]),
+    mkSub("Ego", "Objetivo: alimentar su ambición y su deseo de destacar. Conectar con quien quiere ascender, ganar más y ser reconocido. Frase killer: contenido exclusivo y selección de los mejores, la ventaja que te diferencia.", [
+      mkVision("Accesibilidad en precios", [
+        mkExtra("Grupos de matriculación", [
+          "«Entrar pronto no es solo cuestión de precio: el grupo 1 tiene acceso preferente a lo mejor, prácticas y contenido.»",
+          "«Quien se mueve primero, juega con ventaja; los que esperan, eligen de lo que queda.»"
+        ]),
+        mkExtra("Destacar abre puertas", [
+          "«La mejor nota elige prácticas primero: aquí destacar te abre directamente las mejores puertas.»",
+          "«Tu esfuerzo se nota desde el principio: el que más rinde, más recompensa se lleva.»"
+        ])
+      ]),
+      mkVision("Inserción laboral", [
+        mkExtra("El talento tiene recorrido", [
+          "«Los 2 mejores de cada promoción trabajan con nosotros: si vienes a darlo todo, aquí hay recorrido real.»",
+          "«No te pones techo: si destacas, el camino para llegar lejos ya está montado.»"
+        ]),
+        mkExtra("Prácticas a tu medida", [
+          "«Las prácticas se asignan según tu perfil y tu CV, con relación directa con las empresas que contratan.»",
+          "«No te mandamos a cualquier sitio: te colocamos donde encaja tu ambición.»"
+        ]),
+        mkExtra("Formamos para el puesto", [
+          "«No te formamos para un papel enmarcado: te formamos para el puesto y el salto que estás buscando.»",
+          "«El título es el medio; el objetivo es tu nuevo puesto y tu nuevo sueldo.»"
+        ])
+      ]),
+      mkVision("Autonomía de estudio (flexibilidad)", [
+        mkExtra("Contenido exclusivo", [
+          "«Te llevas contenido extra exclusivo y vitalicio, incluido un máster de IA: herramientas que tu competencia no va a tener.»",
+          "«Sales del curso con una ventaja real frente al resto del mercado.»"
+        ]),
+        mkExtra("Tú pones el nivel", [
+          "«Tú marcas tu ritmo y tu nivel de exigencia: hay trabajos prácticos opcionales para quien quiera ser el mejor.»",
+          "«Si quieres ir más allá del resto, aquí tienes por dónde; el techo lo pones tú.»"
+        ])
+      ])
+    ])
+  ], "Ofrecer valor en el lenguaje del motivo detectado."),
+  mkArea("Cierre", [
+    mkSub("Seguridad", "Cierre por seguridad: urgencia honesta ligada a no perder la oportunidad de empezar tranquilo.", [
+      mkVision("Por qué ahora: el grupo empieza el día X y los primeros eligen prácticas. Cada semana que esperas es una semana más en el sitio del que quieres salir.", [
+        mkExtra("Inserción laboral", [
+          "«Cuanto antes entres, antes aseguras tu hueco en el sector y dejas atrás esa incertidumbre.»",
+          "«Los que empiezan ahora son los que en unos meses ya estarán trabajando tranquilos. ¿Quieres ser de esos?»"
+        ]),
+        mkExtra("Autonomía de estudio", [
+          "«Arrancas con el módulo introductorio, suave, para que le pierdas el miedo al contenido desde el primer día.»",
+          "«Empiezas a tu ritmo y con tutor; no tienes que tenerlo todo resuelto hoy, solo dar el primer paso.»"
+        ]),
+        mkExtra("Accesibilidad en precio", [
+          "«La matrícula es gratuita y el precio sube como en las aerolíneas: hoy es el día más barato para entrar.»",
+          "«Si te decides ahora te aseguras la cuota más baja; cada semana que pasa cuesta un poco más.»"
+        ])
+      ])
+    ]),
+    mkSub("Ego", "Cierre por ego: urgencia ligada a quedarse con la mejor posición y las mejores ventajas.", [
+      mkVision("Por qué ahora: las plazas del grupo 1 son limitadas y la mejor nota elige prácticas primero. Quien entra tarde, juega con lo que queda.", [
+        mkExtra("Inserción laboral", [
+          "«Las prácticas se asignan según tu perfil y tu CV: entrando ya, eliges tú dónde quieres destacar.»",
+          "«Los mejores se quedan los mejores sitios. ¿Vas a dejar que otro coja el tuyo por esperar?»"
+        ]),
+        mkExtra("Autonomía de estudio", [
+          "«Quien entra ahora se lleva el contenido exclusivo y vitalicio y el máster de IA: una ventaja que el resto no tendrá.»",
+          "«Te llevas herramientas que te ponen por delante en el mercado desde el día uno.»"
+        ]),
+        mkExtra("Accesibilidad en precio", [
+          "«El grupo 1 es el mejor sitio donde estar: mejor precio, mejores prácticas y más contenido.»",
+          "«Entrar el primero no es solo cuestión de precio, es jugar con ventaja sobre todos los demás.»"
+        ])
+      ])
+    ]),
+    mkSub("Social", "Cierre por motivo social: urgencia ligada a empezar a pertenecer y a dejar de hacerlo solo.", [
+      mkVision("Por qué ahora: la comunidad ya está en marcha; cuanto antes entres, antes dejas de hacerlo solo y empiezas a aportar y aprender con otros.", [
+        mkExtra("Autonomía de estudio", [
+          "«Tienes coach y seguimiento personal desde el primer día: nunca vas a estar solo frente a la pantalla.»",
+          "«Cuanto antes entres, antes tienes a alguien pendiente de ti y de cómo avanzas.»"
+        ]),
+        mkExtra("Inserción laboral", [
+          "«Entrando ya te metes en la red de profesionales del sector y empiezas a hacer contactos desde hoy.»",
+          "«Los que entran ahora son con los que vas a crecer y a los que vas a tener de referencia mañana.»"
+        ]),
+        mkExtra("Accesibilidad en precio", [
+          "«El networking, la comunidad y los eventos van incluidos desde la matrícula: perteneces desde el minuto uno.»",
+          "«No pagas aparte por formar parte; entrar ya te mete en el grupo. ¿A qué esperar?»"
+        ])
+      ])
+    ])
+  ], "Crear urgencia honesta y llevar del sí verbal al sí real."),
+  mkArea("Resolución de objeciones", [
+    mkSub("Precio / dinero", "La objeción más común. No bajes el precio: reduce el miedo y reencuadra de gasto a inversión.", [
+      mkVision("«Es muy caro / no me lo puedo permitir / lo he visto más barato.»", [
+        mkExtra("Reencuadra a inversión", [
+          "«Entiendo que el dinero pese, es normal. Pero piénsalo: no es un gasto, es lo que te saca del sitio en el que no quieres seguir. ¿Cuánto te cuesta quedarte un año más como estás?»",
+          "«Comparar solo el precio es normal, pero ¿te has fijado en que aquí entran las prácticas, el coach y la bolsa de empleo? No es lo mismo barato que rentable.»"
+        ]),
+        mkExtra("Quita la barrera económica", [
+          "«La matrícula es gratuita y miramos becas según tu caso, para que el dinero no sea lo que te frene.»",
+          "«Lo fraccionamos en cuotas que encajen con lo que ingresas cada mes. ¿Qué cuota te dejaría dormir tranquilo?»"
+        ])
+      ])
+    ]),
+    mkSub("Falta de tiempo", "«No tengo tiempo, trabajo / tengo familia.» Convierte la flexibilidad en tu argumento.", [
+      mkVision("«No tengo tiempo / no sé si podré seguir el ritmo.»", [
+        mkExtra("La flexibilidad juega a tu favor", [
+          "«Precisamente por eso es 100% online y a tu ritmo: tú decides cuándo estudiar, sin horarios fijos.»",
+          "«La mayoría de nuestros alumnos trabaja y tiene familia, como tú. Con 1 hora al día que le saques, avanzas.»"
+        ]),
+        mkExtra("Aterriza el esfuerzo real", [
+          "«Si un día no puedes, no pasa nada: el contenido te espera y lo retomas cuando puedas, sin perder el hilo.»",
+          "«¿Qué ratos sueles tener más libres? Vemos juntos cómo encajarlo y verás que es más fácil de lo que parece.»"
+        ])
+      ])
+    ]),
+    mkSub("«Me lo tengo que pensar»", "La más traicionera: casi siempre tapa otra objeción (precio o miedo). No la rebatas, destápala.", [
+      mkVision("«Me lo tengo que pensar / déjame que lo mire.»", [
+        mkExtra("Saca la objeción real", [
+          "«Claro, es una decisión importante. Para ayudarte mejor: ¿qué es lo que más te hace dudar ahora mismo?»",
+          "«Cuando alguien me dice que se lo piensa, suele ser por el dinero, por el tiempo o por si será capaz. ¿Cuál de las tres es la tuya?»"
+        ]),
+        mkExtra("Acota y fija siguiente paso", [
+          "«Perfecto, piénsalo. ¿Te llamo el (día) y así no pierdes la plaza del grupo 1, que se está llenando?»",
+          "«¿Qué tendría que pasar para que ese 'me lo pienso' se convirtiera en un sí?»"
+        ])
+      ])
+    ]),
+    mkSub("«Me lo tengo que pensar» con un tercero", "«Lo tengo que hablar con mi pareja / mis padres.» Identifica al decisor y dale argumentos para esa charla.", [
+      mkVision("«Tengo que consultarlo con alguien antes de decidir.»", [
+        mkExtra("Prepárale la conversación", [
+          "«Me parece bien que lo habléis. ¿Qué crees que es lo que más le va a preocupar a (pareja/familia)? Así te doy argumentos para esa charla.»",
+          "«Si por ti fuera y no dependiera de nadie más, ¿lo harías? (Si dice sí) Entonces solo hay que resolver cómo lo planteas en casa.»"
+        ])
+      ])
+    ]),
+    mkSub("Dudas sobre la salida laboral / validez", "«¿Esto sirve para trabajar? ¿Está homologado?» Responde con datos y garantías, no con promesas.", [
+      mkVision("«¿De verdad encontraré trabajo? ¿Es oficial?»", [
+        mkExtra("Demuestra con datos y hechos", [
+          "«Es una titulación oficial y, lo más importante: 9 de cada 10 alumnos trabajan en menos de 3 meses. No es una promesa, es nuestro dato real.»",
+          "«Como centro oficial te garantizamos entrevistas de prácticas: no sales a buscar trabajo a ciegas.»"
+        ]),
+        mkExtra("Devuelve la duda y conecta", [
+          "«Buena pregunta, hiciste bien en preguntarlo. ¿Qué te daría a ti la tranquilidad de que esto tiene salida: ver datos, conocer las empresas…?»"
+        ])
+      ])
+    ]),
+    mkSub("Miedo a no ser capaz", "«Llevo mucho sin estudiar / se me da mal.» Inseguridad personal: tranquiliza y acompaña.", [
+      mkVision("«No sé si seré capaz / soy mayor / se me da mal estudiar.»", [
+        mkExtra("Normaliza y acompaña", [
+          "«Es la duda más normal del mundo, la tienen casi todos al empezar. Por eso arrancas con un módulo suave para coger confianza desde cero.»",
+          "«No vas a estar solo en ningún momento: tienes un tutor que te guía para que no te pierdas ni te agobies.»"
+        ]),
+        mkExtra("Dale pruebas de que sí puede", [
+          "«Tenemos alumnos de tu edad y con tu mismo punto de partida que hoy ya están trabajando. Si ellos pudieron, tú también.»"
+        ])
+      ])
+    ]),
+    mkSub("Desconfianza con lo online", "«No me fío de lo online / prefiero presencial.» Convierte el miedo al aislamiento en acompañamiento.", [
+      mkVision("«Lo online es muy frío / me da miedo estar solo.»", [
+        mkExtra("Acompañamiento real, no estar solo", [
+          "«Te entiendo, lo online tiene fama de frío. Por eso aquí tienes un coach personal desde el día uno, pendiente de cómo avanzas.»",
+          "«Tienes comunidad, eventos y networking incluidos: vas a estar más acompañado que en muchas aulas presenciales.»"
+        ]),
+        mkExtra("Ventaja del online bien hecho", [
+          "«Lo mejor es que te formas con profesionales en activo del sector desde donde estés, sin perder tiempo en desplazamientos.»"
+        ])
+      ])
+    ])
+  ], "Desactivar la duda que frena la decisión."),
+  mkArea("Próximos pasos", [
+    mkSub("Cerrar la acción", "Que no cuelgue sin un compromiso concreto y una fecha.", [
+      mkVision("Resumir lo acordado y dejar claro el siguiente paso.", [
+        mkExtra("Cierre operativo", [
+          "«Perfecto, entonces te reservo la plaza del grupo (X) y te paso ahora el enlace de matrícula.»",
+          "«Para admitirte te llamará mañana el jefe de estudios; deja el teléfono a mano.»"
+        ])
+      ]),
+      mkVision("Fijar fecha y canal del siguiente contacto.", [
+        mkExtra("Seguimiento", [
+          "«Quedamos en que te escribo el (día) para resolver lo que te quede; ¿mejor por WhatsApp o por llamada?»"
+        ])
+      ])
+    ])
+  ], "Concretar el compromiso y el siguiente contacto.")
+];
+
+let model = load();
+let ai = 0;
+let openSub = {};
+let saveTimer;
+
+function load() {
+  let data;
+  try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) { const d = JSON.parse(raw); if (Array.isArray(d) && d.length) data = d; } } catch (e) {}
+  if (!data) data = JSON.parse(JSON.stringify(seed));
+  data.forEach(a => {
+    if (a.role === undefined) a.role = "";
+    a.subs && a.subs.forEach(s => {
+    if (!Array.isArray(s.extras)) s.extras = [];
+    const fix = e => {
+      if (!Array.isArray(e.examples)) {
+        e.examples = [];
+        if (e.example && e.example.trim()) e.examples.push(mkEx(e.example));
+        delete e.example;
+      }
+      e.examples.forEach(x => { if (!x.id) x.id = uid(); });
+    };
+    s.extras.forEach(fix);
+    (s.visions || []).forEach(v => { if (v.goal === undefined) v.goal = ""; (v.extras || []).forEach(fix); });
+    });
+  });
+  return data;
+}
+function persist() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(model)); } catch (e) {} }
+
+const $ = id => document.getElementById(id);
+const editor = $("editor"), crumb = $("crumb");
+const saveState = $("saveState"), saveText = $("saveText");
+
+function areaHasContent(a) { const exHas = e => e.text.trim() || (e.examples||[]).some(x => x.text.trim()); return a.subs.some(s => s.objDesc.trim() || (s.extras || []).some(exHas) || s.visions.some(v => v.text.trim() || v.extras.some(exHas))); }
+
+function scheduleSave() {
+  saveState.classList.add("dirty"); saveText.textContent = "Guardando…";
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { persist(); saveState.classList.remove("dirty"); saveText.textContent = "Guardado"; updateProgress(); }, 450);
+}
+
+function updateProgress() {
+  // refleja el estado "con contenido" en los chips de áreas
+  document.querySelectorAll(".area-chip").forEach((b, i) => {
+    if (model[i]) b.classList.toggle("done", areaHasContent(model[i]));
+  });
+}
+
+function renderNav() {
+  const strip = $("areaStrip");
+  strip.innerHTML = "";
+  model.forEach((area, i) => {
+    const btn = document.createElement("button");
+    btn.className = "area-chip" + (i === ai ? " active" : "") + (areaHasContent(area) ? " done" : "");
+    btn.innerHTML = `<span class="ac-num">${i+1}</span><span class="ac-name"></span><span class="ac-dot"></span>`;
+    btn.querySelector(".ac-name").textContent = area.name;
+    btn.onclick = () => { ai = i; renderNav(); renderEditor(); };
+    strip.appendChild(btn);
+  });
+  const add = document.createElement("button");
+  add.className = "ac-add"; add.textContent = "+ Añadir área";
+  add.onclick = () => { model.push(mkArea("Nueva área", [mkSub("Subárea", "", [mkVision("")])])); ai = model.length - 1; persist(); renderNav(); renderEditor(); updateProgress(); };
+  strip.appendChild(add);
+}
+
+const chev = `<span class="sa-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>`;
+const trash = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+
+function renderEditor() {
+  const area = model[ai];
+  crumb.innerHTML = `Área ${ai+1} de ${model.length}`;
+  $("prevArea").disabled = ai === 0;
+  $("nextArea").disabled = ai === model.length - 1;
+  editor.innerHTML = "";
+
+  const head = document.createElement("div");
+  head.className = "area-head";
+  const titleRow = document.createElement("div");
+  titleRow.className = "area-title-row";
+  titleRow.innerHTML = `<input class="area-title-input">`;
+  const titleInput = titleRow.querySelector("input");
+  titleInput.value = area.name;
+  titleInput.oninput = () => { area.name = titleInput.value; scheduleSave(); const n = document.querySelectorAll(".area-chip .ac-name")[ai]; if (n) n.textContent = titleInput.value; };
+  if (model.length > 1) {
+    const del = document.createElement("button");
+    del.className = "icon-btn"; del.title = "Eliminar área"; del.innerHTML = trash;
+    del.onclick = () => { if (!confirm(`¿Eliminar el área "${area.name}" y todo su contenido?`)) return; model.splice(ai, 1); ai = Math.max(0, ai - 1); persist(); renderNav(); renderEditor(); updateProgress(); };
+    titleRow.appendChild(del);
+  }
+  head.appendChild(titleRow);
+
+  const roleRow = document.createElement("div");
+  roleRow.className = "role-box role-area";
+  roleRow.innerHTML = `<span class="role-label">¿Qué hace?</span>`;
+  const roleTa = document.createElement("textarea");
+  roleTa.className = "role-text"; roleTa.placeholder = "Para qué sirve esta área en la llamada..."; roleTa.value = area.role || "";
+  roleTa.oninput = () => { area.role = roleTa.value; autosize(roleTa); scheduleSave(); };
+  roleRow.appendChild(roleTa);
+  head.appendChild(roleRow);
+
+  const sub = document.createElement("p");
+  sub.className = "area-sub";
+  const count = area.subs.length;
+  const subText = document.createElement("span");
+  subText.textContent = `${count} subárea${count === 1 ? "" : "s"} · pulsa una para abrir y editar`;
+  sub.appendChild(subText);
+  if (count > 1) {
+    const toggle = document.createElement("button");
+    toggle.className = "expand-toggle";
+    const expanded = openSub[area.id] === "__ALL__";
+    toggle.textContent = expanded ? "Contraer todo" : "Expandir todo";
+    toggle.onclick = () => { openSub[area.id] = expanded ? area.subs[0].id : "__ALL__"; renderEditor(); };
+    sub.appendChild(toggle);
+  }
+  head.appendChild(sub);
+  editor.appendChild(head);
+
+  area.subs.forEach(sa => editor.appendChild(renderSub(area, sa)));
+
+  const addSa = document.createElement("button");
+  addSa.className = "add-sa"; addSa.textContent = "+ Añadir subárea";
+  addSa.onclick = () => { const ns = mkSub("Nueva subárea", "", [mkVision("")]); area.subs.push(ns); openSub[area.id] = ns.id; persist(); renderEditor(); updateProgress(); };
+  editor.appendChild(addSa);
+}
+
+function renderSub(area, sa) {
+  if (openSub[area.id] === undefined && area.subs[0]) openSub[area.id] = area.subs[0].id;
+  const isOpen = openSub[area.id] === "__ALL__" || openSub[area.id] === sa.id;
+  const box = document.createElement("div");
+  box.className = "subarea" + (isOpen ? " open" : "");
+
+  const head = document.createElement("div");
+  head.className = "sa-head";
+  const vc = sa.visions.length;
+  head.innerHTML = `${chev}<input class="sa-name-input"><span class="sa-count">${vc} visión${vc===1?"":"es"}</span>`;
+  const nameInput = head.querySelector(".sa-name-input");
+  nameInput.value = sa.name;
+  nameInput.onclick = e => e.stopPropagation();
+  nameInput.oninput = () => { sa.name = nameInput.value; scheduleSave(); };
+  head.onclick = () => { openSub[area.id] = isOpen ? null : sa.id; renderEditor(); };
+  if (area.subs.length > 1) {
+    const del = document.createElement("button");
+    del.className = "icon-btn"; del.title = "Eliminar subárea"; del.innerHTML = trash;
+    del.onclick = e => { e.stopPropagation(); if (!confirm(`¿Eliminar la subárea "${sa.name}"?`)) return; area.subs = area.subs.filter(x => x.id !== sa.id); persist(); renderEditor(); updateProgress(); };
+    head.appendChild(del);
+  }
+  box.appendChild(head);
+
+  const body = document.createElement("div");
+  body.className = "sa-body";
+
+  const roleRow = document.createElement("div");
+  roleRow.className = "role-box role-sub";
+  roleRow.innerHTML = `<span class="role-label">¿Qué hace?</span>`;
+  const roleTa = document.createElement("textarea");
+  roleTa.className = "role-text"; roleTa.placeholder = "Para qué sirve esta subárea..."; roleTa.value = sa.objDesc;
+  roleTa.oninput = () => { sa.objDesc = roleTa.value; autosize(roleTa); scheduleSave(); };
+  roleRow.appendChild(roleTa);
+  body.appendChild(roleRow);
+
+  body.insertAdjacentHTML("beforeend", `<div class="label-row"><span class="chip vis">${visLabel(area)}</span><span class="label-desc">${visDesc(area)}</span></div>`);
+  const visWrap = document.createElement("div"); visWrap.className = "visions";
+  sa.visions.forEach((v, vi) => visWrap.appendChild(renderVision(sa, v, vi, area)));
+  body.appendChild(visWrap);
+
+  const addV = document.createElement("button");
+  addV.className = "add-mini vis-add"; addV.textContent = "+ Añadir visión";
+  addV.onclick = () => { sa.visions.push(mkVision("")); persist(); renderEditor(); updateProgress(); };
+  body.appendChild(addV);
+
+  // Subarea-level extras (independent of any vision, shown at the bottom)
+  body.insertAdjacentHTML("beforeend", `<div class="label-row" style="margin-top:22px;"><span class="chip ext">Extras del objetivo</span><span class="label-desc">Apuntes o ejemplos generales · no van ligados a una visión</span></div>`);
+  const saExtras = document.createElement("div"); saExtras.className = "extras"; saExtras.style.margin = "0";
+  if (!Array.isArray(sa.extras)) sa.extras = [];
+  sa.extras.forEach(e => {
+    const row = document.createElement("div"); row.className = "extra-row";
+    row.innerHTML = `<span class="chip ext" style="padding:2px 7px;">Extra</span>`;
+    const inp = document.createElement("input");
+    inp.className = "txt-input"; inp.placeholder = "Apunte o ejemplo general..."; inp.value = e.text;
+    inp.oninput = () => { e.text = inp.value; scheduleSave(); };
+    row.appendChild(inp);
+    const del = document.createElement("button");
+    del.className = "icon-btn"; del.title = "Eliminar extra"; del.innerHTML = trash;
+    del.onclick = () => { sa.extras = sa.extras.filter(x => x.id !== e.id); persist(); renderEditor(); updateProgress(); };
+    row.appendChild(del);
+    saExtras.appendChild(row);
+  });
+  const addSaE = document.createElement("button");
+  addSaE.className = "add-mini"; addSaE.textContent = "+ Añadir extra al objetivo";
+  addSaE.onclick = () => { sa.extras.push(mkExtra("")); persist(); renderEditor(); updateProgress(); };
+  saExtras.appendChild(addSaE);
+  body.appendChild(saExtras);
+
+  box.appendChild(body);
+  return box;
+}
+
+function visLabel(area) { return /prospecci/i.test(area.name) ? "Preguntas" : "Visión"; }
+function visDesc(area) { return /prospecci/i.test(area.name) ? "Cada pregunta con qué buscas y sus apuntes" : "Cada punto con qué hace y sus propuestas"; }
+
+function renderVision(sa, v, vi, area) {
+  const wrap = document.createElement("div"); wrap.className = "vision";
+  const top = document.createElement("div"); top.className = "vision-top";
+  top.innerHTML = `<span class="v-num">${vi+1}</span>`;
+  const ta = document.createElement("textarea");
+  ta.placeholder = "Escribe esta visión (una frase o varias)..."; ta.value = v.text;
+  ta.oninput = () => { v.text = ta.value; autosize(ta); scheduleSave(); };
+  top.appendChild(ta);
+  const goalWrap = document.createElement("div"); goalWrap.className = "v-goal";
+  goalWrap.innerHTML = `<span class="v-goal-label">¿Qué hace?</span>`;
+  const goalTa = document.createElement("textarea");
+  goalTa.className = "v-goal-text"; goalTa.placeholder = "Para qué sirve este punto..."; goalTa.value = v.goal || "";
+  goalTa.oninput = () => { v.goal = goalTa.value; autosize(goalTa); scheduleSave(); };
+  goalWrap.appendChild(goalTa);
+  top.appendChild(goalWrap);
+  if (sa.visions.length > 1) {
+    const del = document.createElement("button");
+    del.className = "icon-btn"; del.title = "Eliminar visión"; del.innerHTML = trash;
+    del.onclick = () => { sa.visions = sa.visions.filter(x => x.id !== v.id); persist(); renderEditor(); updateProgress(); };
+    top.appendChild(del);
+  }
+  wrap.appendChild(top);
+
+  const ex = document.createElement("div"); ex.className = "extras";
+  v.extras.forEach(e => {
+    const card = document.createElement("div"); card.className = "extra-card";
+    const head = document.createElement("div"); head.className = "extra-card-head";
+    head.innerHTML = `<span class="chip ext" style="padding:2px 7px;">Propuesta</span>`;
+    const del = document.createElement("button");
+    del.className = "icon-btn"; del.title = "Eliminar propuesta"; del.innerHTML = trash;
+    del.onclick = () => { v.extras = v.extras.filter(x => x.id !== e.id); persist(); renderEditor(); };
+    head.appendChild(del);
+    card.appendChild(head);
+
+    const descTa = document.createElement("textarea");
+    descTa.className = "ec-desc"; descTa.placeholder = "Nombre de la propuesta (ej. Online, Becas educativas)..."; descTa.value = e.text;
+    descTa.oninput = () => { e.text = descTa.value; autosize(descTa); scheduleSave(); };
+    card.appendChild(descTa);
+
+    if (!Array.isArray(e.examples)) e.examples = [];
+    const exList = document.createElement("div"); exList.className = "ec-examples";
+    e.examples.forEach((ej, ei) => {
+      const row = document.createElement("div"); row.className = "ec-ex-row";
+      row.innerHTML = `<span class="ec-ex-num">${ei + 1}</span>`;
+      const ejTa = document.createElement("textarea");
+      ejTa.className = "ec-ex-text"; ejTa.placeholder = "Ejemplo de frase a decir..."; ejTa.value = ej.text;
+      ejTa.oninput = () => { ej.text = ejTa.value; autosize(ejTa); scheduleSave(); };
+      row.appendChild(ejTa);
+      const ejDel = document.createElement("button");
+      ejDel.className = "icon-btn"; ejDel.title = "Eliminar ejemplo"; ejDel.innerHTML = trash;
+      ejDel.onclick = () => { e.examples = e.examples.filter(x => x.id !== ej.id); persist(); renderEditor(); };
+      row.appendChild(ejDel);
+      exList.appendChild(row);
+    });
+    const addEj = document.createElement("button");
+    addEj.className = "add-mini"; addEj.style.fontSize = "12px"; addEj.textContent = "+ Añadir ejemplo";
+    addEj.onclick = () => { e.examples.push(mkEx("")); persist(); renderEditor(); };
+    exList.appendChild(addEj);
+    card.appendChild(exList);
+
+    ex.appendChild(card);
+  });
+  const addE = document.createElement("button");
+  addE.className = "add-mini"; addE.textContent = "+ Añadir propuesta";
+  addE.onclick = () => { v.extras.push(mkExtra("")); persist(); renderEditor(); };
+  ex.appendChild(addE);
+  wrap.appendChild(ex);
+  return wrap;
+}
+
+$("exportBtn").onclick = () => {
+  let txt = "PITCH COMERCIAL\nGenerado: " + new Date().toLocaleString("es-ES") + "\n\n";
+  model.forEach((area, i) => {
+    txt += "=".repeat(56) + "\n" + (i+1) + ". " + area.name.toUpperCase() + "\n" + "=".repeat(56) + "\n\n";
+    area.subs.forEach(sa => {
+      txt += "▸ " + sa.name + "\n";
+      if (sa.objDesc.trim()) txt += "  Objetivo: " + sa.objDesc + "\n";
+      sa.visions.forEach((v, vi) => {
+        txt += "  " + (vi+1) + ". " + (v.text || "(vacío)") + "\n";
+        v.extras.forEach(e => {
+          if (e.text.trim()) txt += "       · " + e.text + "\n";
+          (e.examples||[]).forEach(x => { if (x.text.trim()) txt += "           Ej: " + x.text + "\n"; });
+        });
+      });
+      if ((sa.extras || []).some(e => e.text.trim())) {
+        txt += "  Extras del objetivo:\n";
+        sa.extras.forEach(e => { if (e.text.trim()) txt += "       · " + e.text + "\n"; });
+      }
+      txt += "\n";
+    });
+  });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([txt], { type: "text/plain;charset=utf-8" }));
+  a.download = "pitch-comercial.txt"; a.click();
+  toast("Pitch exportado");
+};
+
+$("exportXlsxBtn").onclick = () => {
+  if (typeof XLSX === "undefined") { toast("No se pudo cargar el exportador de Excel"); return; }
+  const headers = ["Área", "Campos", "Visión", "Extras"];
+  const rows = [headers];
+  const merges = [];
+  const isProsp = a => /prospecci/i.test(a.name);
+
+  model.forEach(area => {
+    const areaStart = rows.length;
+    let areaRowCount = 0;
+
+    area.subs.forEach(sa => {
+      const subStart = rows.length;
+      let subRowCount = 0;
+
+      // build the "Extras" cell text for a vision (proposals + examples) or prospección notes
+      const visionRow = (v) => {
+        let visText = v.text || "";
+        if (isProsp(area) && (v.goal || "").trim()) visText += "\n[¿Qué buscamos?: " + v.goal.trim() + "]";
+        const parts = [];
+        v.extras.forEach(e => {
+          let block = e.text || "";
+          (e.examples || []).forEach(x => { if (x.text.trim()) block += (block ? "\n" : "") + "· " + x.text; });
+          if (block.trim()) parts.push(block);
+        });
+        return [visText, parts.join("\n\n")];
+      };
+
+      if (sa.visions.length === 0) {
+        rows.push(["", "", "", ""]); subRowCount = 1;
+      } else {
+        sa.visions.forEach(v => {
+          const [visText, extrasText] = visionRow(v);
+          rows.push(["", "", visText, extrasText]);
+          subRowCount++;
+        });
+      }
+      // subarea-level extras (Extras del objetivo) as an extra row
+      const saExtras = (sa.extras || []).filter(e => e.text.trim());
+      if (saExtras.length) {
+        rows.push(["", "", "Extras del objetivo", saExtras.map(e => "· " + e.text).join("\n")]);
+        subRowCount++;
+      }
+      // objective goes into a note row under the subarea name? Keep objetivo in the Campos cell tooltip-like: prepend
+      // Merge "Campos" (subárea name + objetivo) vertically across its rows
+      const subName = sa.name + (sa.objDesc.trim() ? "\n\n" + sa.objDesc.trim() : "");
+      rows[subStart][1] = subName;
+      if (subRowCount > 1) merges.push({ s: { r: subStart, c: 1 }, e: { r: subStart + subRowCount - 1, c: 1 } });
+
+      areaRowCount += subRowCount;
+    });
+
+    if (areaRowCount === 0) { rows.push([area.name, "", "", ""]); areaRowCount = 1; }
+    rows[areaStart][0] = area.name;
+    if (areaRowCount > 1) merges.push({ s: { r: areaStart, c: 0 }, e: { r: areaStart + areaRowCount - 1, c: 0 } });
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = [{ wch: 22 }, { wch: 30 }, { wch: 55 }, { wch: 60 }];
+  ws["!merges"] = merges;
+  // wrap text + valign top + bold header
+  const range = XLSX.utils.decode_range(ws["!ref"]);
+  for (let R = range.s.r; R <= range.e.r; R++) {
+    for (let C = range.s.c; C <= range.e.c; C++) {
+      const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+      if (!cell) continue;
+      cell.s = { alignment: { wrapText: true, vertical: "top" } };
+      if (R === 0) cell.s = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "1F7A5A" } }, alignment: { vertical: "center", horizontal: "left" } };
+    }
+  }
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Pitch");
+  XLSX.writeFile(wb, "pitch-comercial.xlsx");
+  toast("Excel exportado");
+};
+
+function goToArea(i) {
+  if (i < 0 || i >= model.length || i === ai) return;
+  ai = i; renderNav(); renderEditor();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+$("prevArea").onclick = () => goToArea(ai - 1);
+$("nextArea").onclick = () => goToArea(ai + 1);
+
+document.addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "textarea" || tag === "input") return;
+  if (e.key === "ArrowLeft") { e.preventDefault(); goToArea(ai - 1); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); goToArea(ai + 1); }
+});
+
+function closeMenuMobile() {}
+
+function autosize(ta) { ta.style.height = "auto"; ta.style.height = Math.max(ta.scrollHeight, parseInt(getComputedStyle(ta).minHeight) || 44) + "px"; }
+function autosizeAll() { document.querySelectorAll(".editor textarea").forEach(autosize); }
+const _renderEditor = renderEditor;
+renderEditor = function () { _renderEditor.apply(this, arguments); requestAnimationFrame(autosizeAll); };
+
+let toastTimer;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2000); }
+
+/* ============ Copiloto de llamada (modo guiado) ============ */
+const MOTIVES = [
+  { key: "seguridad", name: "Seguridad", color: "#2563c4", desc: "Estabilidad, dejar atrás el miedo, proteger a los suyos." },
+  { key: "ego", name: "Ego", color: "#b06a0d", desc: "Ascender, ganar más, destacar, ser reconocido." },
+  { key: "social", name: "Social", color: "#0f9268", desc: "Vocación, ayudar, pertenecer, dar sentido." }
+];
+const PILLARS = [
+  { key: "insercion", name: "Inserción laboral", color: "#2456c0", desc: "Quiere empleo, salida laboral, prácticas." },
+  { key: "autonomia", name: "Autonomía / flexibilidad", color: "#6b3fc0", desc: "Quiere compaginar, ritmo propio, acompañamiento." },
+  { key: "accesibilidad", name: "Accesibilidad en precio", color: "#b5750d", desc: "Le pesa el coste, busca becas o facilidades." }
+];
+
+// Fases del copiloto. Cada una tiene frases para decir y señales que el comercial marca.
+// Cada señal suma a un motivo (m) y/o a un pilar (p).
+const COP = [
+  {
+    key: "bienvenida", name: "Bienvenida",
+    title: "Abre con energía y entra con seguridad",
+    lead: "Ellos dejaron sus datos: no pidas permiso. Saluda, rompe el hielo y justifica la llamada.",
+    say: [
+      { k: "Saludo", t: "¡Hola (Lead)! — (silencio) — Sí, dígame." },
+      { k: "Romper el hielo", t: "¿Cómo va la mañana / la tarde?" },
+      { k: "Motivo de la llamada", t: "Te llamo por la solicitud que dejaste para formarte en (Formación)." }
+    ],
+    signalsTitle: "Marca el tono con el que entra el lead",
+    signals: [
+      { id: "b1", t: "Receptivo y con ganas de hablar", temp: 12 },
+      { id: "b2", t: "Frío o con prisa", temp: -8 },
+      { id: "b3", t: "Desconfiado / «¿quién sois?»", temp: -5 }
+    ]
+  },
+  {
+    key: "cualificacion", name: "Cualificación",
+    title: "Confirma que encaja y mide el interés",
+    lead: "Antes de invertir tiempo, comprueba requisitos y si el interés es real.",
+    say: [
+      { k: "Requisitos", t: "¿Tienes ESO, Bachillerato o un título equivalente homologado? ¿DNI o NIE en vigor?" },
+      { k: "Interés", t: "¿Qué sabes ya de esta formación? ¿Por qué quieres estudiarla?" }
+    ],
+    signalsTitle: "Marca lo que detectes",
+    signals: [
+      { id: "c1", t: "Cumple requisitos", temp: 10 },
+      { id: "c2", t: "No cumple requisitos", temp: -40 },
+      { id: "c3", t: "Interés real y claro", temp: 14 },
+      { id: "c4", t: "Solo curioseando / clic", temp: -10 }
+    ]
+  },
+  {
+    key: "motivo", name: "Motivo ulterior",
+    title: "Caza el porqué de fondo",
+    lead: "Haz la pregunta y marca la respuesta que más se parezca a lo que te diga. El panel deduce el motivo solo.",
+    isMotivo: true
+  },
+  {
+    key: "necesidad", name: "Qué busca de FP",
+    title: "Detecta qué ventaja de Explora FP busca",
+    lead: "Dos preguntas distintas. Marca lo que diga en cada una: el panel saca el pilar que más le importa.",
+    isGroups: true,
+    groups: [
+      {
+        q: { k: "Parte 1 · Qué quiere conseguir", t: "¿Qué necesitas de nosotros como escuela para decidirte a matricularte?" },
+        signalsTitle: "Marca lo que diga (puedes elegir varias)",
+        signals: [
+          { id: "p_i1", t: "«Que me ayudéis a encontrar trabajo al acabar»", p: "insercion", temp: 8, r: "«Esa es la clave para nosotros, no te dejamos tirado al acabar. ¿Buscas trabajar cuanto antes o entrar en un sector o empresa en concreto?»" },
+          { id: "p_i2", t: "«Quiero hacer prácticas en empresas de verdad»", p: "insercion", temp: 8, r: "«Perfecto, porque eso es justo lo que te garantizamos: entrevistas de prácticas en empresas reales. ¿Habías hecho prácticas antes o sería tu primera vez en el sector?»" },
+          { id: "p_i3", t: "«Que me aseguréis que esto tiene salida»", p: "insercion", temp: 7, r: "«Lo entiendo, nadie quiere estudiar para nada, y por eso te lo demuestro con datos reales de inserción. ¿Qué te daría a ti la tranquilidad de que esto tiene salida?»" },
+          { id: "p_c1", t: "«Necesito que sea asequible / no me pase de precio»", p: "accesibilidad", temp: 6, r: "«Tranquilo, lo vemos con calma porque no queremos que el precio sea lo que te frene. ¿Tienes una idea de qué cuota mensual te encajaría sin agobiarte?»" },
+          { id: "p_c2", t: "«¿Tenéis becas o se puede pagar a plazos?»", p: "accesibilidad", temp: 7, r: "«Sí, tenemos becas y pago a plazos, y miramos cuál te encaja según tu caso. ¿Prefieres reducir el precio total o repartirlo en cuotas más pequeñas?»" },
+          { id: "p_x1", t: "No dice nada concreto / «no sé, lo típico»", temp: -8, r: "«Sin problema, déjame que te cuente qué es lo que más valoran los que ya están con nosotros y me dices qué te encaja. De lo que buscas, ¿qué pesa más para ti: el empleo, la flexibilidad o el precio?»" }
+        ]
+      },
+      {
+        q: { k: "Parte 2 · Cómo es su día a día", t: "¿Por qué lo necesitas online? ¿Cómo encajas el estudio en tu vida?" },
+        signalsTitle: "Marca lo que diga (puedes elegir varias)",
+        signals: [
+          { id: "p_a1", t: "«Necesito compaginarlo con mi trabajo / mi familia»", p: "autonomia", temp: 7, r: "«Justo para eso es 100% online y a tu ritmo, para que tu vida no se pare. ¿Cómo es tu semana ahora mismo, para ver cómo encajaríamos el estudio?»" },
+          { id: "p_a2", t: "«Me da miedo no llevar el ritmo / llevo sin estudiar»", p: "autonomia", temp: 6, r: "«Es lo más normal del mundo y le pasa a casi todos, por eso empiezas con un arranque suave y un tutor que te guía. ¿Cuánto hace que no estudias?»" },
+          { id: "p_a3", t: "«Quiero que alguien me acompañe, no estar solo»", p: "autonomia", temp: 5, r: "«Eso lo tienes cubierto del todo: tienes un coach personal desde el día uno. ¿Has estudiado online antes y te sentiste un poco solo o es la primera vez?»" },
+          { id: "p_a4", t: "«Tengo horarios cambiantes y poco tiempo»", p: "autonomia", temp: 6, r: "«Sin problema, el contenido te espera y lo retomas cuando puedas sin perder el hilo. ¿Qué días o ratos sueles tener más libres para estudiar?»" },
+          { id: "p_x2", t: "No lo tiene claro / «me da igual el formato»", temp: -6, r: "«Te cuento cómo encaja en una vida ocupada y verás que es más fácil de lo que parece. ¿Qué es lo que más te complica ahora sacar tiempo para formarte?»" }
+        ]
+      },
+      {
+        q: { k: "Parte 3 · Si aún no está claro", t: "De todo lo que has visto de Explora FP, ¿qué es lo que más te ha llamado la atención?", optional: true },
+        signalsTitle: "Pregunta de desempate (opcional, marca si la usas)",
+        signals: [
+          { id: "p_d1", t: "«Lo de las prácticas y que ayudáis con el empleo»", p: "insercion", temp: 7, r: "«Genial, porque es justo donde más fuertes somos. ¿Lo que más te importa es asegurar el empleo o más bien el tipo de empresa donde acabar?»" },
+          { id: "p_d2", t: "«Que pueda estudiar a mi ritmo sin agobios»", p: "autonomia", temp: 7, r: "«Esa libertad es lo que más valoran nuestros alumnos, te lo enseño en un momento. ¿Qué es lo que ahora te impide estudiar con tranquilidad?»" },
+          { id: "p_d3", t: "«El precio y las facilidades para pagarlo»", p: "accesibilidad", temp: 7, r: "«Perfecto, vamos a ver qué opciones de precio y pago te cuadran mejor. ¿Te vendría mejor un precio cerrado más bajo o repartirlo en cuotas?»" },
+          { id: "p_d4", t: "«La verdad es que no me ha llamado nada en especial»", temp: -10, r: "«Vale, déjame mostrarte en un minuto lo que de verdad nos diferencia del resto y me dices qué te suena mejor. ¿Qué es lo que estás comparando con otras escuelas?»" }
+        ]
+      }
+    ]
+  },
+  {
+    key: "valor", name: "Propuesta de valor",
+    title: "Ofrece valor en su lenguaje",
+    lead: "El panel ha detectado su motivo y su pilar. Estas son las frases de tu pitch para ese cruce: úsalas.",
+    isPV: true
+  },
+  {
+    key: "cierre", name: "Cierre",
+    title: "Del sí verbal al sí real",
+    lead: "Crea urgencia honesta apoyada en su motivo y resuelve la última duda.",
+    isClose: true,
+    signalsTitle: "¿Cómo responde al cierre?",
+    signals: [
+      { id: "z1", t: "Da el sí / quiere matricularse", temp: 25 },
+      { id: "z2", t: "Pide pensárselo", temp: -12 },
+      { id: "z3", t: "Pone el precio como pega", temp: -8 },
+      { id: "z4", t: "Necesita hablarlo con alguien", temp: -6 }
+    ]
+  }
+];
+
+// Respuestas típicas del lead por pregunta de motivación (índice de pregunta -> opciones).
+// Cada opción lleva su motivo en silencio; el comercial marca lo que más se parezca a lo que oye.
+const MOTIVE_ANSWERS = {
+  0: [ // ¿Qué cambiará en tu vida cuando consigas trabajo?
+    { t: "«Por fin tendría estabilidad y dejaría de agobiarme»", m: "seguridad", r: "«Te entiendo perfectamente, y es justo lo que más gente busca aquí: dejar de vivir con esa incertidumbre. ¿Qué es lo que más te agobia ahora mismo de tu situación?»" },
+    { t: "«Estaría más tranquilo por mi familia / los míos»", m: "seguridad", r: "«Me parece de las mejores razones para dar este paso, hacerlo por los tuyos. ¿Quiénes son los que dependen un poco de que esto te salga bien?»" },
+    { t: "«Ganaría más y podría ascender / progresar»", m: "ego", r: "«Me gusta esa ambición, porque es justo el perfil que mejor le saca partido a esto. ¿A qué puesto o salario te gustaría llegar de aquí a un par de años?»" },
+    { t: "«Me sentiría orgulloso, por fin algo mío»", m: "ego", r: "«Ese orgullo de conseguir algo por ti mismo es un motor brutal. ¿Qué sería para ti la señal de que de verdad lo has logrado?»" },
+    { t: "«Haría algo que de verdad me llena»", m: "social", r: "«Se nota que lo tienes claro, y cuando hay vocación todo lo demás llega solo. ¿Qué es lo que te hace sentir que esto es lo tuyo?»" },
+    { t: "«Podría ayudar a otros / dedicarme a mi vocación»", m: "social", r: "«Eso es vocación de verdad, y aquí vas a poder canalizarla en algo profesional. ¿A quién o a qué tipo de personas te gustaría ayudar?»" },
+    { t: "No sabe / «pues no sé, lo normal»", cold: -8, r: "«Tranquilo, es normal no tenerlo del todo claro. Déjame ayudarte: imagínate dentro de un año, ya trabajando de esto… ¿qué es lo primero que te gustaría que hubiese cambiado?»" }
+  ],
+  1: [ // ¿Qué ha pasado para que ahora sí?
+    { t: "«No aguanto más mi trabajo / mi situación»", m: "seguridad", r: "«Te noto decidido, y esa es justo la energía que hace falta para que esto funcione. ¿Qué es lo que te ha terminado de cansar para decir 'hasta aquí'?»" },
+    { t: "«Necesito asegurar mi futuro ya»", m: "seguridad", r: "«Hiciste muy bien en moverte ahora, porque cuanto antes empieces antes lo aseguras. ¿Qué te gustaría tener resuelto que ahora mismo te quita el sueño?»" },
+    { t: "«Quiero dar un salto y no me quiero quedar atrás»", m: "ego", r: "«Esa mentalidad de no conformarse es la que separa a los que llegan del resto. ¿Qué es lo que sientes que te está frenando para dar ese salto hoy?»" },
+    { t: "«Vi una oportunidad y quiero aprovecharla»", m: "ego", r: "«Las buenas oportunidades hay que cogerlas cuando pasan, y esta lo es. ¿Qué viste exactamente que te hizo decir 'esto es para mí'?»" },
+    { t: "«Me he dado cuenta de qué quiero hacer con mi vida»", m: "social", r: "«Tener eso claro ya es medio camino hecho, mucha gente nunca llega ahí. ¿Qué fue lo que te hizo darte cuenta?»" },
+    { t: "Nada en concreto / «por probar»", cold: -8, r: "«Sin problema, vamos a verlo juntos y así sales de dudas. Si te pones a pensarlo, ¿qué te gustaría que esto te aportara aunque sea solo probando?»" }
+  ],
+  2: [ // ¿Cuál es tu mayor preocupación con el FP?
+    { t: "«Que no sea capaz / llevo mucho sin estudiar»", m: "seguridad", r: "«Es la duda más normal del mundo y la tienen casi todos al empezar, así que tranquilo. ¿Cuánto hace que no estudias? Porque justo por eso arrancas con un módulo suave para coger confianza.»" },
+    { t: "«Que no encuentre trabajo después»", m: "seguridad", r: "«Esa es nuestra obsesión también, no queremos que estudies para nada. ¿Qué te daría tranquilidad de verdad en ese sentido, ver datos, conocer empresas…?»" },
+    { t: "«Que no me dé el nivel o la ventaja que busco»", m: "ego", r: "«Buena pregunta, y la respuesta es que aquí formamos para destacar, no para aprobar y ya. ¿Qué nivel o qué ventaja concreta es la que estás buscando?»" },
+    { t: "«Que no esté a la altura de lo que quiero ser»", m: "ego", r: "«Con la actitud que tienes lo vas a estar, solo necesitas las herramientas adecuadas. ¿Cómo te imaginas siendo dentro de un par de años?»" },
+    { t: "«Hacerlo solo / no sentirme acompañado»", m: "social", r: "«Eso no te va a pasar aquí, te lo aseguro, tienes coach y comunidad desde el primer día. ¿Has tenido alguna mala experiencia antes estudiando por tu cuenta?»" },
+    { t: "No expresa ninguna preocupación clara", cold: -6, r: "«Vale, me alegra que lo veas tranquilo. Aun así, para ayudarte mejor: si tuvieras que ponerle una pega a dar el paso, ¿cuál sería?»" }
+  ],
+  3: [ // ¿2027 o te da igual 2029?
+    { t: "«Lo necesito cuanto antes, no puedo esperar»", m: "seguridad", r: "«Pues entonces no perdamos tiempo, porque cada mes cuenta para ti. ¿Para cuándo te gustaría idealmente estar ya trabajando de esto?»" },
+    { t: "«Cuanto antes mejor, quiero avanzar ya»", m: "ego", r: "«Me gusta esa prisa sana, es de los que llegan lejos. ¿Qué te estarías perdiendo si lo dejaras para dentro de dos años?»" },
+    { t: "«No tengo prisa, cuando se dé»", m: "social", r: "«Sin presión, lo entiendo. Pero déjame plantarte algo: ¿no crees que cada mes que pasa es un mes más en el mismo punto en el que estás ahora?»" },
+    { t: "«Me da bastante igual cuándo»", cold: -10, r: "«Vale, te lo pregunto de otra forma: ¿qué tendría que pasar en tu vida para que de repente sí te corriera prisa conseguirlo?»" }
+  ],
+  4: [ // ¿Qué te ha gustado más de Explora FP?
+    { t: "«Las prácticas / que ayudáis a encontrar trabajo»", m: "seguridad", p: "insercion", r: "«Justo eso es lo que mejor hacemos, así que has mirado lo importante. ¿Te preocupa sobre todo encontrar trabajo rápido o entrar en un sector concreto?»" },
+    { t: "«La empleabilidad, que casi todos acaban trabajando»", m: "seguridad", p: "insercion", r: "«Ese dato es real y por eso puedes fiarte del paso que vas a dar. ¿Conoces a alguien que se haya quedado sin salida tras formarse y por eso te da respeto?»" },
+    { t: "«Que formáis para un puesto de verdad / el nivel»", m: "ego", p: "insercion", r: "«Exacto, aquí no sales con un papel sino preparado para el puesto. ¿A qué tipo de puesto te gustaría llegar exactamente?»" },
+    { t: "«El contenido exclusivo / lo completo que es»", m: "ego", p: "autonomia", r: "«Buen ojo, porque ese contenido extra es lo que te da ventaja sobre el resto. ¿Hay algún área concreta en la que quieras destacar?»" },
+    { t: "«La flexibilidad para compaginarlo con mi vida»", m: "seguridad", p: "autonomia", r: "«Esa es justo la idea, que tu vida no se pare por formarte. ¿Cómo es tu día a día ahora para que veamos cómo encajarlo?»" },
+    { t: "«El acompañamiento / que no estás solo»", m: "social", p: "autonomia", r: "«Es lo que más valoran nuestros alumnos, nunca vas solo. ¿Es algo que echaste de menos en otra formación o estudiando antes?»" },
+    { t: "«El precio / las becas / las facilidades»", m: "seguridad", p: "accesibilidad", r: "«Me parece bien que mires eso, queremos que el dinero no sea el freno. ¿Qué te encajaría más, un buen precio de entrada o poder fraccionarlo en cómodas cuotas?»" },
+    { t: "«No sé, aún no lo he mirado mucho»", cold: -10, r: "«Sin problema, para eso estoy yo. Te resumo en un minuto lo que de verdad nos hace diferentes y me dices qué es lo que más te encaja, ¿te parece?»" }
+  ]
+};
+
+// Preguntas extra para subir temperatura cuando el lead está frío para avanzar.
+// Cada respuesta marcable suma temperatura (y a veces motivo/pilar). id "boost_*".
+const BOOSTERS = {
+  valor: [
+    { q: "«Imagínate que ya lo has conseguido: ¿qué es lo primero que cambia en tu día a día?»",
+      opts: [
+        { id: "boost_v1", t: "Se ilusiona y cuenta algo concreto", temp: 14 },
+        { id: "boost_v2", t: "Responde flojo, sin engancharse", temp: 3 }
+      ] },
+    { q: "«¿Qué es lo que más te frena ahora mismo para decidirte?»",
+      opts: [
+        { id: "boost_v3", t: "Dice una duda concreta (la podrás resolver)", temp: 12 },
+        { id: "boost_v4", t: "«Nada en especial, me lo estoy pensando»", temp: 4 }
+      ] },
+    { q: "«Si te enseño justo lo que buscas, ¿te plantearías matricularte esta misma semana?»",
+      opts: [
+        { id: "boost_v5", t: "«Sí, si me encaja, sí»", temp: 18 },
+        { id: "boost_v6", t: "«Necesito pensarlo / verlo»", temp: 5 }
+      ] }
+  ],
+  cierre: [
+    { q: "«¿Hay algo que te impida tomar la decisión hoy?»",
+      opts: [
+        { id: "boost_c1", t: "«No, si me convence lo hago»", temp: 18 },
+        { id: "boost_c2", t: "Pone una pega concreta (resuélvela)", temp: 10 }
+      ] },
+    { q: "«¿Quién más participa en esta decisión contigo?»",
+      opts: [
+        { id: "boost_c3", t: "«Lo decido yo»", temp: 14 },
+        { id: "boost_c4", t: "«Lo tengo que hablar con alguien»", temp: 5 }
+      ] },
+    { q: "«Del 1 al 10, ¿cómo de decidido estás ahora mismo?»",
+      opts: [
+        { id: "boost_c5", t: "Dice 8 o más", temp: 16 },
+        { id: "boost_c6", t: "Dice entre 5 y 7", temp: 8 },
+        { id: "boost_c7", t: "Dice menos de 5", temp: 2 }
+      ] }
+  ]
+};
+let gPhase = 0;            // índice de fase activa
+let gChecked = {};         // id de señal -> true
+let gQMotive = {};         // índice de pregunta -> motivo marcado
+let gMotivePick = null;    // override manual del motivo
+let gPillarPick = null;    // override manual del pilar
+let gForce = false;        // forzar avance pese a temperatura baja
+let gObjOpen = false;      // panel de objeciones abierto
+let gObjOpenItem = null;   // objeción concreta desplegada
+let gCloseTab = "cerrar";  // pestaña activa en la fase de cierre
+
+function copReset() {
+  gPhase = 0; gChecked = {}; gQMotive = {}; gMotivePick = null; gPillarPick = null; gForce = false; gObjOpenItem = null; gCloseTab = "cerrar";
+}
+
+// --- scoring ---
+function allSignals(ph) {
+  if (ph.signals) return ph.signals;
+  if (ph.groups) return ph.groups.reduce((a, g) => a.concat(g.signals || []), []);
+  return [];
+}
+function motiveQuestions() {
+  const area = model.find(a => /prospecci/i.test(a.name));
+  const sub = area && area.subs.find(s => /motivaci/i.test(s.name));
+  return sub ? sub.visions : [];
+}
+function scoreMotives() {
+  const s = { seguridad: 0, ego: 0, social: 0 };
+  COP.forEach(ph => allSignals(ph).forEach(sig => {
+    if (sig.m && gChecked[sig.id]) s[sig.m] += (sig.temp || 5);
+  }));
+  for (const qi in gQMotive) {
+    (gQMotive[qi] || []).forEach(idx => {
+      const ans = (MOTIVE_ANSWERS[qi] || [])[idx];
+      if (ans && s[ans.m] !== undefined) s[ans.m] += 8;
+    });
+  }
+  return s;
+}
+function scorePillars() {
+  const s = { insercion: 0, autonomia: 0, accesibilidad: 0 };
+  COP.forEach(ph => allSignals(ph).forEach(sig => {
+    if (sig.p && gChecked[sig.id]) s[sig.p] += (sig.temp || 5);
+  }));
+  for (const qi in gQMotive) {
+    (gQMotive[qi] || []).forEach(idx => {
+      const ans = (MOTIVE_ANSWERS[qi] || [])[idx];
+      if (ans && ans.p && s[ans.p] !== undefined) s[ans.p] += 8;
+    });
+  }
+  return s;
+}
+function topKey(scoreObj) {
+  let best = null, bestV = 0;
+  for (const k in scoreObj) if (scoreObj[k] > bestV) { bestV = scoreObj[k]; best = k; }
+  return best;
+}
+function activeMotive() { return gMotivePick || topKey(scoreMotives()); }
+function activePillar() { return gPillarPick || topKey(scorePillars()); }
+
+function leadTemp() {
+  let t = 30;
+  COP.forEach(ph => allSignals(ph).forEach(sig => {
+    if (gChecked[sig.id]) t += (sig.temp || 0);
+  }));
+  let picks = 0;
+  for (const qi in gQMotive) (gQMotive[qi] || []).forEach(idx => {
+    const ans = (MOTIVE_ANSWERS[qi] || [])[idx];
+    if (ans && ans.cold) t += ans.cold; else picks++;
+  });
+  t += picks * 4;
+  // boosters marcados
+  for (const k in BOOSTERS) BOOSTERS[k].forEach(grp => grp.opts.forEach(o => {
+    if (gChecked[o.id]) t += (o.temp || 0);
+  }));
+  return Math.max(0, Math.min(100, t));
+}
+function tempLabel(t) {
+  if (t >= 75) return "Caliente · listo para cerrar";
+  if (t >= 55) return "Templado-alto · empuja al cierre";
+  if (t >= 40) return "Templado · sigue construyendo valor";
+  if (t >= 22) return "Frío · genera interés y confianza";
+  return "Muy frío · cualifica o reengancha";
+}
+
+// --- next best action ---
+function nextAction() {
+  const ph = COP[gPhase];
+  const mot = activeMotive(), pil = activePillar();
+  if (ph.key === "bienvenida") return "Conecta y gánate 20 segundos de atención antes de preguntar nada.";
+  if (ph.key === "cualificacion") {
+    if (gChecked.c2) return "<b>No cumple requisitos.</b> Sé honesto: quizá no es su formación. No fuerces.";
+    return "Confirma requisitos y pasa a destapar su <b>porqué</b>.";
+  }
+  if (ph.key === "motivo") {
+    const answered = Object.keys(gQMotive).length;
+    if (answered === 0) return "Haz la <b>primera pregunta</b> y marca hacia qué motivo apunta su respuesta.";
+    if (!mot) return "Sigue preguntando: aún no hay un motivo que destaque.";
+    return "Va apuntando a <b>" + motName(mot) + "</b> (" + answered + " resp.). Confírmalo antes de avanzar.";
+  }
+  if (ph.key === "necesidad") {
+    if (!pil) return "Pregunta qué necesita de la escuela para saber qué <b>pilar</b> usar.";
+    return "Busca sobre todo <b>" + pilName(pil) + "</b>. Llévalo a la propuesta de valor por ahí.";
+  }
+  if (ph.key === "valor") {
+    if (!mot) return "Marca antes su motivo para personalizar el discurso.";
+    return "Vende en clave <b>" + motName(mot) + "</b> apoyándote en <b>" + (pil ? pilName(pil) : "el pilar que más le encaje") + "</b>. Luego comprueba si asiente.";
+  }
+  if (ph.key === "cierre") {
+    const t = leadTemp();
+    if (gChecked.z1) return "<b>Dice sí.</b> Calla y formaliza ya: reserva plaza y siguiente paso.";
+    if (gChecked.z2) return "Pide pensárselo: <b>acota el tiempo</b> y fija fecha concreta. Saca la duda real.";
+    if (gChecked.z3) return "Pega de precio: reencuadra a <b>inversión</b> y recuerda matrícula gratuita y becas.";
+    if (t >= 60) return "Está caliente: <b>propón el cierre</b> con el «por qué ahora» de su motivo.";
+    return "Aún tibio: refuerza valor antes de cerrar. No aprietes todavía.";
+  }
+  return "";
+}
+function motName(k) { const m = MOTIVES.find(x => x.key === k); return m ? m.name : ""; }
+function pilName(k) { const p = PILLARS.find(x => x.key === k); return p ? p.name : ""; }
+
+/* ---------- render ---------- */
+function renderGuide() {
+  const root = $("guide");
+  root.innerHTML = "";
+  const cop = document.createElement("div"); cop.className = "cop";
+  const mainC = document.createElement("div"); mainC.className = "cop-main";
+  const sideC = document.createElement("div"); sideC.className = "cop-side";
+  mainC.appendChild(copIntro());
+  mainC.appendChild(copStepper());
+  mainC.appendChild(copPhaseCard());
+  const gw = gateWarn(); if (gw) mainC.appendChild(gw);
+  mainC.appendChild(copNav());
+  sideC.appendChild(copRecap());
+  sideC.appendChild(copThermo());
+  sideC.appendChild(copDetect());
+  sideC.appendChild(copNBA());
+  if (!COP[gPhase].isClose) sideC.appendChild(copObjections());
+  cop.appendChild(mainC); cop.appendChild(sideC);
+  root.appendChild(cop);
+}
+
+// Resumen de la llamada de un vistazo: dónde estás y qué has detectado.
+function copRecap() {
+  const w = document.createElement("div"); w.className = "w";
+  const mot = activeMotive(), pil = activePillar();
+  const ms = scoreMotives(), ps = scorePillars();
+  const anyM = ms.seguridad + ms.ego + ms.social > 0;
+  const anyP = ps.insercion + ps.autonomia + ps.accesibilidad > 0;
+  const reqKO = gChecked.c2;
+  let html = `<div class="w-h">Resumen · fase ${gPhase + 1} de ${COP.length}</div>`;
+  html += `<div style="font-size:14px;font-weight:800;margin-bottom:8px">${esc(COP[gPhase].name)}</div>`;
+  html += `<div style="display:flex;flex-direction:column;gap:5px;font-size:13px">`;
+  html += recapRow("Requisitos", reqKO ? "No cumple" : (gChecked.c1 ? "OK" : "—"), reqKO ? "#c0392b" : (gChecked.c1 ? "var(--accent-strong)" : "var(--ink-faint)"));
+  html += recapRow("Motivo", anyM ? motName(mot) : "—", anyM ? "var(--ink)" : "var(--ink-faint)");
+  html += recapRow("Busca", anyP ? pilName(pil) : "—", anyP ? "var(--ink)" : "var(--ink-faint)");
+  html += `</div>`;
+  w.innerHTML = html;
+  return w;
+}
+function recapRow(k, v, color) {
+  return `<div style="display:flex;justify-content:space-between;gap:8px"><span style="color:var(--ink-faint)">${k}</span><span style="font-weight:700;color:${color};text-align:right">${esc(v)}</span></div>`;
+}
+
+// Panel de objeciones siempre a mano: surgen en cualquier momento de la llamada.
+function copObjections() {
+  const w = document.createElement("div"); w.className = "w";
+  const area = model.find(a => /objeci/i.test(a.name));
+  if (!area) { w.innerHTML = `<div class="w-h">Objeciones</div><p class="empty-side">Sin objeciones en el editor.</p>`; return w; }
+  const head = document.createElement("div");
+  head.style.cssText = "display:flex;align-items:center;justify-content:space-between;cursor:pointer";
+  head.innerHTML = `<div class="w-h" style="margin:0">Si pone una objeción…</div><span style="font-size:18px;color:var(--ink-faint);line-height:1">${gObjOpen ? "–" : "+"}</span>`;
+  head.onclick = () => { gObjOpen = !gObjOpen; renderGuide(); };
+  w.appendChild(head);
+  if (!gObjOpen) {
+    const hint = document.createElement("p");
+    hint.style.cssText = "font-size:12.5px;color:var(--ink-faint);margin:8px 0 0";
+    hint.textContent = "Toca para abrir las respuestas a las objeciones más comunes.";
+    w.appendChild(hint);
+    return w;
+  }
+  const list = document.createElement("div"); list.style.marginTop = "10px";
+  area.subs.forEach(sub => {
+    const open = gObjOpenItem === sub.id;
+    const item = document.createElement("div");
+    item.style.cssText = "border-top:1px solid var(--line-soft);padding:8px 0";
+    const t = document.createElement("button");
+    t.style.cssText = "display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;background:none;border:0;cursor:pointer;text-align:left;padding:0;font:inherit";
+    t.innerHTML = `<span style="font-size:13.5px;font-weight:700;color:var(--ink)">${esc(sub.name)}</span><span style="font-size:15px;color:var(--ink-faint)">${open ? "–" : "+"}</span>`;
+    t.onclick = () => { gObjOpenItem = open ? null : sub.id; renderGuide(); };
+    item.appendChild(t);
+    if (open) {
+      sub.visions.forEach(v => v.extras.forEach(e => (e.examples || []).forEach(x => {
+        if (!x.text.trim()) return;
+        const line = document.createElement("div");
+        line.style.cssText = "font-size:13px;line-height:1.45;color:var(--ink-soft);background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:7px 10px;margin-top:7px";
+        line.textContent = x.text;
+        item.appendChild(line);
+      })));
+    }
+    list.appendChild(item);
+  });
+  w.appendChild(list);
+  return w;
+}
+
+function copIntro() {
+  const d = document.createElement("div"); d.className = "cop-intro";
+  d.innerHTML = `<h2>Copiloto de llamada</h2><p>Marca lo que oigas en cada fase. A la derecha tienes el resumen, el motivo y el pilar en vivo, la temperatura del lead, tu siguiente acción y, si pone una pega, las respuestas a objeciones a un clic.</p>`;
+  return d;
+}
+
+function copStepper() {
+  const wrap = document.createElement("div"); wrap.className = "cop-steps";
+  COP.forEach((ph, i) => {
+    const b = document.createElement("button");
+    b.className = "cop-step" + (i === gPhase ? " on" : "") + (i < gPhase ? " done" : "");
+    b.innerHTML = `<div class="cs-n">${String(i + 1).padStart(2, "0")}</div><div class="cs-t">${ph.name}</div>`;
+    b.onclick = () => { gPhase = i; renderGuide(); };
+    wrap.appendChild(b);
+  });
+  return wrap;
+}
+
+function copPhaseCard() {
+  const ph = COP[gPhase];
+  const card = document.createElement("div"); card.className = "cop-card";
+  card.innerHTML = `<div class="cop-eyebrow"><span class="eb-num">${String(gPhase + 1).padStart(2, "0")}</span> · ${esc(ph.name)}</div><h3>${ph.title}</h3><p class="lead">${esc(ph.lead)}</p>`;
+
+  if (ph.isPV) { card.appendChild(pvBlock()); return card; }
+  if (ph.isMotivo) { card.appendChild(motivoBlock()); return card; }
+  if (ph.isGroups) {
+    ph.groups.forEach(g => {
+      const b = document.createElement("div"); b.className = "cop-block";
+      const sd = document.createElement("div"); sd.className = "say";
+      sd.innerHTML = `<span class="say-k">${esc(g.q.k)}</span>${esc(g.q.t)}`;
+      b.appendChild(sd);
+      const h = document.createElement("div"); h.className = "cop-block-h"; h.style.margin = "12px 0 8px";
+      h.textContent = g.signalsTitle || "Marca lo que detectes";
+      b.appendChild(h);
+      g.signals.forEach(sig => b.appendChild(signalRow(sig, true)));
+      card.appendChild(b);
+    });
+    return card;
+  }
+  if (ph.isClose) {
+    // pestañas: Cerrar | Objeciones
+    const tabs = document.createElement("div"); tabs.className = "cl-tabs";
+    [["cerrar", "Cerrar"], ["objeciones", "Gestionar objeciones"]].forEach(([key, label]) => {
+      const tb = document.createElement("button");
+      tb.className = "cl-tab" + (gCloseTab === key ? " on" : "");
+      tb.textContent = label;
+      tb.onclick = () => { gCloseTab = key; renderGuide(); };
+      tabs.appendChild(tb);
+    });
+    card.appendChild(tabs);
+
+    if (gCloseTab === "objeciones") {
+      card.appendChild(closeObjectionsBlock());
+    } else {
+      card.appendChild(closeBlock());
+      // señales de cómo responde al cierre
+      const b = document.createElement("div"); b.className = "cop-block";
+      b.innerHTML = `<div class="cop-block-h">${esc(ph.signalsTitle || "¿Cómo responde al cierre?")}</div>`;
+      ph.signals.forEach(sig => b.appendChild(signalRow(sig)));
+      card.appendChild(b);
+      // si ha puesto una pega, aviso que lleva a la pestaña de objeciones
+      if (gChecked.z2 || gChecked.z3 || gChecked.z4) {
+        const tip = document.createElement("div");
+        tip.style.cssText = "background:#fbe7e4;border:1px solid #e9b7ad;border-radius:10px;padding:11px 14px;margin-top:12px;font-size:13.5px;color:#b6452a;display:flex;justify-content:space-between;align-items:center;gap:10px";
+        const txt = document.createElement("span"); txt.innerHTML = "<b>Ha puesto una pega.</b> Tienes la respuesta en «Gestionar objeciones».";
+        const go = document.createElement("button");
+        go.style.cssText = "flex-shrink:0;background:#b6452a;color:#fff;border:0;border-radius:8px;padding:7px 12px;font-weight:700;cursor:pointer;font-size:13px";
+        go.textContent = "Ver respuesta →";
+        go.onclick = () => { gCloseTab = "objeciones"; renderGuide(); };
+        tip.appendChild(txt); tip.appendChild(go);
+        card.appendChild(tip);
+      }
+    }
+    return card;
+  }
+
+  if (ph.say) {
+    const b = document.createElement("div"); b.className = "cop-block";
+    b.innerHTML = `<div class="cop-block-h">Qué decir</div>`;
+    ph.say.forEach(s => {
+      const sd = document.createElement("div"); sd.className = "say";
+      sd.innerHTML = `<span class="say-k">${esc(s.k)}</span>${esc(s.t)}`;
+      b.appendChild(sd);
+    });
+    card.appendChild(b);
+  }
+  if (ph.signals) {
+    const b = document.createElement("div"); b.className = "cop-block";
+    b.innerHTML = `<div class="cop-block-h">${esc(ph.signalsTitle || "Marca lo que detectes")}</div>`;
+    ph.signals.forEach(sig => b.appendChild(signalRow(sig)));
+    card.appendChild(b);
+  }
+  return card;
+}
+
+function signalRow(sig, hideTag) {
+  const on = !!gChecked[sig.id];
+  const btn = document.createElement("button");
+  btn.className = "sig" + (on ? " on" : "");
+  let tag = "";
+  if (!hideTag && sig.m) tag = `<span class="sig-tag tag-${sig.m}">${motName(sig.m)}</span>`;
+  if (!hideTag && sig.p) tag = `<span class="sig-tag tag-${sig.p}">${pilName(sig.p)}</span>`;
+  btn.innerHTML = `<span class="sig-check"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span class="sig-body"><span class="sig-t">${esc(sig.t)}</span>${tag}</span>`;
+  btn.onclick = () => { gChecked[sig.id] = !gChecked[sig.id]; renderGuide(); };
+  if (on && sig.r) {
+    const frag = document.createElement("div");
+    frag.appendChild(btn);
+    const fu = document.createElement("div"); fu.className = "followup";
+    fu.innerHTML = `<span class="fu-k">Engancha</span>${esc(sig.r)}`;
+    frag.appendChild(fu);
+    return frag;
+  }
+  return btn;
+}
+
+function motivoBlock() {
+  const wrap = document.createElement("div");
+  const qs = motiveQuestions();
+  if (!qs.length) {
+    const e = document.createElement("p"); e.className = "empty-side";
+    e.textContent = "No encuentro las preguntas de motivación en el editor.";
+    wrap.appendChild(e); return wrap;
+  }
+  qs.forEach((q, qi) => {
+    const answers = MOTIVE_ANSWERS[qi];
+    if (!answers) return; // solo las preguntas con respuestas tipificadas entran en el diagnóstico
+    const b = document.createElement("div"); b.className = "cop-block";
+    b.innerHTML = `<div class="cop-block-h">Pregunta ${qi + 1}</div>`;
+    const sd = document.createElement("div"); sd.className = "say";
+    sd.innerHTML = `<span class="say-k">Pregunta</span>${esc(q.text)}`;
+    b.appendChild(sd);
+
+    const lbl = document.createElement("div");
+    lbl.style.cssText = "font-size:12px;font-weight:700;color:var(--ink-faint);margin:10px 0 8px;letter-spacing:.03em;text-transform:uppercase";
+    lbl.textContent = "Marca lo que diga (puedes elegir varias)";
+    b.appendChild(lbl);
+
+    const picked = gQMotive[qi] || [];
+    answers.forEach((ans, idx) => {
+      const on = picked.indexOf(idx) !== -1;
+      const btn = document.createElement("button");
+      btn.className = "sig" + (on ? " on" : "");
+      btn.innerHTML = `<span class="sig-check"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span class="sig-body"><span class="sig-t">${esc(ans.t)}</span></span>`;
+      btn.onclick = () => {
+        const arr = gQMotive[qi] || [];
+        const at = arr.indexOf(idx);
+        if (at !== -1) arr.splice(at, 1); else arr.push(idx);
+        if (arr.length) gQMotive[qi] = arr; else delete gQMotive[qi];
+        renderGuide();
+      };
+      b.appendChild(btn);
+      if (on && ans.r) {
+        const fu = document.createElement("div"); fu.className = "followup";
+        fu.innerHTML = `<span class="fu-k">Engancha</span>${esc(ans.r)}`;
+        b.appendChild(fu);
+      }
+    });
+    wrap.appendChild(b);
+  });
+  return wrap;
+}
+
+function pvBlock() {
+  const wrap = document.createElement("div");
+  const mot = activeMotive(), pil = activePillar();
+  if (!mot) {
+    const e = document.createElement("p"); e.className = "empty-side";
+    e.textContent = "Marca primero el motivo en la fase «Motivo ulterior» para ver aquí las frases personalizadas.";
+    wrap.appendChild(e); return wrap;
+  }
+  const area = model.find(a => /valor/i.test(a.name));
+  const sub = area && area.subs.find(s => s.name.toLowerCase() === mot);
+  if (!sub) { const e = document.createElement("p"); e.className = "empty-side"; e.textContent = "No encuentro la propuesta de valor de este motivo en el editor."; wrap.appendChild(e); return wrap; }
+
+  const head = document.createElement("div"); head.className = "cop-block";
+  head.innerHTML = `<div class="cop-block-h">Cruce detectado · vende por aquí</div><div>` +
+    `<span class="pill-lead tag-${mot}">${motName(mot)}</span>` +
+    (pil ? `<span class="pill-lead tag-${pil}">${pilName(pil)}</span>` : "") + `</div>`;
+  wrap.appendChild(head);
+
+  // ordenar visiones: el pilar detectado primero
+  const visions = sub.visions.slice().sort((a, b) => {
+    const pa = pilarOfVision(a) === pil ? 0 : 1, pb = pilarOfVision(b) === pil ? 0 : 1;
+    return pa - pb;
+  });
+  visions.forEach(v => {
+    const isTop = pilarOfVision(v) === pil;
+    const b = document.createElement("div"); b.className = "cop-block";
+    b.innerHTML = `<div class="cop-block-h">${esc(v.text)}${isTop ? " · ★ lo que busca" : ""}</div>`;
+    // cada propuesta = un punto fuerte de Explora, con sus frases debajo
+    v.extras.forEach(e => {
+      if (!e.text.trim() && !(e.examples || []).length) return;
+      const sp = document.createElement("div"); sp.className = "strongpoint";
+      let html = `<div class="sp-name"><span class="sp-dot">◆</span>${esc(e.text)}</div>`;
+      (e.examples || []).forEach(x => {
+        if (!x.text.trim()) return;
+        html += `<div class="sp-line">${esc(x.text)}</div>`;
+      });
+      sp.innerHTML = html;
+      b.appendChild(sp);
+    });
+    wrap.appendChild(b);
+  });
+  return wrap;
+}
+
+function pilarOfVision(v) {
+  const t = (v.text || "").toLowerCase();
+  if (/inserci|laboral|empleo/.test(t)) return "insercion";
+  if (/autonom|flexib/.test(t)) return "autonomia";
+  if (/accesib|precio/.test(t)) return "accesibilidad";
+  return null;
+}
+
+function objByKeyword(re) {
+  const area = model.find(a => /objeci/i.test(a.name));
+  if (!area) return null;
+  return area.subs.find(s => re.test(s.name.toLowerCase())) || null;
+}
+
+function closeObjectionsBlock() {
+  const wrap = document.createElement("div");
+  const area = model.find(a => /objeci/i.test(a.name));
+  if (!area) { const e = document.createElement("p"); e.className = "empty-side"; e.textContent = "No hay objeciones en el editor."; wrap.appendChild(e); return wrap; }
+
+  // 1) Reacción directa a la pega marcada en el cierre
+  const objMap = [
+    { sig: "z3", re: /precio|dinero/, label: "Pone el precio como pega" },
+    { sig: "z2", re: /pensar/, label: "Pide pensárselo" },
+    { sig: "z4", re: /tercero|consult|pareja|hablar/, label: "Lo tiene que hablar con alguien" }
+  ];
+  let shownAny = false;
+  objMap.forEach(o => {
+    if (!gChecked[o.sig]) return;
+    const sub = area.subs.find(s => o.re.test(s.name.toLowerCase()));
+    if (!sub) return;
+    shownAny = true;
+    const box = document.createElement("div"); box.className = "cop-block";
+    box.innerHTML = `<div class="cop-block-h" style="color:#b6452a">⚠ ${esc(o.label)} · responde así</div>`;
+    sub.visions.forEach(v => v.extras.forEach(e => {
+      if (!e.text.trim() && !(e.examples || []).length) return;
+      const sp = document.createElement("div"); sp.className = "strongpoint";
+      sp.style.background = "var(--accent-soft)"; sp.style.borderColor = "var(--accent)";
+      let html = `<div class="sp-name"><span class="sp-dot">★</span>${esc(e.text)}</div>`;
+      (e.examples || []).forEach(x => { if (x.text.trim()) html += `<div class="sp-line">${esc(x.text)}</div>`; });
+      sp.innerHTML = html; box.appendChild(sp);
+    }));
+    wrap.appendChild(box);
+  });
+
+  // 2) Lista completa de objeciones, plegable, por si pone otra
+  const h = document.createElement("div"); h.className = "cop-block-h";
+  h.style.marginTop = shownAny ? "4px" : "0";
+  h.textContent = shownAny ? "Otras objeciones" : "Elige la objeción que ha puesto";
+  wrap.appendChild(h);
+
+  area.subs.forEach(sub => {
+    const open = gObjOpenItem === sub.id;
+    const item = document.createElement("div"); item.className = "cop-block"; item.style.marginBottom = "8px";
+    const t = document.createElement("button");
+    t.className = "sig" + (open ? " on" : ""); t.style.marginBottom = "0";
+    t.innerHTML = `<span class="sig-body"><span class="sig-t">${esc(sub.name)}</span></span><span style="font-size:18px;color:var(--ink-faint);margin-left:auto">${open ? "–" : "+"}</span>`;
+    t.onclick = () => { gObjOpenItem = open ? null : sub.id; renderGuide(); };
+    item.appendChild(t);
+    if (open) {
+      sub.visions.forEach(v => v.extras.forEach(e => {
+        if (!e.text.trim() && !(e.examples || []).length) return;
+        const sp = document.createElement("div"); sp.className = "strongpoint"; sp.style.marginTop = "8px";
+        let html = `<div class="sp-name"><span class="sp-dot">◆</span>${esc(e.text)}</div>`;
+        (e.examples || []).forEach(x => { if (x.text.trim()) html += `<div class="sp-line">${esc(x.text)}</div>`; });
+        sp.innerHTML = html; item.appendChild(sp);
+      }));
+    }
+    wrap.appendChild(item);
+  });
+  return wrap;
+}
+
+function closeBlock() {
+  const wrap = document.createElement("div");
+  const ms = scoreMotives();
+  const ranked = Object.keys(ms).sort((a, b) => ms[b] - ms[a]).filter(k => ms[k] > 0);
+  const pil = activePillar();
+  const order = ranked.length ? ranked.slice(0, 2) : [activeMotive() || "seguridad"];
+  const area = model.find(a => /cierre/i.test(a.name));
+  if (!area) return wrap;
+
+  const pilWord = { insercion: "inserci", autonomia: "autonom", accesibilidad: "accesib" }[pil] || "";
+
+  order.forEach((motKey, i) => {
+    const sub = area.subs.find(s => s.name.toLowerCase() === motKey);
+    if (!sub) return;
+    const b = document.createElement("div"); b.className = "cop-block";
+    const tagTxt = i === 0 ? "★ Mejor cierre" : "Alternativa";
+    b.innerHTML = `<div class="cop-block-h"><span class="pill-lead tag-${motKey}" style="margin:0 6px 0 0">${motName(motKey)}</span>${tagTxt}</div>`;
+    sub.visions.forEach(v => {
+      if (v.text.trim()) {
+        const sd = document.createElement("div"); sd.className = "say";
+        sd.innerHTML = `<span class="say-k">Por qué ahora</span>${esc(v.text)}`;
+        b.appendChild(sd);
+      }
+      // ordenar extras: el del pilar detectado primero
+      const extras = v.extras.slice().sort((x, y) => {
+        const xm = pilWord && x.text.toLowerCase().includes(pilWord) ? 0 : 1;
+        const ym = pilWord && y.text.toLowerCase().includes(pilWord) ? 0 : 1;
+        return xm - ym;
+      });
+      extras.forEach(e => {
+        if (!e.text.trim() && !(e.examples || []).length) return;
+        const isPil = pilWord && e.text.toLowerCase().includes(pilWord);
+        const sp = document.createElement("div"); sp.className = "strongpoint";
+        if (isPil) { sp.style.background = "var(--accent-soft)"; sp.style.borderColor = "var(--accent)"; }
+        let html = `<div class="sp-name"><span class="sp-dot">${isPil ? "★" : "◆"}</span>${esc(e.text)}${isPil ? " · lo que busca" : ""}</div>`;
+        (e.examples || []).forEach(x => {
+          if (!x.text.trim()) return;
+          html += `<div class="sp-line">${esc(x.text)}</div>`;
+        });
+        sp.innerHTML = html;
+        b.appendChild(sp);
+      });
+    });
+    wrap.appendChild(b);
+  });
+  return wrap;
+}
+
+function gateFor(phaseIndex) {
+  // umbral mínimo de temperatura para ENTRAR en una fase
+  const key = COP[phaseIndex] && COP[phaseIndex].key;
+  if (key === "valor") return 60;
+  if (key === "cierre") return 75;
+  return 0;
+}
+
+function copNav() {
+  const nav = document.createElement("div"); nav.className = "cop-nav";
+  const back = document.createElement("button"); back.className = "cop-btn"; back.textContent = "← Atrás";
+  back.disabled = gPhase === 0;
+  back.onclick = () => { if (gPhase > 0) { gPhase--; gForce = false; renderGuide(); } };
+  nav.appendChild(back);
+  if (gPhase < COP.length - 1) {
+    const target = gPhase + 1;
+    const need = gateFor(target);
+    const temp = leadTemp();
+    const blocked = need > 0 && temp < need && !gForce;
+    const next = document.createElement("button");
+    next.className = "cop-btn primary"; next.textContent = "Siguiente →";
+    if (blocked) {
+      next.textContent = "Aún frío para " + COP[target].name.toLowerCase();
+      next.onclick = () => { gForce = true; renderGuide(); }; // primer clic: avisa; deja pasar al segundo
+    } else {
+      next.onclick = () => { gPhase++; gForce = false; renderGuide(); };
+    }
+    nav.appendChild(next);
+  } else {
+    const reset = document.createElement("button"); reset.className = "cop-btn primary"; reset.textContent = "Nueva llamada";
+    reset.onclick = () => { copReset(); renderGuide(); };
+    nav.appendChild(reset);
+  }
+  return nav;
+}
+
+function gateWarn() {
+  const target = gPhase + 1;
+  const need = gateFor(target);
+  if (!(need > 0)) return null;
+  const temp = leadTemp();
+  const key = COP[target].key;
+  const boosters = BOOSTERS[key] || [];
+  const reached = temp >= need;
+  if (reached) return null;
+  const box = document.createElement("div");
+  box.style.cssText = "background:#fbe7e4;border:1px solid #e9b7ad;border-radius:11px;padding:14px 16px;margin-top:14px";
+  box.innerHTML = `<div style="font-weight:800;color:#b6452a;font-size:14px;margin-bottom:3px">Lead aún frío (${temp}° · mínimo ${need}° para ${esc(COP[target].name)})</div>` +
+    `<div style="font-size:13.5px;color:var(--ink-soft);margin-bottom:11px">Haz estas preguntas y marca lo que conteste: la temperatura sube sola y te avisa cuando ya puedas pasar.</div>`;
+
+  boosters.forEach(grp => {
+    const g = document.createElement("div"); g.style.marginBottom = "12px";
+    const q = document.createElement("div"); q.className = "say"; q.style.marginBottom = "7px";
+    q.innerHTML = `<span class="say-k">Pregunta extra</span>${esc(grp.q)}`;
+    g.appendChild(q);
+    grp.opts.forEach(o => {
+      const on = !!gChecked[o.id];
+      const btn = document.createElement("button");
+      btn.className = "sig" + (on ? " on" : "");
+      btn.style.marginBottom = "6px";
+      btn.innerHTML = `<span class="sig-check"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></span><span class="sig-body"><span class="sig-t">${esc(o.t)}</span></span>`;
+      btn.onclick = () => { gChecked[o.id] = !gChecked[o.id]; renderGuide(); };
+      g.appendChild(btn);
+    });
+    box.appendChild(g);
+  });
+  const note = document.createElement("div");
+  note.style.cssText = "font-size:12.5px;color:var(--ink-faint)";
+  note.textContent = "Si lo ves claro, puedes pasar igual con «Siguiente».";
+  box.appendChild(note);
+  return box;
+}
+
+/* ---------- side widgets ---------- */
+function copThermo() {
+  const t = leadTemp();
+  const w = document.createElement("div"); w.className = "w";
+  w.innerHTML = `<div class="w-h">Temperatura del lead</div>
+    <div class="thermo-deg">${t}<sup>°</sup></div>
+    <div class="thermo-lbl">${esc(tempLabel(t))}</div>
+    <div class="thermo-track"><div class="thermo-knob" style="left:${t}%"></div></div>
+    <div class="thermo-scale"><span>Frío</span><span>Templado</span><span>Caliente</span></div>`;
+  return w;
+}
+
+function copDetect() {
+  const w = document.createElement("div"); w.className = "w";
+  const ms = scoreMotives(), ps = scorePillars();
+  const mot = activeMotive(), pil = activePillar();
+  const mTotal = Math.max(1, ms.seguridad + ms.ego + ms.social);
+  const pTotal = Math.max(1, ps.insercion + ps.autonomia + ps.accesibilidad);
+  let html = `<div class="w-h">En vivo · qué mueve al lead</div>`;
+  html += `<div style="font-size:11px;font-weight:700;color:var(--ink-faint);margin-bottom:6px">MOTIVO ULTERIOR</div>`;
+  MOTIVES.forEach(m => {
+    const pct = Math.round(ms[m.key] / mTotal * 100);
+    html += meterRow(m.name, pct, m.color, m.key === mot && ms[m.key] > 0);
+  });
+  html += `<div style="font-size:11px;font-weight:700;color:var(--ink-faint);margin:11px 0 6px">PILAR DE FP QUE BUSCA</div>`;
+  PILLARS.forEach(p => {
+    const pct = Math.round(ps[p.key] / pTotal * 100);
+    html += meterRow(p.name, pct, p.color, p.key === pil && ps[p.key] > 0);
+  });
+  const anyM = ms.seguridad + ms.ego + ms.social > 0;
+  const anyP = ps.insercion + ps.autonomia + ps.accesibilidad > 0;
+  html += `<div class="lead-result">`;
+  html += anyM ? `Vende en clave <b>${motName(mot)}</b>` : `Aún sin motivo claro`;
+  html += anyP ? ` · enfoca <b>${pilName(pil)}</b>.` : `.`;
+  html += `</div>`;
+  w.innerHTML = html;
+  return w;
+}
+function meterRow(name, pct, color, star) {
+  return `<div class="meter"><div class="meter-top"><span class="meter-name">${name}${star ? " ★" : ""}</span><span class="meter-pct">${pct}%</span></div>` +
+    `<div class="meter-track"><div class="meter-fill" style="width:${pct}%;background:${color}"></div></div></div>`;
+}
+
+function copNBA() {
+  const w = document.createElement("div"); w.className = "w nba";
+  w.innerHTML = `<div class="w-h">Siguiente mejor acción</div><div class="nba-text">${nextAction()}</div>`;
+  return w;
+}
+
+function esc(s) { return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+const EDIT_PASSWORD = "12345678";
+let editUnlocked = false;
+let view = "guide";
+
+function setView(v) {
+  view = v;
+  const isEd = v === "editor";
+  $("editor").style.display = isEd ? "" : "none";
+  $("guide").style.display = isEd ? "none" : "";
+  $("areaStrip").style.display = isEd ? "" : "none";
+  $("pager").style.display = isEd ? "" : "none";
+  $("crumb").style.display = isEd ? "" : "none";
+  $("tabEditor").classList.toggle("active", isEd);
+  $("tabGuide").classList.toggle("active", !isEd);
+  if (!isEd) renderGuide();
+}
+
+function requestEditor() {
+  if (editUnlocked) { setView("editor"); return; }
+  openPassModal();
+}
+
+function openPassModal() {
+  const ov = $("passModal");
+  ov.classList.add("show");
+  const inp = $("passInput");
+  inp.value = ""; $("passErr").style.display = "none";
+  setTimeout(() => inp.focus(), 30);
+}
+function closePassModal() { $("passModal").classList.remove("show"); }
+function submitPass() {
+  const val = $("passInput").value;
+  if (val === EDIT_PASSWORD) {
+    editUnlocked = true;
+    $("tabEditor").classList.remove("locked");
+    closePassModal();
+    setView("editor");
+  } else {
+    $("passErr").style.display = "block";
+    $("passInput").value = "";
+    $("passInput").focus();
+  }
+}
+
+$("tabEditor").onclick = requestEditor;
+$("tabGuide").onclick = () => setView("guide");
+$("passSubmit").onclick = submitPass;
+$("passCancel").onclick = closePassModal;
+$("passInput").addEventListener("keydown", e => { if (e.key === "Enter") submitPass(); if (e.key === "Escape") closePassModal(); });
+$("passModal").addEventListener("click", e => { if (e.target === $("passModal")) closePassModal(); });
+
+// arranca en modo guiado (consulta) y con el editor bloqueado
+$("tabEditor").classList.add("locked");
+
+renderNav(); renderEditor(); updateProgress();
+setView("guide");
+</script>
+</body>
+</html>
