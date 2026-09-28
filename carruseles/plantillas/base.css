@@ -45,7 +45,7 @@ em { font-style: normal; padding: 0 .08em; -webkit-box-decoration-break: clone; 
 .antetitulo { display: inline-block; position: relative; font-family: var(--cuerpo); font-weight: 500; font-size: 36px; margin-bottom: 40px; }
 .antetitulo em { padding: 0; }
 .trazo-sub { position: absolute; left: -4px; right: -10px; bottom: -16px; width: calc(100% + 14px); height: 14px; }
-.etiqueta { display: inline-block; position: relative; font-family: var(--editorial); font-size: 42px; padding: 10px 34px; margin: 0 0 34px -10px; }
+.etiqueta { display: inline-block; position: relative; font-family: var(--editorial); font-size: 42px; padding: 10px 46px; margin: 0 0 34px -12px; }
 .trazo-ovalo { position: absolute; inset: -10px -14px -8px -14px; width: calc(100% + 28px); height: calc(100% + 18px); }
 svg path { fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .trazo-flechas path { stroke-width: 6; }
@@ -73,3 +73,17 @@ ul.lista li::before { content: attr(data-n); position: absolute; left: 0; top: 2
 .cinta .logo-texto { font-family: var(--cuerpo); font-weight: 700; font-size: 36px; }
 .cinta .pag { font-family: var(--editorial); font-size: 30px; }
 .desliza { position: absolute; right: 70px; bottom: calc(var(--cinta) + 44px); font-family: var(--mano); font-weight: 700; font-size: 48px; }
+
+/* Cabecera (etiqueta de sección + logo arriba). Solo la muestran las plantillas que la usan. */
+.cabecera { display: none; position: absolute; top: 56px; left: var(--m); right: 70px; align-items: center; justify-content: space-between; }
+.cabecera span { font-family: var(--cuerpo); font-weight: 500; font-size: 22px; letter-spacing: .16em; text-transform: uppercase; }
+.cabecera img { height: 40px; width: auto; }
+.cinta-cta { font-family: var(--titular); font-weight: 800; font-stretch: 75%; font-size: 44px; letter-spacing: -.02em; }
+
+/* Imágenes: captura en portátil o foto recortada */
+.portatil { margin-top: 44px; width: 740px; }
+.portatil .pantalla { background: #111; border-radius: 22px 22px 0 0; padding: 16px 16px 20px; }
+.portatil .pantalla img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 4px; }
+.portatil .base { height: 26px; margin: 0 -44px; background: linear-gradient(#cfd3cf, #9aa09a); border-radius: 0 0 26px 26px; }
+.foto { margin-top: 56px; width: 100%; }
+.foto img { display: block; width: 100%; max-height: 520px; object-fit: cover; border-radius: 6px; }

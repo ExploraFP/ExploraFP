@@ -1,0 +1,28 @@
+# Plantilla CUADERNO alternando con SELVA: "lo malo" (blanco) → "así lo hacemos" (verde)
+plantilla: cuaderno
+cabecera: Lo malo
+copy: |
+  Estudiar online tiene sus pegas. Te las contamos sin filtros 👇
+slides:
+  - tipo: portada
+    cabecera: ""
+    titulo: Esta es la *parte mala* de estudiar *online*.
+    subtitulo: Y no, no eres tú. Le pasa a todo el mundo.
+  - tipo: contenido
+    numero: "01"
+    titulo: A veces te sientes solo.
+    texto: Abres el portátil, cierras el portátil. Nadie sabe *si has estudiado hoy*.
+    nota: y así se abandona
+  - tipo: contenido
+    plantilla: selva
+    etiqueta: Así lo hacemos en Explora
+    titulo: Aquí tienes *a quién escribir*.
+    texto: Un tutor que te conoce por tu nombre y una comunidad que está igual que tú.
+    imagen: img/captura-ejemplo.svg
+    marco: portatil
+  - tipo: cierre
+    cabecera: ""
+    titulo: Nunca *solo*.
+    texto: Estudiar online tiene sus pegas. Lo que cambia es quién está detrás.
+    nota: nos vemos en el terreno ⚡️
+    cinta: Traza tu ruta · enlace en el perfil

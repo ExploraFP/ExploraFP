@@ -17,6 +17,10 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 | `selva`  | Verde noche (#1B3620), titulares lima, resaltado amarillo | tips, guías, cómo se hace |
 | `diario` | Lima claro (#EDFEC3), texto verde noche, resaltado amarillo | storytelling, mitos vs realidad, testimonios |
 | `brecha` | Verde vivo (#85E159), texto casi negro, resaltado lima | datos, cifras, verdades incómodas |
+| `cuaderno` | Blanco verdoso con cuadrícula, titular negro, resaltado lima, logo arriba | "lo malo / así lo hacemos", checklists, preguntas (favorita de Sandra) |
+
+**Mezclar plantillas**: `plantilla:` dentro de una slide sobrescribe la del carrusel. Patrón probado:
+problema en `cuaderno` → solución en `selva` con captura en portátil → cierre.
 
 Fuente de verdad visual: **explorafp.com** (por encima del brandbook, que está en revisión).
 Titulares en caja normal (nunca todo mayúsculas), condensados y apretados; resaltado en bloque;
@@ -28,6 +32,12 @@ trazos a mano; botones píldora con Besley.
 - `lista`: antetitulo, titulo, items[], nota
 - `dato`: antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**
 - `cierre`: etiqueta, antetitulo, titulo, texto, cta (con flechas a mano)
+
+Campos extra en cualquier slide:
+- `imagen: img/archivo.png` (relativa a `contenido/`) + `marco: portatil` (captura en portátil) o `foto`.
+- `cabecera:` etiqueta arriba a la izquierda (solo `cuaderno`). A nivel de carrusel, `cabecera: Lo malo`
+  pone "LO MALO · 02" en cada slide; `cabecera: ""` en una slide la oculta.
+- `cinta:` (solo en `cierre`) texto de la cinta final, p. ej. "Traza tu ruta · enlace en el perfil".
 
 `*palabra*` resalta (lima, blanco o subrayador según plantilla). Línea en blanco en `texto` = párrafo nuevo.
 `nota` imita la anotación manuscrita al margen. Máximo 20 slides (límite de Instagram); ideal 5-8.

@@ -8,7 +8,7 @@ import * as yaml from "js-yaml";
 import { chromium } from "playwright";
 
 const RAIZ = resolve(import.meta.dirname);
-const PLANTILLAS = ["selva", "diario", "brecha"];
+const PLANTILLAS = ["selva", "diario", "brecha", "cuaderno"];
 const TIPOS = ["portada", "contenido", "lista", "dato", "cierre"];
 
 // Logo de la cinta por plantilla (ficheros del catálogo de marca, en assets/logos/).
@@ -16,6 +16,7 @@ const LOGO = {
   selva: "Explora x Ucademy_Horizontal_Negro 1",
   diario: "Explora x Ucademy_Horizontal_Verde 03 1",
   brecha: "Explora x Ucademy_Horizontal_Verde 03 1",
+  cuaderno: "Explora x Ucademy_Horizontal_Verde 01 1",
 };
 
 const esc = (s = "") => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -33,6 +34,17 @@ const TRAZO = {
 const ante = (t) => si(t, `<div class="antetitulo"><span>${fmt(t)}</span>${TRAZO.subrayado}</div>`);
 const etiqueta = (t) => si(t, `<div class="etiqueta"><span>${fmt(t)}</span>${TRAZO.ovalo}</div>`);
 
+// Imagen opcional bajo el texto. Rutas relativas a contenido/. marco: portatil | foto (por defecto)
+const imagen = (s) => {
+  if (!s.imagen) return "";
+  const ruta = resolve(RAIZ, "contenido", s.imagen);
+  if (!existsSync(ruta)) throw new Error(`no encuentro la imagen ${s.imagen} (ruta relativa a contenido/)`);
+  const img = `<img src="${pathToFileURL(ruta)}" alt="">`;
+  return s.marco === "portatil"
+    ? `<div class="portatil"><div class="pantalla">${img}</div><div class="base"></div></div>`
+    : `<div class="foto">${img}</div>`;
+};
+
 function cuerpo(s) {
   switch (s.tipo) {
     case "portada":
@@ -41,12 +53,12 @@ function cuerpo(s) {
         si(s.subtitulo, `<div class="subtitulo">${fmt(s.subtitulo)}</div>`) +
         si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
     case "contenido":
-      return si(s.numero, `<div class="num">${esc(s.numero)}</div>`) + ante(s.antetitulo) +
+      return si(s.numero, `<div class="num">${esc(s.numero)}</div>`) + etiqueta(s.etiqueta) + ante(s.antetitulo) +
         `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
         si(s.texto, `<div class="texto">${parrafos(s.texto)}</div>`) +
         si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
     case "lista":
-      return ante(s.antetitulo) +
+      return etiqueta(s.etiqueta) + ante(s.antetitulo) +
         `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
         `<ul class="lista">${(s.items || []).map((it, n) => `<li data-n="${String(n + 1).padStart(2, "0")}">${fmt(it)}</li>`).join("")}</ul>` +
         si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
@@ -63,7 +75,7 @@ function cuerpo(s) {
   }
 }
 
-function html(plantilla, s, i, total) {
+function html(plantilla, s, i, total, cabecera) {
   const logo = [".png", ".webp", ".svg"].map((e) => join(RAIZ, "assets/logos", LOGO[plantilla] + e)).find(existsSync);
   const marca = logo
     ? `<img src="${pathToFileURL(logo)}" alt="Explora × Ucademy">`
@@ -71,9 +83,10 @@ function html(plantilla, s, i, total) {
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <link rel="stylesheet" href="${pathToFileURL(join(RAIZ, "plantillas/base.css"))}">
 <link rel="stylesheet" href="${pathToFileURL(join(RAIZ, `plantillas/${plantilla}.css`))}">
-</head><body><section class="slide tipo-${s.tipo}"><div class="contenido">${cuerpo(s)}</div>
+</head><body><section class="slide tipo-${s.tipo}"><div class="cabecera"><span>${fmt(cabecera ?? "")}</span>${marca}</div>
+<div class="contenido">${cuerpo(s)}${imagen(s)}</div>
 ${i === 0 && total > 1 ? `<div class="desliza">desliza →</div>` : ""}
-<div class="cinta">${marca}<span class="pag">${String(i + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</span></div>
+<div class="cinta">${marca}${si(s.tipo === "cierre" && s.cinta, `<span class="cinta-cta">${fmt(s.cinta)}</span>`)}<span class="pag">${String(i + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</span></div>
 </section></body></html>`;
 }
 
@@ -82,6 +95,7 @@ function validar(c, fichero) {
   if (!PLANTILLAS.includes(c.plantilla)) errores.push(`plantilla "${c.plantilla}" no existe (usa: ${PLANTILLAS.join(", ")})`);
   if (!Array.isArray(c.slides) || !c.slides.length) errores.push("faltan slides");
   (c.slides || []).forEach((s, i) => {
+    if (s.plantilla && !PLANTILLAS.includes(s.plantilla)) errores.push(`slide ${i + 1}: plantilla "${s.plantilla}" no existe`);
     if (!TIPOS.includes(s.tipo)) errores.push(`slide ${i + 1}: tipo "${s.tipo}" no existe (usa: ${TIPOS.join(", ")})`);
   });
   if (c.slides?.length > 20) errores.push("Instagram admite 20 slides como máximo");
@@ -106,7 +120,8 @@ for (const f of ficheros) {
 
   for (const [i, s] of c.slides.entries()) {
     const tmp = join(dir, `.slide.html`);
-    writeFileSync(tmp, html(c.plantilla, s, i, c.slides.length));
+    const cab = s.cabecera ?? (c.cabecera ? `${c.cabecera} · ${String(i + 1).padStart(2, "0")}` : null);
+    writeFileSync(tmp, html(s.plantilla || c.plantilla, s, i, c.slides.length, cab));
     await pagina.goto(pathToFileURL(tmp).href);
     await pagina.evaluate(() => document.fonts.ready);
     // La cifra gigante se encoge hasta caber en una línea.
@@ -120,7 +135,8 @@ for (const f of ficheros) {
     // Aviso si el texto se sale del área útil (encima de la cinta).
     const sobra = await pagina.evaluate(() => {
       const r = document.querySelector(".contenido").getBoundingClientRect();
-      const tope = document.querySelector(".cinta").getBoundingClientRect().top - 30;
+      const cinta = document.querySelector(".cinta");
+      const tope = (cinta.offsetParent ? cinta.getBoundingClientRect().top : 1350) - 30;
       return Math.round(Math.max(r.bottom - tope, 60 - r.top, 0));
     });
     if (sobra > 0) { avisos++; console.warn(`  ⚠ ${nombre} slide ${i + 1}: el texto no cabe (${sobra}px). Recórtalo.`); }

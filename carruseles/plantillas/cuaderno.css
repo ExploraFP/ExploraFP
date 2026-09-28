@@ -1,0 +1,26 @@
+/* CUADERNO · blanco verdoso con cuadrícula de libreta, titular negro y resaltado lima.
+   Para "lo malo / lo bueno", checklists, preguntas. Combina bien alternando slides con selva.
+   Paleta: Blanco Verdoso + Negro + Verde 01 + Verde 03. */
+.slide { background-color: var(--blanco); color: var(--negro);
+  background-image: linear-gradient(rgba(54,107,64,.07) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(54,107,64,.07) 1.5px, transparent 1.5px);
+  background-size: 44px 44px; padding-top: 150px; }
+.slide::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 14px; background: var(--verde01); }
+.titulo { font-weight: 900; font-stretch: 82%; letter-spacing: -.025em; word-spacing: .04em; }
+.titulo em { background: var(--verde03); }
+.antetitulo { font-weight: 700; font-size: 26px; letter-spacing: .2em; text-transform: uppercase; color: var(--verde01); }
+.antetitulo .trazo-sub { display: none; }
+.etiqueta { color: var(--verde01); }
+.subtitulo, .texto { font-family: var(--editorial); color: #1F1F21; }
+.subtitulo em, .texto em, li em { background: none; padding: 0; text-decoration: underline; text-decoration-color: var(--verde02); text-decoration-thickness: 4px; text-underline-offset: 8px; }
+.num { color: #DFDFE1; font-size: 220px; margin-bottom: 0; }
+.nota { font-family: var(--editorial); font-style: italic; font-weight: 400; font-size: 34px; color: var(--negro); opacity: .55; transform: none; }
+ul.lista li { border-top: 2px solid rgba(54,107,64,.25); font-family: var(--editorial); }
+ul.lista li::before { color: var(--verde01); }
+.cifra { color: var(--verde01); }
+.cta { background: var(--noche); color: var(--blanco); }
+.desliza { color: var(--verde01); }
+.cabecera { display: flex; color: #77777B; }
+/* Sin cinta salvo en el cierre, donde lleva la llamada a la acción (el logo ya va arriba). */
+.cinta { display: none; background: var(--verde03); color: var(--noche); }
+.tipo-cierre .cinta { display: flex; }
+.tipo-cierre .cinta img, .tipo-cierre .cinta .pag { display: none; }
