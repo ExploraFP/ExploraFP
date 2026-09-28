@@ -60,6 +60,7 @@ Si un YAML falla, el render sigue con los demás y lo lista al final.
   redistribuir o subir la fuente a servidores públicos: por eso NO va en git. En una sesión nueva, pedir a
   Sandra el .otf y copiarlo a `fonts/GravityCondensed.otf`. Sin el archivo, se usa Archivo como sustituto.
 - Fotos en `contenido/img/foto-*.jpg` (banco de Sandra): globo-diploma, grupo-estudiantes, chica-cascos-portatil,
-  chico-saluda-portatil, chica-biblioteca-portatil, web-alumnos. Nuevas fotos → `contenido/img/foto-<descripcion>.jpg`.
+  chico-saluda-portatil, chica-biblioteca-portatil, web-alumnos, libreta-apuntes, chica-riendo-exterior,
+  chica-gafas-portatil-parque, chica-escritorio-sonrie, chica-agobiada-examen (útil para "lo malo"). Nuevas fotos → `contenido/img/foto-<descripcion>.jpg`.
 - Capas: la foto de portada va inclinada, sin marco blanco (nada de polaroid), y la caja inclinada al otro lado.
 - Faltan: ilustraciones 3D.
