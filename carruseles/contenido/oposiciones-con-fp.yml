@@ -1,0 +1,33 @@
+plantilla: poster
+color: noche
+copy: |
+  "Para opositar necesitas carrera." Pues no 🙅
+  Con una FP se abren muchas puertas en la Administración. Te dejamos algunas 👇
+  Revisa siempre las bases de cada convocatoria: ahí está la letra pequeña 📄
+  #FP #Oposiciones #FPOnline #EmpleoPúblico
+slides:
+  - tipo: portada
+    etiqueta: Empleo público
+    titulo: Oposiciones que puedes hacer *con una FP*
+    subtitulo: Sin carrera. Con un título de FP oficial.
+  - tipo: dato
+    color: verde
+    antetitulo: Con un grado medio (título de Técnico) accedes al grupo
+    cifra: C1
+    texto: Y con un grado superior (Técnico Superior), al grupo B.
+    fuente: Estatuto Básico del Empleado Público, art. 76
+  - tipo: lista
+    titulo: Algunas que *puedes preparar*
+    antetitulo: "Del Estado, con título de Técnico:"
+    items:
+      - Administrativo del Estado
+      - Agente de Hacienda
+      - Policía Nacional
+  - tipo: contenido
+    color: blanco
+    titulo: Y otras piden *tu ciclo concreto*
+    antetitulo: "Plazas de sanidad y educación:"
+    texto: Técnico en cuidados auxiliares de enfermería o técnico de educación infantil. Sin ese título, no entras.
+  - tipo: cierre
+    titulo: Primero el título. Luego *la plaza*.
+    cta: Trazar mi ruta

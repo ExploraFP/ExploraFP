@@ -1,0 +1,33 @@
+plantilla: cuaderno
+color: blanco
+cinta: Homologación
+copy: |
+  Tu homologación lleva meses "en trámite" y tú con la vida en pausa. No hace falta esperar sentado ⏳
+  Esto es lo que puedes mover YA mientras el Ministerio resuelve 👇
+  Cada caso es un mundo: escríbenos y te decimos cuál es tu ruta 📍
+  #FP #FPOnline #Homologación #EstudiarEnEspaña
+slides:
+  - tipo: portada
+    antetitulo: Homologación en trámite
+    titulo: Qué puedes hacer *ya*.
+    subtitulo: Esperar al Ministerio no significa quedarte parado.
+  - tipo: contenido
+    numero: "01"
+    titulo: Pide el *volante condicional*.
+    texto: Es un papel del Ministerio que te deja inscribirte en estudios mientras tu homologación sigue en trámite.
+    nota: esto significa que puedes empezar antes
+  - tipo: contenido
+    numero: "02"
+    titulo: Mira la *prueba de acceso*.
+    texto: Si no quieres depender del título, la prueba de acceso a ciclos es otra puerta. Grado medio desde los 17, grado superior desde los 19.
+  - tipo: lista
+    titulo: Mientras tanto, *mueve ficha*.
+    items:
+      - Revisa tu expediente en la sede del Ministerio
+      - Ten a mano tus documentos traducidos
+      - Elige ya el ciclo que quieres hacer
+  - tipo: cierre
+    titulo: Tu ruta no espera *al trámite*.
+    texto: Cuéntanos tu caso y te decimos por dónde empezar.
+    cta: Trazar mi ruta
+    cinta: Enlace en el perfil

@@ -15,7 +15,7 @@
 .num { align-self: flex-start; color: var(--acento); }
 
 .contenido > .deco-isotipo { position: absolute; z-index: 0; top: -60px; right: -300px; width: 1100px; height: 952px; }
-.contenido > .deco-notas { position: absolute; z-index: 1; right: -40px; bottom: 60px; width: 640px; height: 538px; background: var(--tinta); opacity: .5; }
+.contenido > .deco-notas { position: absolute; z-index: 1; right: -110px; bottom: 30px; width: 480px; height: 404px; background: var(--tinta); opacity: .5; }
 .foto-diagonal { position: absolute !important; z-index: 1 !important; right: 0; bottom: 0; width: 700px; height: 470px; object-fit: cover;
   clip-path: polygon(0 32%, 100% 0, 100% 100%, 0 100%); }
 

@@ -1,0 +1,36 @@
+plantilla: capas
+color: noche
+cinta: Salir de la hostelería
+copy: |
+  Turnos partidos, fines de semana fuera y la espalda pidiendo tregua 🍽️
+  Lo que has aprendido en sala vale más de lo que crees. Aquí tienes 3 rutas para sacarle partido 🔥
+  ¿Cuál es la tuya? Te leemos en comentarios 👇
+  #FP #FPOnline #CambioDeProfesión #Hostelería
+slides:
+  - tipo: portada
+    etiqueta: Cambio de rumbo
+    titulo: 3 rutas para *salir* de la hostelería
+    subtitulo: Sin tirar a la basura lo que ya sabes hacer.
+  - tipo: contenido
+    titulo: Lo que ya llevas *en la mochila*
+    antetitulo: Años de sala no son años perdidos.
+    texto: Tratar con clientes, aguantar presión y resolver en segundos. Eso es oro en muchas profesiones.
+    decoracion: postit
+  - tipo: contenido
+    titulo: Marketing y *publicidad*
+    numero: "01"
+    texto: Sabes lo que hace volver a un cliente. Ahora aprendes a atraerlo con campañas reales.
+  - tipo: contenido
+    titulo: Administración y *finanzas*
+    numero: "02"
+    texto: Caja, pedidos, proveedores. Ya has tocado números. Ahora con horario de oficina.
+  - tipo: contenido
+    titulo: Educación *infantil*
+    numero: "03"
+    texto: Paciencia, energía y mil cosas a la vez. Te suena, ¿verdad?
+  - tipo: cierre
+    etiqueta: Sin dejar de currar
+    titulo: Estudia online mientras *sigues en sala*.
+    texto: A tu ritmo, con guía y prácticas en empresa.
+    cta: Ver mi ruta
+    cinta: Enlace en el perfil
