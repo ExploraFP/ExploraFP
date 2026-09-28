@@ -13,9 +13,9 @@ const TIPOS = ["portada", "contenido", "lista", "dato", "cierre"];
 
 // Logo de la cinta por plantilla (ficheros del catálogo de marca, en assets/logos/).
 const LOGO = {
-  selva: "Explora x Ucademy_Horizontal_Verde 03 1",
-  diario: "Explora x Ucademy_Horizontal_Blanco 1",
-  brecha: "Explora x Ucademy_Horizontal_Negro 1",
+  selva: "Explora x Ucademy_Horizontal_Negro 1",
+  diario: "Explora x Ucademy_Horizontal_Verde 03 1",
+  brecha: "Explora x Ucademy_Horizontal_Verde 03 1",
 };
 
 const esc = (s = "") => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -24,34 +24,42 @@ const fmt = (s) => esc(s).trim().replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\
 const parrafos = (s) => String(s).trim().split(/\n\s*\n/).map((p) => `<p>${fmt(p)}</p>`).join("");
 const si = (v, html) => (v ? html : "");
 
-function cuerpo(s, i) {
+// Trazos a mano (provisionales hasta tener los originales de marca en assets/trazos/).
+const TRAZO = {
+  subrayado: `<svg class="trazo-sub" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M3 9 C 70 4, 190 2, 297 7"/></svg>`,
+  ovalo: `<svg class="trazo-ovalo" viewBox="0 0 300 70" preserveAspectRatio="none"><path d="M40 12 C 120 2, 270 4, 292 30 C 306 52, 190 66, 110 64 C 40 62, 4 52, 8 34 C 12 16, 70 6, 150 5"/></svg>`,
+  flechas: `<svg class="trazo-flechas" viewBox="0 0 150 120"><path d="M146 30 C 110 26, 60 24, 12 30 M 40 8 C 30 16, 18 24, 10 30 C 20 36, 32 44, 42 52"/><path d="M140 104 C 100 88, 60 76, 18 70 M 44 52 C 34 60, 24 66, 16 70 C 26 78, 36 88, 44 98"/></svg>`,
+};
+const ante = (t) => si(t, `<div class="antetitulo"><span>${fmt(t)}</span>${TRAZO.subrayado}</div>`);
+const etiqueta = (t) => si(t, `<div class="etiqueta"><span>${fmt(t)}</span>${TRAZO.ovalo}</div>`);
+
+function cuerpo(s) {
   switch (s.tipo) {
     case "portada":
-      return si(s.antetitulo, `<div class="antetitulo">${fmt(s.antetitulo)}</div>`) +
+      return etiqueta(s.etiqueta) + ante(s.antetitulo) +
         `<h1 class="titulo">${fmt(s.titulo)}</h1>` +
         si(s.subtitulo, `<div class="subtitulo">${fmt(s.subtitulo)}</div>`) +
         si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
     case "contenido":
-      return si(s.numero, `<div class="num">${esc(s.numero)}</div>`) +
-        si(s.antetitulo, `<div class="antetitulo">${fmt(s.antetitulo)}</div>`) +
+      return si(s.numero, `<div class="num">${esc(s.numero)}</div>`) + ante(s.antetitulo) +
         `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
         si(s.texto, `<div class="texto">${parrafos(s.texto)}</div>`) +
         si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
     case "lista":
-      return si(s.antetitulo, `<div class="antetitulo">${fmt(s.antetitulo)}</div>`) +
+      return ante(s.antetitulo) +
         `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
         `<ul class="lista">${(s.items || []).map((it, n) => `<li data-n="${String(n + 1).padStart(2, "0")}">${fmt(it)}</li>`).join("")}</ul>` +
         si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
     case "dato":
-      return si(s.antetitulo, `<div class="antetitulo">${fmt(s.antetitulo)}</div>`) +
+      return ante(s.antetitulo) +
         `<div class="cifra">${esc(s.cifra)}</div>` +
         si(s.texto, `<div class="texto">${parrafos(s.texto)}</div>`) +
         si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
     case "cierre":
-      return si(s.antetitulo, `<div class="antetitulo">${fmt(s.antetitulo)}</div>`) +
+      return etiqueta(s.etiqueta) + ante(s.antetitulo) +
         `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
         si(s.texto, `<div class="texto">${parrafos(s.texto)}</div>`) +
-        si(s.cta, `<div class="cta">${fmt(s.cta)}</div>`);
+        si(s.cta, `<div class="cta-fila"><div class="cta">${fmt(s.cta)}</div>${TRAZO.flechas}</div>`);
   }
 }
 
@@ -63,7 +71,7 @@ function html(plantilla, s, i, total) {
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <link rel="stylesheet" href="${pathToFileURL(join(RAIZ, "plantillas/base.css"))}">
 <link rel="stylesheet" href="${pathToFileURL(join(RAIZ, `plantillas/${plantilla}.css`))}">
-</head><body><section class="slide tipo-${s.tipo}"><div class="contenido">${cuerpo(s, i)}</div>
+</head><body><section class="slide tipo-${s.tipo}"><div class="contenido">${cuerpo(s)}</div>
 ${i === 0 && total > 1 ? `<div class="desliza">desliza →</div>` : ""}
 <div class="cinta">${marca}<span class="pag">${String(i + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</span></div>
 </section></body></html>`;

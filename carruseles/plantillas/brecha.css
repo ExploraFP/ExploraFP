@@ -1,17 +1,7 @@
-/* BRECHA · fondo negro, contraste máximo. Para datos, cifras, verdades incómodas.
-   Paleta: Negro + Verde 03 + Verde 02 + Blanco Verdoso. */
-.slide { background: var(--negro); color: var(--blanco); }
-.antetitulo { color: var(--verde02); }
-.titulo { color: var(--verde03); font-size: 150px; }
-.tipo-portada .titulo { font-size: 184px; }
-.tipo-contenido .titulo, .tipo-lista .titulo { font-size: 104px; }
-.titulo em { font-style: normal; color: var(--blanco); }
-.subtitulo em, .texto em, li em { font-style: normal; color: var(--verde03); }
-.subtitulo { color: var(--blanco); }
-.num { color: var(--verde02); }
-.nota, .desliza { color: var(--verde02); }
-ul.lista li { border-top: 2px solid rgba(76,205,75,.45); }
-ul.lista li::before { color: var(--verde02); }
-.cifra { color: var(--verde03); font-size: 360px; }
-.cta { background: var(--verde03); color: var(--negro); }
-.cinta { background: var(--verde03); color: var(--negro); }
+/* BRECHA · verde vivo con texto casi negro y resaltado lima (sección "No te decimos qué ser" de la web).
+   Para datos, cifras, verdades incómodas. Paleta: Soporte 04 + Soporte 01 + Verde 03. */
+.slide { background: var(--pasto); color: #0E1F11; }
+em { background: var(--verde03); }
+ul.lista li { border-top: 2px solid rgba(14,31,17,.3); }
+.cta { background: var(--noche); color: var(--blanco); }
+.cinta { background: var(--noche); color: var(--verde03); }

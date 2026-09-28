@@ -4,7 +4,7 @@ copy: |
   Nadie te lo dice así de claro, así que te lo decimos nosotros ✍️
 slides:
   - tipo: portada
-    antetitulo: Mitos de la FP
+    etiqueta: Mitos de la FP
     titulo: "\"La FP es para quien *no vale* para estudiar\""
     subtitulo: Spoiler. Es justo al revés.
     nota: vamos a desmontarlo →
@@ -21,5 +21,6 @@ slides:
     texto: Cuando llegas a las prácticas, ya has hecho lo que te van a pedir.
     nota: visto y hecho ✔
   - tipo: cierre
+    etiqueta: Plazas limitadas
     titulo: ¿Quieres verlo *por dentro*?
     cta: Ver por dentro 👀

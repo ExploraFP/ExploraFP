@@ -6,7 +6,7 @@ copy: |
   #FP #FPOnline #Explora
 slides:
   - tipo: portada
-    antetitulo: FP online · Supervivencia
+    etiqueta: FP Online
     titulo: Estudiar *después* de currar
     subtitulo: 5 trucos que sí funcionan cuando llegas reventado.
     nota: probado en el barro ⚔️
@@ -24,6 +24,7 @@ slides:
       - El vídeo visto y *hecho* en el momento.
       - Agua. Y nada más.
   - tipo: cierre
+    antetitulo: Sin prisa, sin pausa
     titulo: Tu ruta, *a tu ritmo*
     texto: Tu guía está en la trinchera contigo.
     cta: Trazar mi ruta 📍

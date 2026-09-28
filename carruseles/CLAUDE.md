@@ -14,16 +14,20 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 ## Plantillas
 | plantilla | fondo | para qué |
 |---|---|---|
-| `selva`  | Verde 01, titulares lima | tips, guías, cómo se hace |
-| `diario` | Blanco Verdoso, Besley, subrayador amarillo | storytelling, mitos vs realidad, testimonios |
-| `brecha` | Negro, lima | datos, cifras, verdades incómodas |
+| `selva`  | Verde noche (#1B3620), titulares lima, resaltado amarillo | tips, guías, cómo se hace |
+| `diario` | Lima claro (#EDFEC3), texto verde noche, resaltado amarillo | storytelling, mitos vs realidad, testimonios |
+| `brecha` | Verde vivo (#85E159), texto casi negro, resaltado lima | datos, cifras, verdades incómodas |
+
+Fuente de verdad visual: **explorafp.com** (por encima del brandbook, que está en revisión).
+Titulares en caja normal (nunca todo mayúsculas), condensados y apretados; resaltado en bloque;
+trazos a mano; botones píldora con Besley.
 
 ## Tipos de slide (valen en las 3 plantillas)
-- `portada`: antetitulo, titulo, subtitulo, nota
+- `portada`: etiqueta (texto rodeado con óvalo a mano), antetitulo (con subrayado a mano), titulo, subtitulo, nota
 - `contenido`: numero, antetitulo, titulo, texto, nota
 - `lista`: antetitulo, titulo, items[], nota
 - `dato`: antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**
-- `cierre`: antetitulo, titulo, texto, cta
+- `cierre`: etiqueta, antetitulo, titulo, texto, cta (con flechas a mano)
 
 `*palabra*` resalta (lima, blanco o subrayador según plantilla). Línea en blanco en `texto` = párrafo nuevo.
 `nota` imita la anotación manuscrita al margen. Máximo 20 slides (límite de Instagram); ideal 5-8.
@@ -31,5 +35,6 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 ## Pendiente de marca
 - Logos: ya están en `assets/logos/` (horizontal Verde 01, Verde 03, Blanco, Negro + versión "cinta" inclinada).
   El render acepta .png, .webp o .svg con el nombre del catálogo. No recrear el logo a mano.
-- Gravity Condensed (de pago): dejar `GravityCondensed-Bold.woff2` u `.otf` en `fonts/`. Hasta entonces se usa Anton.
+- Gravity Condensed (de pago): dejar `GravityCondensed-Bold.woff2` u `.otf` en `fonts/`. Hasta entonces se usa Archivo condensada.
+- Trazos (óvalo, subrayado, flechas) son SVG provisionales en `render.js` (TRAZO); sustituir por los originales de marca.
 - Caveat sustituye provisionalmente a la caligrafía de Calligrapher.ai.

@@ -1,6 +1,8 @@
-/* Base común a las 3 plantillas. Formato Instagram 4:5 (1080×1350). */
-@font-face { font-family: "Anton"; src: url("../fonts/anton-latin-400-normal.woff2"); }
+/* Base común a las 3 plantillas. Formato Instagram 4:5 (1080×1350).
+   Estilo tomado de explorafp.com: titulares condensados en caja normal, resaltado en bloque,
+   trazos a mano (óvalo, subrayado, flechas), botones píldora con Besley. */
 @font-face { font-family: "Gravity Condensed"; src: url("../fonts/GravityCondensed-Bold.woff2"), url("../fonts/GravityCondensed-Bold.otf"); font-weight: 700; }
+@font-face { font-family: "Archivo"; src: url("../fonts/archivo-latin-wdth-normal.woff2") format("woff2-variations"); font-weight: 100 900; font-stretch: 62% 125%; }
 @font-face { font-family: "Besley"; src: url("../fonts/besley-latin-400-normal.woff2"); font-weight: 400; }
 @font-face { font-family: "Besley"; src: url("../fonts/besley-latin-600-normal.woff2"); font-weight: 600; }
 @font-face { font-family: "Besley"; src: url("../fonts/besley-latin-700-normal.woff2"); font-weight: 700; }
@@ -13,14 +15,17 @@
 
 :root {
   --verde01: #366B40; --verde02: #4CCD4B; --verde03: #D8FF6E;
-  --blanco: #FAFFFA; --negro: #000000; --amarillo: #FFE45E; --soporte01: #1B3620;
-  /* Gravity Condensed si está en fonts/, si no Anton como sustituto */
-  --titular: "Gravity Condensed", "Anton", Impact, sans-serif;
+  --blanco: #FAFFFA; --negro: #000000; --amarillo: #FFE45E;
+  --noche: #1B3620;  /* Soporte 01: texto y fondos oscuros de la web */
+  --pasto: #85E159;  /* Soporte 04: fondo verde vivo */
+  --lima-claro: #EDFEC3; /* Soporte 06: fondo claro */
+  /* Gravity Condensed si está en fonts/, si no Archivo condensada como sustituto */
+  --titular: "Gravity Condensed", "Archivo", sans-serif;
   --editorial: "Besley", Georgia, serif;
   --cuerpo: "IBM Plex Sans", Helvetica, Arial, sans-serif;
   --mano: "Caveat", cursive;
   --m: 96px;         /* margen izquierdo = lomo del cuaderno */
-  --cinta: 132px;    /* alto de la cinta de cierre */
+  --cinta: 128px;    /* alto de la cinta de cierre */
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width: 1080px; height: 1350px; overflow: hidden; }
@@ -28,29 +33,43 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 
 .slide { position: relative; width: 1080px; height: 1350px; overflow: hidden;
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-  padding: 120px 110px calc(var(--cinta) + 90px) var(--m); }
+  padding: 110px 100px calc(var(--cinta) + 90px) var(--m); }
+.contenido { width: 100%; }
 
-.antetitulo { font-family: var(--cuerpo); font-weight: 700; font-size: 30px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 36px; }
-.titulo { font-family: var(--titular); font-weight: 700; text-transform: uppercase; line-height: 1.02; letter-spacing: .005em; }
-.subtitulo { font-family: var(--editorial); font-size: 46px; line-height: 1.2; margin-top: 44px; max-width: 820px; }
-.texto { font-family: var(--cuerpo); font-size: 44px; line-height: 1.38; margin-top: 40px; max-width: 850px; }
+.titulo { font-family: var(--titular); font-weight: 800; font-stretch: 68%; line-height: .98; letter-spacing: -.03em; word-spacing: .1em; font-size: 128px; }
+.tipo-portada .titulo { font-size: 150px; }
+.tipo-contenido .titulo, .tipo-lista .titulo, .tipo-cierre .titulo { font-size: 104px; }
+/* Resaltado en bloque, como en la web */
+em { font-style: normal; padding: 0 .08em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+.antetitulo { display: inline-block; position: relative; font-family: var(--cuerpo); font-weight: 500; font-size: 36px; margin-bottom: 40px; }
+.antetitulo em { padding: 0; }
+.trazo-sub { position: absolute; left: -4px; right: -10px; bottom: -16px; width: calc(100% + 14px); height: 14px; }
+.etiqueta { display: inline-block; position: relative; font-family: var(--editorial); font-size: 42px; padding: 10px 34px; margin: 0 0 34px -10px; }
+.trazo-ovalo { position: absolute; inset: -10px -14px -8px -14px; width: calc(100% + 28px); height: calc(100% + 18px); }
+svg path { fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.trazo-flechas path { stroke-width: 6; }
+
+.subtitulo { font-family: var(--editorial); font-size: 46px; line-height: 1.22; margin-top: 44px; max-width: 840px; }
+.texto { font-family: var(--cuerpo); font-size: 44px; line-height: 1.36; margin-top: 40px; max-width: 860px; }
 .texto p + p { margin-top: 26px; }
-.nota { font-family: var(--mano); font-weight: 700; font-size: 52px; line-height: 1.05; margin-top: 56px; transform: rotate(-3deg); transform-origin: left; max-width: 760px; }
-.num { font-family: var(--titular); font-weight: 700; font-size: 150px; line-height: 1; margin-bottom: 18px; }
+.nota { font-family: var(--mano); font-weight: 700; font-size: 54px; line-height: 1.05; margin-top: 54px; transform: rotate(-3deg); transform-origin: left; max-width: 760px; }
+.num { font-family: var(--titular); font-weight: 800; font-stretch: 68%; font-size: 150px; letter-spacing: -.03em; line-height: 1; margin-bottom: 14px; }
 
-ul.lista { list-style: none; margin-top: 50px; width: 100%; max-width: 870px; }
-ul.lista li { font-size: 40px; line-height: 1.3; padding: 26px 0 26px 76px; position: relative; }
-ul.lista li::before { content: attr(data-n); position: absolute; left: 0; top: 22px; font-family: var(--titular); font-weight: 700; font-size: 50px; }
+ul.lista { list-style: none; margin-top: 48px; width: 100%; max-width: 880px; }
+ul.lista li { font-size: 42px; line-height: 1.3; padding: 26px 0 26px 84px; position: relative; }
+ul.lista li::before { content: attr(data-n); position: absolute; left: 0; top: 20px; font-family: var(--titular); font-weight: 800; font-stretch: 68%; font-size: 56px; }
 
-.cifra { font-family: var(--titular); font-weight: 700; font-size: 330px; line-height: .95; white-space: nowrap; }
-.fuente { font-family: var(--cuerpo); font-size: 24px; margin-top: 36px; opacity: .7; }
-.cta { display: inline-block; font-family: var(--cuerpo); font-weight: 700; font-size: 40px; padding: 28px 44px; border-radius: 999px; margin-top: 60px; }
+.cifra { font-family: var(--titular); font-weight: 800; font-stretch: 68%; letter-spacing: -.04em; font-size: 330px; line-height: .95; white-space: nowrap; }
+.fuente { font-family: var(--cuerpo); font-size: 24px; margin-top: 36px; opacity: .75; }
+.cta-fila { display: flex; align-items: center; gap: 30px; margin-top: 60px; }
+.cta { font-family: var(--editorial); font-size: 42px; padding: 24px 46px; border-radius: 999px; white-space: nowrap; }
+.trazo-flechas { width: 150px; height: 120px; }
 
 /* Cinta de cierre: banda que "ata" la composición. Obligatoria. */
 .cinta { position: absolute; left: 0; right: 0; bottom: 0; height: var(--cinta);
   display: flex; align-items: center; justify-content: space-between; padding: 0 70px 0 var(--m); }
-.cinta img { height: 60px; width: auto; display: block; }
-.cinta .logo-texto { font-family: var(--cuerpo); font-weight: 700; font-size: 36px; letter-spacing: -.01em; }
-.cinta .logo-texto small { font-weight: 500; opacity: .75; }
-.cinta .pag { font-family: var(--cuerpo); font-weight: 500; font-size: 26px; letter-spacing: .06em; }
-.desliza { position: absolute; right: 70px; bottom: calc(var(--cinta) + 44px); font-family: var(--mano); font-weight: 700; font-size: 46px; }
+.cinta img { height: 58px; width: auto; display: block; }
+.cinta .logo-texto { font-family: var(--cuerpo); font-weight: 700; font-size: 36px; }
+.cinta .pag { font-family: var(--editorial); font-size: 30px; }
+.desliza { position: absolute; right: 70px; bottom: calc(var(--cinta) + 44px); font-family: var(--mano); font-weight: 700; font-size: 48px; }
