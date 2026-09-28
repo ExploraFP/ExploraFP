@@ -5,3 +5,5 @@ em { background: var(--verde03); }
 ul.lista li { border-top: 2px solid rgba(14,31,17,.3); }
 .cta { background: var(--noche); color: var(--blanco); }
 .cinta { background: var(--noche); color: var(--verde03); }
+.deco-isotipo { color: var(--verde03); opacity: .45; }
+.deco-notas { opacity: .5; }

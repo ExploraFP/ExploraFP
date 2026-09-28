@@ -26,7 +26,7 @@ Fuente de verdad visual: **explorafp.com** (por encima del brandbook, que está 
 Titulares en caja normal (nunca todo mayúsculas), condensados y apretados; resaltado en bloque;
 trazos a mano; botones píldora con Besley.
 
-## Tipos de slide (valen en las 3 plantillas)
+## Tipos de slide (valen en las 4 plantillas)
 - `portada`: etiqueta (texto rodeado con óvalo a mano), antetitulo (con subrayado a mano), titulo, subtitulo, nota
 - `contenido`: numero, antetitulo, titulo, texto, nota
 - `lista`: antetitulo, titulo, items[], nota
@@ -37,6 +37,8 @@ Campos extra en cualquier slide:
 - `imagen: img/archivo.png` (relativa a `contenido/`) + `marco: portatil` (captura en portátil) o `foto`.
 - `cabecera:` etiqueta arriba a la izquierda (solo `cuaderno`). A nivel de carrusel, `cabecera: Lo malo`
   pone "LO MALO · 02" en cada slide; `cabecera: ""` en una slide la oculta.
+- `decoracion:` isotipo | notas | postit (o lista). Por defecto la portada lleva isotipo; `decoracion: ninguna` lo quita.
+  `notas` (textura manuscrita) solo en slides con poco texto: ocupa la esquina inferior derecha.
 - `cinta:` (solo en `cierre`) texto de la cinta final, p. ej. "Traza tu ruta · enlace en el perfil".
 
 `*palabra*` resalta (lima, blanco o subrayador según plantilla). Línea en blanco en `texto` = párrafo nuevo.
@@ -46,5 +48,7 @@ Campos extra en cualquier slide:
 - Logos: ya están en `assets/logos/` (horizontal Verde 01, Verde 03, Blanco, Negro + versión "cinta" inclinada).
   El render acepta .png, .webp o .svg con el nombre del catálogo. No recrear el logo a mano.
 - Gravity Condensed (de pago): dejar `GravityCondensed-Bold.woff2` u `.otf` en `fonts/`. Hasta entonces se usa Archivo condensada.
-- Trazos (óvalo, subrayado, flechas) son SVG provisionales en `render.js` (TRAZO); sustituir por los originales de marca.
+- Trazos originales en `assets/trazos/` (óvalo, flecha, notas, post-it) e isotipo en `assets/logos/Isotipo.png`.
+  Se aplican como máscara (toman el color de la plantilla) incrustados en base64. El subrayado aún es SVG provisional.
+- Faltan: ilustraciones 3D, capturas reales de la plataforma (van en `contenido/img/`).
 - Caveat sustituye provisionalmente a la caligrafía de Calligrapher.ai.

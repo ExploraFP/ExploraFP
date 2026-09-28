@@ -25,11 +25,11 @@ const fmt = (s) => esc(s).trim().replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\
 const parrafos = (s) => String(s).trim().split(/\n\s*\n/).map((p) => `<p>${fmt(p)}</p>`).join("");
 const si = (v, html) => (v ? html : "");
 
-// Trazos a mano (provisionales hasta tener los originales de marca en assets/trazos/).
+// Trazos a mano: óvalo y flecha son los originales de marca (assets/trazos/); el subrayado aún es provisional.
 const TRAZO = {
   subrayado: `<svg class="trazo-sub" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M3 9 C 70 4, 190 2, 297 7"/></svg>`,
-  ovalo: `<svg class="trazo-ovalo" viewBox="0 0 300 70" preserveAspectRatio="none"><path d="M40 12 C 120 2, 270 4, 292 30 C 306 52, 190 66, 110 64 C 40 62, 4 52, 8 34 C 12 16, 70 6, 150 5"/></svg>`,
-  flechas: `<svg class="trazo-flechas" viewBox="0 0 150 120"><path d="M146 30 C 110 26, 60 24, 12 30 M 40 8 C 30 16, 18 24, 10 30 C 20 36, 32 44, 42 52"/><path d="M140 104 C 100 88, 60 76, 18 70 M 44 52 C 34 60, 24 66, 16 70 C 26 78, 36 88, 44 98"/></svg>`,
+  ovalo: `<i class="trazo-ovalo"></i>`,
+  flechas: `<i class="trazo-flecha"></i>`,
 };
 const ante = (t) => si(t, `<div class="antetitulo"><span>${fmt(t)}</span>${TRAZO.subrayado}</div>`);
 const etiqueta = (t) => si(t, `<div class="etiqueta"><span>${fmt(t)}</span>${TRAZO.ovalo}</div>`);
@@ -44,6 +44,25 @@ const imagen = (s) => {
     ? `<div class="portatil"><div class="pantalla">${img}</div><div class="base"></div></div>`
     : `<div class="foto">${img}</div>`;
 };
+
+// Los trazos se usan como máscara CSS (así toman el color de cada plantilla). Chrome exige CORS
+// para las máscaras y file:// no lo cumple, por eso van incrustados en base64.
+const dataUri = (ruta) => `url("data:image/png;base64,${readFileSync(join(RAIZ, ruta)).toString("base64")}")`;
+const MASCARAS = `:root{--img-ovalo:${dataUri("assets/trazos/ovalo.png")};--img-flecha:${dataUri("assets/trazos/flecha.png")};` +
+  `--img-notas:${dataUri("assets/trazos/notas.png")};--img-isotipo:${dataUri("assets/logos/Isotipo.png")}}`;
+
+// Decoraciones de marca. Por defecto: isotipo en portada. `decoracion: ninguna` las quita.
+const DECORACIONES = ["isotipo", "notas", "postit"];
+function decoracion(s) {
+  let d = s.decoracion ?? (s.tipo === "portada" ? "isotipo" : []);
+  if (d === "ninguna") return "";
+  d = [].concat(d);
+  const malas = d.filter((x) => !DECORACIONES.includes(x));
+  if (malas.length) throw new Error(`decoracion "${malas}" no existe (usa: ${DECORACIONES.join(", ")}, ninguna)`);
+  return d.map((x) => x === "postit"
+    ? `<img class="deco-postit" src="${pathToFileURL(join(RAIZ, "assets/trazos/postit-100-online.png"))}" alt="">`
+    : `<i class="deco-${x}"></i>`).join("");
+}
 
 function cuerpo(s) {
   switch (s.tipo) {
@@ -83,7 +102,8 @@ function html(plantilla, s, i, total, cabecera) {
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <link rel="stylesheet" href="${pathToFileURL(join(RAIZ, "plantillas/base.css"))}">
 <link rel="stylesheet" href="${pathToFileURL(join(RAIZ, `plantillas/${plantilla}.css`))}">
-</head><body><section class="slide tipo-${s.tipo}"><div class="cabecera"><span>${fmt(cabecera ?? "")}</span>${marca}</div>
+<style>${MASCARAS}</style>
+</head><body><section class="slide tipo-${s.tipo}">${decoracion(s)}<div class="cabecera"><span>${fmt(cabecera ?? "")}</span>${marca}</div>
 <div class="contenido">${cuerpo(s)}${imagen(s)}</div>
 ${i === 0 && total > 1 ? `<div class="desliza">desliza →</div>` : ""}
 <div class="cinta">${marca}${si(s.tipo === "cierre" && s.cinta, `<span class="cinta-cta">${fmt(s.cinta)}</span>`)}<span class="pag">${String(i + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</span></div>

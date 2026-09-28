@@ -24,3 +24,4 @@ ul.lista li::before { color: var(--verde01); }
 .cinta { display: none; background: var(--verde03); color: var(--noche); }
 .tipo-cierre .cinta { display: flex; }
 .tipo-cierre .cinta img, .tipo-cierre .cinta .pag { display: none; }
+.deco-isotipo { color: var(--verde03); opacity: .7; top: 170px; right: -260px; }

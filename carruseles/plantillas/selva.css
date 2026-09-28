@@ -7,5 +7,7 @@ em { background: var(--amarillo); color: var(--noche); }
 .subtitulo { color: var(--blanco); }
 ul.lista li { border-top: 2px solid rgba(216,255,110,.3); }
 .cta { background: var(--verde03); color: var(--noche); }
-.trazo-flechas { color: var(--verde03); }
+.trazo-flecha, .deco-isotipo { color: var(--verde03); }
+.deco-isotipo { opacity: .16; }
+.deco-notas { color: var(--verde03); opacity: .4; }
 .cinta { background: var(--verde03); color: var(--noche); }

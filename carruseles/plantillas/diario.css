@@ -6,3 +6,4 @@ em { background: var(--amarillo); }
 ul.lista li { border-top: 2px dashed rgba(27,54,32,.35); }
 .cta { background: var(--noche); color: var(--blanco); }
 .cinta { background: var(--noche); color: var(--verde03); }
+.deco-isotipo { color: var(--verde02); opacity: .28; }
