@@ -15,18 +15,20 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 Se combinan libremente, a nivel de carrusel o por slide (`plantilla:` y `color:` dentro de una slide).
 Fuente de verdad visual: explorafp.com y las referencias de Sandra, por encima del brandbook (en revisión).
 Evitar composiciones planas de texto sobre fondo: Sandra las ve genéricas.
+**Titulares siempre en minúscula salvo la inicial** (nunca en mayúsculas), también en el YAML.
+Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.
 
 | plantilla | estilo | referencia |
 |---|---|---|
 | `capas` | caja de color sobre foto o papel torcido, flechas, números rodeados, post-it, cinta | plantilla de dosier |
 | `cuaderno` | libreta con cuadrícula y lomo, logo arriba, número fantasma, checklist, cinta solo en el cierre | "La parte mala de estudiar online" (favorita) |
-| `poster` | titular gigante en mayúsculas, isotipo enorme de fondo, foto en diagonal, píldoras, logo abajo | "Antes de elegir una FP" |
+| `poster` | titular gigante, isotipo enorme de fondo, foto en diagonal, píldoras, logo abajo | "Antes de elegir una FP" |
 
 Colores (`plantillas/colores.css`): `noche` (verde noche), `lima` (lima claro), `verde` (verde vivo), `blanco`.
 Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slide).
 
 ## Tipos de slide (valen en las 3 composiciones)
-- `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto).
+- `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto). Con `marco: fondo` → foto a sangre con pastilla lima (vale en las 3 plantillas).
 - `contenido`: etiqueta, titulo, antetitulo, numero, texto, imagen (portátil en capas/cuaderno; foto en poster), nota.
 - `lista`: etiqueta, titulo, antetitulo, items (2-4). capas → tarjetas; cuaderno → checklist; poster → píldoras.
 - `dato`: antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**.

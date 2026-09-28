@@ -115,7 +115,7 @@ function cuaderno(s) {
   }
 }
 
-// POSTER: titular gigante en mayúsculas, isotipo enorme de fondo, foto recortada en diagonal, píldoras.
+// POSTER: titular gigante, isotipo enorme de fondo, foto recortada en diagonal, píldoras.
 function poster(s) {
   const deco = s.decoracion === "ninguna" ? "" : `<i class="deco-isotipo"></i>`;
   const foto = s.imagen ? `<img class="foto-diagonal" src="${rutaImagen(s)}" alt="">` : (s.decoracion === "ninguna" ? "" : `<i class="deco-notas"></i>`);
@@ -137,6 +137,13 @@ function poster(s) {
 }
 
 const COMPOSICION = { capas, cuaderno, poster };
+
+// Portada de foto a sangre (como el feed actual): vale para cualquier plantilla con `marco: fondo`.
+const portadaFoto = (s, color) =>
+  `<img class="foto-fondo" src="${rutaImagen(s)}" alt=""><div class="velo"></div>` +
+  `<img class="logo-foto" src="${logo("Verde 03")}" alt="Explora × Ucademy">` +
+  si(s.etiqueta, `<div class="pastilla">${fmt(s.etiqueta)}</div>`) +
+  `<div class="bloque-foto">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}</div>`;
 const logo = (color) => {
   const f = [".png", ".webp", ".svg"].map((e) => join(RAIZ, "assets/logos", `Explora x Ucademy_Horizontal_${color} 1${e}`)).find(existsSync);
   if (!f) throw new Error(`falta el logo Explora x Ucademy_Horizontal_${color} 1 en assets/logos/`);
@@ -145,6 +152,7 @@ const logo = (color) => {
 
 function html(plantilla, color, s, i, total, etiquetaCinta) {
   s._color = color;
+  const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
   const marca = (c) => `<img src="${logo(c)}" alt="Explora × Ucademy">`;
   const pag = `${si(etiquetaCinta, `${esc(etiquetaCinta)} · `)}${dos(i + 1)}`;
   const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
@@ -153,9 +161,9 @@ function html(plantilla, color, s, i, total, etiquetaCinta) {
 <link rel="stylesheet" href="${archivo(`plantillas/${plantilla}.css`)}">
 <link rel="stylesheet" href="${archivo("plantillas/colores.css")}">
 <style>${MASCARAS}</style>
-</head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
+</head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
 <div class="cabecera"><span>${pag}</span>${marca(LOGO_FONDO[color])}</div>
-<div class="contenido">${COMPOSICION[plantilla](s)}</div>${decoracion(s)}
+<div class="contenido">${fondoFoto ? portadaFoto(s, color) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
 ${i === 0 && total > 1 ? `<div class="desliza">desliza →</div>` : ""}
 <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
 <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
@@ -208,6 +216,10 @@ for (const f of ficheros) {
     });
     // Aviso si el texto se sale del área útil (encima de la cinta).
     const sobra = await pagina.evaluate(() => {
+      if (document.querySelector(".foto-sangre")) {
+        const b = document.querySelector(".bloque-foto").getBoundingClientRect();
+        return Math.round(Math.max(b.bottom - 1310, 200 - b.top, 0));
+      }
       const portada = document.querySelector(".tipo-portada");
       const cinta = document.querySelector(".cinta");
       const tope = (cinta.offsetParent ? cinta.getBoundingClientRect().top : 1350) - (portada ? 0 : 20);

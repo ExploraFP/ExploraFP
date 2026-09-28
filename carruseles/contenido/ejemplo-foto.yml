@@ -1,0 +1,12 @@
+# Portada de foto a sangre (como el feed): marco: fondo. Vale con cualquier plantilla.
+plantilla: poster
+color: noche
+slides:
+  - tipo: portada
+    marco: fondo
+    imagen: img/foto-web-alumnos.jpg
+    etiqueta: FP Online · Sin filtros
+    titulo: Fórmate para *un puesto*, no para un título
+  - tipo: contenido
+    titulo: Casos *reales*
+    texto: Desde el minuto uno.
