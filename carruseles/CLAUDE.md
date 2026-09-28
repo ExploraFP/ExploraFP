@@ -46,6 +46,7 @@ Si un YAML falla, el render sigue con los demás y lo lista al final.
 - Capturas de la plataforma en `contenido/img/plataforma-*.webp`: mockups de producto con datos ficticios, aprobados.
 - `contenido/img/foto-web-alumnos.jpg`: recorte de la foto de la home de explorafp.com.
 - Tipografía titular: Gravity Condensed en `fonts/GravityCondensed.otf` (fuera de git por licencia).
-  ⚠ El archivo es la versión **Edu** (licencia educativa); confirmar licencia comercial antes de publicar.
-  Sin el archivo, se usa Archivo como sustituto.
+  Licencia pagada por Explora (el nombre interno es "ABC Gravity Edu"). La licencia de Dinamo prohíbe
+  redistribuir o subir la fuente a servidores públicos: por eso NO va en git. En una sesión nueva, pedir a
+  Sandra el .otf y copiarlo a `fonts/GravityCondensed.otf`. Sin el archivo, se usa Archivo como sustituto.
 - Faltan: ilustraciones 3D, más fotos.
