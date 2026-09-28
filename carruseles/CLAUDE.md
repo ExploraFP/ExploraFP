@@ -29,7 +29,7 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 `nota` imita la anotación manuscrita al margen. Máximo 20 slides (límite de Instagram); ideal 5-8.
 
 ## Pendiente de marca
-- Logos: copiar los PNG del catálogo de marca en `assets/logos/` con su nombre original
-  (`Explora x Ucademy_Horizontal_{Verde 03,Blanco,Negro} 1.png`). Sin ellos sale un texto `[logo]` provisional. No recrear el logo a mano.
+- Logos: ya están en `assets/logos/` (horizontal Verde 01, Verde 03, Blanco, Negro + versión "cinta" inclinada).
+  El render acepta .png, .webp o .svg con el nombre del catálogo. No recrear el logo a mano.
 - Gravity Condensed (de pago): dejar `GravityCondensed-Bold.woff2` u `.otf` en `fonts/`. Hasta entonces se usa Anton.
 - Caveat sustituye provisionalmente a la caligrafía de Calligrapher.ai.

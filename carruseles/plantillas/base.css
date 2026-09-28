@@ -49,7 +49,7 @@ ul.lista li::before { content: attr(data-n); position: absolute; left: 0; top: 2
 /* Cinta de cierre: banda que "ata" la composición. Obligatoria. */
 .cinta { position: absolute; left: 0; right: 0; bottom: 0; height: var(--cinta);
   display: flex; align-items: center; justify-content: space-between; padding: 0 70px 0 var(--m); }
-.cinta img { height: 52px; width: auto; display: block; }
+.cinta img { height: 60px; width: auto; display: block; }
 .cinta .logo-texto { font-family: var(--cuerpo); font-weight: 700; font-size: 36px; letter-spacing: -.01em; }
 .cinta .logo-texto small { font-weight: 500; opacity: .75; }
 .cinta .pag { font-family: var(--cuerpo); font-weight: 500; font-size: 26px; letter-spacing: .06em; }

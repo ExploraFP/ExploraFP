@@ -13,9 +13,9 @@ const TIPOS = ["portada", "contenido", "lista", "dato", "cierre"];
 
 // Logo de la cinta por plantilla (ficheros del catálogo de marca, en assets/logos/).
 const LOGO = {
-  selva: "Explora x Ucademy_Horizontal_Verde 03 1.png",
-  diario: "Explora x Ucademy_Horizontal_Blanco 1.png",
-  brecha: "Explora x Ucademy_Horizontal_Negro 1.png",
+  selva: "Explora x Ucademy_Horizontal_Verde 03 1",
+  diario: "Explora x Ucademy_Horizontal_Blanco 1",
+  brecha: "Explora x Ucademy_Horizontal_Negro 1",
 };
 
 const esc = (s = "") => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -56,8 +56,8 @@ function cuerpo(s, i) {
 }
 
 function html(plantilla, s, i, total) {
-  const logo = join(RAIZ, "assets/logos", LOGO[plantilla]);
-  const marca = existsSync(logo)
+  const logo = [".png", ".webp", ".svg"].map((e) => join(RAIZ, "assets/logos", LOGO[plantilla] + e)).find(existsSync);
+  const marca = logo
     ? `<img src="${pathToFileURL(logo)}" alt="Explora × Ucademy">`
     : `<span class="logo-texto">[logo] Explora <small>× Ucademy</small></span>`;
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
