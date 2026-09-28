@@ -31,7 +31,7 @@ Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en
 | `poster` | titular gigante, isotipo enorme de fondo, foto en diagonal, píldoras, logo abajo | "Antes de elegir una FP" |
 
 Colores (`plantillas/colores.css`): de marca `verde01` (#366B40, base del 80 %), `verde02` (#4CCD4B), `blanco`;
-de soporte (sacados de la web) `noche` (#1B3620), `lima` (#EDFEC3), `verde` (#85E159).
+de soporte (sacados de la web) `noche` (#1B3620, a Sandra le parece demasiado oscuro: no usarlo de fondo salvo que lo pida), `lima` (#EDFEC3), `verde` (#85E159).
 Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slide).
 
 ## Tipos de slide (valen en las 4 composiciones)
