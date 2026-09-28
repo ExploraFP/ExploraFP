@@ -38,3 +38,9 @@
 .con-foto .subtitulo { max-width: 560px; }
 .con-foto .foto-diagonal { height: 420px; width: 660px; }
 .con-foto .subtitulo { max-width: 520px; }
+
+/* Slides interiores: el bloque de contenido se centra en vertical (antes dejaba media slide vacía). */
+.slide:not(.tipo-portada) .contenido { justify-content: center; padding-top: 90px; }
+.slide:not(.tipo-portada) .titulo { margin-top: 0; }
+.slide:not(.tipo-portada) .num { margin-bottom: 30px; }
+.tipo-lista .pildora { font-size: 44px; padding: 22px 40px 22px 30px; }
