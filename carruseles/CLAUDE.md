@@ -16,6 +16,7 @@ Se combinan libremente, a nivel de carrusel o por slide (`plantilla:` y `color:`
 Fuente de verdad visual: explorafp.com y las referencias de Sandra, por encima del brandbook (en revisión).
 Evitar composiciones planas de texto sobre fondo: Sandra las ve genéricas.
 **Nunca poner "desliza →" ni indicadores de swipe en ninguna slide.**
+**Isotipo de fondo: nunca por defecto; solo si se pide (`decoracion: isotipo`) y muy suave.**
 **Amarillo solo como detalle puntual (post-it), nunca como resaltado general.**
 **Titulares siempre en minúscula salvo la inicial** (nunca en mayúsculas), también en el YAML.
 Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.

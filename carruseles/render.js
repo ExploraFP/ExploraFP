@@ -68,7 +68,7 @@ function capas(s) {
           si(!sinDeco, flecha("f-portada-1") + flecha("f-portada-2")) +
           `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}</div>`;
       }
-      return si(!sinDeco, `<div class="papel papel-portada"><i class="deco-notas"></i></div><i class="deco-isotipo"></i>` + flecha("f-portada-1")) +
+      return si(!sinDeco, `<div class="papel papel-portada"><i class="deco-notas"></i></div>` + flecha("f-portada-1")) +
         `<div class="cabeza">${etiqueta(s.etiqueta)}</div>` +
         `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}${nota(s.nota)}</div>`;
     case "contenido": {
@@ -96,7 +96,7 @@ function capas(s) {
 
 // CUADERNO: libreta con cuadrícula, logo arriba, número fantasma, checklist. Limpia y editorial.
 function cuaderno(s) {
-  const deco = s.decoracion === "ninguna" ? "" : `<i class="deco-isotipo"></i>`;
+  const deco = "";
   switch (s.tipo) {
     case "portada":
       return deco + `<div class="marco-torcido"></div>` + etiqueta(s.etiqueta) + si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`) +
@@ -117,7 +117,7 @@ function cuaderno(s) {
 
 // POSTER: titular gigante, isotipo enorme de fondo, foto recortada en diagonal, píldoras.
 function poster(s) {
-  const deco = s.decoracion === "ninguna" ? "" : `<i class="deco-isotipo"></i>`;
+  const deco = "";
   const foto = s.imagen ? `<img class="foto-diagonal" src="${rutaImagen(s)}" alt="">` : (s.decoracion === "ninguna" ? "" : `<i class="deco-notas"></i>`);
   const ante = si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`);
   switch (s.tipo) {
