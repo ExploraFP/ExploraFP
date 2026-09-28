@@ -1,0 +1,40 @@
+/* POSTER · impacto: titular gigante en mayúsculas, isotipo enorme de fondo, foto recortada en
+   diagonal o textura de notas, píldoras con punto. Inspirada en "Antes de elegir una FP". */
+.cinta { display: none; }
+.pie { display: flex; }
+.contenido { inset: 0; padding: 110px 90px 150px var(--m); gap: 0; justify-content: flex-start; }
+.contenido > * { position: relative; z-index: 2; }
+
+.titulo { text-transform: uppercase; font-size: 132px; line-height: .9; letter-spacing: -.01em; word-spacing: .02em; margin-top: 60px; }
+.tipo-portada .titulo { font-size: 158px; margin-top: 110px; }
+.subtitulo, .texto { font-family: var(--cuerpo); font-size: 40px; line-height: 1.3; max-width: 760px; }
+.subtitulo { margin-top: 44px; }
+.texto { margin-top: 26px; }
+.ante { font-family: var(--cuerpo); font-weight: 700; font-size: 40px; margin-top: 50px; }
+.nota { margin-top: 36px; }
+.num { align-self: flex-start; color: var(--acento); }
+
+.contenido > .deco-isotipo { position: absolute; z-index: 0; top: -60px; right: -300px; width: 1100px; height: 952px; }
+.contenido > .deco-notas { position: absolute; z-index: 1; right: -40px; bottom: 60px; width: 640px; height: 538px; background: var(--tinta); opacity: .5; }
+.foto-diagonal { position: absolute !important; z-index: 1 !important; right: 0; bottom: 0; width: 700px; height: 470px; object-fit: cover;
+  clip-path: polygon(0 32%, 100% 0, 100% 100%, 0 100%); }
+
+.pildoras { display: flex; flex-direction: column; gap: 34px; margin-top: 90px; align-items: flex-start; }
+.pildora { display: inline-flex; align-items: center; gap: 18px; background: var(--resalte); color: var(--tinta-resalte); font-family: var(--cuerpo); font-weight: 700; font-size: 40px; padding: 18px 36px 18px 26px; border-radius: 999px; box-shadow: 0 10px 24px rgba(0,0,0,.15); }
+.pildora:nth-child(even) { margin-left: 260px; }
+.pildora:nth-child(3n) { margin-left: 120px; }
+.pildora b { width: 22px; height: 22px; border-radius: 50%; background: currentColor; }
+
+.cifra { font-family: var(--titular); font-weight: 900; font-size: 380px; line-height: .9; letter-spacing: -.03em; color: var(--titulo); white-space: nowrap; margin-top: 40px; }
+.fuente { font-size: 22px; margin-top: 30px; opacity: .7; }
+
+.tipo-cierre .contenido { align-items: flex-start; }
+.logo-grande { height: 70px; width: auto; margin: 40px 0 60px; }
+.tipo-cierre .pie img { visibility: hidden; }
+.cta-boton { position: relative; margin-top: 70px; background: var(--cinta-bg); color: var(--cinta-tinta); font-family: var(--titular); font-weight: 900; text-transform: uppercase; font-size: 50px; padding: 30px 110px 32px 44px; box-shadow: 0 14px 30px rgba(0,0,0,.2); }
+.f-boton { width: 150px; height: 126px; right: -190px; top: -40px; transform: rotate(-35deg); }
+.cta-boton { padding-right: 44px; }
+.desliza { bottom: 44px; right: 240px; }
+.con-foto .desliza { display: none; }
+.con-foto .titulo { font-size: 140px; }
+.con-foto .subtitulo { max-width: 560px; }

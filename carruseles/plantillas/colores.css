@@ -1,0 +1,32 @@
+/* Paletas de color. Cualquier composición admite cualquier color (campo `color:`). */
+
+/* NOCHE · verde noche. Caja verde vivo con titular negro, trazos y cinta lima. */
+.c-noche { --fondo: var(--noche); --tinta: var(--blanco); --titulo: var(--verde03);
+  --caja: var(--verde02); --tinta-caja: var(--negro); --titulo-caja: var(--negro);
+  --resalte: var(--amarillo); --tinta-resalte: var(--noche); --resalte-caja: var(--verde03);
+  --acento: var(--verde03); --flecha: var(--verde03); --papel: var(--blanco); --tinta-papel: var(--noche);
+  --isotipo: var(--verde02); --isotipo-opacidad: .18; --cinta-bg: var(--verde03); --cinta-tinta: var(--noche); }
+
+/* LIMA · lima claro. Caja verde noche con titular lima, resaltado amarillo. */
+.c-lima { --fondo: var(--lima-claro); --tinta: var(--noche); --titulo: var(--noche);
+  --caja: var(--noche); --tinta-caja: var(--blanco); --titulo-caja: var(--verde03);
+  --resalte: var(--amarillo); --tinta-resalte: var(--noche);
+  --acento: var(--verde01); --flecha: var(--noche); --papel: #FFFFFF; --tinta-papel: var(--noche);
+  --isotipo: var(--verde02); --isotipo-opacidad: .3; --cinta-bg: var(--noche); --cinta-tinta: var(--verde03); }
+.c-lima .caja { --acento: var(--amarillo); }
+
+/* VERDE · verde vivo. Caja verde noche con titular lima, flechas y cinta noche. */
+.c-verde { --fondo: var(--pasto); --tinta: #0E1F11; --titulo: #0E1F11;
+  --caja: var(--noche); --tinta-caja: var(--blanco); --titulo-caja: var(--verde03);
+  --resalte: var(--verde03); --tinta-resalte: #0E1F11;
+  --acento: var(--noche); --flecha: var(--noche); --papel: var(--blanco); --tinta-papel: var(--noche);
+  --isotipo: var(--verde03); --isotipo-opacidad: .5; --cinta-bg: var(--noche); --cinta-tinta: var(--verde03); }
+.c-verde .caja { --acento: var(--verde03); }
+
+/* BLANCO · blanco verdoso. Caja lima con titular negro, trazos verde. */
+.c-blanco { --fondo: var(--blanco); --tinta: var(--negro); --titulo: var(--negro);
+  --caja: var(--verde03); --tinta-caja: var(--negro); --titulo-caja: var(--negro);
+  --resalte: var(--verde03); --tinta-resalte: var(--negro); --resalte-caja: var(--blanco);
+  --acento: var(--verde01); --flecha: var(--verde01); --papel: var(--lima-claro); --tinta-papel: var(--noche);
+  --isotipo: var(--verde03); --isotipo-opacidad: .8; --cinta-bg: var(--verde03); --cinta-tinta: var(--noche); }
+.c-blanco .caja { --acento: var(--verde01); }

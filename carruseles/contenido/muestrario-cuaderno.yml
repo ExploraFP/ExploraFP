@@ -1,0 +1,28 @@
+# Muestrario: cuaderno en los 4 colores (noche, lima, verde, blanco)
+plantilla: cuaderno
+color: noche
+cinta: Muestrario
+slides:
+  - tipo: portada
+    color: noche
+    etiqueta: FP Online
+    titulo: Estudiar *después* de currar
+    subtitulo: 4 trucos que sí funcionan.
+  - tipo: contenido
+    color: lima
+    numero: "01"
+    titulo: Bloques de *25 minutos*
+    texto: Siéntate 25 minutos. Uno. Y luego decides.
+  - tipo: lista
+    color: verde
+    titulo: El kit *mínimo*
+    items:
+      - Móvil en otra habitación
+      - Una sola pestaña abierta
+      - Agua. Y nada más
+  - tipo: cierre
+    color: blanco
+    titulo: Tu ruta, *a tu ritmo*
+    texto: Tu guía está en la trinchera contigo.
+    cta: Trazar mi ruta
+    cinta: Enlace en el perfil

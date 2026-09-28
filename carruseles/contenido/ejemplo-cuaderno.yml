@@ -1,25 +1,33 @@
-# CUADERNO alternando con SELVA: lo malo (blanco) → así lo hacemos (verde)
+# CUADERNO: libreta limpia; alterna con capas para "lo malo / así lo hacemos"
 plantilla: cuaderno
+color: blanco
 cinta: Lo malo
 copy: |
   Estudiar online tiene sus pegas. Te las contamos sin filtros 👇
 slides:
   - tipo: portada
-    etiqueta: Sin filtros
-    titulo: La *parte mala* de estudiar online
+    antetitulo: Curso 26/27 · Sin filtros
+    titulo: Esta es la *parte mala* de estudiar online.
     subtitulo: Y no, no eres tú. Le pasa a todo el mundo.
   - tipo: contenido
-    titulo: Cuesta *organizarse*.
     numero: "01"
+    titulo: Cuesta organizarse.
     texto: Sin horario fijo, «mañana me pongo» se convierte en *dos semanas*.
+    nota: a todos nos pasa
   - tipo: contenido
-    plantilla: selva
+    color: noche
     etiqueta: Así lo hacemos en Explora
     titulo: No te montas *el calendario*.
     texto: La plataforma reparte el temario según tu ritmo.
     imagen: img/plataforma-calendario.webp
+  - tipo: lista
+    titulo: ¿Listo para *entrar*?
+    items:
+      - Sabes qué ciclo quieres
+      - Tienes el requisito de acceso
+      - Puedes dedicarle 1 h al día
   - tipo: cierre
     titulo: Nunca *solo*.
-    texto: Lo que cambia es quién está detrás.
+    texto: Estudiar online tiene sus pegas. Lo que cambia es quién está detrás.
     cta: Traza tu ruta
     cinta: Enlace en el perfil

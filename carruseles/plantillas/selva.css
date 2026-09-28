@@ -1,6 +1,0 @@
-/* SELVA · verde noche. Caja verde vivo con titular negro, trazos y cinta lima. */
-.slide { --fondo: var(--noche); --tinta: var(--blanco); --titulo: var(--verde03);
-  --caja: var(--verde02); --tinta-caja: var(--negro); --titulo-caja: var(--negro);
-  --resalte: var(--amarillo); --tinta-resalte: var(--noche); --resalte-caja: var(--verde03);
-  --acento: var(--verde03); --flecha: var(--verde03); --papel: var(--blanco); --tinta-papel: var(--noche);
-  --isotipo: var(--verde02); --isotipo-opacidad: .18; --cinta-bg: var(--verde03); --cinta-tinta: var(--noche); }

@@ -1,0 +1,45 @@
+/* CAPAS · composición por capas que se pisan ("el stack"): foto o papel torcido → caja de color →
+   flechas, números rodeados, post-it → cinta. Inspirada en la plantilla de dosier. */
+/* PORTADA */
+.tipo-portada .contenido { justify-content: flex-end; padding-bottom: 0; }
+.tipo-portada .titulo { font-size: 124px; }
+.caja-portada { margin: 0 0 0 calc(-1 * var(--m)); width: 92%; padding: 64px 60px 70px var(--m); }
+.papel-portada { top: 150px; right: -70px; width: 700px; height: 640px; transform: rotate(-5deg); }
+.tipo-portada .cabeza { flex: 1; }
+.f-portada-1 { top: 70px; left: 380px; transform: rotate(-150deg) scale(.9); }
+.foto-portada { position: absolute; top: 0; right: 0; width: 82%; height: 64%; object-fit: cover; }
+.con-foto .etiqueta { position: absolute; top: 70px; left: var(--m); }
+.con-foto .f-portada-1 { top: 150px; left: 40px; transform: rotate(-120deg) scale(.8); }
+.f-portada-2 { right: 30px; top: 690px; transform: rotate(-80deg) scale(.75); }
+
+/* CONTENIDO / LISTA / DATO */
+.cabeza { position: relative; z-index: 2; }
+.tipo-contenido .caja .texto { font-size: 42px; }
+.portatil { margin: 40px -110px -150px 0; position: relative; }
+.portatil .pantalla { background: #111; border-radius: 20px 20px 0 0; padding: 14px 14px 18px; }
+.portatil .pantalla img { display: block; width: 100%; height: auto; max-height: 470px; object-fit: cover; object-position: top center; border-radius: 3px; }
+.portatil .base { height: 24px; margin: 0 -40px; background: linear-gradient(#d5d9d5, #9aa09a); border-radius: 0 0 24px 24px; }
+.caja:has(.portatil) { padding-bottom: 0; margin-bottom: 110px; }
+
+.tarjetas { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.tarjetas.n1, .tarjetas.n3 { grid-template-columns: 1fr; }
+.tarjeta { padding: 40px 36px 46px; }
+.tarjeta .num { font-size: 52px; margin-bottom: 18px; }
+.tarjeta .texto { font-family: var(--editorial); font-weight: 600; font-size: 34px; line-height: 1.25; }
+.tarjetas.n3 .tarjeta { display: flex; align-items: center; gap: 30px; padding: 28px 36px; }
+.tarjetas.n3 .tarjeta .num { margin: 0; flex: none; }
+.lista-papel { }
+
+.caja-dato { padding: 56px 60px 60px; }
+.cifra { font-family: var(--titular); font-weight: 900; font-stretch: 86%; letter-spacing: -.04em; font-size: 300px; line-height: .9; white-space: nowrap; color: var(--titulo-caja); }
+.caja-dato .texto { margin-top: 26px; }
+.fuente { font-family: var(--cuerpo); font-size: 22px; margin-top: 28px; opacity: .75; }
+.f-dato { top: -150px; right: -10px; transform: rotate(-60deg) scale(.8); }
+
+/* CIERRE */
+.tipo-cierre .titulo { font-size: 120px; }
+.tipo-cierre .texto { margin-top: 30px; font-size: 44px; }
+.cta-fila { display: flex; align-items: center; gap: 20px; margin-left: calc(-1 * var(--m)); }
+.cta { background: var(--cinta-bg); color: var(--cinta-tinta); font-family: var(--titular); font-weight: 900; font-stretch: 86%; font-size: 64px; letter-spacing: -.02em; padding: 30px 56px 34px var(--m); }
+.f-cta { position: relative; flex: none; width: 170px; height: 140px; transform: rotate(-45deg); }
+

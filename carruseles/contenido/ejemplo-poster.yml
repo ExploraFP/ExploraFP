@@ -1,0 +1,24 @@
+# POSTER: titular gigante, isotipo de fondo, foto en diagonal, píldoras
+plantilla: poster
+color: verde
+copy: |
+  Antes de elegir, pregúntate esto 👇
+slides:
+  - tipo: portada
+    titulo: Antes de elegir *una FP*
+    subtitulo: Hazte estas 3 preguntas. No busques una FP, busca la ruta al trabajo.
+    imagen: img/foto-web-alumnos.jpg
+  - tipo: contenido
+    color: blanco
+    titulo: ¿El título es *oficial* y las prácticas reales?
+    antetitulo: "En Explora x Ucademy:"
+    texto: Título 100% oficial + prácticas en empresa real. No simuladores.
+  - tipo: dato
+    color: noche
+    antetitulo: Lo que dura un grado superior
+    cifra: 2.000 h
+    texto: Repartidas en dos cursos, prácticas incluidas.
+    fuente: Ministerio de Educación, FP y Deportes
+  - tipo: cierre
+    titulo: Entrenamiento *salvaje* para tu profesión
+    cta: Traza tu ruta en el perfil

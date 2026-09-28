@@ -11,33 +11,31 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 3. `npm install` (una vez) y `npm run render` → `salida/<slug>/01.png…`, `copy.txt`, `_resumen.png`.
 4. Revisar `_resumen.png` de cada carrusel. Si el render avisa de texto desbordado, recortar el texto (no bajar el tamaño de letra).
 
-## Sistema visual: capas ("el stack")
-Cada slide se compone por capas que se pisan: fondo → papel torcido → caja de color → flechas, óvalos,
-post-it → cinta de marca. Referencia: plantilla de dosier de Sandra (caja sobre foto, tarjetas con
-números rodeados, flechas grandes). Evitar composiciones planas de texto sobre fondo: se ven genéricas.
+## Sistema: 3 composiciones × 4 colores
+Se combinan libremente, a nivel de carrusel o por slide (`plantilla:` y `color:` dentro de una slide).
 Fuente de verdad visual: explorafp.com y las referencias de Sandra, por encima del brandbook (en revisión).
+Evitar composiciones planas de texto sobre fondo: Sandra las ve genéricas.
 
-## Plantillas (solo cambian los colores; la composición es común)
-| plantilla | fondo | caja | para qué |
-|---|---|---|---|
-| `selva`  | verde noche | verde vivo, titular negro | tips, guías |
-| `diario` | lima claro | verde noche, titular lima | mitos, storytelling |
-| `brecha` | verde vivo | verde noche, titular lima | datos, cifras |
-| `cuaderno` | blanco con cuadrícula | lima, titular negro | "lo malo / así lo hacemos", checklists (favorita) |
+| plantilla | estilo | referencia |
+|---|---|---|
+| `capas` | caja de color sobre foto o papel torcido, flechas, números rodeados, post-it, cinta | plantilla de dosier |
+| `cuaderno` | libreta con cuadrícula y lomo, logo arriba, número fantasma, checklist, cinta solo en el cierre | "La parte mala de estudiar online" (favorita) |
+| `poster` | titular gigante en mayúsculas, isotipo enorme de fondo, foto en diagonal, píldoras, logo abajo | "Antes de elegir una FP" |
 
-`plantilla:` dentro de una slide sobrescribe la del carrusel (p. ej. problema en `cuaderno` → solución en `selva`).
+Colores (`plantillas/colores.css`): `noche` (verde noche), `lima` (lima claro), `verde` (verde vivo), `blanco`.
+Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slide).
 
-## Tipos de slide
-- `portada`: etiqueta (óvalo), titulo, subtitulo, nota. Con `imagen:` → foto arriba y caja encima.
-  Sin imagen → papel con textura de notas + isotipo + flecha.
-- `contenido`: etiqueta, titulo, antetitulo (subtítulo bajo el titular), numero (rodeado), texto, imagen (siempre en portátil).
-- `lista`: etiqueta, titulo, antetitulo, items (2-4 → tarjetas en rejilla; 3 → filas).
-- `dato`: etiqueta, antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**.
-- `cierre`: etiqueta, titulo, texto, cta (banda con flecha), cinta (texto de la cinta final).
+## Tipos de slide (valen en las 3 composiciones)
+- `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto).
+- `contenido`: etiqueta, titulo, antetitulo, numero, texto, imagen (portátil en capas/cuaderno; foto en poster), nota.
+- `lista`: etiqueta, titulo, antetitulo, items (2-4). capas → tarjetas; cuaderno → checklist; poster → píldoras.
+- `dato`: antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**.
+- `cierre`: etiqueta, titulo, texto, cta, cinta (texto final, p. ej. "Enlace en el perfil").
 
-Campos globales del carrusel: `plantilla`, `cinta` (texto a la derecha de la cinta: "Lo malo · 02"), `copy`.
-Campos extra por slide: `decoracion: postit | notas | isotipo | ninguna`.
+Campos del carrusel: `plantilla`, `color`, `cinta` (etiqueta de página: "Lo malo · 02"), `copy`.
+Extra por slide: `decoracion: postit | notas | isotipo | ninguna`.
 `*palabra*` resalta en titulares y subraya en textos. Máximo 20 slides; ideal 4-8.
+Si un YAML falla, el render sigue con los demás y lo lista al final.
 
 ## Recursos
 - Logos en `assets/logos/`, trazos originales en `assets/trazos/` (óvalo, flecha, notas, post-it).

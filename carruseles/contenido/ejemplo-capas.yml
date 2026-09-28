@@ -1,9 +1,9 @@
-# SELVA: tips, guías, "cómo se hace"
-plantilla: selva
+# CAPAS: caja de color sobre foto o papel, flechas, números rodeados
+plantilla: capas
+color: noche
 cinta: Estudiar currando
 copy: |
   Estudiar cansado no es estudiar mal. Es estudiar sin plan 🗺️
-  Guárdalo para el domingo por la noche 🔥
 slides:
   - tipo: portada
     etiqueta: FP Online
@@ -18,7 +18,6 @@ slides:
     decoracion: postit
   - tipo: lista
     titulo: El kit *mínimo*
-    antetitulo: Sin esto, ni lo intentes.
     items:
       - Móvil en otra habitación
       - Una sola pestaña abierta

@@ -8,16 +8,14 @@ import * as yaml from "js-yaml";
 import { chromium } from "playwright";
 
 const RAIZ = resolve(import.meta.dirname);
-const PLANTILLAS = ["selva", "diario", "brecha", "cuaderno"];
+// 3 composiciones × 4 colores, combinables libremente (y por slide).
+const PLANTILLAS = ["capas", "cuaderno", "poster"];
+const COLORES = ["noche", "lima", "verde", "blanco"];
 const TIPOS = ["portada", "contenido", "lista", "dato", "cierre"];
 
-// Logo de la cinta por plantilla (ficheros del catálogo de marca, en assets/logos/).
-const LOGO = {
-  selva: "Explora x Ucademy_Horizontal_Negro 1",
-  diario: "Explora x Ucademy_Horizontal_Verde 03 1",
-  brecha: "Explora x Ucademy_Horizontal_Verde 03 1",
-  cuaderno: "Explora x Ucademy_Horizontal_Verde 01 1",
-};
+// Logos del catálogo de marca (assets/logos/): uno para ir sobre la cinta y otro sobre el fondo.
+const LOGO_CINTA = { noche: "Negro", lima: "Verde 03", verde: "Verde 03", blanco: "Verde 01" };
+const LOGO_FONDO = { noche: "Verde 03", lima: "Verde 01", verde: "Negro", blanco: "Verde 01" };
 
 const esc = (s = "") => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 // *palabra* → resaltado; salto de línea → <br>
@@ -60,8 +58,8 @@ function decoracion(s) {
     : `<i class="deco-${x}"></i>`).join("");
 }
 
-// Cada tipo es una composición por capas: fondo → papel → caja de color → trazos y pegatinas.
-function cuerpo(s) {
+// CAPAS: fondo → papel torcido → caja de color → trazos y pegatinas.
+function capas(s) {
   const sinDeco = s.decoracion === "ninguna";
   switch (s.tipo) {
     case "portada":
@@ -96,30 +94,82 @@ function cuerpo(s) {
   }
 }
 
-function html(plantilla, s, i, total, etiquetaCinta) {
-  const logo = [".png", ".webp", ".svg"].map((e) => join(RAIZ, "assets/logos", LOGO[plantilla] + e)).find(existsSync);
-  const marca = logo
-    ? `<img src="${pathToFileURL(logo)}" alt="Explora × Ucademy">`
-    : `<span class="logo-texto">[logo] Explora <small>× Ucademy</small></span>`;
-  const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>`
-    : `<span class="pag">${si(etiquetaCinta, `${esc(etiquetaCinta)} · `)}${dos(i + 1)}</span>`;
+// CUADERNO: libreta con cuadrícula, logo arriba, número fantasma, checklist. Limpia y editorial.
+function cuaderno(s) {
+  const deco = s.decoracion === "ninguna" ? "" : `<i class="deco-isotipo"></i>`;
+  switch (s.tipo) {
+    case "portada":
+      return deco + `<div class="marco-torcido"></div>` + etiqueta(s.etiqueta) + si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`) +
+        titulo(s.titulo, "h1") + sub(s.subtitulo) + nota(s.nota);
+    case "contenido":
+      return si(s.numero, `<div class="num-fantasma">${esc(s.numero)}</div>`) + etiqueta(s.etiqueta) + titulo(s.titulo) +
+        sub(s.antetitulo) + texto(s.texto) + (s.imagen ? portatil(s) : "") + nota(s.nota);
+    case "lista":
+      return etiqueta(s.etiqueta) + titulo(s.titulo) + sub(s.antetitulo) +
+        `<ul class="checklist">${(s.items || []).map((it) => `<li><b>✓</b><span>${fmt(it)}</span></li>`).join("")}</ul>` + nota(s.nota);
+    case "dato":
+      return etiqueta(s.etiqueta) + si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`) + `<div class="cifra">${esc(s.cifra)}</div>` +
+        texto(s.texto) + si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
+    case "cierre":
+      return deco + etiqueta(s.etiqueta) + titulo(s.titulo) + texto(s.texto) + nota(s.nota);
+  }
+}
+
+// POSTER: titular gigante en mayúsculas, isotipo enorme de fondo, foto recortada en diagonal, píldoras.
+function poster(s) {
+  const deco = s.decoracion === "ninguna" ? "" : `<i class="deco-isotipo"></i>`;
+  const foto = s.imagen ? `<img class="foto-diagonal" src="${rutaImagen(s)}" alt="">` : (s.decoracion === "ninguna" ? "" : `<i class="deco-notas"></i>`);
+  const ante = si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`);
+  switch (s.tipo) {
+    case "portada":
+      return deco + foto + etiqueta(s.etiqueta) + titulo(s.titulo, "h1") + sub(s.subtitulo) + nota(s.nota);
+    case "contenido":
+      return deco + foto + numero(s.numero) + etiqueta(s.etiqueta) + titulo(s.titulo) + ante + texto(s.texto) + nota(s.nota);
+    case "lista":
+      return deco + etiqueta(s.etiqueta) + titulo(s.titulo) + ante +
+        `<div class="pildoras">${(s.items || []).map((it) => `<span class="pildora"><b></b>${fmt(it)}</span>`).join("")}</div>`;
+    case "dato":
+      return deco + foto + ante + `<div class="cifra">${esc(s.cifra)}</div>` + texto(s.texto) + si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
+    case "cierre":
+      return deco + `<img class="logo-grande" src="${logo(LOGO_FONDO[s._color])}" alt="Explora × Ucademy">` + etiqueta(s.etiqueta) + titulo(s.titulo) + texto(s.texto) +
+        si(s.cta, `<div class="cta-boton">${fmt(s.cta)}<i class="flecha f-boton"></i></div>`);
+  }
+}
+
+const COMPOSICION = { capas, cuaderno, poster };
+const logo = (color) => {
+  const f = [".png", ".webp", ".svg"].map((e) => join(RAIZ, "assets/logos", `Explora x Ucademy_Horizontal_${color} 1${e}`)).find(existsSync);
+  if (!f) throw new Error(`falta el logo Explora x Ucademy_Horizontal_${color} 1 en assets/logos/`);
+  return pathToFileURL(f);
+};
+
+function html(plantilla, color, s, i, total, etiquetaCinta) {
+  s._color = color;
+  const marca = (c) => `<img src="${logo(c)}" alt="Explora × Ucademy">`;
+  const pag = `${si(etiquetaCinta, `${esc(etiquetaCinta)} · `)}${dos(i + 1)}`;
+  const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <link rel="stylesheet" href="${archivo("plantillas/base.css")}">
 <link rel="stylesheet" href="${archivo(`plantillas/${plantilla}.css`)}">
+<link rel="stylesheet" href="${archivo("plantillas/colores.css")}">
 <style>${MASCARAS}</style>
-</head><body><section class="slide tipo-${s.tipo}${s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
-<div class="contenido">${cuerpo(s)}</div>${decoracion(s)}
+</head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
+<div class="cabecera"><span>${pag}</span>${marca(LOGO_FONDO[color])}</div>
+<div class="contenido">${COMPOSICION[plantilla](s)}</div>${decoracion(s)}
 ${i === 0 && total > 1 ? `<div class="desliza">desliza →</div>` : ""}
-<div class="cinta">${marca}${derecha}</div>
+<div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
+<div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
 </section></body></html>`;
 }
 
 function validar(c, fichero) {
   const errores = [];
   if (!PLANTILLAS.includes(c.plantilla)) errores.push(`plantilla "${c.plantilla}" no existe (usa: ${PLANTILLAS.join(", ")})`);
+  if (!COLORES.includes(c.color)) errores.push(`color "${c.color}" no existe (usa: ${COLORES.join(", ")})`);
   if (!Array.isArray(c.slides) || !c.slides.length) errores.push("faltan slides");
   (c.slides || []).forEach((s, i) => {
     if (s.plantilla && !PLANTILLAS.includes(s.plantilla)) errores.push(`slide ${i + 1}: plantilla "${s.plantilla}" no existe`);
+    if (s.color && !COLORES.includes(s.color)) errores.push(`slide ${i + 1}: color "${s.color}" no existe`);
     if (!TIPOS.includes(s.tipo)) errores.push(`slide ${i + 1}: tipo "${s.tipo}" no existe (usa: ${TIPOS.join(", ")})`);
   });
   if (c.slides?.length > 20) errores.push("Instagram admite 20 slides como máximo");
@@ -131,11 +181,12 @@ const ficheros = args.length ? args : readdirSync(join(RAIZ, "contenido")).filte
 
 const navegador = await chromium.launch();
 const pagina = await navegador.newPage({ viewport: { width: 1080, height: 1350 } });
-let avisos = 0;
+let avisos = 0, errores = 0;
 
 for (const f of ficheros) {
-  const c = yaml.load(readFileSync(f, "utf8"));
-  validar(c, f);
+  let c;
+  try { c = yaml.load(readFileSync(f, "utf8")); validar(c, f); }
+  catch (e) { errores++; console.error(`✗ ${basename(f)}: ${e.message.split("\n").slice(0, 4).join("\n  ")}`); continue; }
   const nombre = basename(f).replace(/\.ya?ml$/, "");
   const dir = join(RAIZ, "salida", nombre);
   rmSync(dir, { recursive: true, force: true });
@@ -144,7 +195,7 @@ for (const f of ficheros) {
 
   for (const [i, s] of c.slides.entries()) {
     const tmp = join(dir, `.slide.html`);
-    writeFileSync(tmp, html(s.plantilla || c.plantilla, s, i, c.slides.length, c.cinta));
+    writeFileSync(tmp, html(s.plantilla || c.plantilla, s.color || c.color, s, i, c.slides.length, c.cinta));
     await pagina.goto(pathToFileURL(tmp).href);
     await pagina.evaluate(() => document.fonts.ready);
     // La cifra gigante se encoge hasta caber en una línea.
@@ -158,7 +209,8 @@ for (const f of ficheros) {
     // Aviso si el texto se sale del área útil (encima de la cinta).
     const sobra = await pagina.evaluate(() => {
       const portada = document.querySelector(".tipo-portada");
-      const tope = document.querySelector(".cinta").getBoundingClientRect().top - (portada ? 0 : 20);
+      const cinta = document.querySelector(".cinta");
+      const tope = (cinta.offsetParent ? cinta.getBoundingClientRect().top : 1350) - (portada ? 0 : 20);
       const bloques = [...document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i), .caja")];
       const fondo = Math.max(...bloques.map((b) => b.getBoundingClientRect().bottom));
       const arriba = Math.min(...bloques.map((b) => b.getBoundingClientRect().top));
@@ -181,8 +233,10 @@ for (const f of ficheros) {
   await pagina.screenshot({ path: join(dir, "_resumen.png"), fullPage: true });
   await pagina.setViewportSize({ width: 1080, height: 1350 });
 
-  console.log(`✓ ${nombre}: ${pngs.length} slides (${c.plantilla}) → salida/${nombre}/`);
+  console.log(`✓ ${nombre}: ${pngs.length} slides (${c.plantilla} · ${c.color}) → salida/${nombre}/`);
 }
 
 await navegador.close();
-if (avisos) { console.warn(`\n${avisos} slide(s) con texto desbordado.`); process.exitCode = 1; }
+if (avisos) console.warn(`\n${avisos} slide(s) con texto desbordado.`);
+if (errores) console.error(`${errores} carrusel(es) con errores.`);
+if (avisos || errores) process.exitCode = 1;
