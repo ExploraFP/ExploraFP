@@ -14,28 +14,30 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 ## Sistema: 4 composiciones × 6 colores
 Se combinan libremente, a nivel de carrusel o por slide (`plantilla:` y `color:` dentro de una slide).
 Fuente de verdad visual: explorafp.com y las referencias de Sandra, por encima del brandbook (en revisión).
-Dirección acordada: parecido al Instagram actual + un poco más de identidad → ** es la plantilla por defecto**.
+Dirección acordada: parecido al Instagram actual + un poco más de identidad → **`feed` es la plantilla por defecto**.
 No borrar nunca plantillas ni colores existentes: se añaden, no se sustituyen.
 **Nunca poner "desliza →" ni indicadores de swipe en ninguna slide.**
 **Isotipo de fondo: nunca por defecto; solo si se pide (`decoracion: isotipo`) y muy suave.**
 **Amarillo solo como detalle pequeño (pastilla de arriba, post-it), nunca como resaltado de titulares; pero no quitarlo del todo.**
-**En  no hay banda abajo ("pie de web"): el logo va arriba.**
+**En `feed` no hay banda abajo ("pie de web"): el logo va arriba.**
 **Titulares siempre en minúscula salvo la inicial** (nunca en mayúsculas), también en el YAML.
 Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.
 
 | plantilla | estilo | referencia |
 |---|---|---|
+| `feed` | base plana del Instagram actual: pastilla amarilla arriba, logo arriba, cuadrícula suave, resaltado lima, un toque a mano por slide (`trazo: flecha / ovalo / ninguno`), sin banda abajo. Contenido con `imagen:` → foto arriba a sangre y texto abajo | feed de Instagram (por defecto) |
 | `capas` | caja de color sobre foto o papel torcido, flechas, números rodeados, post-it, cinta | plantilla de dosier |
 | `cuaderno` | libreta con cuadrícula y lomo, logo arriba, número fantasma, checklist, cinta solo en el cierre | "La parte mala de estudiar online" (favorita) |
 | `poster` | titular gigante, isotipo enorme de fondo, foto en diagonal, píldoras, logo abajo | "Antes de elegir una FP" |
 
-Colores (`plantillas/colores.css`): `noche` (verde noche), `lima` (lima claro), `verde` (verde vivo), `blanco`.
+Colores (`plantillas/colores.css`): de marca `verde01` (#366B40, base del 80 %), `verde02` (#4CCD4B), `blanco`;
+de soporte (sacados de la web) `noche` (#1B3620), `lima` (#EDFEC3), `verde` (#85E159).
 Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slide).
 
 ## Tipos de slide (valen en las 4 composiciones)
-- `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto). Con `marco: fondo` → foto a sangre con pastilla lima (vale en las 3 plantillas).
-- `contenido`: etiqueta, titulo, antetitulo, numero, texto, imagen (portátil en capas/cuaderno; foto en poster), nota.
-- `lista`: etiqueta, titulo, antetitulo, items (2-4). capas → tarjetas; cuaderno → checklist; poster → píldoras.
+- `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto). Con `marco: fondo` → foto a sangre con pastilla amarilla (vale en todas las plantillas).
+- `contenido`: etiqueta, titulo, antetitulo, numero, texto, imagen (portátil en capas/cuaderno; foto en poster; en feed foto arriba a sangre, o portátil con `marco: portatil`), nota.
+- `lista`: etiqueta, titulo, antetitulo, items (2-4). feed → cuadros numerados; capas → tarjetas; cuaderno → checklist; poster → píldoras.
 - `dato`: antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**.
 - `cierre`: etiqueta, titulo, texto, cta, cinta (texto final, p. ej. "Enlace en el perfil").
 
