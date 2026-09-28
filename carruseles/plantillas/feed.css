@@ -1,0 +1,63 @@
+/* FEED · la base plana del Instagram actual: pastilla lima arriba a la izquierda, logo arriba a la
+   derecha, cuadrícula suave, titular grande con resaltado lima. Sin banda abajo (nada de "pie de web").
+   Un solo toque a mano por slide: flecha u óvalo. */
+.slide { background-image: linear-gradient(color-mix(in srgb, var(--tinta) 6%, transparent) 1.5px, transparent 1.5px),
+  linear-gradient(90deg, color-mix(in srgb, var(--tinta) 6%, transparent) 1.5px, transparent 1.5px); background-size: 54px 54px; }
+.cabecera { display: flex; justify-content: flex-end; top: 64px; }
+.cabecera span { display: none; }
+.cabecera img { height: 44px; }
+.cinta { display: none; }
+.contenido { inset: 0; padding: 170px 100px 120px var(--m); gap: 0; justify-content: center; }
+
+.pastilla { position: absolute; top: 64px; left: var(--m); background: var(--verde03); color: var(--noche); font-family: var(--cuerpo); font-weight: 700;
+  font-size: 24px; letter-spacing: .14em; text-transform: uppercase; padding: 10px 18px; line-height: 1.2; }
+.c-verde03 .pastilla, .c-lima .pastilla { background: var(--noche); color: var(--verde03); }
+.bloque { position: relative; }
+
+.titulo { font-size: 118px; line-height: .98; }
+.tipo-portada .titulo { font-size: 138px; }
+.subtitulo { font-family: var(--editorial); font-size: 42px; line-height: 1.25; margin-top: 38px; max-width: 820px; opacity: .9; }
+.texto { font-family: var(--cuerpo); font-size: 40px; line-height: 1.4; margin-top: 34px; max-width: 860px; }
+.nota { position: absolute; left: var(--m); bottom: 64px; font-size: 30px; opacity: .7; }
+
+.num-feed { display: inline-block; font-family: var(--titular); font-weight: 900; font-size: 44px; line-height: 1; padding: 10px 18px; margin-bottom: 30px;
+  background: var(--resalte); color: var(--tinta-resalte); }
+.titulo em.rodeado { background: none; color: inherit; position: relative; padding: 0 .15em; }
+.titulo em.rodeado .ovalo { inset: -.02em -.2em -.1em -.2em; color: var(--acento); }
+
+ol.lista-feed { list-style: none; margin-top: 50px; display: flex; flex-direction: column; gap: 26px; }
+ol.lista-feed li { display: flex; align-items: center; gap: 28px; font-family: var(--cuerpo); font-size: 42px; line-height: 1.25; }
+ol.lista-feed b { flex: none; display: grid; place-items: center; width: 76px; height: 76px; background: var(--resalte); color: var(--tinta-resalte);
+  font-family: var(--titular); font-weight: 900; font-size: 36px; }
+
+.cifra { font-family: var(--titular); font-weight: 900; font-size: 320px; line-height: .9; letter-spacing: -.03em; color: var(--titulo); white-space: nowrap; margin-top: 20px; }
+.cifra { text-decoration: none; }
+.fuente { font-size: 22px; margin-top: 30px; opacity: .7; }
+
+.portatil { margin-top: 50px; width: 780px; }
+.portatil .pantalla { background: #111; border-radius: 20px 20px 0 0; padding: 14px 14px 18px; }
+.portatil .pantalla img { display: block; width: 100%; height: auto; max-height: 440px; object-fit: cover; object-position: top center; border-radius: 3px; }
+.portatil .base { height: 24px; margin: 0 -40px; background: linear-gradient(#d5d9d5, #9aa09a); border-radius: 0 0 24px 24px; }
+
+.cta-feed { display: inline-flex; flex-direction: column; gap: 6px; margin-top: 60px; background: var(--verde03); color: var(--noche); padding: 26px 44px 28px; }
+.cta-feed span { font-family: var(--titular); font-weight: 900; font-size: 56px; line-height: 1; }
+.cta-feed small { font-family: var(--cuerpo); font-weight: 700; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; }
+.c-blanco .cta-feed, .c-lima .cta-feed { background: var(--noche); color: var(--verde03); }
+
+/* El toque a mano: una flecha grande que señala el bloque de texto */
+.f-feed { width: 200px; height: 168px; }
+.f-portada { right: -40px; top: -190px; transform: rotate(-150deg); }
+.f-contenido, .f-lista, .f-dato { right: 0; top: -170px; transform: rotate(-140deg) scale(.8); }
+.f-cierre { position: absolute; left: 470px; bottom: -40px; transform: rotate(-60deg) scale(.8); }
+
+/* El amarillo, solo como detalle: la pastilla de arriba. */
+.pastilla, .c-verde03 .pastilla, .c-lima .pastilla { background: var(--amarillo); color: var(--noche); }
+
+/* Contenido con foto (`imagen:` sin `marco: portatil`): foto arriba a sangre, texto abajo. */
+.foto-feed { position: absolute; top: 0; left: 0; width: 100%; height: 56%; object-fit: cover; }
+.con-foto-feed .contenido { justify-content: flex-end; padding-bottom: 90px; }
+.con-foto-feed .pastilla { z-index: 3; }
+.con-foto-feed .cabecera { z-index: 6; }
+.con-foto-feed .cabecera img { filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
+.con-foto-feed .titulo { font-size: 96px; }
+.con-foto-feed .texto { font-size: 36px; margin-top: 24px; }

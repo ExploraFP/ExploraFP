@@ -11,13 +11,15 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 3. `npm install` (una vez) y `npm run render` → `salida/<slug>/01.png…`, `copy.txt`, `_resumen.png`.
 4. Revisar `_resumen.png` de cada carrusel. Si el render avisa de texto desbordado, recortar el texto (no bajar el tamaño de letra).
 
-## Sistema: 3 composiciones × 4 colores
+## Sistema: 4 composiciones × 6 colores
 Se combinan libremente, a nivel de carrusel o por slide (`plantilla:` y `color:` dentro de una slide).
 Fuente de verdad visual: explorafp.com y las referencias de Sandra, por encima del brandbook (en revisión).
-Evitar composiciones planas de texto sobre fondo: Sandra las ve genéricas.
+Dirección acordada: parecido al Instagram actual + un poco más de identidad → ** es la plantilla por defecto**.
+No borrar nunca plantillas ni colores existentes: se añaden, no se sustituyen.
 **Nunca poner "desliza →" ni indicadores de swipe en ninguna slide.**
 **Isotipo de fondo: nunca por defecto; solo si se pide (`decoracion: isotipo`) y muy suave.**
-**Amarillo solo como detalle puntual (post-it), nunca como resaltado general.**
+**Amarillo solo como detalle pequeño (pastilla de arriba, post-it), nunca como resaltado de titulares; pero no quitarlo del todo.**
+**En  no hay banda abajo ("pie de web"): el logo va arriba.**
 **Titulares siempre en minúscula salvo la inicial** (nunca en mayúsculas), también en el YAML.
 Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.
 
@@ -30,7 +32,7 @@ Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en
 Colores (`plantillas/colores.css`): `noche` (verde noche), `lima` (lima claro), `verde` (verde vivo), `blanco`.
 Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slide).
 
-## Tipos de slide (valen en las 3 composiciones)
+## Tipos de slide (valen en las 4 composiciones)
 - `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto). Con `marco: fondo` → foto a sangre con pastilla lima (vale en las 3 plantillas).
 - `contenido`: etiqueta, titulo, antetitulo, numero, texto, imagen (portátil en capas/cuaderno; foto en poster), nota.
 - `lista`: etiqueta, titulo, antetitulo, items (2-4). capas → tarjetas; cuaderno → checklist; poster → píldoras.

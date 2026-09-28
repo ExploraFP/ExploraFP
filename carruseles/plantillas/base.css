@@ -91,7 +91,7 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .foto-fondo { inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .velo { inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 45%, rgba(10,25,14,.85) 100%); }
 .logo-foto { top: 54px; left: 50%; transform: translateX(-50%); height: 50px; width: auto; }
-.pastilla { top: 130px; left: var(--m); background: var(--verde03); color: var(--noche); font-family: var(--cuerpo); font-weight: 700; font-size: 26px; letter-spacing: .14em; text-transform: uppercase; padding: 12px 22px; }
+.pastilla { top: 130px; left: var(--m); background: var(--amarillo); color: var(--noche); font-family: var(--cuerpo); font-weight: 700; font-size: 26px; letter-spacing: .14em; text-transform: uppercase; padding: 12px 22px; }
 .bloque-foto { left: var(--m); right: 80px; bottom: 110px; }
 .foto-sangre .titulo { font-size: 124px; line-height: 1.04; letter-spacing: -.02em; color: var(--verde03); }
 .foto-sangre .titulo em { background: var(--verde03); color: var(--noche); }

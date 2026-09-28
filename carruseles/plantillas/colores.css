@@ -31,3 +31,18 @@
   --acento: var(--verde01); --flecha: var(--verde01); --papel: var(--lima-claro); --tinta-papel: var(--noche);
   --isotipo: var(--verde03); --isotipo-opacidad: .1; --cinta-bg: var(--verde03); --cinta-tinta: var(--noche); }
 .c-blanco .caja { --acento: var(--verde01); }
+
+/* VERDE 01 · el verde base de la marca (80 % de presencia). Titular blanco, resaltado lima. */
+.c-verde01 { --fondo: var(--verde01); --tinta: var(--blanco); --titulo: var(--blanco);
+  --caja: var(--verde03); --tinta-caja: var(--noche); --titulo-caja: var(--noche);
+  --resalte: var(--verde03); --tinta-resalte: var(--noche); --resalte-caja: var(--blanco);
+  --acento: var(--verde03); --flecha: var(--verde03); --papel: var(--blanco); --tinta-papel: var(--noche);
+  --isotipo: var(--verde03); --isotipo-opacidad: .1; --cinta-bg: var(--verde03); --cinta-tinta: var(--noche); }
+
+/* VERDE 02 · verde de transición. Titular negro, resaltado lima, detalles en verde noche. */
+.c-verde02 { --fondo: var(--verde02); --tinta: var(--negro); --titulo: var(--negro);
+  --caja: var(--noche); --tinta-caja: var(--blanco); --titulo-caja: var(--verde03);
+  --resalte: var(--verde03); --tinta-resalte: var(--negro);
+  --acento: var(--noche); --flecha: var(--noche); --papel: var(--blanco); --tinta-papel: var(--noche);
+  --isotipo: var(--verde03); --isotipo-opacidad: .1; --cinta-bg: var(--noche); --cinta-tinta: var(--verde03); }
+.c-verde02 .caja { --acento: var(--verde03); }

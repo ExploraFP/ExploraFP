@@ -9,13 +9,13 @@ import { chromium } from "playwright";
 
 const RAIZ = resolve(import.meta.dirname);
 // 3 composiciones × 4 colores, combinables libremente (y por slide).
-const PLANTILLAS = ["capas", "cuaderno", "poster"];
-const COLORES = ["noche", "lima", "verde", "blanco"];
+const PLANTILLAS = ["feed", "capas", "cuaderno", "poster"];
+const COLORES = ["verde01", "verde02", "blanco", "noche", "lima", "verde"];
 const TIPOS = ["portada", "contenido", "lista", "dato", "cierre"];
 
 // Logos del catálogo de marca (assets/logos/): uno para ir sobre la cinta y otro sobre el fondo.
-const LOGO_CINTA = { noche: "Negro", lima: "Verde 03", verde: "Verde 03", blanco: "Verde 01" };
-const LOGO_FONDO = { noche: "Verde 03", lima: "Verde 01", verde: "Negro", blanco: "Verde 01" };
+const LOGO_CINTA = { verde01: "Verde 01", verde02: "Verde 03", noche: "Negro", lima: "Verde 03", verde: "Verde 03", blanco: "Verde 01" };
+const LOGO_FONDO = { verde01: "Verde 03", verde02: "Negro", noche: "Verde 03", lima: "Verde 01", verde: "Negro", blanco: "Verde 01" };
 
 const esc = (s = "") => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 // *palabra* → resaltado; salto de línea → <br>
@@ -136,7 +136,37 @@ function poster(s) {
   }
 }
 
-const COMPOSICION = { capas, cuaderno, poster };
+// FEED: la base plana del Instagram actual (pastilla lima, logo arriba, cuadrícula suave, titular con
+// resaltado) + un solo toque a mano por slide (`trazo: flecha | ovalo | ninguno`).
+function feed(s) {
+  const pastilla = si(s.etiqueta, `<div class="pastilla">${fmt(s.etiqueta)}</div>`);
+  const trazo = s.trazo ?? (s.tipo === "portada" || s.tipo === "cierre" ? "flecha" : "ninguno");
+  if (!["flecha", "ovalo", "ninguno"].includes(trazo)) throw new Error(`trazo "${trazo}" no existe (usa: flecha, ovalo, ninguno)`);
+  const toque = trazo === "flecha" ? flecha(`f-feed f-${s.tipo}`) : "";
+  const tit = (h) => trazo === "ovalo"
+    ? `<${h} class="titulo">${fmt(s.titulo).replace(/<em>(.+?)<\/em>/, '<em class="rodeado">$1<i class="ovalo"></i></em>')}</${h}>`
+    : titulo(s.titulo, h);
+  switch (s.tipo) {
+    case "portada":
+      return pastilla + `<div class="bloque">${tit("h1")}${sub(s.subtitulo)}${toque}</div>` + nota(s.nota);
+    case "contenido":
+      if (s.imagen && s.marco !== "portatil")
+        return `<img class="foto-feed" src="${rutaImagen(s)}" alt="">` + pastilla +
+          `<div class="bloque">${si(s.numero, `<div class="num-feed">${esc(s.numero)}</div>`)}${tit("h2")}${sub(s.antetitulo)}${texto(s.texto)}</div>` + nota(s.nota);
+      return pastilla + `<div class="bloque">${si(s.numero, `<div class="num-feed">${esc(s.numero)}</div>`)}${tit("h2")}${sub(s.antetitulo)}${texto(s.texto)}${s.imagen ? portatil(s) : ""}${toque}</div>` + nota(s.nota);
+    case "lista":
+      return pastilla + `<div class="bloque">${tit("h2")}${sub(s.antetitulo)}` +
+        `<ol class="lista-feed">${(s.items || []).map((it, n) => `<li><b>${dos(n + 1)}</b><span>${fmt(it)}</span></li>`).join("")}</ol>${toque}</div>` + nota(s.nota);
+    case "dato":
+      return pastilla + `<div class="bloque">${sub(s.antetitulo)}<div class="cifra">${esc(s.cifra)}</div>${texto(s.texto)}` +
+        si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`) + `${toque}</div>`;
+    case "cierre":
+      return pastilla + `<div class="bloque">${tit("h2")}${texto(s.texto)}` +
+        si(s.cta, `<div class="cta-feed"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}</div>`) + `${toque}</div>`;
+  }
+}
+
+const COMPOSICION = { feed, capas, cuaderno, poster };
 
 // Portada de foto a sangre (como el feed actual): vale para cualquier plantilla con `marco: fondo`.
 const portadaFoto = (s, color) =>
@@ -161,7 +191,7 @@ function html(plantilla, color, s, i, total, etiquetaCinta) {
 <link rel="stylesheet" href="${archivo(`plantillas/${plantilla}.css`)}">
 <link rel="stylesheet" href="${archivo("plantillas/colores.css")}">
 <style>${MASCARAS}</style>
-</head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
+</head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
 <div class="cabecera"><span>${pag}</span>${marca(LOGO_FONDO[color])}</div>
 <div class="contenido">${fondoFoto ? portadaFoto(s, color) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
 <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
@@ -209,9 +239,9 @@ for (const f of ficheros) {
     await pagina.evaluate(() => {
       const c = document.querySelector(".cifra");
       if (!c) return;
-      const max = c.parentElement.clientWidth - 110;
+      const ancho = () => { const r = document.createRange(); r.selectNodeContents(c); return r.getBoundingClientRect().width; };
       let t = parseFloat(getComputedStyle(c).fontSize);
-      while (c.scrollWidth > max && t > 80) c.style.fontSize = `${(t -= 6)}px`;
+      while (ancho() > c.clientWidth && t > 80) c.style.fontSize = `${(t -= 6)}px`;
     });
     // Aviso si el texto se sale del área útil (encima de la cinta).
     const sobra = await pagina.evaluate(() => {

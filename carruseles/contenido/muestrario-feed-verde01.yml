@@ -1,0 +1,37 @@
+# Muestrario FEED en verde01
+plantilla: feed
+color: verde01
+slides:
+  - tipo: portada
+    etiqueta: FP Online
+    titulo: Estudiar *después* de currar
+    subtitulo: 4 trucos que sí funcionan cuando llegas reventado.
+  - tipo: contenido
+    etiqueta: Truco 1
+    numero: "01"
+    titulo: Bloques de *25 minutos*
+    texto: No te sientes "a estudiar la tarde". Siéntate 25 minutos. Uno. Y luego decides.
+  - tipo: contenido
+    etiqueta: En Explora
+    titulo: Estudias *con gente real*
+    texto: Tutor, comunidad y prácticas en empresa.
+    imagen: img/foto-web-alumnos.jpg
+  - tipo: lista
+    etiqueta: El kit
+    titulo: Lo *mínimo* para arrancar
+    items:
+      - Móvil en otra habitación
+      - Una sola pestaña abierta
+      - Agua. Y nada más
+    trazo: ovalo
+  - tipo: dato
+    etiqueta: Dato
+    antetitulo: Lo que dura un grado superior
+    cifra: 2.000 h
+    texto: En dos cursos, prácticas incluidas.
+    fuente: Ministerio de Educación, FP y Deportes
+  - tipo: cierre
+    titulo: Tu ruta, *a tu ritmo*
+    texto: Tu guía está en la trinchera contigo.
+    cta: Traza tu ruta
+    cinta: Enlace en el perfil
