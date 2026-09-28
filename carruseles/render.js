@@ -164,7 +164,6 @@ function html(plantilla, color, s, i, total, etiquetaCinta) {
 </head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
 <div class="cabecera"><span>${pag}</span>${marca(LOGO_FONDO[color])}</div>
 <div class="contenido">${fondoFoto ? portadaFoto(s, color) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
-${i === 0 && total > 1 ? `<div class="desliza">desliza →</div>` : ""}
 <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
 <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
 </section></body></html>`;

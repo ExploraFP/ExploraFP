@@ -34,7 +34,5 @@
 .cta-boton { position: relative; margin-top: 70px; background: var(--cinta-bg); color: var(--cinta-tinta); font-family: var(--titular); font-weight: 900; font-size: 54px; padding: 30px 110px 32px 44px; box-shadow: 0 14px 30px rgba(0,0,0,.2); }
 .f-boton { width: 150px; height: 126px; right: -190px; top: -40px; transform: rotate(-35deg); }
 .cta-boton { padding-right: 44px; }
-.desliza { bottom: 44px; right: 240px; }
-.con-foto .desliza { display: none; }
 .con-foto .titulo { font-size: 140px; }
 .con-foto .subtitulo { max-width: 560px; }

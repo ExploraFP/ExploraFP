@@ -15,6 +15,7 @@ Nunca se diseña slide a slide: se escribe el YAML y se renderiza.
 Se combinan libremente, a nivel de carrusel o por slide (`plantilla:` y `color:` dentro de una slide).
 Fuente de verdad visual: explorafp.com y las referencias de Sandra, por encima del brandbook (en revisión).
 Evitar composiciones planas de texto sobre fondo: Sandra las ve genéricas.
+**Nunca poner "desliza →" ni indicadores de swipe en ninguna slide.**
 **Titulares siempre en minúscula salvo la inicial** (nunca en mayúsculas), también en el YAML.
 Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.
 

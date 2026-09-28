@@ -74,8 +74,6 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .cinta .logo-texto { font-weight: 700; font-size: 32px; }
 .cinta .pag { font-family: var(--editorial); font-size: 26px; }
 .cinta-cta { font-family: var(--titular); font-weight: 900; font-stretch: 86%; font-size: 36px; }
-.desliza { position: absolute; z-index: 6; right: 60px; bottom: calc(var(--cinta) + 26px); font-family: var(--editorial); font-style: italic; font-size: 34px; color: var(--tinta); }
-.tipo-portada .desliza { bottom: 34px; color: var(--tinta); }
 
 /* Cabecera (logo arriba) y pie (logo abajo sin banda): los activa cada composición. */
 .cabecera, .pie { display: none; position: absolute; z-index: 5; left: var(--m); right: 60px; align-items: center; justify-content: space-between; }
@@ -98,4 +96,3 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .foto-sangre .titulo { font-size: 124px; line-height: 1.04; letter-spacing: -.02em; color: var(--verde03); }
 .foto-sangre .titulo em { background: var(--verde03); color: var(--noche); }
 .foto-sangre .subtitulo { font-family: var(--cuerpo); font-size: 38px; color: #fff; margin-top: 30px; max-width: 800px; }
-.foto-sangre .desliza { color: #fff; bottom: 44px; }
