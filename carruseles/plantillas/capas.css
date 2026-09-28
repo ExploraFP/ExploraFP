@@ -45,5 +45,9 @@
 
 
 /* Foto torcida en el sitio del papel */
-.foto-papel { padding: 16px 16px 60px; background: var(--blanco); }
+.foto-papel { padding: 0; background: none; transform: rotate(4deg); box-shadow: 0 22px 44px rgba(0,0,0,.28); }
 .foto-papel img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Capas no paralelas: la caja de la portada se inclina al lado contrario que la foto. */
+.tipo-portada .caja-portada { transform: rotate(-1.8deg); transform-origin: left bottom; }
+.pila > .caja { transform: rotate(-.8deg); }

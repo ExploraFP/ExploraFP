@@ -36,3 +36,5 @@
 .cta-boton { padding-right: 44px; }
 .con-foto .titulo { font-size: 140px; }
 .con-foto .subtitulo { max-width: 560px; }
+.con-foto .foto-diagonal { height: 420px; width: 660px; }
+.con-foto .subtitulo { max-width: 520px; }

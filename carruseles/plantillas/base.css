@@ -107,3 +107,4 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .notas-fondo .titulo { font-size: 136px; }
 .notas-fondo .subtitulo { max-width: 800px; }
 .notas-fondo .bloque-notas { background: var(--fondo); padding: 34px 40px 40px var(--m); margin-left: calc(-1 * var(--m)); align-self: flex-start; max-width: 96%; box-shadow: 0 0 0 1px color-mix(in srgb, var(--tinta) 10%, transparent); }
+.slide.foto-sangre .contenido .pastilla { top: 130px; }

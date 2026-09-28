@@ -8,7 +8,10 @@ copy: |
   #FP #FPOnline #Homologación #EstudiarEnEspaña
 slides:
   - tipo: portada
-    antetitulo: Homologación en trámite
+    plantilla: feed
+    marco: fondo
+    imagen: img/foto-globo-diploma.jpg
+    etiqueta: Homologación en trámite
     titulo: Qué puedes hacer *ya*.
     subtitulo: Esperar al Ministerio no significa quedarte parado.
   - tipo: contenido
