@@ -55,3 +55,6 @@
 /* Aire entre el titular/subtítulo y la pila de papel + caja; el óvalo del número no roza el texto. */
 .cabeza + .pila { margin-top: 30px; }
 .caja .num { margin-bottom: 40px; }
+
+/* Jerarquía: titulares de contenido y lista más grandes para llenar la slide (antes 104px). */
+.tipo-contenido .cabeza .titulo, .tipo-lista .cabeza .titulo { font-size: 124px; }
