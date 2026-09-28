@@ -35,7 +35,11 @@ de soporte (sacados de la web) `noche` (#1B3620, a Sandra le parece demasiado os
 Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slide).
 
 ## Tipos de slide (valen en las 4 composiciones)
-- `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto). Con `marco: fondo` → foto a sangre con pastilla amarilla (vale en todas las plantillas).
+- `portada`: etiqueta (óvalo), antetitulo, titulo, subtitulo, nota, imagen (foto). Tipos de portada:
+  - `marco: fondo` + imagen → foto a sangre con pastilla amarilla (cualquier plantilla).
+  - `marco: notas` → textura manuscrita de fondo a toda la slide, titular en una esquina (cualquier plantilla).
+  - capas + imagen → foto torcida (en el sitio del antiguo papel) con la caja de color encima.
+  - capas sin imagen → portada notas por defecto (el papel blanco suelto no tenía sentido).
 - `contenido`: etiqueta, titulo, antetitulo, numero, texto, imagen (portátil en capas/cuaderno; foto en poster; en feed foto arriba a sangre, o portátil con `marco: portatil`), nota.
 - `lista`: etiqueta, titulo, antetitulo, items (2-4). feed → cuadros numerados; capas → tarjetas; cuaderno → checklist; poster → píldoras.
 - `dato`: antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**.
@@ -55,4 +59,5 @@ Si un YAML falla, el render sigue con los demás y lo lista al final.
   Licencia pagada por Explora (el nombre interno es "ABC Gravity Edu"). La licencia de Dinamo prohíbe
   redistribuir o subir la fuente a servidores públicos: por eso NO va en git. En una sesión nueva, pedir a
   Sandra el .otf y copiarlo a `fonts/GravityCondensed.otf`. Sin el archivo, se usa Archivo como sustituto.
-- Faltan: ilustraciones 3D, más fotos.
+- **No hay banco de fotos**: solo `foto-web-alumnos.jpg`. Sandra va a pasar fotos → guardarlas en `contenido/img/`.
+- Faltan: ilustraciones 3D.

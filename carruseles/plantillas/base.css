@@ -96,3 +96,14 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .foto-sangre .titulo { font-size: 124px; line-height: 1.04; letter-spacing: -.02em; color: var(--verde03); }
 .foto-sangre .titulo em { background: var(--verde03); color: var(--noche); }
 .foto-sangre .subtitulo { font-family: var(--cuerpo); font-size: 38px; color: #fff; margin-top: 30px; max-width: 800px; }
+
+/* PORTADA NOTAS (`marco: notas`): textura manuscrita de marca a toda la slide, titular en una esquina. */
+.notas-fondo .contenido { justify-content: flex-end; padding-bottom: 90px; }
+.l-capas.notas-fondo .contenido { padding-bottom: 60px; }
+.notas-fondo .contenido > * { position: relative; z-index: 2; }
+.notas-fondo .contenido > .textura-notas { position: absolute; z-index: 0; inset: -60px -160px 120px -40px; transform: rotate(-5deg);
+  background: var(--tinta); opacity: .3; -webkit-mask: var(--img-notas) center / cover no-repeat; mask: var(--img-notas) center / cover no-repeat; }
+.notas-fondo .etiqueta { position: absolute; top: 80px; left: var(--m); }
+.notas-fondo .titulo { font-size: 136px; }
+.notas-fondo .subtitulo { max-width: 800px; }
+.notas-fondo .bloque-notas { background: var(--fondo); padding: 34px 40px 40px var(--m); margin-left: calc(-1 * var(--m)); align-self: flex-start; max-width: 96%; box-shadow: 0 0 0 1px color-mix(in srgb, var(--tinta) 10%, transparent); }

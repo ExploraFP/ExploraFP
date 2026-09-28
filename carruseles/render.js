@@ -63,13 +63,9 @@ function capas(s) {
   const sinDeco = s.decoracion === "ninguna";
   switch (s.tipo) {
     case "portada":
-      if (s.imagen && s.marco !== "portatil") {
-        return `<img class="foto-portada" src="${rutaImagen(s)}" alt="">` + etiqueta(s.etiqueta) +
-          si(!sinDeco, flecha("f-portada-1") + flecha("f-portada-2")) +
-          `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}</div>`;
-      }
-      return si(!sinDeco, `<div class="papel papel-portada"><i class="deco-notas"></i></div>` + flecha("f-portada-1")) +
-        `<div class="cabeza">${etiqueta(s.etiqueta)}</div>` +
+      // Con foto: la foto ocupa el sitio del papel, torcida, y la caja de color se monta encima.
+      return `<div class="papel papel-portada foto-papel"><img src="${rutaImagen(s)}" alt=""></div>` + etiqueta(s.etiqueta) +
+        si(!sinDeco, flecha("f-portada-1")) +
         `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}${nota(s.nota)}</div>`;
     case "contenido": {
       const caja = s.numero || s.texto || s.imagen;
@@ -168,6 +164,12 @@ function feed(s) {
 
 const COMPOSICION = { feed, capas, cuaderno, poster };
 
+// Portada "notas": la textura manuscrita de marca de fondo a toda la slide y el titular en una esquina.
+// Vale para cualquier plantilla con `marco: notas`; en capas es la portada por defecto si no hay foto.
+const portadaNotas = (s) =>
+  `<i class="textura-notas"></i>` + etiqueta(s.etiqueta) +
+  `<div class="bloque-notas">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}${nota(s.nota)}</div>`;
+
 // Portada de foto a sangre (como el feed actual): vale para cualquier plantilla con `marco: fondo`.
 const portadaFoto = (s, color) =>
   `<img class="foto-fondo" src="${rutaImagen(s)}" alt=""><div class="velo"></div>` +
@@ -183,6 +185,7 @@ const logo = (color) => {
 function html(plantilla, color, s, i, total, etiquetaCinta) {
   s._color = color;
   const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
+  const fondoNotas = s.tipo === "portada" && !fondoFoto && (s.marco === "notas" || (plantilla === "capas" && !s.imagen));
   const marca = (c) => `<img src="${logo(c)}" alt="Explora × Ucademy">`;
   const pag = `${si(etiquetaCinta, `${esc(etiquetaCinta)} · `)}${dos(i + 1)}`;
   const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
@@ -191,9 +194,9 @@ function html(plantilla, color, s, i, total, etiquetaCinta) {
 <link rel="stylesheet" href="${archivo(`plantillas/${plantilla}.css`)}">
 <link rel="stylesheet" href="${archivo("plantillas/colores.css")}">
 <style>${MASCARAS}</style>
-</head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
+</head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
 <div class="cabecera"><span>${pag}</span>${marca(LOGO_FONDO[color])}</div>
-<div class="contenido">${fondoFoto ? portadaFoto(s, color) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
+<div class="contenido">${fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
 <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
 <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
 </section></body></html>`;

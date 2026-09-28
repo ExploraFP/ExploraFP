@@ -1,0 +1,26 @@
+# Tipos de portada: capas con foto torcida, notas de fondo (cualquier plantilla) y foto a sangre
+plantilla: capas
+color: verde01
+slides:
+  - tipo: portada
+    etiqueta: FP Online
+    titulo: Estudiar *después* de currar
+    subtitulo: 4 trucos que sí funcionan.
+    imagen: img/foto-web-alumnos.jpg
+  - tipo: portada
+    etiqueta: Sin filtros
+    titulo: La *parte mala* de estudiar online
+    subtitulo: Y no, no eres tú.
+  - tipo: portada
+    plantilla: feed
+    color: blanco
+    marco: notas
+    etiqueta: Mitos de la FP
+    titulo: "\"La FP es para quien *no vale*\""
+    subtitulo: Spoiler. Es justo al revés.
+  - tipo: portada
+    plantilla: feed
+    marco: fondo
+    imagen: img/foto-web-alumnos.jpg
+    etiqueta: FP Online
+    titulo: Fórmate para *un puesto*, no para un título
