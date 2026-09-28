@@ -1,0 +1,21 @@
+# Plantilla BRECHA: datos, cifras, verdades incómodas
+plantilla: brecha
+copy: |
+  2.000 horas. Suena a mucho hasta que lo divides bien ⚡️
+slides:
+  - tipo: portada
+    antetitulo: Sin filtros
+    titulo: Un grado superior *no es* una montaña
+    subtitulo: Es una ruta. Y se puede trocear.
+  - tipo: dato
+    antetitulo: Lo que dura un grado superior
+    cifra: 2.000 h
+    texto: Repartidas en dos cursos. Incluidas las prácticas en empresa.
+    fuente: Ministerio de Educación, FP y Deportes
+  - tipo: contenido
+    titulo: Machete en mano
+    texto: |
+      Sin paja académica. Directo a lo que te van a pedir en el curro.
+  - tipo: cierre
+    titulo: Recalcula *tu ruta*
+    cta: Ver mi plan 🚀

@@ -1,0 +1,25 @@
+# Plantilla DIARIO: storytelling, mitos vs realidad, testimonios
+plantilla: diario
+copy: |
+  Nadie te lo dice así de claro, así que te lo decimos nosotros ✍️
+slides:
+  - tipo: portada
+    antetitulo: Mitos de la FP
+    titulo: "\"La FP es para quien *no vale* para estudiar\""
+    subtitulo: Spoiler. Es justo al revés.
+    nota: vamos a desmontarlo →
+  - tipo: contenido
+    antetitulo: Realidad
+    titulo: Aquí se aprende *haciendo*
+    texto: |
+      Casos reales de empresa desde el minuto uno. Pisando barro, no memorizando apuntes.
+
+      Prueba y falla. Es la única forma de explorar de verdad.
+  - tipo: contenido
+    antetitulo: Esto significa que…
+    titulo: Sales con *oficio*, no con teoría
+    texto: Cuando llegas a las prácticas, ya has hecho lo que te van a pedir.
+    nota: visto y hecho ✔
+  - tipo: cierre
+    titulo: ¿Quieres verlo *por dentro*?
+    cta: Ver por dentro 👀

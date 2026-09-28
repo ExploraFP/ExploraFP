@@ -1,0 +1,22 @@
+{
+  "name": "explora-carruseles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "render": "node render.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fontsource/anton": "^5.3.0",
+    "@fontsource/besley": "^5.3.0",
+    "@fontsource/caveat": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "js-yaml": "^5.4.2",
+    "playwright": "^1.56.1"
+  },
+  "type": "module"
+}

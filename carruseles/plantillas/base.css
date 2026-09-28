@@ -1,0 +1,56 @@
+/* Base común a las 3 plantillas. Formato Instagram 4:5 (1080×1350). */
+@font-face { font-family: "Anton"; src: url("../fonts/anton-latin-400-normal.woff2"); }
+@font-face { font-family: "Gravity Condensed"; src: url("../fonts/GravityCondensed-Bold.woff2"), url("../fonts/GravityCondensed-Bold.otf"); font-weight: 700; }
+@font-face { font-family: "Besley"; src: url("../fonts/besley-latin-400-normal.woff2"); font-weight: 400; }
+@font-face { font-family: "Besley"; src: url("../fonts/besley-latin-600-normal.woff2"); font-weight: 600; }
+@font-face { font-family: "Besley"; src: url("../fonts/besley-latin-700-normal.woff2"); font-weight: 700; }
+@font-face { font-family: "Besley"; src: url("../fonts/besley-latin-400-italic.woff2"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Besley"; src: url("../fonts/besley-latin-700-italic.woff2"); font-weight: 700; font-style: italic; }
+@font-face { font-family: "IBM Plex Sans"; src: url("../fonts/ibm-plex-sans-latin-400-normal.woff2"); font-weight: 400; }
+@font-face { font-family: "IBM Plex Sans"; src: url("../fonts/ibm-plex-sans-latin-500-normal.woff2"); font-weight: 500; }
+@font-face { font-family: "IBM Plex Sans"; src: url("../fonts/ibm-plex-sans-latin-700-normal.woff2"); font-weight: 700; }
+@font-face { font-family: "Caveat"; src: url("../fonts/caveat-latin-700-normal.woff2"); font-weight: 700; }
+
+:root {
+  --verde01: #366B40; --verde02: #4CCD4B; --verde03: #D8FF6E;
+  --blanco: #FAFFFA; --negro: #000000; --amarillo: #FFE45E; --soporte01: #1B3620;
+  /* Gravity Condensed si está en fonts/, si no Anton como sustituto */
+  --titular: "Gravity Condensed", "Anton", Impact, sans-serif;
+  --editorial: "Besley", Georgia, serif;
+  --cuerpo: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+  --mano: "Caveat", cursive;
+  --m: 96px;         /* margen izquierdo = lomo del cuaderno */
+  --cinta: 132px;    /* alto de la cinta de cierre */
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
+
+.slide { position: relative; width: 1080px; height: 1350px; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  padding: 120px 110px calc(var(--cinta) + 90px) var(--m); }
+
+.antetitulo { font-family: var(--cuerpo); font-weight: 700; font-size: 30px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 36px; }
+.titulo { font-family: var(--titular); font-weight: 700; text-transform: uppercase; line-height: 1.02; letter-spacing: .005em; }
+.subtitulo { font-family: var(--editorial); font-size: 46px; line-height: 1.2; margin-top: 44px; max-width: 820px; }
+.texto { font-family: var(--cuerpo); font-size: 44px; line-height: 1.38; margin-top: 40px; max-width: 850px; }
+.texto p + p { margin-top: 26px; }
+.nota { font-family: var(--mano); font-weight: 700; font-size: 52px; line-height: 1.05; margin-top: 56px; transform: rotate(-3deg); transform-origin: left; max-width: 760px; }
+.num { font-family: var(--titular); font-weight: 700; font-size: 150px; line-height: 1; margin-bottom: 18px; }
+
+ul.lista { list-style: none; margin-top: 50px; width: 100%; max-width: 870px; }
+ul.lista li { font-size: 40px; line-height: 1.3; padding: 26px 0 26px 76px; position: relative; }
+ul.lista li::before { content: attr(data-n); position: absolute; left: 0; top: 22px; font-family: var(--titular); font-weight: 700; font-size: 50px; }
+
+.cifra { font-family: var(--titular); font-weight: 700; font-size: 330px; line-height: .95; white-space: nowrap; }
+.fuente { font-family: var(--cuerpo); font-size: 24px; margin-top: 36px; opacity: .7; }
+.cta { display: inline-block; font-family: var(--cuerpo); font-weight: 700; font-size: 40px; padding: 28px 44px; border-radius: 999px; margin-top: 60px; }
+
+/* Cinta de cierre: banda que "ata" la composición. Obligatoria. */
+.cinta { position: absolute; left: 0; right: 0; bottom: 0; height: var(--cinta);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 70px 0 var(--m); }
+.cinta img { height: 52px; width: auto; display: block; }
+.cinta .logo-texto { font-family: var(--cuerpo); font-weight: 700; font-size: 36px; letter-spacing: -.01em; }
+.cinta .logo-texto small { font-weight: 500; opacity: .75; }
+.cinta .pag { font-family: var(--cuerpo); font-weight: 500; font-size: 26px; letter-spacing: .06em; }
+.desliza { position: absolute; right: 70px; bottom: calc(var(--cinta) + 44px); font-family: var(--mano); font-weight: 700; font-size: 46px; }

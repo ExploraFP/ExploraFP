@@ -1,0 +1,19 @@
+/* DIARIO · fondo Blanco Verdoso, aire editorial (Besley), subrayador amarillo.
+   Para storytelling, mitos vs realidad, testimonios.
+   Paleta: Blanco Verdoso + Negro + Verde 01 + Amarillo Acento (solo subrayado). */
+.slide { background: var(--blanco); color: var(--negro); }
+/* línea del lomo del cuaderno */
+.slide::before { content: ""; position: absolute; top: 0; bottom: 0; left: 58px; width: 3px; background: var(--verde01); opacity: .9; }
+.antetitulo { color: var(--verde01); }
+.titulo { font-family: var(--editorial); text-transform: none; font-weight: 700; line-height: 1.04; letter-spacing: -.02em; color: var(--negro); font-size: 104px; }
+.tipo-portada .titulo { font-size: 124px; }
+.tipo-contenido .titulo, .tipo-lista .titulo { font-size: 78px; }
+.titulo em, .subtitulo em, .texto em, li em { font-style: normal; background: linear-gradient(transparent 55%, var(--amarillo) 55%, var(--amarillo) 92%, transparent 92%); padding: 0 .08em; }
+.subtitulo { font-style: italic; color: var(--verde01); }
+.num { font-family: var(--editorial); font-style: italic; color: var(--verde01); font-size: 120px; }
+.nota, .desliza { color: var(--verde01); }
+ul.lista li { border-top: 2px dashed rgba(54,107,64,.4); }
+ul.lista li::before { color: var(--verde01); font-family: var(--editorial); font-style: italic; }
+.cifra { font-family: var(--editorial); font-weight: 700; letter-spacing: -.04em; color: var(--verde01); font-size: 290px; }
+.cta { background: var(--verde01); color: var(--blanco); }
+.cinta { background: var(--verde01); color: var(--blanco); }

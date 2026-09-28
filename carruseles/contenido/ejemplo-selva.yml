@@ -1,0 +1,29 @@
+# Plantilla SELVA: tips, guías, "cómo se hace"
+plantilla: selva
+copy: |
+  Estudiar cansado no es estudiar mal. Es estudiar sin plan 🗺️
+  Guarda esto para el domingo por la noche 🔥
+  #FP #FPOnline #Explora
+slides:
+  - tipo: portada
+    antetitulo: FP online · Supervivencia
+    titulo: Estudiar *después* de currar
+    subtitulo: 5 trucos que sí funcionan cuando llegas reventado.
+    nota: probado en el barro ⚔️
+  - tipo: contenido
+    numero: "01"
+    titulo: Bloques de *25 minutos*
+    texto: |
+      No te sientes "a estudiar la tarde". Siéntate 25 minutos. Uno. Y luego decides.
+    nota: arrancar es lo difícil
+  - tipo: lista
+    titulo: El kit *mínimo*
+    items:
+      - Móvil en otra habitación. No en silencio. Fuera.
+      - Una sola pestaña abierta.
+      - El vídeo visto y *hecho* en el momento.
+      - Agua. Y nada más.
+  - tipo: cierre
+    titulo: Tu ruta, *a tu ritmo*
+    texto: Tu guía está en la trinchera contigo.
+    cta: Trazar mi ruta 📍

@@ -1,0 +1,15 @@
+/* SELVA · fondo Verde 01, titulares lima. Para tips, guías y "cómo se hace".
+   Paleta: Verde 01 + Verde 03 + Blanco Verdoso (+ Soporte 01 en la cinta). */
+.slide { background: var(--verde01); color: var(--blanco); }
+.antetitulo { color: var(--verde03); }
+.titulo { color: var(--blanco); font-size: 150px; }
+.tipo-portada .titulo { font-size: 178px; }
+.tipo-contenido .titulo, .tipo-lista .titulo { font-size: 104px; }
+.titulo em, .subtitulo em, .texto em, li em { font-style: normal; color: var(--verde03); }
+.num { color: var(--verde03); }
+.nota, .desliza { color: var(--verde03); }
+ul.lista li { border-top: 2px solid rgba(216,255,110,.35); }
+ul.lista li::before { color: var(--verde03); }
+.cifra { color: var(--verde03); }
+.cta { background: var(--verde03); color: var(--soporte01); }
+.cinta { background: var(--soporte01); color: var(--verde03); }
