@@ -64,3 +64,16 @@ Si un YAML falla, el render sigue con los demás y lo lista al final.
   chica-gafas-portatil-parque, chica-escritorio-sonrie, chica-agobiada-examen (útil para "lo malo"). Nuevas fotos → `contenido/img/foto-<descripcion>.jpg`.
 - Capas: la foto de portada va inclinada, sin marco blanco (nada de polaroid), y la caja inclinada al otro lado.
 - Faltan: ilustraciones 3D.
+
+## Herramienta web (banco + estudio)
+Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de carruseles").
+- `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita
+  el banco desde otra sesión, volver a leer el artifact y guardar aquí su HTML antes de reconstruir.
+- `web/estudio.js` + `web/estudio.css`: pestañas Producir y Hechos, editor y exportación a PNG.
+- `motor.js`: el motor de diseño, compartido por render.js y la web → lo que se ve en la web es lo que sale en PNG.
+- `node web/construir.mjs` → `web/dist/` (HTML + fotos, logos, trazos, fuentes). Publicar con root `web/dist`,
+  `files` = `web/dist/archivos.json`, capacidades `{db, downloads, sample}`.
+- Datos: colección `carruseles` del db (un documento por carrusel: titulo, plantilla, color, slides, copy, estado,
+  idea). Estados: pendiente → generando → borrador → hecho. La colección `ops` es la del banco (ideas hechas).
+- Fotos nuevas: añadir a `contenido/img/foto-*.jpg` y su descripción en `DESC` de `web/construir.mjs`.
+- La fuente Gravity se publica con la herramienta (privada); no hacer público el enlace (licencia de Dinamo).
