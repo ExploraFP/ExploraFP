@@ -1,13 +1,6 @@
-/* SELVA · verde noche con titulares lima (como la portada de la web).
-   Para tips, guías, "cómo se hace". Paleta: Soporte 01 + Verde 03 + Amarillo (resaltado) + Blanco. */
-.slide { background: var(--noche); color: var(--blanco); }
-.titulo, .num, .cifra, ul.lista li::before { color: var(--verde03); }
-em { background: var(--amarillo); color: var(--noche); }
-.antetitulo, .etiqueta, .nota, .desliza { color: var(--verde03); }
-.subtitulo { color: var(--blanco); }
-ul.lista li { border-top: 2px solid rgba(216,255,110,.3); }
-.cta { background: var(--verde03); color: var(--noche); }
-.trazo-flecha, .deco-isotipo { color: var(--verde03); }
-.deco-isotipo { opacity: .16; }
-.deco-notas { color: var(--verde03); opacity: .4; }
-.cinta { background: var(--verde03); color: var(--noche); }
+/* SELVA · verde noche. Caja verde vivo con titular negro, trazos y cinta lima. */
+.slide { --fondo: var(--noche); --tinta: var(--blanco); --titulo: var(--verde03);
+  --caja: var(--verde02); --tinta-caja: var(--negro); --titulo-caja: var(--negro);
+  --resalte: var(--amarillo); --tinta-resalte: var(--noche); --resalte-caja: var(--verde03);
+  --acento: var(--verde03); --flecha: var(--verde03); --papel: var(--blanco); --tinta-papel: var(--noche);
+  --isotipo: var(--verde02); --isotipo-opacidad: .18; --cinta-bg: var(--verde03); --cinta-tinta: var(--noche); }

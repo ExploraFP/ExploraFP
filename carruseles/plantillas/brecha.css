@@ -1,9 +1,7 @@
-/* BRECHA · verde vivo con texto casi negro y resaltado lima (sección "No te decimos qué ser" de la web).
-   Para datos, cifras, verdades incómodas. Paleta: Soporte 04 + Soporte 01 + Verde 03. */
-.slide { background: var(--pasto); color: #0E1F11; }
-em { background: var(--verde03); }
-ul.lista li { border-top: 2px solid rgba(14,31,17,.3); }
-.cta { background: var(--noche); color: var(--blanco); }
-.cinta { background: var(--noche); color: var(--verde03); }
-.deco-isotipo { color: var(--verde03); opacity: .45; }
-.deco-notas { opacity: .5; }
+/* BRECHA · verde vivo. Caja verde noche con titular lima, flechas y cinta noche. */
+.slide { --fondo: var(--pasto); --tinta: #0E1F11; --titulo: #0E1F11;
+  --caja: var(--noche); --tinta-caja: var(--blanco); --titulo-caja: var(--verde03);
+  --resalte: var(--verde03); --tinta-resalte: #0E1F11;
+  --acento: var(--noche); --flecha: var(--noche); --papel: var(--blanco); --tinta-papel: var(--noche);
+  --isotipo: var(--verde03); --isotipo-opacidad: .5; --cinta-bg: var(--noche); --cinta-tinta: var(--verde03); }
+.caja .texto em, .caja .subtitulo em { text-decoration-color: var(--verde03); }

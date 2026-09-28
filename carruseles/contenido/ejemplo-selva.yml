@@ -1,31 +1,32 @@
-# Plantilla SELVA: tips, guías, "cómo se hace"
+# SELVA: tips, guías, "cómo se hace"
 plantilla: selva
+cinta: Estudiar currando
 copy: |
   Estudiar cansado no es estudiar mal. Es estudiar sin plan 🗺️
-  Guarda esto para el domingo por la noche 🔥
-  #FP #FPOnline #Explora
+  Guárdalo para el domingo por la noche 🔥
 slides:
   - tipo: portada
     etiqueta: FP Online
     titulo: Estudiar *después* de currar
-    subtitulo: 5 trucos que sí funcionan cuando llegas reventado.
-    nota: probado en el barro ⚔️
+    subtitulo: 4 trucos que sí funcionan cuando llegas reventado.
+    imagen: img/foto-web-alumnos.jpg
   - tipo: contenido
-    numero: "01"
-    decoracion: postit
     titulo: Bloques de *25 minutos*
-    texto: |
-      No te sientes "a estudiar la tarde". Siéntate 25 minutos. Uno. Y luego decides.
-    nota: arrancar es lo difícil
+    antetitulo: Arrancar es lo difícil.
+    numero: "01"
+    texto: No te sientes "a estudiar la tarde". Siéntate 25 minutos. Uno. Y luego decides.
+    decoracion: postit
   - tipo: lista
     titulo: El kit *mínimo*
+    antetitulo: Sin esto, ni lo intentes.
     items:
-      - Móvil en otra habitación. No en silencio. Fuera.
-      - Una sola pestaña abierta.
-      - El vídeo visto y *hecho* en el momento.
-      - Agua. Y nada más.
+      - Móvil en otra habitación
+      - Una sola pestaña abierta
+      - El vídeo visto y hecho al momento
+      - Agua. Y nada más
   - tipo: cierre
-    antetitulo: Sin prisa, sin pausa
+    etiqueta: Sin prisa, sin pausa
     titulo: Tu ruta, *a tu ritmo*
     texto: Tu guía está en la trinchera contigo.
-    cta: Trazar mi ruta 📍
+    cta: Trazar mi ruta
+    cinta: Enlace en el perfil

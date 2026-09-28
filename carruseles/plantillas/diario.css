@@ -1,9 +1,7 @@
-/* DIARIO · lima claro con texto verde noche y resaltado amarillo (bloques "Acceso inmediato" de la web).
-   Para storytelling, mitos vs realidad, testimonios. Paleta: Soporte 06 + Soporte 01 + Amarillo. */
-.slide { background: var(--lima-claro); color: var(--noche); }
-em { background: var(--amarillo); }
-.subtitulo { font-style: italic; }
-ul.lista li { border-top: 2px dashed rgba(27,54,32,.35); }
-.cta { background: var(--noche); color: var(--blanco); }
-.cinta { background: var(--noche); color: var(--verde03); }
-.deco-isotipo { color: var(--verde02); opacity: .28; }
+/* DIARIO · lima claro. Caja verde noche con titular lima, resaltado amarillo. */
+.slide { --fondo: var(--lima-claro); --tinta: var(--noche); --titulo: var(--noche);
+  --caja: var(--noche); --tinta-caja: var(--blanco); --titulo-caja: var(--verde03);
+  --resalte: var(--amarillo); --tinta-resalte: var(--noche);
+  --acento: var(--verde01); --flecha: var(--noche); --papel: #FFFFFF; --tinta-papel: var(--noche);
+  --isotipo: var(--verde02); --isotipo-opacidad: .3; --cinta-bg: var(--noche); --cinta-tinta: var(--verde03); }
+.caja .texto em, .caja .subtitulo em { text-decoration-color: var(--amarillo); }

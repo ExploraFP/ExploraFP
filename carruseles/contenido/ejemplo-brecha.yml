@@ -1,5 +1,6 @@
-# Plantilla BRECHA: datos, cifras, verdades incómodas
+# BRECHA: datos, cifras, verdades incómodas
 plantilla: brecha
+cinta: Sin filtros
 copy: |
   2.000 horas. Suena a mucho hasta que lo divides bien ⚡️
 slides:
@@ -10,14 +11,15 @@ slides:
   - tipo: dato
     antetitulo: Lo que dura un grado superior
     cifra: 2.000 h
-    texto: Repartidas en dos cursos. Incluidas las prácticas en empresa.
+    texto: Repartidas en dos cursos. Prácticas en empresa incluidas.
     fuente: Ministerio de Educación, FP y Deportes
-  - tipo: contenido
-    antetitulo: Machete en mano
-    decoracion: notas
+  - tipo: lista
     titulo: Directo a *lo que cotiza*
-    texto: |
-      Sin paja académica. Casos reales de empresa desde el minuto uno.
+    items:
+      - Casos reales de empresa
+      - Prácticas garantizadas
+      - Título 100% oficial
   - tipo: cierre
     titulo: Recalcula *tu ruta*
-    cta: Ver mi plan 🚀
+    cta: Ver mi plan
+    cinta: Enlace en el perfil

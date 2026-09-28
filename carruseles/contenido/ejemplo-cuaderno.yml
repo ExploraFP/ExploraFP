@@ -1,28 +1,25 @@
-# Plantilla CUADERNO alternando con SELVA: "lo malo" (blanco) → "así lo hacemos" (verde)
+# CUADERNO alternando con SELVA: lo malo (blanco) → así lo hacemos (verde)
 plantilla: cuaderno
-cabecera: Lo malo
+cinta: Lo malo
 copy: |
   Estudiar online tiene sus pegas. Te las contamos sin filtros 👇
 slides:
   - tipo: portada
-    cabecera: ""
-    titulo: Esta es la *parte mala* de estudiar *online*.
+    etiqueta: Sin filtros
+    titulo: La *parte mala* de estudiar online
     subtitulo: Y no, no eres tú. Le pasa a todo el mundo.
   - tipo: contenido
+    titulo: Cuesta *organizarse*.
     numero: "01"
-    titulo: A veces te sientes solo.
-    texto: Abres el portátil, cierras el portátil. Nadie sabe *si has estudiado hoy*.
-    nota: y así se abandona
+    texto: Sin horario fijo, «mañana me pongo» se convierte en *dos semanas*.
   - tipo: contenido
     plantilla: selva
     etiqueta: Así lo hacemos en Explora
-    titulo: Aquí tienes *a quién escribir*.
-    texto: Un tutor que te conoce por tu nombre y te responde en el mismo chat.
-    imagen: img/plataforma-chat-tutor.webp
-    marco: portatil
+    titulo: No te montas *el calendario*.
+    texto: La plataforma reparte el temario según tu ritmo.
+    imagen: img/plataforma-calendario.webp
   - tipo: cierre
-    cabecera: ""
     titulo: Nunca *solo*.
-    texto: Estudiar online tiene sus pegas. Lo que cambia es quién está detrás.
-    nota: nos vemos en el terreno ⚡️
-    cinta: Traza tu ruta · enlace en el perfil
+    texto: Lo que cambia es quién está detrás.
+    cta: Traza tu ruta
+    cinta: Enlace en el perfil

@@ -24,89 +24,93 @@ const esc = (s = "") => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").r
 const fmt = (s) => esc(s).trim().replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\n/g, "<br>");
 const parrafos = (s) => String(s).trim().split(/\n\s*\n/).map((p) => `<p>${fmt(p)}</p>`).join("");
 const si = (v, html) => (v ? html : "");
+const dos = (n) => String(n).padStart(2, "0");
+const archivo = (rel) => pathToFileURL(join(RAIZ, rel));
 
-// Trazos a mano: óvalo y flecha son los originales de marca (assets/trazos/); el subrayado aún es provisional.
-const TRAZO = {
-  subrayado: `<svg class="trazo-sub" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M3 9 C 70 4, 190 2, 297 7"/></svg>`,
-  ovalo: `<i class="trazo-ovalo"></i>`,
-  flechas: `<i class="trazo-flecha"></i>`,
-};
-const ante = (t) => si(t, `<div class="antetitulo"><span>${fmt(t)}</span>${TRAZO.subrayado}</div>`);
-const etiqueta = (t) => si(t, `<div class="etiqueta"><span>${fmt(t)}</span>${TRAZO.ovalo}</div>`);
-
-// Imagen opcional bajo el texto. Rutas relativas a contenido/. marco: portatil | foto (por defecto)
-const imagen = (s) => {
-  if (!s.imagen) return "";
-  const ruta = resolve(RAIZ, "contenido", s.imagen);
-  if (!existsSync(ruta)) throw new Error(`no encuentro la imagen ${s.imagen} (ruta relativa a contenido/)`);
-  const img = `<img src="${pathToFileURL(ruta)}" alt="">`;
-  return s.marco === "portatil"
-    ? `<div class="portatil"><div class="pantalla">${img}</div><div class="base"></div></div>`
-    : `<div class="foto">${img}</div>`;
-};
-
-// Los trazos se usan como máscara CSS (así toman el color de cada plantilla). Chrome exige CORS
-// para las máscaras y file:// no lo cumple, por eso van incrustados en base64.
+// Trazos originales de marca (assets/trazos/) aplicados como máscara: toman el color de la plantilla.
+// Chrome exige CORS para las máscaras y file:// no lo cumple, por eso van incrustados en base64.
 const dataUri = (ruta) => `url("data:image/png;base64,${readFileSync(join(RAIZ, ruta)).toString("base64")}")`;
 const MASCARAS = `:root{--img-ovalo:${dataUri("assets/trazos/ovalo.png")};--img-flecha:${dataUri("assets/trazos/flecha.png")};` +
   `--img-notas:${dataUri("assets/trazos/notas.png")};--img-isotipo:${dataUri("assets/logos/Isotipo.png")}}`;
 
-// Decoraciones de marca. Por defecto: isotipo en portada. `decoracion: ninguna` las quita.
+const etiqueta = (t) => si(t, `<div class="etiqueta"><span>${fmt(t)}</span><i class="ovalo"></i></div>`);
+const numero = (n) => si(n, `<div class="num"><span>${esc(n)}</span><i class="ovalo"></i></div>`);
+const flecha = (clase) => `<i class="flecha ${clase}"></i>`;
+const titulo = (t, h = "h2") => `<${h} class="titulo">${fmt(t)}</${h}>`;
+const sub = (t) => si(t, `<div class="subtitulo">${fmt(t)}</div>`);
+const texto = (t) => si(t, `<div class="texto">${parrafos(t)}</div>`);
+const nota = (t) => si(t, `<div class="nota">${fmt(t)}</div>`);
+
+// Imagen: rutas relativas a contenido/. marco: portatil | foto (por defecto)
+function rutaImagen(s) {
+  const ruta = resolve(RAIZ, "contenido", s.imagen);
+  if (!existsSync(ruta)) throw new Error(`no encuentro la imagen ${s.imagen} (ruta relativa a contenido/)`);
+  return pathToFileURL(ruta);
+}
+const portatil = (s) => `<div class="portatil"><div class="pantalla"><img src="${rutaImagen(s)}" alt=""></div><div class="base"></div></div>`;
+
+// Decoraciones extra. `decoracion: postit | notas | isotipo` (o lista), `ninguna` quita las de serie.
 const DECORACIONES = ["isotipo", "notas", "postit"];
 function decoracion(s) {
-  let d = s.decoracion ?? (s.tipo === "portada" ? "isotipo" : []);
-  if (d === "ninguna") return "";
-  d = [].concat(d);
+  const d = s.decoracion === "ninguna" ? [] : [].concat(s.decoracion ?? []);
   const malas = d.filter((x) => !DECORACIONES.includes(x));
   if (malas.length) throw new Error(`decoracion "${malas}" no existe (usa: ${DECORACIONES.join(", ")}, ninguna)`);
   return d.map((x) => x === "postit"
-    ? `<img class="deco-postit" src="${pathToFileURL(join(RAIZ, "assets/trazos/postit-100-online.png"))}" alt="">`
+    ? `<img class="postit" src="${archivo("assets/trazos/postit-100-online.png")}" alt="">`
     : `<i class="deco-${x}"></i>`).join("");
 }
 
+// Cada tipo es una composición por capas: fondo → papel → caja de color → trazos y pegatinas.
 function cuerpo(s) {
+  const sinDeco = s.decoracion === "ninguna";
   switch (s.tipo) {
     case "portada":
-      return etiqueta(s.etiqueta) + ante(s.antetitulo) +
-        `<h1 class="titulo">${fmt(s.titulo)}</h1>` +
-        si(s.subtitulo, `<div class="subtitulo">${fmt(s.subtitulo)}</div>`) +
-        si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
-    case "contenido":
-      return si(s.numero, `<div class="num">${esc(s.numero)}</div>`) + etiqueta(s.etiqueta) + ante(s.antetitulo) +
-        `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
-        si(s.texto, `<div class="texto">${parrafos(s.texto)}</div>`) +
-        si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
-    case "lista":
-      return etiqueta(s.etiqueta) + ante(s.antetitulo) +
-        `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
-        `<ul class="lista">${(s.items || []).map((it, n) => `<li data-n="${String(n + 1).padStart(2, "0")}">${fmt(it)}</li>`).join("")}</ul>` +
-        si(s.nota, `<div class="nota">${fmt(s.nota)}</div>`);
+      if (s.imagen && s.marco !== "portatil") {
+        return `<img class="foto-portada" src="${rutaImagen(s)}" alt="">` + etiqueta(s.etiqueta) +
+          si(!sinDeco, flecha("f-portada-1") + flecha("f-portada-2")) +
+          `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}</div>`;
+      }
+      return si(!sinDeco, `<div class="papel papel-portada"><i class="deco-notas"></i></div><i class="deco-isotipo"></i>` + flecha("f-portada-1")) +
+        `<div class="cabeza">${etiqueta(s.etiqueta)}</div>` +
+        `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}${nota(s.nota)}</div>`;
+    case "contenido": {
+      const caja = s.numero || s.texto || s.imagen;
+      return `<div class="cabeza">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${sub(s.antetitulo)}</div>` +
+        si(caja, `<div class="pila"><div class="papel"></div><div class="caja">${numero(s.numero)}${texto(s.texto)}${s.imagen ? portatil(s) : ""}</div></div>`) +
+        nota(s.nota);
+    }
+    case "lista": {
+      const items = s.items || [];
+      return `<div class="cabeza">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${sub(s.antetitulo)}</div>` +
+        `<div class="pila"><div class="papel"><i class="deco-notas"></i></div><div class="tarjetas n${items.length}">` +
+        items.map((it, n) => `<div class="caja tarjeta">${numero(dos(n + 1))}<div class="texto">${fmt(it)}</div></div>`).join("") +
+        `</div></div>` + nota(s.nota);
+    }
     case "dato":
-      return ante(s.antetitulo) +
-        `<div class="cifra">${esc(s.cifra)}</div>` +
-        si(s.texto, `<div class="texto">${parrafos(s.texto)}</div>`) +
-        si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
+      return `<div class="cabeza">${etiqueta(s.etiqueta)}${sub(s.antetitulo)}</div>` +
+        `<div class="pila"><div class="papel"></div><div class="caja caja-dato"><div class="cifra">${esc(s.cifra)}</div>${texto(s.texto)}` +
+        si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`) + `</div>${si(!sinDeco, flecha("f-dato"))}</div>`;
     case "cierre":
-      return etiqueta(s.etiqueta) + ante(s.antetitulo) +
-        `<h2 class="titulo">${fmt(s.titulo)}</h2>` +
-        si(s.texto, `<div class="texto">${parrafos(s.texto)}</div>`) +
-        si(s.cta, `<div class="cta-fila"><div class="cta">${fmt(s.cta)}</div>${TRAZO.flechas}</div>`);
+      return `<div class="cabeza">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${texto(s.texto)}</div>` +
+        si(s.cta, `<div class="cta-fila"><div class="cta">${fmt(s.cta)}</div>${flecha("f-cta")}</div>`) + nota(s.nota);
   }
 }
 
-function html(plantilla, s, i, total, cabecera) {
+function html(plantilla, s, i, total, etiquetaCinta) {
   const logo = [".png", ".webp", ".svg"].map((e) => join(RAIZ, "assets/logos", LOGO[plantilla] + e)).find(existsSync);
   const marca = logo
     ? `<img src="${pathToFileURL(logo)}" alt="Explora × Ucademy">`
     : `<span class="logo-texto">[logo] Explora <small>× Ucademy</small></span>`;
+  const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>`
+    : `<span class="pag">${si(etiquetaCinta, `${esc(etiquetaCinta)} · `)}${dos(i + 1)}</span>`;
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
-<link rel="stylesheet" href="${pathToFileURL(join(RAIZ, "plantillas/base.css"))}">
-<link rel="stylesheet" href="${pathToFileURL(join(RAIZ, `plantillas/${plantilla}.css`))}">
+<link rel="stylesheet" href="${archivo("plantillas/base.css")}">
+<link rel="stylesheet" href="${archivo(`plantillas/${plantilla}.css`)}">
 <style>${MASCARAS}</style>
-</head><body><section class="slide tipo-${s.tipo}">${decoracion(s)}<div class="cabecera"><span>${fmt(cabecera ?? "")}</span>${marca}</div>
-<div class="contenido">${cuerpo(s)}${imagen(s)}</div>
+</head><body><section class="slide tipo-${s.tipo}${s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
+<div class="contenido">${cuerpo(s)}</div>${decoracion(s)}
 ${i === 0 && total > 1 ? `<div class="desliza">desliza →</div>` : ""}
-<div class="cinta">${marca}${si(s.tipo === "cierre" && s.cinta, `<span class="cinta-cta">${fmt(s.cinta)}</span>`)}<span class="pag">${String(i + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</span></div>
+<div class="cinta">${marca}${derecha}</div>
 </section></body></html>`;
 }
 
@@ -140,24 +144,25 @@ for (const f of ficheros) {
 
   for (const [i, s] of c.slides.entries()) {
     const tmp = join(dir, `.slide.html`);
-    const cab = s.cabecera ?? (c.cabecera ? `${c.cabecera} · ${String(i + 1).padStart(2, "0")}` : null);
-    writeFileSync(tmp, html(s.plantilla || c.plantilla, s, i, c.slides.length, cab));
+    writeFileSync(tmp, html(s.plantilla || c.plantilla, s, i, c.slides.length, c.cinta));
     await pagina.goto(pathToFileURL(tmp).href);
     await pagina.evaluate(() => document.fonts.ready);
     // La cifra gigante se encoge hasta caber en una línea.
     await pagina.evaluate(() => {
       const c = document.querySelector(".cifra");
       if (!c) return;
-      const max = 1080 - 96 - 90;
+      const max = c.parentElement.clientWidth - 110;
       let t = parseFloat(getComputedStyle(c).fontSize);
       while (c.scrollWidth > max && t > 80) c.style.fontSize = `${(t -= 6)}px`;
     });
     // Aviso si el texto se sale del área útil (encima de la cinta).
     const sobra = await pagina.evaluate(() => {
-      const r = document.querySelector(".contenido").getBoundingClientRect();
-      const cinta = document.querySelector(".cinta");
-      const tope = (cinta.offsetParent ? cinta.getBoundingClientRect().top : 1350) - 30;
-      return Math.round(Math.max(r.bottom - tope, 60 - r.top, 0));
+      const portada = document.querySelector(".tipo-portada");
+      const tope = document.querySelector(".cinta").getBoundingClientRect().top - (portada ? 0 : 20);
+      const bloques = [...document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i), .caja")];
+      const fondo = Math.max(...bloques.map((b) => b.getBoundingClientRect().bottom));
+      const arriba = Math.min(...bloques.map((b) => b.getBoundingClientRect().top));
+      return Math.round(Math.max(fondo - tope, 40 - arriba, 0));
     });
     if (sobra > 0) { avisos++; console.warn(`  ⚠ ${nombre} slide ${i + 1}: el texto no cabe (${sobra}px). Recórtalo.`); }
     const png = join(dir, `${String(i + 1).padStart(2, "0")}.png`);
