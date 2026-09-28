@@ -17,8 +17,8 @@ slides:
     plantilla: selva
     etiqueta: Así lo hacemos en Explora
     titulo: Aquí tienes *a quién escribir*.
-    texto: Un tutor que te conoce por tu nombre y una comunidad que está igual que tú.
-    imagen: img/captura-ejemplo.svg
+    texto: Un tutor que te conoce por tu nombre y te responde en el mismo chat.
+    imagen: img/plataforma-chat-tutor.webp
     marco: portatil
   - tipo: cierre
     cabecera: ""

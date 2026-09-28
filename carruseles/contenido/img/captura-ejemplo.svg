@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
-<rect width="1600" height="1000" fill="#F9F9FA"/><rect width="1600" height="80" fill="#1B3620"/>
-<rect x="0" y="80" width="300" height="920" fill="#F2F2F3"/>
-<g fill="#DFDFE1"><rect x="40" y="130" width="220" height="28" rx="6"/><rect x="40" y="190" width="180" height="28" rx="6"/><rect x="40" y="250" width="200" height="28" rx="6"/></g>
-<rect x="360" y="130" width="1180" height="360" rx="16" fill="#EDFEC3"/>
-<rect x="360" y="530" width="570" height="400" rx="16" fill="#FFFFFF" stroke="#DFDFE1" stroke-width="3"/>
-<rect x="970" y="530" width="570" height="400" rx="16" fill="#FFFFFF" stroke="#DFDFE1" stroke-width="3"/>
-<text x="800" y="330" font-family="Arial" font-size="56" fill="#366B40" text-anchor="middle">[captura de la plataforma]</text></svg>

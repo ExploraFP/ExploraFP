@@ -50,5 +50,7 @@ Campos extra en cualquier slide:
 - Gravity Condensed (de pago): dejar `GravityCondensed-Bold.woff2` u `.otf` en `fonts/`. Hasta entonces se usa Archivo condensada.
 - Trazos originales en `assets/trazos/` (óvalo, flecha, notas, post-it) e isotipo en `assets/logos/Isotipo.png`.
   Se aplican como máscara (toman el color de la plantilla) incrustados en base64. El subrayado aún es SVG provisional.
-- Faltan: ilustraciones 3D, capturas reales de la plataforma (van en `contenido/img/`).
+- Capturas de la plataforma en `contenido/img/plataforma-*.webp` (calendario, chat-tutor, practicar, test, mis-cursos).
+  Son mockups de producto con datos ficticios, aprobados para publicar.
+- Faltan: ilustraciones 3D.
 - Caveat sustituye provisionalmente a la caligrafía de Calligrapher.ai.
