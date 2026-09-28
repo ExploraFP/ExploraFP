@@ -51,3 +51,7 @@
 /* Capas no paralelas: la caja de la portada se inclina al lado contrario que la foto. */
 .tipo-portada .caja-portada { transform: rotate(-1.8deg); transform-origin: left bottom; }
 .pila > .caja { transform: rotate(-.8deg); }
+
+/* Aire entre el titular/subtítulo y la pila de papel + caja; el óvalo del número no roza el texto. */
+.cabeza + .pila { margin-top: 30px; }
+.caja .num { margin-bottom: 40px; }
