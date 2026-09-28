@@ -19,7 +19,7 @@ No borrar nunca plantillas ni colores existentes: se añaden, no se sustituyen.
 **Nunca poner "desliza →" ni indicadores de swipe en ninguna slide.**
 **Isotipo de fondo: nunca por defecto; solo si se pide (`decoracion: isotipo`) y muy suave.**
 **Amarillo solo como detalle pequeño (pastilla de arriba, post-it), nunca como resaltado de titulares; pero no quitarlo del todo.**
-**En `feed` no hay banda abajo ("pie de web"): el logo va arriba.**
+**Ninguna plantilla lleva pie ni banda abajo ("footer de web"): el logo va arriba a la derecha** (en la portada de capas, dentro de la caja).
 **Titulares siempre en minúscula salvo la inicial** (nunca en mayúsculas), también en el YAML.
 Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.
 

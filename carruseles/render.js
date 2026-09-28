@@ -66,7 +66,8 @@ function capas(s) {
       // Con foto: la foto ocupa el sitio del papel, torcida, y la caja de color se monta encima.
       return `<div class="papel papel-portada foto-papel"><img src="${rutaImagen(s)}" alt=""></div>` + etiqueta(s.etiqueta) +
         si(!sinDeco, flecha("f-portada-1")) +
-        `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}${nota(s.nota)}</div>`;
+        `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}${nota(s.nota)}` +
+        `<img class="logo-caja" src="${logo(LOGO_CINTA[s._color])}" alt="Explora × Ucademy"></div>`;
     case "contenido": {
       const caja = s.numero || s.texto || s.imagen;
       return `<div class="cabeza">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${sub(s.antetitulo)}</div>` +
@@ -107,7 +108,8 @@ function cuaderno(s) {
       return etiqueta(s.etiqueta) + si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`) + `<div class="cifra">${esc(s.cifra)}</div>` +
         texto(s.texto) + si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
     case "cierre":
-      return deco + etiqueta(s.etiqueta) + titulo(s.titulo) + texto(s.texto) + nota(s.nota);
+      return deco + etiqueta(s.etiqueta) + titulo(s.titulo) + texto(s.texto) +
+        si(s.cta, `<div class="cta-bloque"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}</div>`) + nota(s.nota);
   }
 }
 
