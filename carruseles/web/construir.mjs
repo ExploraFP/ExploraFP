@@ -74,6 +74,16 @@ const cambiar = (de, a) => { if (!h.includes(de)) throw new Error("No encuentro 
 cambiar('<button data-v="ideas" aria-current="true">Ideas</button>',
   '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producir</button>\n      <button data-v="hechos">Hechos</button>');
 cambiar('<button data-v="inventario">Inventario</button>', '');
+// Marca de la herramienta: icono de slides en abanico + nombre en Gravity + logo real de Explora × Ucademy.
+cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <span>Explora <em>×</em> Ucademy</span>\n    </div>',
+  '<div class="mark mk"><svg class="mk-ico" viewBox="0 0 44 44" aria-hidden="true">' +
+  '<rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/>' +
+  '<rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/>' +
+  '<rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/>' +
+  '<rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/>' +
+  '<rect x="22.5" y="19.5" width="14" height="2" rx="1" fill="#85E159" transform="rotate(9 29 21)"/>' +
+  '<rect x="22.5" y="23.5" width="9" height="2" rx="1" fill="#85E159" transform="rotate(9 29 21)"/></svg>' +
+  '<span class="mk-txt"><b>Banco de carruseles</b><img src="logos/blanco.webp" alt="Explora × Ucademy"></span></div>');
 cambiar('<div class="toast" id="toast" role="status" aria-live="polite"></div>',
   '<div class="toast" id="toast" role="status" aria-live="polite"></div>\n<div class="est-editor" id="est-editor" hidden></div>');
 cambiar("<script>\nconst CATALOGO", `<style>\n${readFileSync(join(WEB, "estudio.css"), "utf8")}\n${readFileSync(join(WEB, "matriz.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);

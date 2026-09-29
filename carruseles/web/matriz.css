@@ -134,3 +134,13 @@
 .mz-sincarr{color:var(--ink3);font-size:14px;margin:4px 0 14px}
 @media(max-width:760px){.mz-tira-s{flex-basis:72vw}}
 .mz-ancha .dclose{margin-left:auto}
+
+/* marca de la herramienta */
+@font-face{font-family:"Gravity Condensed";src:url("fuentes/GravityCondensed.otf");font-weight:100 900}
+.mark.mk{align-items:center;gap:10px}
+.mk-ico{width:40px;height:40px;flex-shrink:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.mk-txt{display:flex;flex-direction:column;gap:3px;line-height:1}
+.mark.mk b{font-family:"Gravity Condensed","Archivo",sans-serif;font-weight:700;font-size:25px;letter-spacing:0;color:#fff;line-height:.9}
+.mk-txt img{height:13px;width:auto;opacity:.85;align-self:flex-start}
+.mark.mk b{text-transform:none}
+.mark.mk .mk-txt{border:0;padding:0;margin:0;text-transform:none;letter-spacing:0}
