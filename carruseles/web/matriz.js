@@ -253,8 +253,7 @@ function barraBusqueda() {
     '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn' + (v ? ' activo' : '') + '" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + actual + '<span class="mz-fflecha" aria-hidden="true">▾</span></button>' +
     (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button type="button" class="mz-limpia" id="mz-limpiar" title="Quitar filtros" aria-label="Quitar filtros">✕</button>' : '') + '</div>' +
-    '</div></section>' +
-    '<div class="mz-bajobusca"><button type="button" class="mz-idearap" id="mz-idea-rapida">✏️ Anota tu idea</button></div>';
+    '</div></section>';
 }
 function barraMatriz() {
   const RAMASF = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
@@ -321,7 +320,7 @@ function vMatriz() {
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => (b.propia ? 1 : 0) - (a.propia ? 1 : 0) || (a.propia && b.propia ? b.id.localeCompare(a.id) : ordenar(a, b)));
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
   let h = cabecera('Matriz de contenido', '',
-    [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
+    [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]).replace(/<\/div>$/, '<button type="button" class="mz-idearap" id="mz-idea-rapida">✏️ Anota tu idea</button></div>');
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += sugerencias();
   h += barraBusqueda();

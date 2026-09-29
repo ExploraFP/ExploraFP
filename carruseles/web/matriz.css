@@ -604,3 +604,7 @@
   .mz-tabla td.c-obj{padding-top:6px}
 }
 @media (max-width:720px){ .mz-vistabar .mz-todas{padding:0} }
+/* «Anota tu idea» en la cabecera de la Matriz, a la derecha de las cifras */
+.vhead .vstats{margin-left:auto}
+.vhead .mz-idearap{flex:none}
+@media (max-width:760px){ .vhead .mz-idearap{width:100%;justify-content:center} }

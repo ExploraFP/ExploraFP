@@ -97,7 +97,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   sus meses; `momentosActivos`/`deTemporada`). Solo ideas por hacer, BOFU primero, variadas (máx. 2 por objetivo y por alcance);
   flechas ‹ › con contador (1/N) pasan de tanda sin repetir.
 - Ideas añadidas: `web/ideas-extra.json` (20 de Autoridad A01-A20 y 22 de Tendencia V01-V22, solo con datos verificados) y
-  «+ Idea rápida» (colección `ideas` del db + localStorage; salen primero y con etiqueta «Tuya»). Tendencias con etiqueta 📈.
+  «✏️ Anota tu idea» (botón en la cabecera de la Matriz, junto a las cifras; Sandra no lo quería bajo el buscador) (colección `ideas` del db + localStorage; salen primero y con etiqueta «Tuya»). Tendencias con etiqueta 📈.
   `web/objetivos-revisados.json`: revisión de las 108 de Autoridad (quedan 20; el resto a Informativo/Lead magnet/Viral).
   Ojo A08 (becas): el dato D13 tiene fuentes contradictorias; confirmar en el BOE antes de publicar.
 - Titulares = HOOKS (pedido de Sandra): `web/hooks.json` {id: hook} reescribe el titular de cada idea como gancho de portada
