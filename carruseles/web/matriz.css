@@ -473,3 +473,7 @@
   .views{width:100%;overflow-x:auto;justify-content:space-between}
   .views button{padding:8px 12px;font-size:13.5px;white-space:nowrap}
 }
+
+/* etiqueta de objetivo (debajo del titular, junto a la formación) */
+.mz-objtag{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--ink);background:var(--surface2);border:1px solid var(--line2);border-radius:999px;padding:2px 9px;line-height:1.35}
+.mz-sugpie{gap:6px}

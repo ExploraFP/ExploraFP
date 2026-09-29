@@ -192,9 +192,8 @@ function sugerencias() {
     (nT > 1 ? '<div class="mz-sugnav"><button id="mz-sug-ant" aria-label="Anteriores">‹</button><span>' + pos + '/' + nT + '</span><button id="mz-sug-sig" aria-label="Siguientes">›</button></div>' : '') + '</header>' +
     '<div class="mz-sugfichas">' + cinco.map(it => {
       return '<article class="mz-sugficha"><button class="mz-sugabrir" data-abrir="' + it.id + '">' +
-        '<span class="mz-sugobj">' + esc(objEt(objDe(it))) + '</span>' +
         '<b>' + esc(tituloIdea(it)) + '</b>' +
-        '<span class="mz-sugpie">' + chipAlcance(it) + '</span></button>' +
+        '<span class="mz-sugpie"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span>' + chipAlcance(it) + '</span></button>' +
         '<button class="btn mini pri" data-producir="' + it.id + '">Producir</button></article>'; }).join('') + '</div></section>';
 }
 
