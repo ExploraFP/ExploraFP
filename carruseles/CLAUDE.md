@@ -71,7 +71,8 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   el banco desde otra sesión, volver a leer el artifact y guardar aquí su HTML antes de reconstruir.
 - `web/estudio.js` + `web/estudio.css`: pestaña Producir, editor, control de calidad y exportación a PNG.
 - `web/matriz.js` + `web/matriz.css`: pestaña Matriz (antes Ideas) y Hechos (junta Hechos + Inventario).
-  Matriz agrupada por tema (el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),
+  Matriz agrupada por tema, cada tema una fila grande plegada (se abren solos al buscar o filtrar por tema); casillas para
+  seleccionar ideas y «Producir (N)» arriba. Tema = el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),
   filtros Estado/Tema/Alcance rama-ciclo/Cifras, estado de cada idea (por hacer · en producción · hecha, con su
   carrusel enlazado) y «parecidas» (≥2 palabras con contenido en común y ≥60 %). Lo parecido ya hecho se le pasa
   a Claude al generar para que busque otro ángulo. En Hechos, «Unir a una idea» enlaza un hecho suelto a su idea.

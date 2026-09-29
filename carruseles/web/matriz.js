@@ -165,7 +165,16 @@ function filaMatriz(it) {
       (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') + '</td>' +
     '<td class="c-est">' + celdaEstado(it) + '</td></tr>';
 }
+// Los temas empiezan cerrados; se abren solos al buscar o filtrar por tema.
+function temaAbierto(t) {
+  if (t in S.abiertos) return S.abiertos[t];
+  return !!(S.q && S.q.trim()) || !!S.f.tema;
+}
+let MZ_CLAVE = '';
 function vMatriz() {
+  // al cambiar la búsqueda o el tema, se olvida qué temas se habían abierto o cerrado a mano
+  const clave = (S.q || '') + '|' + (S.f.tema || '');
+  if (clave !== MZ_CLAVE) { MZ_CLAVE = clave; S.abiertos = {}; }
   TOKENS = trozosBusqueda();
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort(ordenar);
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
@@ -181,7 +190,8 @@ function vMatriz() {
   h += '<p class="cuenta">' + filas.length + (filas.length === 1 ? ' idea' : ' ideas') +
     (foco ? (S.t.solo ? ' solo de ' + esc(foco) + ' · <button class="linkbtn" data-solo="0">ver también las transversales que le sirven</button>'
                       : ' que sirven para ' + esc(foco) + ' · <button class="linkbtn" data-solo="1">ver solo las de ' + esc(foco) + '</button>') : '') +
-    ' · <button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por tema') + '</button></p>';
+    ' · <button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por tema') + '</button>' +
+    (S.agrupar ? ' · <button class="linkbtn" id="mz-abrirtodos">' + (TEMAS.every(temaAbierto) ? 'Cerrar todos los temas' : 'Abrir todos') + '</button>' : '') + '</p>';
   if (!filas.length) return h + '<div class="vacio"><b>Nada con esos filtros</b>Prueba a quitar alguno, o cambia el estado a «Todas».</div>';
   const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><thead><tr>' +
     '<th class="c-chk"></th><th class="c-alc">Alcance</th><th class="c-idea">Idea</th><th class="c-est">Carrusel</th></tr></thead><tbody>' +
@@ -191,14 +201,18 @@ function vMatriz() {
   return h + TEMAS.filter(t => grupos[t]).map(t => {
     // el progreso cuenta lo que entra en los filtros de alcance, sea cual sea su estado
     const rows = grupos[t], todas = IDEAS.filter(i => i.tema === t && pasaMatriz(i, 'estado')), hechas_ = todas.filter(i => estadoIdea(i) === 'hecha').length;
-    const porHacer = rows.filter(i => estadoIdea(i) === 'porhacer').length;
-    const abierto = S.abiertos[t] !== false;
-    return '<section class="mz-grupo"><header><button class="mz-plegar" data-tema-plegar="' + esc(t) + '" aria-expanded="' + abierto + '">' +
-      '<span class="mz-flecha">' + (abierto ? '▾' : '▸') + '</span><h3>' + esc(t) + '</h3></button>' +
-      '<span class="cuantos">' + rows.length + '</span>' +
-      '<span class="mz-mini-prog" title="' + hechas_ + ' de ' + todas.length + ' hechas"><i style="width:' + (100 * hechas_ / todas.length).toFixed(0) + '%"></i></span>' +
-      '<span class="mz-hechas">' + hechas_ + ' de ' + todas.length + ' hechas</span>' +
-      (porHacer ? '<label class="mz-todas"><input type="checkbox" data-selec-tema="' + esc(t) + '"' +
+    const porHacer = rows.filter(i => estadoIdea(i) === 'porhacer').length, enProd = rows.filter(i => estadoIdea(i) === 'produccion').length;
+    const abierto = temaAbierto(t), pct = todas.length ? 100 * hechas_ / todas.length : 0;
+    const nSel = rows.filter(i => SELEC.has(i.id)).length;
+    return '<section class="mz-grupo' + (abierto ? ' abierto' : '') + '"><header>' +
+      '<button class="mz-plegar" data-tema-plegar="' + esc(t) + '" aria-expanded="' + abierto + '">' +
+      '<span class="mz-flecha" aria-hidden="true">' + (abierto ? '▾' : '▸') + '</span>' +
+      '<span class="mz-tema-txt"><h3>' + esc(t) + '</h3><small>' + rows.length + (rows.length === 1 ? ' idea' : ' ideas') +
+        (porHacer ? ' · ' + porHacer + ' por hacer' : '') + (enProd ? ' · <b class="p">' + enProd + ' en producción</b>' : '') +
+        (nSel ? ' · <b class="s">' + nSel + ' seleccionadas</b>' : '') + '</small></span>' +
+      '<span class="mz-tema-prog"><span class="mz-mini-prog"><i style="width:' + pct.toFixed(0) + '%"></i></span>' +
+        '<span class="mz-hechas">' + hechas_ + '/' + todas.length + ' hechas</span></span></button>' +
+      (abierto && porHacer ? '<label class="mz-todas"><input type="checkbox" data-selec-tema="' + esc(t) + '"' +
         (rows.filter(i => estadoIdea(i) === 'porhacer').every(i => SELEC.has(i.id)) ? ' checked' : '') + '> Seleccionar las ' + porHacer + '</label>' : '') +
       '</header>' + (abierto ? tabla(rows) : '') + '</section>';
   }).join('');
@@ -370,7 +384,8 @@ refrescarEstudio = function () {
 document.addEventListener('click', e => {
   const t = e.target;
   const pl = t.closest('[data-tema-plegar]');
-  if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = S.abiertos[k] === false; render(); return; }
+  if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = !temaAbierto(k); render(); return; }
+  if (t.id === 'mz-abrirtodos') { const v = !TEMAS.every(temaAbierto); TEMAS.forEach(k => S.abiertos[k] = v); render(); return; }
   const en = t.closest('[data-enlazar]'); if (en) { e.stopImmediatePropagation(); abrirEnlazar(en.dataset.enlazar); return; }
   const ea = t.closest('[data-enlazar-a]'); if (ea) { e.stopImmediatePropagation(); enlazar(ea.dataset.clave, ea.dataset.enlazarA); return; }
   const pd = t.closest('[data-producir]');
