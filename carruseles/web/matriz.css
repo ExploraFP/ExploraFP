@@ -220,3 +220,21 @@
 .mz-busca select{flex:0 1 220px;font:inherit;font-size:14px;padding:11px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--surface);color:var(--ink)}
 .mz-busca .linkbtn{font:inherit;font-size:13px;background:none;border:0;padding:0;color:var(--brand);text-decoration:underline;cursor:pointer}
 @media(max-width:760px){.mz-busca input[type=search]{flex-basis:100%}.mz-busca select{flex:1 1 40%}}
+
+/* sugerencias del mes */
+.mz-sug{margin:0 0 22px}
+.mz-sug>header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px}
+.mz-sug h3{margin:0;font-family:"Gravity Condensed","Archivo",sans-serif;font-weight:700;font-size:24px;color:var(--brand2)}
+.mz-sug header p{margin:3px 0 0;font-size:13px;color:var(--ink3)}
+.mz-sug .linkbtn{font:inherit;font-size:13px;background:none;border:0;padding:0;color:var(--brand);text-decoration:underline;cursor:pointer;white-space:nowrap}
+.mz-sugfichas{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.mz-sugficha{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--sh1)}
+.mz-sugabrir{flex:1;display:flex;flex-direction:column;gap:9px;background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.mz-sugabrir:hover b{color:var(--brand)}
+.mz-sugobj{font-size:12px;font-weight:600;color:var(--ink2)}
+.mz-sugficha b{font-family:var(--f-display);font-size:16.5px;line-height:1.25;font-weight:600;color:var(--ink)}
+.mz-sugpie{margin-top:auto;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.mz-sugpie small{font-size:11.5px;color:var(--ink3)}
+.mz-sugficha .btn{width:100%}
+@media(max-width:1100px){.mz-sugfichas{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.mz-sugfichas{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -24px;padding:0 24px 6px;scroll-padding-left:24px}.mz-sugficha{flex:0 0 72%;scroll-snap-align:start}}

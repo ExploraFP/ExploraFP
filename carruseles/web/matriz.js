@@ -156,6 +156,44 @@ function selMatriz(dim, etiqueta, todas, opciones, fn) {
       return '<option value="' + esc(o[0]) + '"' + (sel === o[0] ? ' selected' : '') + (n ? '' : ' disabled') + '>' + esc(o[1]) + ' (' + n + ')</option>'; }).join('') +
     '</select></label>';
 }
+/* ---------- sugerencias: 5 fichas según el calendario académico ----------
+   Momentos del banco (CATALOGO.momentos, con sus meses) → ideas por hacer de ese momento, con más peso a las que más
+   empujan (BOFU) y variadas: como mucho 2 del mismo objetivo y del mismo alcance. «Otras 5» pasa a las siguientes. */
+S.sugOff = S.sugOff || 0;
+function candidatasMes() {
+  const acts = momentosActivos().map(m => m.k);
+  const peso = it => (it.funnel === 'BOFU' ? 3 : it.funnel === 'MOFU' ? 2 : 1) + (it.momentos.indexOf(acts[0]) >= 0 ? 1 : 0);
+  return IDEAS.filter(it => estadoIdea(it) === 'porhacer' && deTemporada(it))
+    .sort((a, b) => peso(b) - peso(a) || a.id.localeCompare(b.id));
+}
+function tandasDeCinco() {
+  // reparte las candidatas en tandas de 5 sin repetir, cada tanda variada en objetivo y alcance
+  let pool = candidatasMes().slice(); const tandas = [];
+  while (pool.length) {
+    const out = [], nObj = {}, nAlc = {};
+    pool.forEach(it => { if (out.length >= 5) return; const o = objDe(it), a = it.alcTxt;
+      if ((nObj[o] || 0) >= 2 || (nAlc[a] || 0) >= 2) return; out.push(it); nObj[o] = (nObj[o] || 0) + 1; nAlc[a] = (nAlc[a] || 0) + 1; });
+    pool.forEach(it => { if (out.length < 5 && out.indexOf(it) < 0) out.push(it); });
+    tandas.push(out); pool = pool.filter(it => out.indexOf(it) < 0);
+  }
+  return tandas;
+}
+function elegirCinco() { const t = tandasDeCinco(); return t.length ? t[S.sugOff % t.length] : []; }
+function sugerencias() {
+  const cinco = elegirCinco(); if (!cinco.length) return '';
+  const acts = momentosActivos(), total = candidatasMes().length;
+  return '<section class="mz-sug"><header><div><h3>Para producir ahora · ' + esc(MESES[mesActual()]) + '</h3>' +
+    '<p>' + acts.map(m => esc(m.n)).join(' · ') + '</p></div>' +
+    (total > 5 ? '<button class="linkbtn" id="mz-sug-otras">Otras 5</button>' : '') + '</header>' +
+    '<div class="mz-sugfichas">' + cinco.map(it => {
+      const m = acts.find(x => it.momentos.indexOf(x.k) >= 0);
+      return '<article class="mz-sugficha"><button class="mz-sugabrir" data-abrir="' + it.id + '">' +
+        '<span class="mz-sugobj">' + esc(objEt(objDe(it))) + '</span>' +
+        '<b>' + esc(tituloIdea(it)) + '</b>' +
+        '<span class="mz-sugpie">' + chipAlcance(it) + (m ? '<small>' + esc(m.n) + '</small>' : '') + '</span></button>' +
+        '<button class="btn mini pri" data-producir="' + it.id + '">Producir</button></article>'; }).join('') + '</div></section>';
+}
+
 /* Buscador: una caja y dos desplegables. «Formación» junta lo que antes eran Enfoque, Rama y Ciclo. */
 function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? 'c:' + S.f.form : S.f.rama ? 'r:' + S.f.rama : ''; }
 function barraBusqueda() {
@@ -234,6 +272,7 @@ function vMatriz() {
   let h = cabecera('Matriz de contenido', '',
     [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
+  h += sugerencias();
   h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.length;
   h += '<p class="cuenta">' + (filtrando ? '<b>' + filas.length + '</b>' + (filas.length === 1 ? ' idea' : ' ideas') + ' · ' : '') +
@@ -459,6 +498,7 @@ document.addEventListener('click', e => {
   const t = e.target;
   const pl = t.closest('[data-tema-plegar]');
   if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = !temaAbierto(k); render(); return; }
+  if (t.id === 'mz-sug-otras') { S.sugOff++; render(); return; }
   if (t.id === 'mz-abrirtodos') { const v = !OBJ_ORDEN.every(temaAbierto); OBJ_ORDEN.forEach(k => S.abiertos[k] = v); render(); return; }
   const en = t.closest('[data-enlazar]'); if (en) { e.stopImmediatePropagation(); abrirEnlazar(en.dataset.enlazar); return; }
   const ea = t.closest('[data-enlazar-a]'); if (ea) { e.stopImmediatePropagation(); enlazar(ea.dataset.clave, ea.dataset.enlazarA); return; }
