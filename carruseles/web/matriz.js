@@ -204,25 +204,31 @@ function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? '
 /* Orden fijo pedido por Sandra: Sanidad, Tecnología, Comercio, Administración, Educación Infantil y, al final, los dobles.
    Sin títulos de sección: cada rama se distingue por un fondo suave. */
 const FORM_ORDEN = [
-  ['Sanidad', '#E4F6F2', ['TCAE', 'Anatomía Patológica y Citodiagnóstico', 'Dietética', 'Laboratorio Clínico y Biomédico']],
-  ['Tecnología', '#E7EFFD', ['SMR', 'ASIR', 'DAM', 'DAW']],
-  ['Comercio', '#FFF0E3', ['Comercio Internacional', 'Marketing y Publicidad', 'Transporte y Logística']],
-  ['Administración', '#F0EBFB', ['Gestión Administrativa', 'Administración y Finanzas', 'Asistencia a la Dirección']],
-  ['', '#FCEAF2', ['Educación Infantil']],
-  ['', '#F1F2EE', ['Doble Laboratorio + Anatomía', 'Doble DAM + DAW', 'Doble Comercio Int. + Transporte', 'Doble Admin. y Finanzas + Asistencia']]];
+  ['Sanidad', '#E4F6F2', ['TCAE', 'Anatomía Patológica y Citodiagnóstico', 'Dietética', 'Laboratorio Clínico y Biomédico'], '#14A38B'],
+  ['Tecnología', '#E7EFFD', ['SMR', 'ASIR', 'DAM', 'DAW'], '#3B6FE0'],
+  ['Comercio', '#FFF0E3', ['Comercio Internacional', 'Marketing y Publicidad', 'Transporte y Logística'], '#E0782B'],
+  ['Administración', '#F0EBFB', ['Gestión Administrativa', 'Administración y Finanzas', 'Asistencia a la Dirección'], '#7B5BD6'],
+  ['', '#FCEAF2', ['Educación Infantil'], '#D6558F'],
+  ['', '#F1F2EE', ['Doble Laboratorio + Anatomía', 'Doble DAM + DAW', 'Doble Comercio Int. + Transporte', 'Doble Admin. y Finanzas + Asistencia'], '#7A8074']];
 function barraBusqueda() {
   const v = valorFormacion();
-  const o = (val, txt, bg) => '<option value="' + esc(val) + '"' + (bg ? ' style="background:' + bg + '"' : '') + (v === val ? ' selected' : '') + '>' + esc(txt) + '</option>';
+  // desplegable propio (el nativo de Mac no pinta colores): botón + lista
+  let actual = 'Todas las formaciones';
+  const o = (val, txt, bg, dot) => { if (v === val) actual = txt;
+    return '<button type="button" class="mz-fopt' + (v === val ? ' on' : '') + '" data-forma-v="' + esc(val) + '"' + (bg ? ' style="--fbg:' + bg + ';--fdot:' + dot + '"' : '') + '>' +
+      (dot ? '<i></i>' : '') + esc(txt) + '</button>'; };
   const hay = new Set(IDEAS.map(i => i.alcTxt));
   // primero las ramas, luego los ciclos en el mismo orden y al final los dobles
-  const opciones = FORM_ORDEN.filter(g => g[0]).map(g => o('r:' + g[0], g[0], g[1])).join('') +
-    FORM_ORDEN.map(g => g[2].filter(c => hay.has(c)).map(c => o('c:' + c, c, g[1])).join('')).join('');
-  return '<h3 class="mz-todas-tit">Todas las ideas</h3><div class="mz-busca"><div class="mz-buscabarra">' +
+  const opciones = FORM_ORDEN.filter(g => g[0]).map(g => o('r:' + g[0], g[0], g[1], g[3])).join('') + '<hr>' +
+    FORM_ORDEN.map(g => g[2].filter(c => hay.has(c)).map(c => o('c:' + c, c, g[1], g[3])).join('')).join('');
+  const lista = o('', 'Todas las formaciones') + o('gen', 'Transversales (todas las ramas)') + '<hr>' + opciones;
+  return '<section class="mz-buscazona"><h3 class="mz-todas-tit">Todas las ideas</h3><div class="mz-busca"><div class="mz-buscabarra">' +
     '<svg class="mz-lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
     '<input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca una idea: convalidar, TCAE, sueldo…" aria-label="Buscar en la matriz">' +
-    '<span class="mz-sep"></span><select data-forma aria-label="Formación">' + o('', 'Todas las formaciones') + o('gen', 'Transversales (todas las ramas)') + opciones + '</select></div>' +
+    '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + esc(actual) + '<span aria-hidden="true">▾</span></button>' +
+    (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div></div>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button class="linkbtn" id="mz-limpiar">Quitar filtros</button>' : '') +
-    '</div>';
+    '</div></section>';
 }
 function barraMatriz() {
   const RAMASF = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
@@ -518,6 +524,12 @@ document.addEventListener('click', e => {
   const t = e.target;
   const pl = t.closest('[data-tema-plegar]');
   if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = !temaAbierto(k); render(); return; }
+  if (t.closest('#mz-fbtn')) { S.formaAbierta = !S.formaAbierta; render(); return; }
+  const fv = t.closest('[data-forma-v]');
+  if (fv) { const v = fv.dataset.formaV; S.formaAbierta = false; S.f.enf = ''; S.f.rama = ''; S.f.form = ''; S.t.solo = true;
+    if (v === 'gen') S.f.enf = 'generico'; else if (v.slice(0, 2) === 'r:') S.f.rama = v.slice(2); else if (v.slice(0, 2) === 'c:') S.f.form = v.slice(2);
+    render(); return; }
+  if (S.formaAbierta && !t.closest('.mz-flista')) { S.formaAbierta = false; render(); }
   if (t.id === 'mz-sug-sig') { S.sugOff++; render(); return; }
   if (t.id === 'mz-sug-ant') { S.sugOff--; render(); return; }
   if (t.id === 'mz-abrirtodos') { const v = !OBJ_ORDEN.every(temaAbierto); OBJ_ORDEN.forEach(k => S.abiertos[k] = v); render(); return; }

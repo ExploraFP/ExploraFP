@@ -78,7 +78,8 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   un objetivo sugerido por reglas (`OBJ_REGLAS`), Sandra lo cambia en la ficha (se guarda en ops/<id>.objetivo). Al producir se
   elige objetivo y CTA; van al carrusel (`objetivo`, `cta`) y al prompt (`OBJ_PROMPT` en estudio.js). Buscador en una línea: caja + «Formación» (todas /
   transversales / una rama / un ciclo; junta los antiguos Enfoque, Rama y Ciclo). Sin filtro de estado (Sandra: eso se ve en Producción). Cifras ya no se muestra. Orden de formaciones fijo (`FORM_ORDEN`): primero las 4 ramas, luego los ciclos de Sanidad, Tecnología,
-  Comercio, Administración, Educación Infantil y dobles; sin títulos, cada rama con un fondo suave. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
+  Comercio, Administración, Educación Infantil y dobles; sin títulos, cada rama con un fondo suave. Es un desplegable propio (el
+  <select> nativo de Mac no pinta colores). El buscador va en un bloque verde oscuro («Todas las ideas») para que destaque. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
   Cada grupo es una fila grande plegada (se abren solos al buscar o filtrar por tema); casillas para
   seleccionar ideas y «Producir (N)» arriba. Ficha mínima (pedido de Sandra: nada de más): rama / ciclo, las slides en fila
   horizontal y un solo botón (Producir o Abrir carrusel); si no hay carrusel y hay uno parecido hecho, lo enseña. Tema = el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),
