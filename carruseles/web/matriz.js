@@ -254,7 +254,7 @@ function barraBusqueda() {
     (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button type="button" class="mz-limpia" id="mz-limpiar" title="Quitar filtros" aria-label="Quitar filtros">✕</button>' : '') + '</div>' +
     '</div></section>' +
-    '<div class="mz-bajobusca"><button type="button" class="mz-idearap" id="mz-idea-rapida">+ Idea rápida</button></div>';
+    '<div class="mz-bajobusca"><button type="button" class="mz-idearap" id="mz-idea-rapida">✏️ Anota tu idea</button></div>';
 }
 function barraMatriz() {
   const RAMASF = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
@@ -652,7 +652,7 @@ function abrirIdeaRapida() {
   const opts = ['<option value="">Transversal</option>'].concat(FORM_RAMAS.map(r => '<option value="' + r[0] + '"' + (IDEA_R.formacion === r[0] ? ' selected' : '') + '>' + r[0] + '</option>'))
     .concat(FORM_CICLOS.flatMap(g => g[1]).map(c => '<option value="' + esc(c) + '"' + (IDEA_R.formacion === c ? ' selected' : '') + '>' + esc(c) + '</option>')).join('');
   $('#onb').hidden = false;
-  $('#onb').innerHTML = '<div class="onbcaja mz-rapida" role="dialog" aria-modal="true" aria-label="Idea rápida"><header><k>Idea rápida</k><h2>Apunta una idea en 10 segundos</h2></header><div class="cuerpo">' +
+  $('#onb').innerHTML = '<div class="onbcaja mz-rapida" role="dialog" aria-modal="true" aria-label="Anota tu idea"><header><k>Anota tu idea</k><h2>✏️ Apúntala en 10 segundos</h2></header><div class="cuerpo">' +
     '<label class="mz-cta">Titular (el hook)<input type="text" id="ir-tit" maxlength="90" placeholder="Ej.: Expectativa vs realidad de tu primer día de TCAE"></label>' +
     '<label class="mz-cta">De qué va<textarea id="ir-dentro" rows="3" placeholder="La tendencia o el formato y cómo lo adaptarías"></textarea></label>' +
     '<h4 class="mz-sub">Objetivo</h4><div class="est-opciones">' + OBJ_ORDEN.map(k => '<button class="est-op" data-ir-obj="' + k + '" aria-pressed="' + (IDEA_R.objetivo === k) + '">' + esc(objEt(k)) + '</button>').join('') + '</div>' +
