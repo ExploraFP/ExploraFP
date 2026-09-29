@@ -428,3 +428,27 @@
 .mz-tabla td.c-est .mz-hecho{margin-left:auto}
 @media(max-width:760px){.mz-tema-txt small{display:block;margin:0}.mz-ctapill{margin-top:6px}}
 @media(max-width:760px){.mz-ctapill{border-radius:10px}.mz-tabla td.c-idea{padding-top:4px}}
+/* ===== aire en la matriz ===== */
+.vhead.vcab,.vhead{margin-bottom:30px;padding-bottom:22px}
+.mz-sug{margin:0 0 34px}
+.mz-sug>header{margin-bottom:16px}
+.mz-sugfichas{gap:16px}
+.mz-sugficha{padding:16px 16px 14px;gap:12px;border-radius:14px}
+.mz-sugabrir{gap:9px}
+.mz-sugficha b{font-size:15px}
+.mz-buscazona{margin:0 0 26px}
+.mz-grupo{margin:0 0 14px}
+.mz-grupo.abierto{margin:0 0 22px}
+.mz-plegar{padding:20px 0 20px 22px;gap:16px}
+.mz-grupo>header{padding-right:22px}
+.mz-tema-txt{line-height:1.5}
+.mz-tema-txt h3{margin-bottom:4px}
+.mz-tabla td{padding:16px 16px}
+.mz-gancho{margin-top:5px}
+.cuenta{margin:-12px 0 14px}
+@media(max-width:760px){
+  .mz-sug{margin-bottom:26px}
+  .mz-sugficha{flex-basis:78%}
+  .mz-plegar{padding:16px 0 16px 16px}
+  .mz-grupo>header{padding-right:14px}
+}
