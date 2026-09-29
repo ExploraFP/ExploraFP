@@ -392,3 +392,39 @@
 .vstat b small{font-size:15px}
 .vstat span{font-size:11.5px}
 @media(max-width:760px){.vhead h2{font-size:31px}.vstat b{font-size:23px}}
+/* ===== pulido de la matriz ===== */
+/* tabla: columnas ajustadas y titulares con peso */
+.mz-tabla{table-layout:fixed;width:100%}
+.mz-tabla td{padding:13px 14px;vertical-align:middle}
+.mz-tabla td.c-chk{width:52px;padding-right:0}
+.mz-tabla td.c-alc{width:210px}
+.mz-tabla td.c-est{width:200px;text-align:right}
+.mz-tabla tbody tr{transition:background .12s}
+.mz-tabla tbody tr:hover td{background:var(--surface2)}
+.mz-tabla .celda{color:var(--ink);font-family:var(--f-display);font-size:15.5px;font-weight:600;line-height:1.3;text-align:left}
+.mz-tabla tr.mz-hecha .celda{color:var(--ink2)}
+.mz-tabla .celda:hover{color:var(--brand)}
+.mz-gancho{font-size:13px;color:var(--ink3);margin-top:3px}
+.mz-grupo .tablawrap{background:var(--surface)}
+/* cabecera de cada objetivo: descripción corta + CTA en pastilla */
+.mz-tema-txt small{display:block}
+.mz-ctapill{display:inline-flex;align-items:baseline;gap:6px;align-self:flex-start;margin-top:6px;font-size:12.5px;color:var(--brand2);background:var(--limaSoft);border:1px solid var(--limaLine);border-radius:999px;padding:3px 11px}
+.mz-ctapill b{font-size:10.5px;letter-spacing:.6px;color:var(--brand)}
+.mz-plegar h3{font-size:22px}
+.mz-flecha{font-size:13px;color:var(--brand)}
+/* sugerencias: botón más ligero */
+.mz-sugficha .btn.pri{background:var(--surface);color:var(--brand2);border:1.5px solid var(--brand2)}
+.mz-sugficha .btn.pri:hover{background:var(--brand2);color:#fff}
+.mz-sugficha{transition:box-shadow .15s, transform .15s}
+.mz-sugficha:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+@media(max-width:760px){
+  .mz-tabla td.c-alc,.mz-tabla td.c-est{width:auto;text-align:left}
+  .mz-ctapill{font-size:12px}
+}
+.mz-tabla td.c-alc{width:150px}
+.mz-tema-txt{display:block}
+.mz-tema-txt small{display:inline;margin-right:10px}
+.mz-ctapill{display:inline-flex;margin-top:4px;vertical-align:middle}
+.mz-tabla td.c-est .mz-hecho{margin-left:auto}
+@media(max-width:760px){.mz-tema-txt small{display:block;margin:0}.mz-ctapill{margin-top:6px}}
+@media(max-width:760px){.mz-ctapill{border-radius:10px}.mz-tabla td.c-idea{padding-top:4px}}

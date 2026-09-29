@@ -451,7 +451,7 @@ function vProducir() {
     (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el que falta' : 'los ' + sinGenerar + ' que faltan') + '</button>' : '') +
     '<span id="est-lote-hueco">' + botonLote() + '</span>' +
     '<span class="est-progreso">' + esc(EST.progreso || '') + '</span>' +
-    '<button class="linkbtn est-tema-libre" id="est-ver-temas">+ Un tema que no está en la matriz</button>' +
+    '' +
     (!EST.sample && EST.conectado ? '<span class="est-pista">Generar con Claude solo funciona abriendo la herramienta en claude.ai.</span>' : '') +
     '</div>';
   if (EST.verTemas) h += '<div class="est-libre"><textarea id="est-temas" rows="2" placeholder="Escribe el tema. Uno por línea para hacer varios."></textarea>' +

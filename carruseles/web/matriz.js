@@ -313,11 +313,11 @@ function vMatriz() {
     return '<section class="mz-grupo' + (abierto ? ' abierto' : '') + '"><header>' +
       '<button class="mz-plegar" data-tema-plegar="' + esc(t) + '" aria-expanded="' + abierto + '">' +
       '<span class="mz-flecha" aria-hidden="true">' + (abierto ? '▾' : '▸') + '</span>' +
-      '<span class="mz-tema-txt"><h3>' + esc(objEt(t)) + '</h3>' + (() => { const x = [O.pista + ' · CTA: «' + O.cta + '»'];
+      '<span class="mz-tema-txt"><h3>' + esc(objEt(t)) + '</h3>' + (() => { const x = [esc(O.pista)];
         if (rows.length !== todas.length) x.push(rows.length + (rows.length === 1 ? ' coincide' : ' coinciden'));
         if (enProd) x.push('<b class="p">' + enProd + ' en producción</b>');
         if (nSel) x.push('<b class="s">' + nSel + (nSel === 1 ? ' seleccionada' : ' seleccionadas') + '</b>');
-        return x.length ? '<small>' + x.join(' · ') + '</small>' : ''; })() + '</span>' +
+        return '<small>' + x.join(' · ') + '</small><span class="mz-ctapill"><b>CTA</b> ' + esc(O.cta) + '</span>'; })() + '</span>' +
       '<span class="mz-tema-prog"><span class="mz-mini-prog"><i style="width:' + pct.toFixed(0) + '%"></i></span>' +
         '<span class="mz-hechas">' + hechas_ + '/' + todas.length + ' hechas</span></span></button>' +
       (abierto && porHacer ? '<label class="mz-todas"><input type="checkbox" data-selec-tema="' + esc(t) + '"' +
