@@ -46,3 +46,6 @@
 .mz-elegir:hover{border-color:var(--brand);background:var(--limaSoft)}
 .mz-elegir b{display:block;font-family:var(--f-display);font-size:14px;font-weight:600;color:var(--ink)}
 .mz-elegir small{font-size:11.5px;color:var(--ink3)}
+
+.cuenta .linkbtn{background:none;border:0;padding:0;color:var(--brand);font:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.cuenta .linkbtn:hover{color:var(--ink)}

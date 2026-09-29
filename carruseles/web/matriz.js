@@ -186,14 +186,15 @@ function vMatriz() {
   if (!S.agrupar) return h + tabla(filas);
   const grupos = {}; filas.forEach(it => (grupos[it.tema] = grupos[it.tema] || []).push(it));
   return h + TEMAS.filter(t => grupos[t]).map(t => {
-    const rows = grupos[t], todas = IDEAS.filter(i => i.tema === t), hechas_ = todas.filter(i => estadoIdea(i) === 'hecha').length;
+    // el progreso cuenta lo que entra en los filtros de alcance, sea cual sea su estado
+    const rows = grupos[t], todas = IDEAS.filter(i => i.tema === t && pasaMatriz(i, 'estado')), hechas_ = todas.filter(i => estadoIdea(i) === 'hecha').length;
     const porHacer = rows.filter(i => estadoIdea(i) === 'porhacer').length;
     const abierto = S.abiertos[t] !== false;
     return '<section class="mz-grupo"><header><button class="mz-plegar" data-tema-plegar="' + esc(t) + '" aria-expanded="' + abierto + '">' +
       '<span class="mz-flecha">' + (abierto ? '▾' : '▸') + '</span><h3>' + esc(t) + '</h3></button>' +
       '<span class="cuantos">' + rows.length + '</span>' +
       '<span class="mz-mini-prog" title="' + hechas_ + ' de ' + todas.length + ' hechas"><i style="width:' + (100 * hechas_ / todas.length).toFixed(0) + '%"></i></span>' +
-      '<span class="mz-hechas">' + hechas_ + '/' + todas.length + ' hechas</span>' +
+      '<span class="mz-hechas">' + hechas_ + ' de ' + todas.length + ' hechas</span>' +
       (porHacer ? '<button class="btn mini" data-producir-tema="' + esc(t) + '">Producir ' + (porHacer === 1 ? 'la que falta' : 'las ' + porHacer) + '</button>' : '') +
       '</header>' + (abierto ? tabla(rows) : '') + '</section>';
   }).join('');
