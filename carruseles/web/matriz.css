@@ -557,3 +557,14 @@
 .mz-ircheck input{width:18px;height:18px;accent-color:var(--brand)}
 .mz-rapida textarea,.mz-rapida select{font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink)}
 :root[data-theme="dark"] .mz-tend{color:#D9B8FA;background:#2E2140;border-color:#4E3A6B}
+/* sugerencias: flechas centradas respecto al título */
+.mz-sug>header{align-items:center}
+.mz-sugnav{align-self:center}
+/* cabeceras de pestaña otro 15-20 % más pequeñas (misma estructura) */
+.vhead.vcab,.vhead{padding:4px 0 16px;margin-bottom:24px}
+.vhead h2{font-size:32px}
+.vstat{min-width:80px;padding:7px 12px 7px;gap:2px;border-radius:11px}
+.vstat b{font-size:23px}
+.vstat b small{font-size:13px}
+.vstat span{font-size:11px}
+@media(max-width:760px){.vhead h2{font-size:27px}.vstat b{font-size:20px}}
