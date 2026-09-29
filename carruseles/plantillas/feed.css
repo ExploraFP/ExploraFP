@@ -71,3 +71,10 @@ ol.lista-feed li { font-size: 46px; }
 .titulo em.rodeado .ovalo { inset: .02em -.18em -.02em -.2em; }
 .titulo:has(em.rodeado) { line-height: 1.14; }
 .con-foto-feed .cabecera img { filter: drop-shadow(0 1px 8px rgba(0,0,0,.6)); }
+
+/* Contenido con foto: foto algo más baja y texto con el mismo peso que el resto de slides */
+.con-foto-feed .foto-feed { height: 52%; }
+.con-foto-feed .titulo { font-size: 112px; }
+.con-foto-feed .texto { font-size: 42px; margin-top: 26px; }
+.con-foto-feed .cabecera img { filter: drop-shadow(0 2px 10px rgba(0,0,0,.45)); }
+.con-foto-feed .contenido { justify-content: flex-start; padding-top: calc(52% * 1350 / 1080 + 70px); }

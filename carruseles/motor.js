@@ -165,6 +165,8 @@ export function crearMotor(R) {
   function html(plantilla, color, s, i, total, etiquetaCinta) {
     s._color = color;
     const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
+    // en feed, una slide de contenido con foto lleva la foto arriba: el logo va en blanco encima
+    const fotoArriba = plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil";
     const fondoNotas = s.tipo === "portada" && !fondoFoto && (s.marco === "notas" || (plantilla === "capas" && !s.imagen));
     const marca = (c) => `<img src="${logo(c)}" alt="Explora × Ucademy">`;
     const pag = `${si(etiquetaCinta, `${esc(etiquetaCinta)} · `)}${dos(i + 1)}`;
@@ -172,7 +174,7 @@ export function crearMotor(R) {
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
   ${R.cabeza(plantilla)}
   </head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
-  <div class="cabecera"><span>${pag}</span>${marca(LOGO_FONDO[color])}</div>
+  <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : LOGO_FONDO[color])}</div>
   <div class="contenido">${fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
   <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
