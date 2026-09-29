@@ -72,7 +72,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita
   el banco desde otra sesión, volver a leer el artifact y guardar aquí su HTML antes de reconstruir.
 - `web/estudio.js` + `web/estudio.css`: pestaña Producir, editor, control de calidad y exportación a PNG.
-- `web/matriz.js` + `web/matriz.css`: pestaña Matriz (antes Ideas) y Hechos (junta Hechos + Inventario).
+- `web/matriz.js` + `web/matriz.css`: pestaña Matriz (antes Ideas) e Inventario (antes «Hechos»; junta Hechos + Inventario del banco).
   Matriz agrupada por OBJETIVO (pedido de Sandra): Viral · Autoridad · Informativo · Lead magnet, de menos a más push, cada uno
   con su CTA por defecto (`OBJETIVOS` en matriz.js; Informativo = «Escríbenos tu ciclo por DM y te decimos tu caso»). Cada idea trae
   un objetivo sugerido por reglas (`OBJ_REGLAS`), Sandra lo cambia en la ficha (se guarda en ops/<id>.objetivo). Al producir se

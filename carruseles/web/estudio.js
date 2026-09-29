@@ -708,7 +708,7 @@ document.addEventListener('click', e => {
     EST.forzar = null;
     c.estado = 'hecho'; c.fecha = fISO(hoy()); guardarC(c);
     if (c.idea && IMAP[c.idea]) guardar(c.idea, {hecho: true, fecha: c.fecha});
-    toast('Hecho. Lo tienes en «Hechos»'); pintarEditor(true); return; }
+    toast('Hecho. Lo tienes en «Inventario»'); pintarEditor(true); return; }
 }, true);
 document.addEventListener('input', e => {
   const t = e.target; if (!EST.abierto) return;

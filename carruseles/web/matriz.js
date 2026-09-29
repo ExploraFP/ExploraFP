@@ -332,10 +332,10 @@ function vTodoHecho() {
   let lista = todoHecho();
   if (q) lista = lista.filter(x => norm(x.titulo).indexOf(q) >= 0);
   const todos = todoHecho();
-  let h = cabecera('Hechos', 'Todo lo publicado en un sitio: lo de la herramienta y lo que enlazas de Drive, unido a su idea.',
+  let h = cabecera('Inventario', 'Todo lo publicado en un sitio: lo de la herramienta y lo que enlazas de Drive, unido a su idea.',
     [[todos.length, 'publicados', 'ok'], [todos.filter(x => !x.idea).length, 'sin idea']]);
   h += '<div class="est-acciones"><button class="btn pri" id="nuevoCarrusel">+ Añadir uno ya publicado</button>' +
-    (Object.values(EST.lista).some(c => c.estado === 'hecho') ? '<button class="btn" data-lote="hechos">Descargar los hechos con la herramienta</button>' : '') +
+    (Object.values(EST.lista).some(c => c.estado === 'hecho') ? '<button class="btn" data-lote="hechos">Descargar todos los PNG</button>' : '') +
     '<input type="search" id="buscar" class="invbusca" value="' + esc(S.q) + '" placeholder="Buscar…" aria-label="Buscar en hechos">' +
     '<span class="est-progreso">' + esc(EST.progreso || '') + '</span></div>';
   if (!lista.length) return h + '<div class="vacio"><b>' + (q ? 'Nada con esa búsqueda' : 'Todavía no hay nada') + '</b>' +
