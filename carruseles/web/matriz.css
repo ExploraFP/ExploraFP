@@ -608,3 +608,30 @@
 .vhead .vstats{margin-left:auto}
 .vhead .mz-idearap{flex:none}
 @media (max-width:760px){ .vhead .mz-idearap{width:100%;justify-content:center} }
+/* marca de hecha / en producción solo en el borde izquierdo de la fila (antes salía en cada celda: rayas lima) */
+.mz-tabla tr.mz-hecha td,.mz-tabla tr.mz-produccion td{background:none}
+.mz-tabla tr.mz-hecha td:first-child{box-shadow:inset 3px 0 0 var(--ok)}
+.mz-tabla tr.mz-produccion td:first-child{box-shadow:inset 3px 0 0 var(--limaLine)}
+.mz-tabla tr.mz-sel td{background:var(--limaSoft)}
+/* columnas: casilla · formación · objetivo · idea · estado (objetivo pegado a la idea, estado estrecho) */
+.mz-tabla td.c-obj{width:1%;padding-right:6px}
+.mz-tabla td.c-est{width:1%;white-space:nowrap;text-align:left}
+.mz-tabla td.c-est .mz-hecho{margin-left:0}
+.mz-vistabar{padding-left:26px}
+.mz-vistabar .mz-todas{margin-left:0;padding:0}
+.mz-vbder{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+@media (max-width:720px){
+  .mz-vistabar{padding-left:18px}
+  .mz-vbder{margin-left:0;width:100%}
+  .mz-tabla td.c-est{width:100% !important}
+}
+.mz-tabla td.c-obj{width:150px;padding-left:4px;padding-right:4px}
+.mz-tabla td.c-est{width:140px}
+@media (max-width:720px){
+  .mz-tabla td.c-obj,.mz-tabla td.c-est{width:auto !important}
+  .mz-tabla td.c-alc,.mz-tabla td.c-obj{display:inline-block;width:auto !important;padding-right:0}
+  .mz-tabla tr.mz-hecha td:first-child,.mz-tabla tr.mz-produccion td:first-child{box-shadow:none}
+  .mz-tabla tr.mz-hecha{box-shadow:inset 3px 0 0 var(--ok)}
+  .mz-tabla tr.mz-produccion{box-shadow:inset 3px 0 0 var(--limaLine)}
+}
+@media (max-width:720px){ .mz-tabla td.c-alc,.mz-tabla td.c-obj{vertical-align:middle} .mz-tabla td.c-obj{padding-top:8px} }
