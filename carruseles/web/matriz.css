@@ -635,3 +635,12 @@
   .mz-tabla tr.mz-produccion{box-shadow:inset 3px 0 0 var(--limaLine)}
 }
 @media (max-width:720px){ .mz-tabla td.c-alc,.mz-tabla td.c-obj{vertical-align:middle} .mz-tabla td.c-obj{padding-top:8px} }
+/* matriz más estrecha: el estado (Hecho) no se va tan lejos de la idea */
+.mz-ancho{max-width:1160px;margin:0 auto}
+/* «Anota tu idea»: primera fila de la tabla, donde aparece la idea nueva */
+.mz-tabla tr.mz-filanueva td{padding:10px 14px;background:var(--surface2)}
+.mz-filanueva .mz-idearap{width:100%;justify-content:flex-start;box-shadow:none;border-radius:10px;padding:10px 14px;background:var(--surface)}
+.mz-filanueva .mz-idearap small{font-weight:500;color:var(--ink3);font-size:12.5px;margin-left:6px}
+@media (max-width:720px){ .mz-tabla tr.mz-filanueva td{display:block;padding:10px} .mz-filanueva .mz-idearap small{display:none} }
+.mz-tablavista>.mz-filanueva{padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--line)}
+@media (max-width:720px){ .mz-tablavista>.mz-filanueva{padding:10px} }

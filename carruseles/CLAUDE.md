@@ -75,7 +75,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - `web/matriz.js` + `web/matriz.css`: pestaña Matriz (antes Ideas) e Inventario (antes «Hechos»; junta Hechos + Inventario del banco).
   Matriz = UNA tabla siempre (pedido de Sandra), con «vistas» en pestañas: Todas · 🔮 Viral · 🏆 Autoridad · 📌 Informativo · 🧲 Lead magnet
   (cada una con su cuenta; se combinan con Formación y búsqueda). En una vista: el CTA sale una vez arriba, «N hechas» y «Seleccionar las N»;
-  en Todas hay columna de objetivo, justo antes de la idea (orden: casilla · formación · objetivo · idea · estado). «Seleccionar las N» a la izquierda, CTA y cifras a la derecha. Hecha / en producción = solo una raya en el borde izquierdo de la fila (antes salía en cada celda). 60 filas y «Ver 60 más» (`S.vista`, `S.limite`). Objetivos (antes eran grupos plegados): Viral · Autoridad · Informativo · Lead magnet, de menos a más push, cada uno
+  en Todas hay columna de objetivo, justo antes de la idea (orden: casilla · formación · objetivo · idea · estado). «Seleccionar las N» a la izquierda y el CTA de la vista a la derecha; sin cifras repetidas (ya están en la cabecera y en las pestañas). Matriz con ancho máx. 1160 px (`.mz-ancho`) para que «Hecho» no quede lejísimos. Hecha / en producción = solo una raya en el borde izquierdo de la fila (antes salía en cada celda). 60 filas y «Ver 60 más» (`S.vista`, `S.limite`). Objetivos (antes eran grupos plegados): Viral · Autoridad · Informativo · Lead magnet, de menos a más push, cada uno
   con su CTA por defecto (`OBJETIVOS` en matriz.js; Informativo = «Escríbenos tu ciclo por DM y te decimos tu caso»). Cada idea trae
   un objetivo sugerido por reglas (`OBJ_REGLAS`), Sandra lo cambia en la ficha (se guarda en ops/<id>.objetivo). Al producir se
   elige objetivo y CTA; van al carrusel (`objetivo`, `cta`) y al prompt (`OBJ_PROMPT` en estudio.js). Buscador en una línea: caja + «Formación» (todas /
@@ -97,7 +97,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   sus meses; `momentosActivos`/`deTemporada`). Solo ideas por hacer, BOFU primero, variadas (máx. 2 por objetivo y por alcance);
   flechas ‹ › con contador (1/N) pasan de tanda sin repetir.
 - Ideas añadidas: `web/ideas-extra.json` (20 de Autoridad A01-A20 y 22 de Tendencia V01-V22, solo con datos verificados) y
-  «✏️ Anota tu idea» (botón en la cabecera de la Matriz, junto a las cifras; Sandra no lo quería bajo el buscador) (colección `ideas` del db + localStorage; salen primero y con etiqueta «Tuya»). Tendencias con etiqueta 📈.
+  «✏️ Anota tu idea» (franja arriba de la tabla, donde aparece la idea nueva; ni bajo el buscador ni en la cabecera, a Sandra no le gustaba) (colección `ideas` del db + localStorage; salen primero y con etiqueta «Tuya»). Tendencias con etiqueta 📈.
   `web/objetivos-revisados.json`: revisión de las 108 de Autoridad (quedan 20; el resto a Informativo/Lead magnet/Viral).
   Ojo A08 (becas): el dato D13 tiene fuentes contradictorias; confirmar en el BOE antes de publicar.
 - Titulares = HOOKS (pedido de Sandra): `web/hooks.json` {id: hook} reescribe el titular de cada idea como gancho de portada

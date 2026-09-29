@@ -311,7 +311,8 @@ function temaAbierto(t) {
   return !!(S.q && S.q.trim()) || !!S.f.tema || !!S.f.enf || !!S.f.form || !!S.f.rama;
 }
 let MZ_CLAVE = '';
-function vMatriz() {
+function vMatriz() { return '<div class="mz-ancho">' + vMatrizDentro() + '</div>'; }
+function vMatrizDentro() {
   // al cambiar la búsqueda o el tema, se olvida qué temas se habían abierto o cerrado a mano
   const clave = (S.q || '') + '|' + (S.f.tema || '') + '|' + (S.f.enf || '') + '|' + (S.f.form || '') + '|' + (S.f.rama || '');
   if (clave !== MZ_CLAVE) { MZ_CLAVE = clave; S.abiertos = {}; }
@@ -320,7 +321,7 @@ function vMatriz() {
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => (b.propia ? 1 : 0) - (a.propia ? 1 : 0) || (a.propia && b.propia ? b.id.localeCompare(a.id) : ordenar(a, b)));
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
   let h = cabecera('Matriz de contenido', '',
-    [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]).replace(/<\/div>$/, '<button type="button" class="mz-idearap" id="mz-idea-rapida">✏️ Anota tu idea</button></div>');
+    [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += sugerencias();
   h += barraBusqueda();
@@ -332,16 +333,13 @@ function vMatriz() {
     OBJ_ORDEN.map(k => vistaBtn(k, esc(objEt(k)), cuentaObj[k] || 0)).join('') + '</div>';
   const enVista = S.vista ? filas.filter(it => objDe(it) === S.vista) : filas;
   const porHacerV = enVista.filter(i => estadoIdea(i) === 'porhacer');
-  const hechasV = enVista.filter(i => estadoIdea(i) === 'hecha').length;
   // selección a la izquierda (a la altura de las casillas); CTA y cifras a la derecha
   h += '<div class="mz-vistabar">' +
     (porHacerV.length ? '<label class="mz-todas"><input type="checkbox" data-selec-vista="1"' + (porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + '> Seleccionar las ' + porHacerV.length + '</label>' : '') +
-    '<div class="mz-vbder">' +
-    (S.vista ? '<span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span>' : '<span class="mz-vistainfo">' + enVista.length + ' ideas</span>') +
-    '<span class="mz-vistainfo">' + hechasV + ' hechas</span></div></div>';
+    (S.vista ? '<div class="mz-vbder"><span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span></div>' : '') + '</div>';
   if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra vista, otra formación o quita la búsqueda.</div>';
   const lim = S.limite || 60, vis = enVista.slice(0, lim);
-  h += '<div class="tablawrap mz-tablavista"><table class="matriz mz-tabla"><tbody>' + vis.map(filaMatriz).join('') + '</tbody></table></div>';
+  h += '<div class="tablawrap mz-tablavista"><div class="mz-filanueva"><button type="button" class="mz-idearap" id="mz-idea-rapida">✏️ Anota tu idea <small>sale aquí arriba, en la matriz</small></button></div><table class="matriz mz-tabla"><tbody>' + vis.map(filaMatriz).join('') + '</tbody></table></div>';
   if (enVista.length > lim) h += '<div class="mz-vermas"><button class="btn" id="mz-vermas">Ver ' + Math.min(60, enVista.length - lim) + ' más · quedan ' + (enVista.length - lim) + '</button></div>';
   return h;
   const grupos = {}; filas.forEach(it => { const k = objDe(it); (grupos[k] = grupos[k] || []).push(it); });
