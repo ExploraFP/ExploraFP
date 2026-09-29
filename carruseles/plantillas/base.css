@@ -125,3 +125,5 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .cta-bloque small { font-family: var(--cuerpo); font-weight: 700; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; }
 .l-cuaderno .cabecera { justify-content: space-between; }
 .postit { top: 150px; }
+/* post-it: más pequeño y arriba, para que no roce el titular */
+.postit { top: 130px; right: 70px; width: 180px; transform: rotate(8deg); }
