@@ -6,6 +6,7 @@
    El diseño lo pinta el mismo motor que usa el generador de PNG del repositorio
    (MOTOR_JS, MOTOR_CSS y FOTOS los incrusta el constructor). */
 
+let PARECIDOS_PARA_PROMPT = null;
 const EST = {
   plantilla: 'feed', color: 'verde01',
   lista: {},            // id → carrusel
@@ -180,6 +181,12 @@ function promptCarrusel(c) {
   } else {
     L.push('EL TEMA');
     L.push('- ' + (c.tema || c.titulo));
+  }
+  const parecidos = typeof PARECIDOS_PARA_PROMPT === 'function' ? PARECIDOS_PARA_PROMPT(c) : [];
+  if (parecidos.length) {
+    L.push('');
+    L.push('YA PUBLICADOS Y PARECIDOS (no repitas su ángulo ni sus titulares; busca otro enfoque):');
+    parecidos.forEach(p => L.push('- ' + p));
   }
   L.push('');
   if (datos.length) {

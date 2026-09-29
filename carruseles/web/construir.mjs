@@ -72,13 +72,14 @@ const motor = readFileSync(join(RAIZ, "motor.js"), "utf8").replace(/^export /gm,
 let h = readFileSync(join(WEB, "banco-base.html"), "utf8");
 const cambiar = (de, a) => { if (!h.includes(de)) throw new Error("No encuentro en el banco: " + de.slice(0, 60)); h = h.replace(de, () => a); };
 cambiar('<button data-v="ideas" aria-current="true">Ideas</button>',
-  '<button data-v="ideas" aria-current="true">Ideas</button>\n      <button data-v="producir">Producir</button>\n      <button data-v="hechos">Hechos</button>');
+  '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producir</button>\n      <button data-v="hechos">Hechos</button>');
+cambiar('<button data-v="inventario">Inventario</button>', '');
 cambiar('<div class="toast" id="toast" role="status" aria-live="polite"></div>',
   '<div class="toast" id="toast" role="status" aria-live="polite"></div>\n<div class="est-editor" id="est-editor" hidden></div>');
-cambiar("<script>\nconst CATALOGO", `<style>\n${readFileSync(join(WEB, "estudio.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
+cambiar("<script>\nconst CATALOGO", `<style>\n${readFileSync(join(WEB, "estudio.css"), "utf8")}\n${readFileSync(join(WEB, "matriz.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
 const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== */\n${motor}\n` +
   `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\n` +
-  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n</script>\n`;
+  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\nrender();\n</script>\n`;
 cambiar("</body></html>", script + "</body></html>");
 writeFileSync(join(DIST, "banco-de-carruseles.html"), h);
 

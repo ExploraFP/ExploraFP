@@ -69,7 +69,12 @@ Si un YAML falla, el render sigue con los demás y lo lista al final.
 Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de carruseles").
 - `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita
   el banco desde otra sesión, volver a leer el artifact y guardar aquí su HTML antes de reconstruir.
-- `web/estudio.js` + `web/estudio.css`: pestañas Producir y Hechos, editor y exportación a PNG.
+- `web/estudio.js` + `web/estudio.css`: pestaña Producir, editor, control de calidad y exportación a PNG.
+- `web/matriz.js` + `web/matriz.css`: pestaña Matriz (antes Ideas) y Hechos (junta Hechos + Inventario).
+  Matriz agrupada por tema (el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),
+  filtros Estado/Tema/Alcance rama-ciclo/Cifras, estado de cada idea (por hacer · en producción · hecha, con su
+  carrusel enlazado) y «parecidas» (≥2 palabras con contenido en común y ≥60 %). Lo parecido ya hecho se le pasa
+  a Claude al generar para que busque otro ángulo. En Hechos, «Unir a una idea» enlaza un hecho suelto a su idea.
 - `motor.js`: el motor de diseño, compartido por render.js y la web → lo que se ve en la web es lo que sale en PNG.
 - `node web/construir.mjs` → `web/dist/` (HTML + fotos, logos, trazos, fuentes). Publicar con root `web/dist`,
   `files` = `web/dist/archivos.json`, capacidades `{db, downloads, sample}`.
