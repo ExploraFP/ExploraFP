@@ -533,8 +533,10 @@ async function pngDe(c, i) {
     const nodo = d.querySelector('.slide');
     await d.fonts.ready;
     const fuentes = (CSS_EXP.base.match(/@font-face\s*\{[^}]*\}/g) || []).join('\n');
-    const url = await EST_H2I.toPng(nodo, {width: 1080, height: 1350, pixelRatio: 1, cacheBust: false, fontEmbedCSS: fuentes});
-    return await (await fetch(url)).blob();
+    // toBlob directo: sin pasar por fetch() de una URL data:, que algunas políticas de seguridad bloquean
+    const blob = await EST_H2I.toBlob(nodo, {width: 1080, height: 1350, pixelRatio: 1, cacheBust: false, fontEmbedCSS: fuentes});
+    if (!blob || !blob.size) throw {code: 'png', message: 'la slide ' + (i + 1) + ' salió vacía'};
+    return blob;
   } finally { f.remove(); }
 }
 /* La plataforma no deja descargar .zip desde una herramienta publicada (solo imágenes, PDF,
@@ -553,15 +555,30 @@ async function descargarLote(lista) {
       const c = lista[k], base = (lista.length > 1 ? String(k + 1).padStart(2, '0') + '-' : '') + nombreBase(c);
       for (let i = 0; i < c.slides.length; i++) {
         EST.progreso = 'Descargando ' + (++hecho) + ' de ' + total + '…'; toast(EST.progreso); actualizarProgreso();
-        await down.save({filename: base + '-' + String(i + 1).padStart(2, '0') + '.png', data: await pngDe(c, i)});
+        let png;
+        try { png = await pngDe(c, i); } catch (e) { throw {code: 'png', message: 'no pude crear la imagen de la slide ' + (i + 1) + (e && e.message ? ': ' + e.message : '')}; }
+        await guardarArchivo(down, base + '-' + String(i + 1).padStart(2, '0') + '.png', png);
       }
       if (c.copy) { EST.progreso = 'Descargando ' + (++hecho) + ' de ' + total + '…'; actualizarProgreso();
-        await down.save({filename: base + '-texto.txt', data: c.copy}); }
+        await guardarArchivo(down, base + '-texto.txt', c.copy); }
     }
     toast(lista.length > 1 ? lista.length + ' carruseles descargados' : 'Carrusel descargado');
   } catch (e) {
-    toast(e && e.code === 'declined' ? 'Descarga cancelada' : 'No he podido terminar la descarga' + (e && e.code ? ' (' + e.code + ')' : ''));
+    console.error('descarga', e);
+    toast(e && e.code === 'declined' ? 'Descarga cancelada'
+      : e && e.code === 'png' ? 'Fallo al crear el PNG: ' + e.message
+      : 'No he podido terminar la descarga' + (e && e.code ? ' (' + e.code + (e.message ? ': ' + e.message : '') + ')' : e && e.message ? ' (' + e.message + ')' : ''));
   } finally { EST.descargando = false; EST.progreso = ''; actualizarProgreso(); }
+}
+/* La plataforma solo deja una confirmación abierta y limita las seguidas: si dice rate_limited, espera y reintenta. */
+async function guardarArchivo(down, filename, data) {
+  for (let intento = 0; ; intento++) {
+    try { return await down.save({filename: filename, data: data}); }
+    catch (e) {
+      if (e && e.code === 'rate_limited' && intento < 8) { await new Promise(r => setTimeout(r, 1200 * (intento + 1))); continue; }
+      throw e;
+    }
+  }
 }
 function actualizarProgreso() { document.querySelectorAll('.est-progreso').forEach(el => { el.textContent = EST.progreso || ''; }); }
 const descargar = c => descargarLote([c]);

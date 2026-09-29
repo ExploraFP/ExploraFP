@@ -74,6 +74,13 @@ const cambiar = (de, a) => { if (!h.includes(de)) throw new Error("No encuentro 
 cambiar('<button data-v="ideas" aria-current="true">Ideas</button>',
   '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producir</button>\n      <button data-v="hechos">Hechos</button>');
 cambiar('<button data-v="inventario">Inventario</button>', '');
+// Icono de la pestaña: el mismo abanico de slides de la cabecera.
+const ICONO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#1B3620"/>' +
+  '<rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/>' +
+  '<rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/>' +
+  '<rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/>' +
+  '<rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/></svg>';
+cambiar('<title>Banco de carruseles</title>', '<title>Banco de carruseles</title>\n<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' + encodeURIComponent(ICONO) + '">');
 // Marca de la herramienta: icono de slides en abanico + nombre en Gravity + logo real de Explora × Ucademy.
 cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <span>Explora <em>×</em> Ucademy</span>\n    </div>',
   '<div class="mark mk"><svg class="mk-ico" viewBox="0 0 44 44" aria-hidden="true">' +
