@@ -488,3 +488,8 @@
 @media(max-width:760px){.mz-fsel{flex:1 1 auto}.mz-limpia{margin-left:8px}}
 /* sugerencias: siempre dos filas, objetivo arriba y formación abajo */
 .mz-sugpie{flex-direction:column;align-items:flex-start;gap:6px}
+
+/* etiquetas de formación con emoji en vez del punto */
+.chip.con-emoji::before{display:none}
+.chip-emo{font-style:normal;margin-right:5px;font-size:1.05em;line-height:1}
+.chip-emo{margin-right:0}.chip.con-emoji{align-items:center;gap:5px}

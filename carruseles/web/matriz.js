@@ -199,6 +199,20 @@ function sugerencias() {
 
 /* Buscador: una caja y dos desplegables. «Formación» junta lo que antes eran Enfoque, Rama y Ciclo. */
 function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? 'c:' + S.f.form : S.f.rama ? 'r:' + S.f.rama : ''; }
+/* Emojis de cada formación: los del Playbook de Notion (Wiki Ventas › Playbook), iconos de cada página.
+   Sustituyen al circulito de la etiqueta. Ramas, Transversal y «varios ciclos» no tienen emoji allí: siguen con su punto. */
+const FORM_EMOJI = {
+  'Gestión Administrativa': '🖇️', 'Administración y Finanzas': '📊', 'Asistencia a la Dirección': '📋', 'Doble Admin. y Finanzas + Asistencia': '💼',
+  'Marketing y Publicidad': '🎨', 'Comercio Internacional': '🌎', 'Transporte y Logística': '🚚', 'Doble Comercio Int. + Transporte': '✈️',
+  'SMR': '👾', 'DAM': '🎮', 'DAW': '💻', 'ASIR': '📟', 'Doble DAM + DAW': '🤖',
+  'TCAE': '🏥', 'Laboratorio Clínico y Biomédico': '🧪', 'Anatomía Patológica y Citodiagnóstico': '💀', 'Dietética': '🥗', 'Doble Laboratorio + Anatomía': '🫀',
+  'Educación Infantil': '🍎'};
+const _chipAlcanceBase = chipAlcance;
+chipAlcance = function (it, filtra) {
+  const h = _chipAlcanceBase(it, filtra), e = FORM_EMOJI[it.alcTxt];
+  return e ? h.replace(/class="chip /, 'class="chip con-emoji ').replace(/>([^<]*)<\/(span|button)>$/, '><i class="chip-emo">' + e + '</i>$1</$2>') : h;
+};
+
 /* Orden fijo pedido por Sandra: primero las ramas; luego los ciclos de Sanidad, Tecnología, Comercio, Administración,
    Educación Infantil y, al final, los dobles. Cada opción es LA MISMA etiqueta (chip) que sale en filas y fichas
    (mismas clases r-<rama> t-<tipo> del banco), para que el color y la forma sean siempre coherentes. */
@@ -214,7 +228,8 @@ function barraBusqueda() {
   const v = valorFormacion();
   const hay = {}; IDEAS.forEach(i => { if (i.alcTipo === 'formacion') hay[i.alcTxt] = ramaKey(i); });
   let actual = '<span class="mz-ftodas">Todas las formaciones</span>';
-  const chip = (txt, cls) => '<span class="chip ' + cls + '">' + esc(txt) + '</span>';
+  const chip = (txt, cls) => FORM_EMOJI[txt] ? '<span class="chip con-emoji ' + cls + '"><i class="chip-emo">' + FORM_EMOJI[txt] + '</i>' + esc(txt) + '</span>'
+    : '<span class="chip ' + cls + '">' + esc(txt) + '</span>';
   const o = (val, html) => { if (v === val) actual = html;
     return '<button type="button" class="mz-fopt' + (v === val ? ' on' : '') + '" data-forma-v="' + esc(val) + '">' + html + '</button>'; };
   const lista = o('', '<span class="mz-ftodas">Todas las formaciones</span>') + o('gen', chip('Transversal', 'r-trans t-transversal')) + '<hr>' +
