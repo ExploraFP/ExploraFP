@@ -206,7 +206,9 @@ const FORM_EMOJI = {
   'Marketing y Publicidad': '🎨', 'Comercio Internacional': '🌎', 'Transporte y Logística': '🚚', 'Doble Comercio Int. + Transporte': '✈️',
   'SMR': '👾', 'DAM': '🎮', 'DAW': '💻', 'ASIR': '📟', 'Doble DAM + DAW': '🤖',
   'TCAE': '🏥', 'Laboratorio Clínico y Biomédico': '🧪', 'Anatomía Patológica y Citodiagnóstico': '💀', 'Dietética': '🥗', 'Doble Laboratorio + Anatomía': '🫀',
-  'Educación Infantil': '🍎'};
+  'Educación Infantil': '🍎',
+  // no vienen del Playbook: los pidió Sandra
+  'Transversal': '📚', 'DAM y DAW': '🎮💻'};
 const _chipAlcanceBase = chipAlcance;
 chipAlcance = function (it, filtra) {
   const h = _chipAlcanceBase(it, filtra), e = FORM_EMOJI[it.alcTxt];
