@@ -7,6 +7,8 @@
    (MOTOR_JS, MOTOR_CSS y FOTOS los incrusta el constructor). */
 
 let PARECIDOS_PARA_PROMPT = null;
+/* carruseles de muestra (no se guardan): enseñan cómo quedará una plantilla antes de generar */
+const PREVIAS = {};
 const EST = {
   plantilla: 'feed', color: 'verde01',
   lista: {},            // id → carrusel
@@ -84,7 +86,7 @@ function mini(c, i, extra) {
 /* rellena los iframes pendientes y los escala al ancho de su caja */
 function pintarMinis(raiz) {
   (raiz || document).querySelectorAll('.est-mini iframe').forEach(f => {
-    const c = EST.lista[f.dataset.c]; if (!c) return;
+    const c = EST.lista[f.dataset.c] || PREVIAS[f.dataset.c]; if (!c) return;
     const doc = docSlide(c, +f.dataset.i);
     if (f._doc !== doc) { f.srcdoc = doc; f._doc = doc; }
     const w = f.parentElement.clientWidth; if (w) f.style.transform = 'scale(' + (w / 1080) + ')';
@@ -373,39 +375,51 @@ function botonesEstilo() {
         '<i style="background:' + c.hex + '"></i>' + esc(c.nombre) + '</button>').join('') + '</div></div>' +
   '</div>';
 }
+/* muestra de cómo quedará: la portada con el titular real en la plantilla y el color elegidos */
+function resaltarTitular(t) {
+  t = String(t || '').replace(/[*«»"]/g, '').trim();
+  if (/\*/.test(t)) return t;
+  const ps = t.split(/\s+/), vacias = /^(el|la|los|las|un|una|de|del|y|o|a|en|con|para|por|que|qué|no|tu|te|lo|se|es|su)$/i;
+  let k = -1, largo = 0;
+  ps.forEach((p, i) => { const l = p.replace(/[^\wáéíóúñ]/gi, '').length; if (!vacias.test(p) && l > largo) { largo = l; k = i; } });
+  if (k >= 0) ps[k] = '*' + ps[k].replace(/([.,:;?!]+)$/, '') + '*' + (ps[k].match(/[.,:;?!]+$/) || [''])[0];
+  return ps.join(' ');
+}
+function previa(id, plantilla, color, titulo, etiqueta) {
+  const c = {id: id, plantilla: plantilla, color: color, cinta: '', slides: [{tipo: 'portada', etiqueta: etiqueta || '', titulo: resaltarTitular(titulo)}]};
+  PREVIAS[id] = c; return c;
+}
 function tarjeta(c) {
-  return '<article class="est-tarjeta">' + mini(c, 0, {vacio: c.estado === 'generando' ? 'Claude está escribiendo…' : 'Sin generar todavía'}) +
+  const vista = c.slides.length ? c : previa('p-' + c.id, c.plantilla, c.color, c.titulo || c.tema, c.idea && IMAP[c.idea] ? IMAP[c.idea].tema : '');
+  const estado = c.estado === 'generando' ? 'Claude lo está escribiendo…' : c.estado === 'pendiente' ? 'Así quedará la portada' :
+    c.estado === 'error' ? c.error : '';
+  return '<article class="est-tarjeta' + (c.slides.length ? '' : ' est-previa') + '">' + mini(vista, 0) +
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || c.tema || '(sin título)') + '</h4>' +
-    '<div class="est-tmeta"><span class="chip e-' + c.estado + '">' + esc(EST_ESTADO[c.estado] || c.estado) + '</span>' +
-      '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span>' +
-      (c.idea ? '<span class="mono">' + esc(c.idea) + '</span>' : '') + '</div>' +
+    '<div class="est-tmeta"><span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span></div>' +
+    (estado ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(estado) + '</p>' : '') +
     (c.slides.length && c.estado !== 'generando' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
-    (c.error ? '<p class="est-pista" style="color:var(--danger)">' + esc(c.error) + '</p>' : '') +
     '<div class="est-tpie">' +
       (c.estado === 'generando' ? '<button class="btn" disabled>Generando…</button>'
         : c.slides.length ? '<button class="btn pri" data-est-abrir="' + c.id + '">Revisar</button>'
         : '<button class="btn pri" data-est-generar="' + c.id + '">Generar</button>') +
-      (c.slides.length && c.estado !== 'generando' ? '<button class="btn" data-est-generar="' + c.id + '" title="Pedir a Claude otra versión">Rehacer</button>' : '') +
-      (c.estado !== 'generando' ? '<button class="btn" data-est-quitar="' + c.id + '" title="Quitar de la lista">✕</button>' : '') +
+      (c.estado !== 'generando' ? '<button class="btn" data-est-quitar="' + c.id + '" title="Quitar de Producir">✕</button>' : '') +
     '</div></div></article>';
 }
 function vProducir() {
   const lista = carruselesDe('pendientes');
   const sinGenerar = lista.filter(c => c.estado === 'pendiente' || c.estado === 'error').length;
-  let h = '<div class="vhead"><h2>Producir carruseles</h2>' +
-    '<p>Elige ideas en la pestaña Ideas con «Producir» (o escribe temas aquí), genera y revisa. Todo se guarda solo.</p></div>';
-  h += '<div class="est-pasos"><span class="est-paso"><b>1</b>Elige ideas o escribe temas</span>' +
-    '<span class="est-paso"><b>2</b>Genera con Claude</span><span class="est-paso"><b>3</b>Revisa, descarga y marca hecho</span></div>';
-  h += botonesEstilo();
-  h += '<div class="est-libre"><textarea id="est-temas" rows="2" placeholder="¿Un tema que no está en Ideas? Escríbelo aquí. Uno por línea para hacer varios."></textarea>' +
-    '<button class="btn" id="est-anadir-temas">Añadir temas</button> <button class="btn" data-ir="ideas">Elegir de Ideas</button></div>';
+  let h = '<div class="vhead"><h2>Producir</h2>' +
+    '<p>Lo que has mandado desde la matriz. Genera, revisa y márcalo hecho: aparecerá unido a su idea.</p></div>';
   h += '<div class="est-acciones">' +
-    (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el pendiente' : 'los ' + sinGenerar + ' pendientes') + '</button>' : '') +
+    (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el que falta' : 'los ' + sinGenerar + ' que faltan') + '</button>' : '') +
     '<span id="est-lote-hueco">' + botonLote() + '</span>' +
-    (EST.progreso ? '<span class="est-progreso">' + esc(EST.progreso) + '</span>' : '') +
+    '<span class="est-progreso">' + esc(EST.progreso || '') + '</span>' +
+    '<button class="linkbtn est-tema-libre" id="est-ver-temas">+ Un tema que no está en la matriz</button>' +
     (!EST.sample && EST.conectado ? '<span class="est-pista">Generar con Claude solo funciona abriendo la herramienta en claude.ai.</span>' : '') +
     '</div>';
-  if (!lista.length) return h + '<div class="vacio"><b>La mesa está vacía</b>Ve a Ideas y pulsa «Producir» en las que quieras, o escribe un tema arriba.</div>';
+  if (EST.verTemas) h += '<div class="est-libre"><textarea id="est-temas" rows="2" placeholder="Escribe el tema. Uno por línea para hacer varios."></textarea>' +
+    '<button class="btn" id="est-anadir-temas">Añadir</button></div>';
+  if (!lista.length) return h + '<div class="vacio"><b>No hay nada en producción</b>En la matriz, marca las ideas que quieras y pulsa «Producir».</div>';
   return h + '<div class="est-rejilla">' + lista.map(tarjeta).join('') + '</div>';
 }
 function vHechos() {
@@ -459,6 +473,7 @@ function pintarEditor(todo) {
       '<button class="btn" id="est-cerrar">← Volver</button><h2>' + esc(c.titulo || '(sin título)') + '</h2>' +
       '<select id="est-e-pl" aria-label="Plantilla">' + EST_PLANTILLAS.map(p => '<option value="' + p.id + '"' + (c.plantilla === p.id ? ' selected' : '') + '>' + esc(p.nombre) + '</option>').join('') + '</select>' +
       '<select id="est-e-co" aria-label="Color">' + EST_COLORES.map(x => '<option value="' + x.id + '"' + (c.color === x.id ? ' selected' : '') + '>' + esc(x.nombre) + '</option>').join('') + '</select>' +
+      '<button class="btn" id="est-rehacer" title="Pedir a Claude otra versión">Otra versión</button>' +
       '<button class="btn" id="est-descargar">Descargar slides</button>' +
       '<button class="btn ' + (c.estado === 'hecho' ? 'hecho on' : 'pri') + '" id="est-hecho">' + (c.estado === 'hecho' ? '✓ Hecho' : 'Marcar hecho') + '</button>' +
     '</div><div class="est-ecuerpo"><div class="est-escena">' +
@@ -588,8 +603,9 @@ render = function () {
 document.addEventListener('click', e => {
   const t = e.target;
   const pr = t.closest('[data-producir]');
-  if (pr) { e.stopImmediatePropagation(); const n = mandarAProducir([pr.dataset.producir]);
-    toast(n ? 'En la mesa de Producir' : 'Ya estaba en Producir'); render(); return; }
+  if (pr) { e.stopImmediatePropagation();
+    if (typeof abrirProducir === 'function') { abrirProducir([pr.dataset.producir]); return; }
+    const n = mandarAProducir([pr.dataset.producir]); toast(n ? 'En Producir' : 'Ya estaba en Producir'); render(); return; }
   if (t.id === 'est-producir-filtradas') { const n = mandarAProducir(filtradas().map(i => i.id));
     toast(n ? n + ' ideas en la mesa de Producir' : 'Ya estaban todas en Producir'); render(); return; }
   const pl = t.closest('[data-est-pl]'); if (pl) { EST.plantilla = pl.dataset.estPl; guardarEstilo(); refrescarEstudio(); return; }
@@ -600,6 +616,7 @@ document.addEventListener('click', e => {
     temas.forEach(x => nuevoC({tema: x, titulo: x})); $('#est-temas').value = '';
     toast(temas.length === 1 ? 'Tema añadido' : temas.length + ' temas añadidos'); refrescarEstudio(); return; }
   if (t.id === 'est-generar-todas') { generarTodas(); return; }
+  if (t.id === 'est-ver-temas') { EST.verTemas = !EST.verTemas; refrescarEstudio(); const x = $('#est-temas'); if (x) x.focus(); return; }
   const ge = t.closest('[data-est-generar]'); if (ge) { generar(ge.dataset.estGenerar); return; }
   const qu = t.closest('[data-est-quitar]');
   if (qu) { if (qu.dataset.seguro) { borrarC(qu.dataset.estQuitar); refrescarEstudio(); toast('Quitado'); }
@@ -628,6 +645,7 @@ document.addEventListener('click', e => {
   if (fo) { const s = c.slides[EST.sel]; if (fo.dataset.estFoto) s.imagen = fo.dataset.estFoto; else { delete s.imagen; if (s.marco === 'fondo') delete s.marco; }
     guardarC(c); pintarEditor(true); return; }
   if (t.id === 'est-descargar') { descargar(c); return; }
+  if (t.id === 'est-rehacer') { if (c.estado === 'generando') return; toast('Pidiendo otra versión…'); generar(c.id).then(() => pintarEditor(true)); return; }
   if (t.id === 'est-hecho') {
     if (c.estado === 'hecho') { c.estado = 'borrador'; guardarC(c); toast('Vuelve a Producir'); pintarEditor(true); return; }
     if (!qcMedido(c)) { toast('Espera un segundo: estoy revisando las slides'); pedirQC(c); return; }

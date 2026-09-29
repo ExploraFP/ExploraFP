@@ -89,7 +89,8 @@ function estadoIdea(it) {
 const ESTADOS_IDEA = {porhacer: 'Por hacer', produccion: 'En producción', hecha: 'Hecha'};
 
 /* ---------- filtros ---------- */
-S.f.tema = S.f.tema || ''; S.f.estado = S.f.estado || 'porhacer';
+S.f.tema = S.f.tema || ''; S.f.estado = S.f.estado || '';
+const SELEC = new Set();
 S.agrupar = true; S.abiertos = S.abiertos || {};
 function pasaMatriz(it, salvo) {
   const f = S.f, tokens = trozosBusqueda();
@@ -120,7 +121,7 @@ function barraMatriz() {
   const RAMASF = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
   const CICLOS = Array.from(new Set(IDEAS.filter(i => i.alcTipo === 'formacion' && (!S.f.rama || i.ramaColor === S.f.rama)).map(i => i.alcTxt)))
     .sort((a, b) => a.localeCompare(b, 'es'));
-  const activos = ['rama', 'form', 'cif', 'tema'].some(k => S.f[k]) || S.f.estado !== 'porhacer';
+  const activos = ['rama', 'form', 'cif', 'tema', 'estado'].some(k => S.f[k]);
   return '<div class="barra mz-barra">' +
     selMatriz('estado', 'Estado', 'Todas', Object.keys(ESTADOS_IDEA).map(k => [k, ESTADOS_IDEA[k]]), estadoIdea) +
     selMatriz('tema', 'Tema', 'Todos los temas', TEMAS.map(t => [t, t]), it => it.tema) +
@@ -141,9 +142,10 @@ function celdaEstado(it) {
     return o.url ? '<a class="mz-hecho" href="' + esc(o.url) + '" target="_blank" rel="noopener"><span class="mz-drive">Drive</span><span>Hecho<small>' + esc(fCorta(o.fecha) || 'abrir') + '</small></span></a>'
       : '<span class="chip e-hecho">Hecho</span>';
   }
-  if (e === 'produccion') return '<button class="chip e-borrador" data-est-abrir="' + c.id + '" title="Abrir en Producir">' +
-    (c.estado === 'pendiente' ? 'En la mesa' : c.estado === 'generando' ? 'Generando…' : 'Para revisar') + '</button>';
-  return '<span class="mz-porhacer">Por hacer</span>';
+  if (e === 'produccion') return c.slides && c.slides.length
+    ? '<button class="mz-hecho mz-enprod" data-est-abrir="' + c.id + '"><span class="mz-mini">' + mini(c, 0) + '</span><span>Para revisar<small>en Producir</small></span></button>'
+    : '<button class="mz-enprod-txt" data-ir="producir">' + (c.estado === 'generando' ? 'Generando…' : 'En Producir') + '</button>';
+  return '';
 }
 function chipParecidas(it) {
   const hp = hechosParecidos(it), ip = ideasParecidas(it);
@@ -153,17 +155,15 @@ function chipParecidas(it) {
     (hp.length ? '⚠ Parecido a ' + hp.length + ' hecho' + (hp.length > 1 ? 's' : '') : '≈ ' + ip.length + ' parecida' + (ip.length > 1 ? 's' : '')) + '</button>';
 }
 function filaMatriz(it) {
-  const e = estadoIdea(it);
-  return '<tr class="mz-' + e + (S.sel === it.id ? ' sel' : '') + '">' +
+  const e = estadoIdea(it), sel = SELEC.has(it.id), hp = hechosParecidos(it);
+  const puede = e === 'porhacer';
+  return '<tr class="mz-' + e + (sel ? ' mz-sel' : '') + (S.sel === it.id ? ' sel' : '') + '">' +
+    '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">' : '') + '</td>' +
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(it.titular, TOKENS) + '</button>' +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
-      '<div class="mz-chips"><span class="chip f-' + it.funnel + '" title="' + esc(FN_PISTA[it.funnel]) + '">' + it.funnel + '</span>' + celdaDato(it) + chipParecidas(it) + '</div></td>' +
-    '<td class="c-est">' + celdaEstado(it) + '</td>' +
-    '<td class="c-acc"><div class="acciones">' +
-      (e === 'porhacer' ? '<button class="btn mini pri" data-producir="' + it.id + '">Producir</button>' : '') +
-      (e !== 'hecha' ? '<button class="btn mini" data-hecho="' + it.id + '" title="Ya lo tienes publicado: enlázalo">Ya hecho</button>' : '') +
-    '</div></td></tr>';
+      (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') + '</td>' +
+    '<td class="c-est">' + celdaEstado(it) + '</td></tr>';
 }
 function vMatriz() {
   TOKENS = trozosBusqueda();
@@ -172,8 +172,9 @@ function vMatriz() {
   let h = '<div class="mz-cab"><div><h2>Matriz de contenido</h2>' +
     '<p>' + IDEAS.length + ' ideas · <b>' + n.hecha + '</b> hechas · <b>' + n.produccion + '</b> en producción · <b>' + n.porhacer + '</b> por hacer</p></div>' +
     '<div class="mz-progreso"><i style="width:' + (100 * n.hecha / IDEAS.length).toFixed(1) + '%"></i><i class="p" style="width:' + (100 * n.produccion / IDEAS.length).toFixed(1) + '%"></i></div></div>';
+  h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += '<div class="buscador"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca por palabra: plaza, convalidar, prácticas, sueldo…" aria-label="Buscar en la matriz"></div>';
-  const nAct = ['rama', 'form', 'cif', 'tema'].filter(k => S.f[k]).length + (S.f.estado !== 'porhacer' ? 1 : 0);
+  const nAct = ['rama', 'form', 'cif', 'tema', 'estado'].filter(k => S.f[k]).length;
   h += '<button class="btn mz-verfiltros" id="mz-verfiltros" aria-expanded="' + !!S.verFiltros + '">Filtros' + (nAct ? ' · ' + nAct + ' activos' : '') + '</button>';
   h += '<div class="mz-filtros' + (S.verFiltros ? ' on' : '') + '">' + barraMatriz() + '</div>';
   const foco = S.f.form || (S.f.rama && S.f.rama !== 'Transversal' ? S.f.rama : '');
@@ -183,7 +184,7 @@ function vMatriz() {
     ' · <button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por tema') + '</button></p>';
   if (!filas.length) return h + '<div class="vacio"><b>Nada con esos filtros</b>Prueba a quitar alguno, o cambia el estado a «Todas».</div>';
   const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><thead><tr>' +
-    '<th class="c-alc">Alcance</th><th class="c-idea">Idea</th><th class="c-est">Carrusel</th><th class="c-acc"></th></tr></thead><tbody>' +
+    '<th class="c-chk"></th><th class="c-alc">Alcance</th><th class="c-idea">Idea</th><th class="c-est">Carrusel</th></tr></thead><tbody>' +
     rows.map(filaMatriz).join('') + '</tbody></table></div>';
   if (!S.agrupar) return h + tabla(filas);
   const grupos = {}; filas.forEach(it => (grupos[it.tema] = grupos[it.tema] || []).push(it));
@@ -197,9 +198,65 @@ function vMatriz() {
       '<span class="cuantos">' + rows.length + '</span>' +
       '<span class="mz-mini-prog" title="' + hechas_ + ' de ' + todas.length + ' hechas"><i style="width:' + (100 * hechas_ / todas.length).toFixed(0) + '%"></i></span>' +
       '<span class="mz-hechas">' + hechas_ + ' de ' + todas.length + ' hechas</span>' +
-      (porHacer ? '<button class="btn mini" data-producir-tema="' + esc(t) + '">Producir ' + (porHacer === 1 ? 'la que falta' : 'las ' + porHacer) + '</button>' : '') +
+      (porHacer ? '<label class="mz-todas"><input type="checkbox" data-selec-tema="' + esc(t) + '"' +
+        (rows.filter(i => estadoIdea(i) === 'porhacer').every(i => SELEC.has(i.id)) ? ' checked' : '') + '> Seleccionar las ' + porHacer + '</label>' : '') +
       '</header>' + (abierto ? tabla(rows) : '') + '</section>';
   }).join('');
+}
+
+function barraSeleccion() {
+  if (!SELEC.size) return '<span class="mz-selpista">Marca las ideas que quieras producir.</span>';
+  return '<b>' + SELEC.size + (SELEC.size === 1 ? ' idea seleccionada' : ' ideas seleccionadas') + '</b>' +
+    '<button class="btn pri" id="mz-producir">Producir (' + SELEC.size + ')</button>' +
+    '<button class="linkbtn" id="mz-deseleccionar">Quitar selección</button>';
+}
+function pintarSeleccion() {
+  const bar = document.getElementById('mz-selbar');
+  if (bar) { bar.innerHTML = barraSeleccion(); bar.classList.toggle('on', SELEC.size > 0); }
+  document.querySelectorAll('[data-selec]').forEach(ch => { ch.checked = SELEC.has(ch.dataset.selec); ch.closest('tr').classList.toggle('mz-sel', ch.checked); });
+}
+
+/* ---------- producir: elegir plantilla viéndola y avisar de lo ya hecho ---------- */
+function abrirProducir(ids) {
+  ids = ids.filter(id => IMAP[id] && estadoIdea(IMAP[id]) === 'porhacer');
+  if (!ids.length) { toast('Esas ideas ya están en Producir o hechas'); return; }
+  EST_PROD = {ids: ids};
+  pintarProducir();
+}
+let EST_PROD = null;
+function pintarProducir() {
+  const ids = EST_PROD.ids, primera = IMAP[ids[0]];
+  const conPar = ids.map(id => ({it: IMAP[id], hp: hechosParecidos(IMAP[id])})).filter(x => x.hp.length);
+  let h = '<div class="onbcaja mz-prod" role="dialog" aria-modal="true" aria-label="Producir">' +
+    '<header><k>Producir</k><h2>' + (ids.length === 1 ? esc(primera.titular) : ids.length + ' carruseles') + '</h2></header><div class="cuerpo">';
+  if (conPar.length) {
+    h += '<div class="mz-yahecho"><b>Antes de producir: ya tienes algo parecido hecho</b>' +
+      '<p>Si te sirve, reutilízalo y quita la idea de este lote. Si no, Claude buscará otro enfoque.</p>' +
+      conPar.map(x => '<div class="mz-parfila"><div class="mz-parinfo"><small>Tu idea</small><b>' + esc(x.it.titular) + '</b></div>' +
+        '<span class="mz-flechita">≈</span>' +
+        x.hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
+          '<span><small>Ya hecho' + (hh.fecha ? ' · ' + esc(fCorta(hh.fecha)) : '') + '</small>' + esc(hh.titulo) + '</span></div>').join('') +
+        '<button class="btn mini" data-usar-hecho="' + x.it.id + '" data-clave="' + esc(x.hp[0].clave) + '">Usar el hecho</button></div>').join('') + '</div>';
+  }
+  h += '<h4 class="mz-sub">Plantilla</h4><div class="mz-plantillas">' + EST_PLANTILLAS.map(p => {
+      const v = previa('prod-' + p.id, p.id, EST.color, primera.titular, primera.tema);
+      return '<button class="mz-plantilla" data-prod-pl="' + p.id + '" aria-pressed="' + (EST.plantilla === p.id) + '">' + mini(v, 0) +
+        '<b>' + esc(p.nombre) + '</b><small>' + esc(p.pista) + '</small></button>'; }).join('') + '</div>';
+  h += '<h4 class="mz-sub">Color</h4><div class="est-opciones">' + EST_COLORES.map(c => '<button class="est-op" data-prod-co="' + c.id + '" aria-pressed="' + (EST.color === c.id) + '">' +
+      '<i style="background:' + c.hex + '"></i>' + esc(c.nombre) + '</button>').join('') + '</div>';
+  h += '<p class="est-pista">Luego puedes cambiar plantilla y color de cada carrusel por separado.</p>';
+  h += '</div><footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button>' +
+    '<button class="btn pri" id="mz-prod-ok">' + (ids.length === 1 ? 'Producir' : 'Producir los ' + ids.length) + (EST.sample ? ' y generar' : '') + '</button></footer></div>';
+  $('#onb').hidden = false; $('#onb').innerHTML = h; pintarMinis($('#onb'));
+}
+function confirmarProducir() {
+  const ids = EST_PROD.ids; EST_PROD = null;
+  const n = mandarAProducir(ids);
+  ids.forEach(id => SELEC.delete(id));
+  cerrarPanel(); S.sel = null; $('#velo').classList.remove('on'); $('#drawer').classList.remove('on');
+  S.v = 'producir'; render();
+  toast(n === 1 ? 'En Producir' : n + ' en Producir');
+  if (EST.sample) generarTodas();
 }
 
 /* ---------- HECHOS: todo lo publicado en un sitio ---------- */
@@ -267,7 +324,7 @@ pintarFicha = function () {
     const bh = $('#dfoot [data-hecho]'); if (bh && carruselDe(it)) bh.remove(); }
   const hp = hechosParecidos(it), ip = ideasParecidas(it).slice(0, 6), c = carruselDe(it);
   let b = '<div class="sec"><h4>Tema</h4><p class="resumen">' + esc(it.tema) + '</p></div>';
-  if (c) b += '<div class="sec"><h4>Su carrusel</h4><button class="mz-hecho" data-est-abrir="' + c.id + '"><span class="mz-mini">' + mini(c, 0) + '</span>' +
+  if (c) b += '<div class="sec"><h4>Su carrusel</h4><button class="mz-hecho" data-est-abrir="' + c.id + '"><span class="mz-mini">' + mini(c.slides && c.slides.length ? c : previa('fi-' + c.id, c.plantilla, c.color, c.titulo, it.tema), 0) + '</span>' +
     '<span>' + esc(c.titulo || '') + '<small>' + esc(EST_ESTADO[c.estado] || c.estado) + '</small></span></button></div>';
   if (hp.length) b += '<div class="sec"><h4>Ojo: ya hay algo parecido publicado</h4><div class="aviso-b">Haz un ángulo distinto. Al generar, Claude lo tendrá en cuenta.</div><ul class="mz-lista">' +
     hp.slice(0, 5).map(h => '<li>' + (h.carrusel ? '<button class="linkbtn" data-est-abrir="' + h.carrusel.id + '">' + esc(h.titulo) + '</button>'
@@ -275,6 +332,11 @@ pintarFicha = function () {
   if (ip.length) b += '<div class="sec"><h4>Ideas parecidas en la matriz</h4><ul class="mz-lista">' +
     ip.map(x => '<li><button class="linkbtn" data-abrir="' + x.id + '">' + esc(x.titular) + '</button> · ' + esc(ESTADOS_IDEA[estadoIdea(x)]) + '</li>').join('') + '</ul></div>';
   $('#dbody').insertAdjacentHTML('beforeend', b);
+  if (hp.length && estadoIdea(it) === 'porhacer') $('#dbody').insertAdjacentHTML('afterbegin',
+    '<div class="mz-yahecho"><b>Ya tienes algo parecido hecho</b><p>Míralo antes de producir: quizá puedes reutilizarlo.</p>' +
+    hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
+      '<span><small>Ya hecho' + (hh.fecha ? ' · ' + esc(fCorta(hh.fecha)) : '') + '</small>' +
+      (hh.carrusel ? '<button class="linkbtn" data-est-abrir="' + hh.carrusel.id + '">' + esc(hh.titulo) + '</button>' : esc(hh.titulo)) + '</span></div>').join('') + '</div>');
   pintarMinis($('#dbody'));
 };
 /* al generar, Claude sabe qué hay parecido ya hecho para no repetirlo */
@@ -311,18 +373,39 @@ document.addEventListener('click', e => {
   if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = S.abiertos[k] === false; render(); return; }
   const en = t.closest('[data-enlazar]'); if (en) { e.stopImmediatePropagation(); abrirEnlazar(en.dataset.enlazar); return; }
   const ea = t.closest('[data-enlazar-a]'); if (ea) { e.stopImmediatePropagation(); enlazar(ea.dataset.clave, ea.dataset.enlazarA); return; }
+  const pd = t.closest('[data-producir]');
+  if (pd && !t.closest('#onb')) { e.stopImmediatePropagation(); abrirProducir([pd.dataset.producir]); return; }
+  if (t.id === 'mz-producir') { abrirProducir([...SELEC]); return; }
+  if (t.id === 'mz-deseleccionar') { SELEC.clear(); pintarSeleccion(); document.querySelectorAll('[data-selec-tema]').forEach(x => x.checked = false); return; }
+  const ppl = t.closest('[data-prod-pl]'); if (ppl) { EST.plantilla = ppl.dataset.prodPl; guardarEstilo(); pintarProducir(); return; }
+  const pco = t.closest('[data-prod-co]'); if (pco) { EST.color = pco.dataset.prodCo; guardarEstilo(); pintarProducir(); return; }
+  if (t.id === 'mz-prod-ok') { e.stopImmediatePropagation(); confirmarProducir(); return; }
+  const uh = t.closest('[data-usar-hecho]');
+  if (uh) { const it = uh.dataset.usarHecho; enlazarSinCerrar(uh.dataset.clave, it); EST_PROD.ids = EST_PROD.ids.filter(x => x !== it); SELEC.delete(it);
+    toast('Hecho: esa idea queda cubierta por el carrusel que ya tenías');
+    if (!EST_PROD.ids.length) { EST_PROD = null; cerrarPanel(); render(); } else pintarProducir(); return; }
   if (t.id === 'mz-verfiltros') { S.verFiltros = !S.verFiltros; render(); return; }
   if (t.id === 'mz-agrupar') { S.agrupar = !S.agrupar; render(); return; }
-  if (t.id === 'mz-limpiar') { e.stopImmediatePropagation(); S.f = {rama: '', form: '', cif: '', tema: '', estado: 'porhacer'}; S.t.solo = false; S.q = ''; render(); return; }
-  const pt = t.closest('[data-producir-tema]');
-  if (pt) { const ids = IDEAS.filter(it => it.tema === pt.dataset.producirTema && pasaMatriz(it, 'estado') && estadoIdea(it) === 'porhacer').map(it => it.id);
-    const n = mandarAProducir(ids); toast(n ? n + ' ideas en la mesa de Producir' : 'Ya estaban en Producir'); render(); return; }
+  if (t.id === 'mz-limpiar') { e.stopImmediatePropagation(); S.f = {rama: '', form: '', cif: '', tema: '', estado: ''}; S.t.solo = false; S.q = ''; render(); return; }
 }, true);
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset && (t.dataset.dim === 'tema' || t.dataset.dim === 'estado')) { e.stopImmediatePropagation(); S.f[t.dataset.dim] = t.value; render(); }
 }, true);
 
+/* usar un hecho parecido para otra idea: se marca la idea como hecha y enlazada a ese carrusel */
+function enlazarSinCerrar(clave, ideaId) {
+  const x = todoHecho().find(h => h.clave === clave); if (!x) return;
+  guardar(ideaId, {hecho: true, fecha: x.fecha || fISO(hoy()), url: x.url || '', notas: 'Cubierta por «' + x.titulo + '»'});
+}
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.selec) { if (t.checked) SELEC.add(t.dataset.selec); else SELEC.delete(t.dataset.selec); pintarSeleccion(); return; }
+  if (t.dataset && t.dataset.selecTema) {
+    IDEAS.filter(it => it.tema === t.dataset.selecTema && pasaMatriz(it) && estadoIdea(it) === 'porhacer')
+      .forEach(it => { if (t.checked) SELEC.add(it.id); else SELEC.delete(it.id); });
+    pintarSeleccion(); }
+});
 let mzBusca;
 document.addEventListener('input', e => {
   if (e.target.id !== 'mz-busca-idea') return;
