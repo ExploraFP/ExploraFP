@@ -547,3 +547,13 @@
 /* Datos en móvil: botones «Lo usan» más grandes */
 @media(max-width:760px){.vinc button,.vinc a{display:inline-block;min-height:32px;min-width:40px;padding:6px 8px}}
 .chip-emo{margin-right:.4em !important}
+
+/* tendencia / ideas propias / idea rápida */
+.mz-tend{display:inline-block;vertical-align:middle;margin-left:8px;font-size:11px;font-weight:700;color:#7A3FB0;background:#F4EBFD;border:1px solid #DCC6F5;border-radius:999px;padding:1px 8px}
+.mz-propia{color:var(--brand);background:var(--limaSoft);border-color:var(--limaLine)}
+.mz-bajobusca{display:flex;justify-content:flex-end;margin:-16px 0 16px}
+.mz-idearap{border:0;background:none;font:inherit;font-size:13.5px;font-weight:600;color:var(--brand);cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:3px}
+.mz-ircheck{display:flex;align-items:center;gap:8px;margin:12px 0 4px;font-size:14px;color:var(--ink)}
+.mz-ircheck input{width:18px;height:18px;accent-color:var(--brand)}
+.mz-rapida textarea,.mz-rapida select{font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink)}
+:root[data-theme="dark"] .mz-tend{color:#D9B8FA;background:#2E2140;border-color:#4E3A6B}

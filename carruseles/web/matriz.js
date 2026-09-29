@@ -54,6 +54,8 @@ IDEAS.forEach(it => {
   else if (['Oficial de verdad', 'Contra el humo', 'Salidas y mercado', 'Qué se aprende'].indexOf(it.tema) >= 0 || it.ganchoLabel === 'Creencia que rompe') it.objAuto = 'autoridad';
   else it.objAuto = 'informativo';
 });
+/* Revisión a mano de la clasificación (web/objetivos-revisados.json): manda sobre las reglas. */
+if (typeof OBJ_REV !== 'undefined') IDEAS.forEach(it => { if (OBJETIVOS[OBJ_REV[it.id]]) it.objAuto = OBJ_REV[it.id]; });
 function objDe(it) { const o = S.ops[it.id]; return (o && OBJETIVOS[o.objetivo]) ? o.objetivo : it.objAuto; }
 function cambiarObjetivo(id, obj) {
   S.ops[id] = Object.assign({}, S.ops[id], {objetivo: obj, upd: new Date().toISOString()});
@@ -251,7 +253,8 @@ function barraBusqueda() {
     '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn' + (v ? ' activo' : '') + '" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + actual + '<span class="mz-fflecha" aria-hidden="true">▾</span></button>' +
     (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button type="button" class="mz-limpia" id="mz-limpiar" title="Quitar filtros" aria-label="Quitar filtros">✕</button>' : '') + '</div>' +
-    '</div></section>';
+    '</div></section>' +
+    '<div class="mz-bajobusca"><button type="button" class="mz-idearap" id="mz-idea-rapida">+ Idea rápida</button></div>';
 }
 function barraMatriz() {
   const RAMASF = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
@@ -297,6 +300,7 @@ function filaMatriz(it) {
     '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">' : '') + '</td>' +
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
+      (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
       (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') + '</td>' +
     '<td class="c-est">' + celdaEstado(it) + '</td></tr>';
@@ -312,7 +316,8 @@ function vMatriz() {
   const clave = (S.q || '') + '|' + (S.f.tema || '') + '|' + (S.f.enf || '') + '|' + (S.f.form || '') + '|' + (S.f.rama || '');
   if (clave !== MZ_CLAVE) { MZ_CLAVE = clave; S.abiertos = {}; }
   TOKENS = trozosBusqueda();
-  const filas = IDEAS.filter(it => pasaMatriz(it)).sort(ordenar);
+  // las ideas que apunta Sandra salen primero (las más nuevas arriba)
+  const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => (b.propia ? 1 : 0) - (a.propia ? 1 : 0) || (a.propia && b.propia ? b.id.localeCompare(a.id) : ordenar(a, b)));
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
   let h = cabecera('Matriz de contenido', '',
     [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
@@ -605,3 +610,71 @@ document.addEventListener('input', e => {
   const v = e.target.value, clave = e.target.dataset.clave;
   clearTimeout(mzBusca); mzBusca = setTimeout(() => abrirEnlazar(clave, v), 200);
 });
+
+
+/* ---------- ideas nuevas: las del lote extra (web/ideas-extra.json) y las «ideas rápidas» de Sandra ----------
+   Se convierten al mismo formato que las del banco y entran en la matriz como una más. */
+const RAMA_DE_CICLO = {}; IDEAS.forEach(i => { if (i.alcTipo === 'formacion') RAMA_DE_CICLO[i.alcTxt] = i.ramaColor; });
+const RAMAS_NOMBRE = ['Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
+function anadirIdea(d, propia) {
+  if (!d || !d.id || IMAP[d.id]) return null;
+  const f = d.formacion || '';
+  const alcTipo = !f ? 'transversal' : RAMAS_NOMBRE.indexOf(f) >= 0 ? 'rama' : 'formacion';
+  const ramaColor = !f ? 'Transversal' : alcTipo === 'rama' ? f : (RAMA_DE_CICLO[f] || 'Transversal');
+  const it = {id: d.id, cat: 'NUEVA', titular: d.titular || '(sin titular)', gancho: d.gancho || '', ganchoLabel: d.ganchoLabel || 'Idea',
+    dentro: d.dentro || '', funnel: d.funnel || 'TOFU', verificar: '', eje: '', alcance: f || 'Transversal', buyer: '', blog: '', formacion: f,
+    nivel: '', familia: ramaColor, rama: ramaColor, tipo: '', leads: '', google: '', situacion: '', ciclos: '', raw: {}, formacionCanon: '',
+    datos: d.datos || [], datosSug: [], bloqueada: false, momentos: d.momentos || [], nueva: true, tambienEn: [], alcDetalle: '',
+    alcTipo: alcTipo, alcTxt: f || 'Transversal', ramaColor: ramaColor, subtipo: d.subtipo || '', propia: !!propia};
+  it.buscar = norm([it.id, it.titular, it.gancho, it.dentro, f].join(' '));
+  const t = (it.titular + ' ' + it.gancho + ' ' + it.dentro).toLowerCase(), r = TEMA_REGLAS.find(x => x[1].test(t));
+  it.tema = r ? r[0] : 'Más dudas del ciclo';
+  it.objAuto = OBJETIVOS[d.objetivo] ? d.objetivo : 'viral';
+  it._h = huella(it.titular + ' ' + it.gancho);
+  IDEAS.push(it); IMAP[it.id] = it;
+  return it;
+}
+if (typeof IDEAS_EXTRA !== 'undefined') IDEAS_EXTRA.forEach(d => anadirIdea(d));
+
+/* «+ Idea rápida»: se guardan en la colección `ideas` del db (o en este navegador si no hay db) */
+function cargarIdeasPropias() {
+  try { JSON.parse(localStorage.getItem('explora.ideas') || '[]').forEach(d => anadirIdea(d, true)); } catch (e) {}
+  let n = 0; const t = setInterval(() => {
+    if (++n > 40) return clearInterval(t);
+    if (!DB) return; clearInterval(t);
+    DB.collection('ideas').onSnapshot(snap => { let nuevas = 0; snap.docs.forEach(x => { if (anadirIdea(Object.assign({id: x.id}, x.data()), true)) nuevas++; }); if (nuevas) render(); }, () => {});
+  }, 300);
+}
+cargarIdeasPropias();
+let IDEA_R = null;
+function abrirIdeaRapida() {
+  IDEA_R = IDEA_R || {objetivo: 'viral', tendencia: true, formacion: ''};
+  const opts = ['<option value="">Transversal</option>'].concat(FORM_RAMAS.map(r => '<option value="' + r[0] + '"' + (IDEA_R.formacion === r[0] ? ' selected' : '') + '>' + r[0] + '</option>'))
+    .concat(FORM_CICLOS.flatMap(g => g[1]).map(c => '<option value="' + esc(c) + '"' + (IDEA_R.formacion === c ? ' selected' : '') + '>' + esc(c) + '</option>')).join('');
+  $('#onb').hidden = false;
+  $('#onb').innerHTML = '<div class="onbcaja mz-rapida" role="dialog" aria-modal="true" aria-label="Idea rápida"><header><k>Idea rápida</k><h2>Apunta una idea en 10 segundos</h2></header><div class="cuerpo">' +
+    '<label class="mz-cta">Titular (el hook)<input type="text" id="ir-tit" maxlength="90" placeholder="Ej.: Expectativa vs realidad de tu primer día de TCAE"></label>' +
+    '<label class="mz-cta">De qué va<textarea id="ir-dentro" rows="3" placeholder="La tendencia o el formato y cómo lo adaptarías"></textarea></label>' +
+    '<h4 class="mz-sub">Objetivo</h4><div class="est-opciones">' + OBJ_ORDEN.map(k => '<button class="est-op" data-ir-obj="' + k + '" aria-pressed="' + (IDEA_R.objetivo === k) + '">' + esc(objEt(k)) + '</button>').join('') + '</div>' +
+    '<label class="mz-ircheck"><input type="checkbox" id="ir-tend"' + (IDEA_R.tendencia ? ' checked' : '') + '> Es una tendencia 📈</label>' +
+    '<label class="mz-cta">Formación<select id="ir-form">' + opts + '</select></label>' +
+    '</div><footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" id="ir-ok">Añadir a la matriz</button></footer></div>';
+  setTimeout(() => { const i = $('#ir-tit'); if (i) i.focus(); }, 30);
+}
+function guardarIdeaRapida() {
+  const tit = ($('#ir-tit').value || '').trim(); if (!tit) { toast('Escribe al menos el titular'); $('#ir-tit').focus(); return; }
+  const d = {id: 'N' + Date.now().toString(36).toUpperCase(), titular: tit.charAt(0).toUpperCase() + tit.slice(1), dentro: ($('#ir-dentro').value || '').trim(),
+    gancho: '', ganchoLabel: $('#ir-tend').checked ? 'Formato tendencia' : 'Idea', objetivo: IDEA_R.objetivo, subtipo: $('#ir-tend').checked ? 'tendencia' : '',
+    formacion: $('#ir-form').value, funnel: 'TOFU', creada: new Date().toISOString()};
+  const it = anadirIdea(d, true);
+  if (DB) DB.doc('ideas/' + d.id).set(d).catch(() => toast('No he podido guardarla en el equipo; queda en este navegador'));
+  try { const l = JSON.parse(localStorage.getItem('explora.ideas') || '[]'); l.push(d); localStorage.setItem('explora.ideas', JSON.stringify(l)); } catch (e) {}
+  IDEA_R = null; cerrarPanel(); S.abiertos = {}; S.abiertos[it.objAuto] = true; render(); toast('Idea añadida a ' + objEt(it.objAuto));
+}
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.id === 'mz-idea-rapida') { e.stopImmediatePropagation(); abrirIdeaRapida(); return; }
+  const o = t.closest && t.closest('[data-ir-obj]');
+  if (o) { e.stopImmediatePropagation(); IDEA_R.objetivo = o.dataset.irObj; document.querySelectorAll('[data-ir-obj]').forEach(b => b.setAttribute('aria-pressed', b === o)); return; }
+  if (t.id === 'ir-ok') { e.stopImmediatePropagation(); guardarIdeaRapida(); }
+}, true);
