@@ -87,7 +87,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   filtros Estado/Tema/Alcance rama-ciclo/Cifras, estado de cada idea (por hacer · en producción · hecha, con su
   carrusel enlazado) y «parecidas» (≥2 palabras con contenido en común y ≥60 %). Lo parecido ya hecho se le pasa
   a Claude al generar para que busque otro ángulo. En Hechos, «Unir a una idea» enlaza un hecho suelto a su idea.
-- «Sugerencias de contenido» (subtítulo por mes en `MES_FRASE`): 5 fichas arriba de la matriz según el calendario académico del banco (CATALOGO.momentos con
+- «Sugerencias de contenido» (subtítulo: «📅 <Mes>», solo el mes; `MES_FRASE` queda sin usar): 5 fichas arriba de la matriz según el calendario académico del banco (CATALOGO.momentos con
   sus meses; `momentosActivos`/`deTemporada`). Solo ideas por hacer, BOFU primero, variadas (máx. 2 por objetivo y por alcance);
   flechas ‹ › con contador (1/N) pasan de tanda sin repetir.
 - Titulares = HOOKS (pedido de Sandra): `web/hooks.json` {id: hook} reescribe el titular de cada idea como gancho de portada

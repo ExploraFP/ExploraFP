@@ -371,3 +371,4 @@
 .mz-fbtn .chip{background:#fff}
 @media(max-width:760px){.mz-fsel{border-top:0;padding:4px 0 6px}.mz-fbtn{width:100%;justify-content:space-between;padding:11px 14px}}
 .mz-fbtn,.mz-fbtn .mz-ftodas{font-size:14.5px}.mz-fbtn .chip{font-size:13px}
+.mz-sug header p.mz-sugmes{font-size:15px;font-weight:600;color:var(--ink2)}

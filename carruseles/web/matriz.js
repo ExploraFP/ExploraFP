@@ -188,7 +188,7 @@ function sugerencias() {
   const cinco = elegirCinco(); if (!cinco.length) return '';
   const acts = momentosActivos(), nT = tandasDeCinco().length, pos = ((S.sugOff % nT) + nT) % nT + 1;
   return '<section class="mz-sug"><header><div><h3>Sugerencias de contenido</h3>' +
-    '<p>' + esc(MES_FRASE[mesActual()]) + '</p></div>' +
+    '<p class="mz-sugmes">📅 ' + esc(MESES[mesActual()].charAt(0).toUpperCase() + MESES[mesActual()].slice(1)) + '</p></div>' +
     (nT > 1 ? '<div class="mz-sugnav"><button id="mz-sug-ant" aria-label="Anteriores">‹</button><span>' + pos + '/' + nT + '</span><button id="mz-sug-sig" aria-label="Siguientes">›</button></div>' : '') + '</header>' +
     '<div class="mz-sugfichas">' + cinco.map(it => {
       const m = acts.find(x => it.momentos.indexOf(x.k) >= 0);
