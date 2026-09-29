@@ -355,3 +355,6 @@
 .mz-buscazona .mz-buscabarra{border:0;box-shadow:none;min-height:50px;border-radius:13px}
 .mz-buscazona .mz-buscabarra:focus-within{box-shadow:0 0 0 2px var(--brand)}
 @media(max-width:760px){.mz-buscazona{padding:6px}}
+/* marco del buscador más suave */
+.mz-buscazona{background:var(--limaSoft);border:1px solid var(--limaLine);padding:6px;box-shadow:0 4px 18px rgba(133,225,89,.18)}
+.mz-buscazona .mz-buscabarra{border:1px solid rgba(54,107,64,.08)}
