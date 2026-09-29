@@ -37,6 +37,8 @@ const OBJETIVOS = {
   informativo: {emoji: '📋', nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
   leadmagnet:  {emoji: '🧲', nombre: 'Lead magnet', push: 4, cta: 'Comenta PALABRA y te mando [recurso]',     pista: 'Conseguir leads orgánicos con un recurso'},
 };
+/* El titular que se ve es el hook (web/hooks.json); el del banco se conserva en it.titular. */
+const tituloIdea = it => (typeof HOOKS !== 'undefined' && HOOKS[it.id]) || it.titular;
 const objEt = k => OBJETIVOS[k].emoji + ' ' + OBJETIVOS[k].nombre;   // nombre con su emoji, para la interfaz
 const OBJ_ORDEN = ['viral', 'autoridad', 'informativo', 'leadmagnet'];
 const OBJ_REGLAS = [
@@ -77,7 +79,8 @@ function parecido(a, b) {
   let n = 0; a.forEach(w => { if (b.has(w)) n++; });
   return n < 2 ? 0 : n / Math.min(a.size, b.size);   // hacen falta al menos dos palabras en común
 }
-IDEAS.forEach(it => { it._h = huella(it.titular + ' ' + it.gancho); });
+IDEAS.forEach(it => { it._h = huella(it.titular + ' ' + it.gancho);
+  if (typeof HOOKS !== 'undefined' && HOOKS[it.id]) it.buscar += ' ' + norm(HOOKS[it.id]); });
 const UMBRAL = 0.6;
 const PAR_IDEAS = {};
 IDEAS.forEach((a, i) => {
@@ -195,7 +198,7 @@ function filaMatriz(it) {
   return '<tr class="mz-' + e + (sel ? ' mz-sel' : '') + (S.sel === it.id ? ' sel' : '') + '">' +
     '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">' : '') + '</td>' +
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
-    '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(it.titular, TOKENS) + '</button>' +
+    '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
       (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') + '</td>' +
     '<td class="c-est">' + celdaEstado(it) + '</td></tr>';
@@ -281,11 +284,11 @@ function pintarProducir() {
   const ids = EST_PROD.ids, primera = IMAP[ids[0]];
   const conPar = ids.map(id => ({it: IMAP[id], hp: hechosParecidos(IMAP[id])})).filter(x => x.hp.length);
   let h = '<div class="onbcaja mz-prod" role="dialog" aria-modal="true" aria-label="Producir">' +
-    '<header><k>Producir</k><h2>' + (ids.length === 1 ? esc(primera.titular) : ids.length + ' carruseles') + '</h2></header><div class="cuerpo">';
+    '<header><k>Producir</k><h2>' + (ids.length === 1 ? esc(tituloIdea(primera)) : ids.length + ' carruseles') + '</h2></header><div class="cuerpo">';
   if (conPar.length) {
     h += '<div class="mz-yahecho"><b>Antes de producir: ya tienes algo parecido hecho</b>' +
       '<p>Si te sirve, reutilízalo y quita la idea de este lote. Si no, Claude buscará otro enfoque.</p>' +
-      conPar.map(x => '<div class="mz-parfila"><div class="mz-parinfo"><small>Tu idea</small><b>' + esc(x.it.titular) + '</b></div>' +
+      conPar.map(x => '<div class="mz-parfila"><div class="mz-parinfo"><small>Tu idea</small><b>' + esc(tituloIdea(x.it)) + '</b></div>' +
         '<span class="mz-flechita">≈</span>' +
         x.hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
           '<span><small>Ya hecho' + (hh.fecha ? ' · ' + esc(fCorta(hh.fecha)) : '') + '</small>' + esc(hh.titulo) + '</span></div>').join('') +
@@ -300,7 +303,7 @@ function pintarProducir() {
   h += '<h4 class="mz-sub">Portada</h4><div class="est-opciones">' +
     [[true, 'Con foto'], [false, 'Sin foto']].map(o => '<button class="est-op" data-prod-foto="' + o[0] + '" aria-pressed="' + (EST.conFoto === o[0]) + '">' + o[1] + '</button>').join('') + '</div>';
   h += '<h4 class="mz-sub">Plantilla</h4><div class="mz-plantillas">' + EST_PLANTILLAS.map(p => {
-      const v = previa('prod-' + p.id, p.id, EST.color, primera.titular, primera.alcTxt, EST.conFoto);
+      const v = previa('prod-' + p.id, p.id, EST.color, tituloIdea(primera), primera.alcTxt, EST.conFoto);
       return '<button class="mz-plantilla" data-prod-pl="' + p.id + '" aria-pressed="' + (EST.plantilla === p.id) + '">' + mini(v, 0) +
         '<b>' + esc(p.nombre) + '</b><small>' + esc(p.pista) + '</small></button>'; }).join('') + '</div>';
   h += '<h4 class="mz-sub">Color</h4><div class="est-opciones">' + EST_COLORES_ELEGIBLES.map(c => '<button class="est-op" data-prod-co="' + c.id + '" aria-pressed="' + (EST.color === c.id) + '">' +
@@ -361,7 +364,7 @@ function abrirEnlazar(clave, q) {
   const toks = norm(q || '').split(/\s+/).filter(t => t.length > 1);
   const busca = toks.length ? IDEAS.filter(it => toks.every(t => it.buscar.indexOf(t) >= 0)).slice(0, 12) : [];
   const item = it => '<li><button class="mz-elegir" data-enlazar-a="' + it.id + '" data-clave="' + esc(clave) + '">' +
-    '<b>' + esc(it.titular) + '</b><small>' + esc(objEt(objDe(it))) + ' · ' + esc(it.alcTxt) + ' · ' + esc(ESTADOS_IDEA[estadoIdea(it)]) + '</small></button></li>';
+    '<b>' + esc(tituloIdea(it)) + '</b><small>' + esc(objEt(objDe(it))) + ' · ' + esc(it.alcTxt) + ' · ' + esc(ESTADOS_IDEA[estadoIdea(it)]) + '</small></button></li>';
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja" role="dialog" aria-modal="true" aria-label="Unir a una idea">' +
     '<header><k>Unir a una idea de la matriz</k><h2>' + esc(x.titulo) + '</h2></header><div class="cuerpo">' +
@@ -377,7 +380,7 @@ function enlazar(clave, ideaId) {
   if (x.carrusel) { x.carrusel.idea = ideaId; guardarC(x.carrusel); }
   else if (x.propio) { S.ops[x.id] = Object.assign({}, S.ops[x.id], {idea: ideaId, upd: new Date().toISOString()});
     if (DB) DB.doc('ops/' + x.id).set(S.ops[x.id]).catch(() => {}); else { try { localStorage.setItem('explora.ops', JSON.stringify(S.ops)); } catch (e) {} } }
-  cerrarPanel(); toast('Unido a «' + IMAP[ideaId].titular + '»'); render();
+  cerrarPanel(); toast('Unido a «' + tituloIdea(IMAP[ideaId]) + '»'); render();
 }
 
 /* ---------- ficha: solo a qué formación va y las slides en fila ---------- */
@@ -385,13 +388,19 @@ pintarFicha = function () {
   const it = IMAP[S.sel]; if (!it) return;
   const e = estadoIdea(it), c = carruselDe(it), o = op(it.id);
   $('#drawer').classList.add('mz-ancha');
-  // la misma etiqueta que en la fila de la matriz, y al lado la rama/nivel si aporta algo
+  // titular arriba y debajo la lista de datos: formación, objetivo, de qué va y la acción que buscamos
   const niv = it.nivel ? (NIVEL[it.nivel] || it.nivel) : '';
-  const extra = it.alcTipo === 'formacion' ? 'Rama ' + it.ramaColor + (niv ? ' · ' + niv : '') : it.alcTipo === 'transversal' ? '' : niv;
-  $('#dhead').innerHTML = '<div class="drow">' + chipAlcance(it) + (extra ? '<span class="mz-nivel">' + esc(extra) + '</span>' : '') +
-    '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>' +
-    '<div class="mz-fobj" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k => '<button data-obj-idea="' + k + '" aria-pressed="' + (objDe(it) === k) + '">' +
-      esc(objEt(k)) + '</button>').join('') + '</div>';
+  const extra = it.alcTipo === 'formacion' ? 'Rama ' + it.ramaColor + (niv ? ' · ' + niv : '') : it.alcTipo === 'transversal' ? 'Para todas las ramas' : niv;
+  const cta = (c && c.cta) || OBJETIVOS[objDe(it)].cta;
+  const fila = (k, v) => '<div class="mz-meta"><dt>' + k + '</dt><dd>' + v + '</dd></div>';
+  $('#dhead').innerHTML = '<div class="drow"><h2>' + esc(tituloIdea(it)) + '</h2><button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div>' +
+    '<dl class="mz-metas">' +
+      fila('Formación', chipAlcance(it) + (extra ? '<span class="mz-nivel">' + esc(extra) + '</span>' : '')) +
+      fila('Objetivo', '<div class="mz-fobj" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k => '<button data-obj-idea="' + k + '" aria-pressed="' + (objDe(it) === k) + '">' +
+        esc(objEt(k)) + '</button>').join('') + '</div>') +
+      fila('De qué va', esc(it.dentro || it.gancho)) +
+      fila('CTA final', '<b>' + esc(cta) + '</b>') +
+    '</dl>';
   let b = '';
   if (c && c.slides && c.slides.length)
     b += '<div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';

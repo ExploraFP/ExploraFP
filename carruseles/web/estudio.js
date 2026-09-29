@@ -146,7 +146,7 @@ function mandarAProducir(ids, extra) {
   let n = 0;
   ids.forEach(id => {
     const it = IMAP[id]; if (!it || yaEnProduccion(id)) return;
-    nuevoC(Object.assign({idea: id, titulo: it.titular}, extra ? extra(id) : {})); n++;
+    nuevoC(Object.assign({idea: id, titulo: tituloIdea(it)}, extra ? extra(id) : {})); n++;
   });
   return n;
 }
@@ -172,6 +172,7 @@ function promptCarrusel(c) {
   L.push('- Glosario que puedes usar con moderación: pisar barro, abrir brecha, cazar el botín, prueba y falla, machete en mano.');
   L.push('');
   L.push('REGLAS DE LAS SLIDES');
+  L.push('- El titular de la portada es el HOOK: lo que para el scroll. Informativo o autoridad: claro y concreto, promete una respuesta. Viral o lead magnet: persuasivo, curiosidad o identificación.');
   L.push('- Entre 5 y 7 slides. La primera es "portada" y la última "cierre". En medio, "contenido", "lista" o "dato".');
   L.push('- Titulares en minúscula salvo la inicial y los nombres propios o siglas (FP, ESO, Ministerio). Nunca todo en mayúsculas.');
   L.push('- En cada titular, rodea con asteriscos UNA palabra o expresión corta para resaltarla, así: Estudiar *después* de currar.');
@@ -205,7 +206,8 @@ function promptCarrusel(c) {
   }
   if (it) {
     L.push('LA IDEA');
-    L.push('- Titular de partida: ' + it.titular);
+    L.push('- Hook de la portada (úsalo tal cual o mejóralo sin cambiar el enfoque): ' + tituloIdea(it));
+    if (tituloIdea(it) !== it.titular) L.push('- Titular original de la idea: ' + it.titular);
     L.push('- ' + it.ganchoLabel + ': ' + it.gancho);
     L.push('- Qué se explica dentro: ' + it.dentro);
     if (it.buyer) L.push('- A quién le habla: ' + it.buyer + (it.situacion ? ' (' + it.situacion + ')' : ''));
@@ -264,7 +266,7 @@ async function generar(id) {
     const limpio = limpiarRespuesta(r);
     if (limpio.slides.length < 3) throw {code: 'vacio', message: 'Claude no ha devuelto slides válidas'};
     Object.assign(c, limpio, {estado: 'borrador', error: ''});
-    if (!c.titulo || (c.idea && IMAP[c.idea] && c.titulo === IMAP[c.idea].titular)) c.titulo = (limpio.slides[0].titulo || c.titulo || '').replace(/\*/g, '');
+    if (!c.titulo || (c.idea && IMAP[c.idea] && (c.titulo === IMAP[c.idea].titular || c.titulo === tituloIdea(IMAP[c.idea])))) c.titulo = (limpio.slides[0].titulo || c.titulo || '').replace(/\*/g, '');
     guardarC(c);
   } catch (e) {
     c.estado = 'error';

@@ -202,3 +202,14 @@
   .vstat{flex:1;min-width:0;padding:10px 12px}
   .vstat b{font-size:26px}
 }
+
+/* ficha: titular y debajo los datos */
+.mz-ancha .dhead .drow{align-items:flex-start;gap:16px;margin-bottom:18px;flex-wrap:nowrap}
+.mz-ancha .dhead .drow h2{flex:1}
+.mz-metas{margin:0;display:flex;flex-direction:column;gap:12px}
+.mz-meta{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:baseline}
+.mz-meta dt{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink3)}
+.mz-meta dd{margin:0;font-size:14px;line-height:1.45;color:var(--ink2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mz-meta dd b{color:var(--ink);font-weight:600}
+.mz-ancha .mz-fobj{margin-top:0}
+@media(max-width:760px){.mz-meta{grid-template-columns:1fr;gap:5px}}
