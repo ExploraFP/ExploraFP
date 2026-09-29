@@ -32,7 +32,7 @@ IDEAS.forEach(it => {
    Cada idea trae un objetivo sugerido (reglas de abajo); ella lo cambia en la ficha y se guarda en ops/<id>.objetivo.
    El carrusel lo hereda al producir y ahí se puede cambiar, junto con el CTA. */
 const OBJETIVOS = {
-  viral:       {emoji: '🔥', nombre: 'Viral',       push: 1, cta: 'Comenta, etiqueta a alguien o compártelo', pista: 'Tendencia, entretener, comunidad y cercanía'},
+  viral:       {emoji: '🔮', nombre: 'Viral',       push: 1, cta: 'Comenta, etiqueta a alguien o compártelo', pista: 'Tendencia, entretener, comunidad y cercanía'},
   autoridad:   {emoji: '🏆', nombre: 'Autoridad',   push: 2, cta: 'Guárdalo y síguenos para más',              pista: 'Demostrar que somos referentes del sector'},
   informativo: {emoji: '📋', nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
   leadmagnet:  {emoji: '🧲', nombre: 'Lead magnet', push: 4, cta: 'Comenta PALABRA y te mando [recurso]',     pista: 'Conseguir leads orgánicos con un recurso'},
@@ -208,9 +208,14 @@ const FORM_EMOJI = {
   'TCAE': '🏥', 'Laboratorio Clínico y Biomédico': '🧪', 'Anatomía Patológica y Citodiagnóstico': '💀', 'Dietética': '🥗', 'Doble Laboratorio + Anatomía': '🫀',
   'Educación Infantil': '🍎',
   // no vienen del Playbook: los pidió Sandra
-  'Transversal': '📚', 'DAM y DAW': '🎮💻'};
+  'Transversal': '📚'};
+/* Ideas que valen para dos ciclos: se enseñan con la etiqueta de cada uno y salen al filtrar por cualquiera de ellos. */
+const ALC_MULTI = {'DAM y DAW': ['DAM', 'DAW']};
+const _afinidadBase = afinidad;
+afinidad = function (it, ciclo) { return (ALC_MULTI[it.alcTxt] || []).indexOf(ciclo) >= 0 ? 1 : _afinidadBase(it, ciclo); };
 const _chipAlcanceBase = chipAlcance;
 chipAlcance = function (it, filtra) {
+  if (ALC_MULTI[it.alcTxt]) return ALC_MULTI[it.alcTxt].map(c => chipAlcance(Object.assign({}, it, {alcTxt: c, alcTipo: 'formacion'}), filtra)).join(' ');
   const h = _chipAlcanceBase(it, filtra), e = FORM_EMOJI[it.alcTxt];
   return e ? h.replace(/class="chip /, 'class="chip con-emoji ').replace(/>([^<]*)<\/(span|button)>$/, '><i class="chip-emo">' + e + '</i>$1</$2>') : h;
 };
