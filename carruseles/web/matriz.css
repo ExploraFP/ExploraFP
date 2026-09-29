@@ -452,3 +452,8 @@
   .mz-plegar{padding:16px 0 16px 16px}
   .mz-grupo>header{padding-right:14px}
 }
+/* flecha de desplegar bien visible */
+.mz-flecha{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex-shrink:0;border-radius:50%;background:var(--limaSoft);border:1.5px solid var(--limaLine);color:var(--brand2);font-size:15px;line-height:1;transition:background .15s, transform .15s}
+.mz-plegar:hover .mz-flecha{background:var(--lima);border-color:var(--lima)}
+.mz-grupo.abierto .mz-flecha{background:var(--brand2);border-color:var(--brand2);color:var(--lima)}
+@media(max-width:760px){.mz-flecha{width:30px;height:30px;font-size:13px}}
