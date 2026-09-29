@@ -216,7 +216,7 @@ function vMatriz() {
   TOKENS = trozosBusqueda();
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort(ordenar);
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
-  let h = cabecera('Matriz de contenido', 'Tus ideas agrupadas por objetivo, de menos a más push. Marca las que quieras y pulsa Producir.',
+  let h = cabecera('Matriz de contenido', '',
     [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += '<div class="buscador"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca por palabra: plaza, convalidar, prácticas, sueldo…" aria-label="Buscar en la matriz"></div>';
@@ -332,7 +332,7 @@ function vTodoHecho() {
   let lista = todoHecho();
   if (q) lista = lista.filter(x => norm(x.titulo).indexOf(q) >= 0);
   const todos = todoHecho();
-  let h = cabecera('Inventario', 'Todo lo publicado en un sitio: lo de la herramienta y lo que enlazas de Drive, unido a su idea.',
+  let h = cabecera('Inventario', '',
     [[todos.length, 'publicados', 'ok'], [todos.filter(x => !x.idea).length, 'sin idea']]);
   h += '<div class="est-acciones"><button class="btn pri" id="nuevoCarrusel">+ Añadir uno ya publicado</button>' +
     (Object.values(EST.lista).some(c => c.estado === 'hecho') ? '<button class="btn" data-lote="hechos">Descargar todos los PNG</button>' : '') +

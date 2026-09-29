@@ -445,7 +445,7 @@ function vProducir() {
   const lista = carruselesDe('pendientes');
   const sinGenerar = lista.filter(c => c.estado === 'pendiente' || c.estado === 'error').length;
   const revisar = lista.filter(c => c.estado === 'borrador').length;
-  let h = cabecera('Producción', 'Lo que has mandado desde la matriz. Genera, revisa y márcalo hecho.',
+  let h = cabecera('Producción', '',
     [[lista.length, 'en la mesa'], [sinGenerar, 'sin generar'], [revisar, 'para revisar', revisar ? 'lima' : '']]);
   h += '<div class="est-acciones">' +
     (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el que falta' : 'los ' + sinGenerar + ' que faltan') + '</button>' : '') +

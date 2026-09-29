@@ -76,7 +76,7 @@ cambiar('<button data-v="ideas" aria-current="true">Ideas</button>',
 cambiar('<button data-v="inventario">Inventario</button>', '');
 // Cabecera de Datos con el mismo formato que las demás pestañas.
 cambiar(`'<p>Los 16 hechos con fuente comprobada. Si una cifra no está aquí, no sale en un carrusel.</p></div></div>';`,
-  `'<p>Las cifras con fuente comprobada. Si no está aquí, no sale en un carrusel.</p></div>' +
+  `'</div>' +
     '<div class="vstats"><div class="vstat ok"><b>' + DATOS.length + '</b><span>datos con fuente</span></div></div></div>';`);
 // Icono de la pestaña: el mismo abanico de slides de la cabecera.
 const ICONO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#1B3620"/>' +
