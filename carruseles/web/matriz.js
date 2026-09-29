@@ -321,21 +321,23 @@ function vMatrizDentro() {
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => (b.propia ? 1 : 0) - (a.propia ? 1 : 0) || (a.propia && b.propia ? b.id.localeCompare(a.id) : ordenar(a, b)));
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
   let h = cabecera('Matriz de contenido', '',
-    [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
+    [[n.hecha, 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += sugerencias();
   h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.length;
   // ---- vistas: una tabla siempre visible; arriba se elige el objetivo (y se combina con formación y búsqueda) ----
-  const cuentaObj = {}; filas.forEach(it => { const k = objDe(it); cuentaObj[k] = (cuentaObj[k] || 0) + 1; });
-  const vistaBtn = (k, txt, n) => '<button class="mz-vista" data-vista="' + k + '" aria-pressed="' + ((S.vista || '') === k) + '">' + txt + ' <span>' + n + '</span></button>';
-  h += '<div class="mz-vistas" role="tablist" aria-label="Vistas por objetivo">' + vistaBtn('', 'Todas', filas.length) +
+  // las cuentas de las pestañas son SOLO por hacer (cuadran con «por hacer» de la cabecera; lo hecho no suma)
+  const cuentaObj = {}, porHacerF = filas.filter(it => estadoIdea(it) === 'porhacer');
+  porHacerF.forEach(it => { const k = objDe(it); cuentaObj[k] = (cuentaObj[k] || 0) + 1; });
+  const vistaBtn = (k, txt, n) => '<button class="mz-vista" data-vista="' + k + '" aria-pressed="' + ((S.vista || '') === k) + '">' + txt + ' <span title="' + n + ' por hacer">' + n + '</span></button>';
+  h += '<div class="mz-vistas" role="tablist" aria-label="Vistas por objetivo">' + vistaBtn('', 'Todas', porHacerF.length) +
     OBJ_ORDEN.map(k => vistaBtn(k, esc(objEt(k)), cuentaObj[k] || 0)).join('') + '</div>';
   const enVista = S.vista ? filas.filter(it => objDe(it) === S.vista) : filas;
   const porHacerV = enVista.filter(i => estadoIdea(i) === 'porhacer');
   // selección a la izquierda (a la altura de las casillas); CTA y cifras a la derecha
   h += '<div class="mz-vistabar">' +
-    (porHacerV.length ? '<label class="mz-todas"><input type="checkbox" data-selec-vista="1"' + (porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + '> Seleccionar las ' + porHacerV.length + '</label>' : '') +
+    (porHacerV.length ? '<label class="mz-todas"><input type="checkbox" data-selec-vista="1"' + (porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + '> Seleccionar todas</label>' : '') +
     (S.vista ? '<div class="mz-vbder"><span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span></div>' : '') + '</div>';
   if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra vista, otra formación o quita la búsqueda.</div>';
   const lim = S.limite || 60, vis = enVista.slice(0, lim);
