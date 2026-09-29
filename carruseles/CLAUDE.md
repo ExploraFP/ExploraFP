@@ -109,6 +109,11 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Datos: colección `carruseles` del db (un documento por carrusel: titulo, plantilla, color, slides, copy, estado,
   idea). Estados: pendiente → generando → borrador → hecho. La colección `ops` es la del banco (ideas hechas).
 - Fotos nuevas: añadir a `contenido/img/foto-*.jpg` y su descripción en `DESC` de `web/construir.mjs`.
+- Pestaña «Fotos» (`web/fotos.js` + `web/fotos.css`): banco de fotos. Sandra sube fotos desde la web (capacidad `assets`, reducidas a 1800 px JPEG);
+  cada una es un doc `fotos/<assetId>` en el db con su ficha (desc, rama, personas, tono, orientación, etiquetas) que Claude rellena al subirla
+  (`sample` con imagen) y Sandra corrige («✏️ Editar ficha») o borra (🗑, con confirmación; borra el asset y el doc). Las 11 de serie no se borran:
+  se ocultan (`fotos/base-<clave>` con `oculta: true`). `FOTOS` se rehace en sitio con las no ocultas: las usan Producción, el editor y el prompt.
+  Publicar con capabilities {db, downloads, sample, assets}.
 - Control de calidad (estudio.js, `avisosTexto` + `medir`): errores = texto que no cabe, palabras prohibidas,
   titular en mayúsculas, dato sin cifra o sin fuente; avisos = emojis, titular largo o sin resaltado, cifras fuera
   de la slide de dato, falta el texto del post. Con errores, «Marcar hecho» pide un segundo clic.

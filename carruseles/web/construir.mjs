@@ -72,7 +72,7 @@ const motor = readFileSync(join(RAIZ, "motor.js"), "utf8").replace(/^export /gm,
 let h = readFileSync(join(WEB, "banco-base.html"), "utf8");
 const cambiar = (de, a) => { if (!h.includes(de)) throw new Error("No encuentro en el banco: " + de.slice(0, 60)); h = h.replace(de, () => a); };
 cambiar('<button data-v="ideas" aria-current="true">Ideas</button>',
-  '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producción</button>\n      <button data-v="hechos">Inventario</button>');
+  '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producción</button>\n      <button data-v="hechos">Inventario</button>\n      <button data-v="fotos">Fotos</button>');
 cambiar('<button data-v="inventario">Inventario</button>', '');
 // Cabecera de Datos con el mismo formato que las demás pestañas.
 cambiar(`'<p>Los 16 hechos con fuente comprobada. Si una cifra no está aquí, no sale en un carrusel.</p></div></div>';`,
@@ -100,13 +100,14 @@ cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <spa
   '<span class="mk-txt"><b>Banco de carruseles</b><img src="logos/blanco.webp" alt="Explora × Ucademy"></span></div>');
 cambiar('<div class="toast" id="toast" role="status" aria-live="polite"></div>',
   '<div class="toast" id="toast" role="status" aria-live="polite"></div>\n<div class="est-editor" id="est-editor" hidden></div>');
-cambiar("<script>\nconst CATALOGO", `<style>\n${readFileSync(join(WEB, "estudio.css"), "utf8")}\n${readFileSync(join(WEB, "matriz.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
+cambiar("<script>\nconst CATALOGO", `<style>\n${readFileSync(join(WEB, "estudio.css"), "utf8")}\n${readFileSync(join(WEB, "matriz.css"), "utf8")}
+${readFileSync(join(WEB, "fotos.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
 const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== */\n${motor}\n` +
   `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\n` +
   `const HOOKS = ${existsSync(join(WEB, 'hooks.json')) ? readFileSync(join(WEB, 'hooks.json'), 'utf8').trim() : '{}'};\n` +
   `const OBJ_REV = ${existsSync(join(WEB, 'objetivos-revisados.json')) ? readFileSync(join(WEB, 'objetivos-revisados.json'), 'utf8').trim() : '{}'};\n` +
   `const IDEAS_EXTRA = ${existsSync(join(WEB, 'ideas-extra.json')) ? readFileSync(join(WEB, 'ideas-extra.json'), 'utf8').trim() : '[]'};\n` +
-  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\nrender();\n</script>\n`;
+  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\n${readFileSync(join(WEB, "fotos.js"), "utf8")}\nrender();\n</script>\n`;
 cambiar("</body></html>", script + "</body></html>");
 writeFileSync(join(DIST, "banco-de-carruseles.html"), h);
 
