@@ -67,3 +67,6 @@
   .mz-grupo>header .btn{margin-left:auto}
   .mz-hechas{margin-right:0}
 }
+/* Hechos: el buscador a su tamaño, a la derecha de los botones */
+.est-acciones .invbusca{flex:0 1 300px;margin-left:auto}
+.chip.temp{white-space:nowrap}
