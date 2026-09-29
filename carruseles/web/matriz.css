@@ -86,7 +86,7 @@
 .mz-tabla tr.mz-sel td{background:var(--limaSoft)}
 .mz-todas{display:inline-flex;gap:7px;align-items:center;font-size:12.5px;color:var(--ink2);cursor:pointer}
 .mz-selbar{position:sticky;top:58px;z-index:30;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 14px;box-shadow:var(--sh1);min-height:52px}
-.mz-selbar:not(.on){background:none;border:0;box-shadow:none;min-height:0;padding:0 2px;position:static}
+.mz-selbar:not(.on){display:none}
 .mz-selbar.on{background:var(--brand2);border-color:var(--brand2);color:#fff;box-shadow:var(--sh2)}
 .mz-selbar.on .btn.pri{background:var(--lima);border-color:var(--lima);color:#12200F}
 .mz-selbar.on .linkbtn{color:#D3E2D1;background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit}
@@ -124,3 +124,13 @@
   .mz-tema-prog{align-self:flex-start;padding-top:4px}
   .mz-todas{padding:0 0 12px 38px}
 }
+
+/* ficha mínima */
+.drawer.mz-ancha{width:min(680px,100vw)}
+.mz-nivel{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--brand)}
+.mz-tira{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x mandatory}
+.mz-tira-s{flex:0 0 220px;scroll-snap-align:start;position:relative}
+.mz-tira-s>span{position:absolute;top:6px;left:6px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font:600 11px var(--f-mono);border-radius:99px;padding:1px 7px}
+.mz-sincarr{color:var(--ink3);font-size:14px;margin:4px 0 14px}
+@media(max-width:760px){.mz-tira-s{flex-basis:72vw}}
+.mz-ancha .dclose{margin-left:auto}

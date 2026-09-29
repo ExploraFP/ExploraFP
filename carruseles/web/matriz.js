@@ -136,14 +136,14 @@ function barraMatriz() {
 function celdaEstado(it) {
   const e = estadoIdea(it), c = carruselDe(it);
   if (e === 'hecha') {
-    if (c && c.slides && c.slides.length) return '<button class="mz-hecho" data-est-abrir="' + c.id + '" title="Abrir el carrusel">' +
+    if (c && c.slides && c.slides.length) return '<button class="mz-hecho" data-abrir="' + it.id + '" title="Ver el carrusel">' +
       '<span class="mz-mini">' + mini(c, 0) + '</span><span>Hecho<small>' + esc(c.fecha ? fCorta(c.fecha) : 'ver') + '</small></span></button>';
     const o = op(it.id);
     return o.url ? '<a class="mz-hecho" href="' + esc(o.url) + '" target="_blank" rel="noopener"><span class="mz-drive">Drive</span><span>Hecho<small>' + esc(fCorta(o.fecha) || 'abrir') + '</small></span></a>'
       : '<span class="chip e-hecho">Hecho</span>';
   }
   if (e === 'produccion') return c.slides && c.slides.length
-    ? '<button class="mz-hecho mz-enprod" data-est-abrir="' + c.id + '"><span class="mz-mini">' + mini(c, 0) + '</span><span>Para revisar<small>en Producir</small></span></button>'
+    ? '<button class="mz-hecho mz-enprod" data-abrir="' + it.id + '"><span class="mz-mini">' + mini(c, 0) + '</span><span>Para revisar<small>en Producir</small></span></button>'
     : '<button class="mz-enprod-txt" data-ir="producir">' + (c.estado === 'generando' ? 'Generando…' : 'En Producir') + '</button>';
   return '';
 }
@@ -219,7 +219,7 @@ function vMatriz() {
 }
 
 function barraSeleccion() {
-  if (!SELEC.size) return '<span class="mz-selpista">Marca las ideas que quieras producir.</span>';
+  if (!SELEC.size) return '';
   return '<b>' + SELEC.size + (SELEC.size === 1 ? ' idea seleccionada' : ' ideas seleccionadas') + '</b>' +
     '<button class="btn pri" id="mz-producir">Producir (' + SELEC.size + ')</button>' +
     '<button class="linkbtn" id="mz-deseleccionar">Quitar selección</button>';
@@ -329,28 +329,35 @@ function enlazar(clave, ideaId) {
   cerrarPanel(); toast('Unido a «' + IMAP[ideaId].titular + '»'); render();
 }
 
-/* ---------- ficha: parecidas ---------- */
-const _pintarFichaMz = pintarFicha;
+/* ---------- ficha: solo a qué formación va y las slides en fila ---------- */
+function nivelIdea(it) {
+  const niv = it.nivel ? ' · ' + (NIVEL[it.nivel] || it.nivel) : '';
+  if (it.alcTipo === 'formacion') return 'Rama ' + it.ramaColor + ' / ' + it.alcTxt + niv;
+  if (it.alcTipo === 'rama') return 'Rama ' + it.alcTxt + niv;
+  if (it.alcTipo === 'transversal') return 'Transversal · para todas las ramas';
+  return it.alcTxt + niv;
+}
 pintarFicha = function () {
-  _pintarFichaMz();
   const it = IMAP[S.sel]; if (!it) return;
-  if (estadoIdea(it) === 'hecha') { const bp = $('#dfoot [data-producir]'); if (bp) bp.remove();
-    const bh = $('#dfoot [data-hecho]'); if (bh && carruselDe(it)) bh.remove(); }
-  const hp = hechosParecidos(it), ip = ideasParecidas(it).slice(0, 6), c = carruselDe(it);
-  let b = '<div class="sec"><h4>Tema</h4><p class="resumen">' + esc(it.tema) + '</p></div>';
-  if (c) b += '<div class="sec"><h4>Su carrusel</h4><button class="mz-hecho" data-est-abrir="' + c.id + '"><span class="mz-mini">' + mini(c.slides && c.slides.length ? c : previa('fi-' + c.id, c.plantilla, c.color, c.titulo, it.tema), 0) + '</span>' +
-    '<span>' + esc(c.titulo || '') + '<small>' + esc(EST_ESTADO[c.estado] || c.estado) + '</small></span></button></div>';
-  if (hp.length) b += '<div class="sec"><h4>Ojo: ya hay algo parecido publicado</h4><div class="aviso-b">Haz un ángulo distinto. Al generar, Claude lo tendrá en cuenta.</div><ul class="mz-lista">' +
-    hp.slice(0, 5).map(h => '<li>' + (h.carrusel ? '<button class="linkbtn" data-est-abrir="' + h.carrusel.id + '">' + esc(h.titulo) + '</button>'
-      : h.url ? '<a href="' + esc(h.url) + '" target="_blank" rel="noopener">' + esc(h.titulo) + '</a>' : esc(h.titulo)) + (h.fecha ? ' · ' + esc(fCorta(h.fecha)) : '') + '</li>').join('') + '</ul></div>';
-  if (ip.length) b += '<div class="sec"><h4>Ideas parecidas en la matriz</h4><ul class="mz-lista">' +
-    ip.map(x => '<li><button class="linkbtn" data-abrir="' + x.id + '">' + esc(x.titular) + '</button> · ' + esc(ESTADOS_IDEA[estadoIdea(x)]) + '</li>').join('') + '</ul></div>';
-  $('#dbody').insertAdjacentHTML('beforeend', b);
-  if (hp.length && estadoIdea(it) === 'porhacer') $('#dbody').insertAdjacentHTML('afterbegin',
-    '<div class="mz-yahecho"><b>Ya tienes algo parecido hecho</b><p>Míralo antes de producir: quizá puedes reutilizarlo.</p>' +
-    hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
-      '<span><small>Ya hecho' + (hh.fecha ? ' · ' + esc(fCorta(hh.fecha)) : '') + '</small>' +
-      (hh.carrusel ? '<button class="linkbtn" data-est-abrir="' + hh.carrusel.id + '">' + esc(hh.titulo) + '</button>' : esc(hh.titulo)) + '</span></div>').join('') + '</div>');
+  const e = estadoIdea(it), c = carruselDe(it), o = op(it.id);
+  $('#drawer').classList.add('mz-ancha');
+  $('#dhead').innerHTML = '<div class="drow"><span class="mz-nivel">' + esc(nivelIdea(it)) + '</span>' +
+    '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>';
+  let b = '';
+  if (c && c.slides && c.slides.length)
+    b += '<div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
+  else if (c) b += '<p class="mz-sincarr">En Producir, todavía sin generar.</p>';
+  else if (o.url) b += '<p class="mz-sincarr">Hecho fuera de la herramienta · <a href="' + esc(o.url) + '" target="_blank" rel="noopener">ver en Drive</a></p>';
+  else {
+    b += '<p class="mz-sincarr">Sin carrusel todavía.</p>';
+    const hp = hechosParecidos(it);
+    if (hp.length) b += '<div class="mz-yahecho"><b>Ya tienes uno parecido hecho</b>' +
+      hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
+        '<span>' + (hh.carrusel ? '<button class="linkbtn" data-est-abrir="' + hh.carrusel.id + '">' + esc(hh.titulo) + '</button>' : esc(hh.titulo)) + '</span></div>').join('') + '</div>';
+  }
+  $('#dbody').innerHTML = b;
+  $('#dfoot').innerHTML = c ? (c.slides && c.slides.length ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir carrusel</button>' : '<button class="btn pri" data-ir="producir">Ir a Producir</button>')
+    : e === 'porhacer' ? '<button class="btn pri" data-producir="' + it.id + '">Producir</button>' : '';
   pintarMinis($('#dbody'));
 };
 /* al generar, Claude sabe qué hay parecido ya hecho para no repetirlo */
