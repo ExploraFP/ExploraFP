@@ -380,3 +380,7 @@
 .mz-fbtn:hover{background:var(--limaLine)}
 .mz-fbtn .mz-ftodas{color:var(--brand2)}
 .mz-fbtn .mz-fflecha{color:var(--brand2)}
+/* buscador sin marco: barra blanca limpia */
+.mz-buscazona{background:none;border:0;padding:0;box-shadow:none;border-radius:0;margin:6px 0 12px}
+.mz-buscazona .mz-buscabarra{border:1px solid var(--line2);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);min-height:56px;padding:0 7px 0 18px}
+.mz-buscazona .mz-buscabarra:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px var(--limaSoft),0 2px 10px rgba(0,0,0,.06)}
