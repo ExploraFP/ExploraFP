@@ -72,7 +72,7 @@ const motor = readFileSync(join(RAIZ, "motor.js"), "utf8").replace(/^export /gm,
 let h = readFileSync(join(WEB, "banco-base.html"), "utf8");
 const cambiar = (de, a) => { if (!h.includes(de)) throw new Error("No encuentro en el banco: " + de.slice(0, 60)); h = h.replace(de, () => a); };
 cambiar('<button data-v="ideas" aria-current="true">Ideas</button>',
-  '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producir</button>\n      <button data-v="hechos">Inventario</button>');
+  '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producción</button>\n      <button data-v="hechos">Inventario</button>');
 cambiar('<button data-v="inventario">Inventario</button>', '');
 // Cabecera de Datos con el mismo formato que las demás pestañas.
 cambiar(`'<p>Los 16 hechos con fuente comprobada. Si una cifra no está aquí, no sale en un carrusel.</p></div></div>';`,

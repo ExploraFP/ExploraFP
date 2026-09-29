@@ -181,8 +181,8 @@ function celdaEstado(it) {
       : '<span class="chip e-hecho">Hecho</span>';
   }
   if (e === 'produccion') return c.slides && c.slides.length
-    ? '<button class="mz-hecho mz-enprod" data-abrir="' + it.id + '"><span class="mz-mini">' + mini(c, 0) + '</span><span>Para revisar<small>en Producir</small></span></button>'
-    : '<button class="mz-enprod-txt" data-ir="producir">' + (c.estado === 'generando' ? 'Generando…' : 'En Producir') + '</button>';
+    ? '<button class="mz-hecho mz-enprod" data-abrir="' + it.id + '"><span class="mz-mini">' + mini(c, 0) + '</span><span>Para revisar<small>en Producción</small></span></button>'
+    : '<button class="mz-enprod-txt" data-ir="producir">' + (c.estado === 'generando' ? 'Generando…' : 'En Producción') + '</button>';
   return '';
 }
 function chipParecidas(it) {
@@ -273,7 +273,7 @@ function pintarSeleccion() {
 /* ---------- producir: elegir plantilla viéndola y avisar de lo ya hecho ---------- */
 function abrirProducir(ids) {
   ids = ids.filter(id => IMAP[id] && estadoIdea(IMAP[id]) === 'porhacer');
-  if (!ids.length) { toast('Esas ideas ya están en Producir o hechas'); return; }
+  if (!ids.length) { toast('Esas ideas ya están en Producción o hechas'); return; }
   const objs = Array.from(new Set(ids.map(id => objDe(IMAP[id]))));
   const obj = objs.length === 1 ? objs[0] : '';   // '' = cada una con el suyo
   EST_PROD = {ids: ids, obj: obj, cta: obj ? OBJETIVOS[obj].cta : ''};
@@ -322,7 +322,7 @@ function confirmarProducir() {
   ids.forEach(id => SELEC.delete(id));
   cerrarPanel(); S.sel = null; $('#velo').classList.remove('on'); $('#drawer').classList.remove('on');
   S.v = 'producir'; render();
-  toast(n === 1 ? 'En Producir' : n + ' en Producir');
+  toast(n === 1 ? 'En Producción' : n + ' en Producción');
   if (EST.sample) generarTodas();
 }
 
@@ -339,7 +339,7 @@ function vTodoHecho() {
     '<input type="search" id="buscar" class="invbusca" value="' + esc(S.q) + '" placeholder="Buscar…" aria-label="Buscar en hechos">' +
     '<span class="est-progreso">' + esc(EST.progreso || '') + '</span></div>';
   if (!lista.length) return h + '<div class="vacio"><b>' + (q ? 'Nada con esa búsqueda' : 'Todavía no hay nada') + '</b>' +
-    (q ? 'Prueba con otra palabra.' : 'Marca hecho un carrusel en Producir, o añade uno que ya tengas publicado.') + '</div>';
+    (q ? 'Prueba con otra palabra.' : 'Marca hecho un carrusel en Producción, o añade uno que ya tengas publicado.') + '</div>';
   return h + '<div class="est-rejilla">' + lista.map(x => {
     const c = x.carrusel, it = x.idea ? IMAP[x.idea] : null;
     return '<article class="est-tarjeta">' + (c ? mini(c, 0) : '<div class="est-mini"><span class="est-vacia">' + (x.url ? 'En Drive' : 'Añadido a mano') + '</span></div>') +
@@ -415,7 +415,7 @@ pintarFicha = function () {
   }
   $('#dbody').innerHTML = b;
   if (!c && o.url) { $('#dfoot').innerHTML = '<a class="btn pri" href="' + esc(o.url) + '" target="_blank" rel="noopener">Ver en Drive</a>'; pintarMinis($('#dbody')); return; }
-  $('#dfoot').innerHTML = c ? (c.slides && c.slides.length ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir carrusel</button>' : '<button class="btn pri" data-ir="producir">Ir a Producir</button>')
+  $('#dfoot').innerHTML = c ? (c.slides && c.slides.length ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir carrusel</button>' : '<button class="btn pri" data-ir="producir">Ir a Producción</button>')
     : e === 'porhacer' ? '<button class="btn pri" data-producir="' + it.id + '">Producir</button>' : '';
   pintarMinis($('#dbody'));
 };

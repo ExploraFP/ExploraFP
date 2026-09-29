@@ -438,14 +438,14 @@ function tarjeta(c) {
       (c.estado === 'generando' ? '<button class="btn" disabled>Generando…</button>'
         : c.slides.length ? '<button class="btn pri" data-est-abrir="' + c.id + '">Revisar</button>'
         : '<button class="btn pri" data-est-generar="' + c.id + '">Generar</button>') +
-      (c.estado !== 'generando' ? '<button class="btn" data-est-quitar="' + c.id + '" title="Quitar de Producir">✕</button>' : '') +
+      (c.estado !== 'generando' ? '<button class="btn" data-est-quitar="' + c.id + '" title="Quitar de Producción">✕</button>' : '') +
     '</div></div></article>';
 }
 function vProducir() {
   const lista = carruselesDe('pendientes');
   const sinGenerar = lista.filter(c => c.estado === 'pendiente' || c.estado === 'error').length;
   const revisar = lista.filter(c => c.estado === 'borrador').length;
-  let h = cabecera('Producir', 'Lo que has mandado desde la matriz. Genera, revisa y márcalo hecho.',
+  let h = cabecera('Producción', 'Lo que has mandado desde la matriz. Genera, revisa y márcalo hecho.',
     [[lista.length, 'en la mesa'], [sinGenerar, 'sin generar'], [revisar, 'para revisar', revisar ? 'lima' : '']]);
   h += '<div class="est-acciones">' +
     (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el que falta' : 'los ' + sinGenerar + ' que faltan') + '</button>' : '') +
@@ -481,7 +481,7 @@ function refrescarEstudio() {
     window.scrollTo(0, y); pintarMinis($('#canvas'));
   }
   const n = carruselesDe('pendientes').length, b = document.querySelector('#vistas [data-v="producir"]');
-  if (b) b.textContent = n ? 'Producir · ' + n : 'Producir';
+  if (b) b.textContent = 'Producción';
   if (EST.abierto) pintarEditor();
 }
 
@@ -644,7 +644,7 @@ pintarFicha = function () {
   _pintarFicha();
   const it = IMAP[S.sel]; if (!it) return;
   $('#dfoot').insertAdjacentHTML('afterbegin', yaEnProduccion(it.id)
-    ? '<button class="btn pri" data-ir="producir">Ver en Producir</button>'
+    ? '<button class="btn pri" data-ir="producir">Ver en Producción</button>'
     : '<button class="btn pri" data-producir="' + it.id + '">Producir con Claude</button>');
   const pr = $('#dfoot [data-prompt]'); if (pr) { pr.classList.remove('pri'); pr.textContent = 'Copiar prompt'; }
 };
@@ -659,9 +659,9 @@ document.addEventListener('click', e => {
   const pr = t.closest('[data-producir]');
   if (pr) { e.stopImmediatePropagation();
     if (typeof abrirProducir === 'function') { abrirProducir([pr.dataset.producir]); return; }
-    const n = mandarAProducir([pr.dataset.producir]); toast(n ? 'En Producir' : 'Ya estaba en Producir'); render(); return; }
+    const n = mandarAProducir([pr.dataset.producir]); toast(n ? 'En Producción' : 'Ya estaba en Producción'); render(); return; }
   if (t.id === 'est-producir-filtradas') { const n = mandarAProducir(filtradas().map(i => i.id));
-    toast(n ? n + ' ideas en la mesa de Producir' : 'Ya estaban todas en Producir'); render(); return; }
+    toast(n ? n + ' ideas en Producción' : 'Ya estaban todas en Producción'); render(); return; }
   const pl = t.closest('[data-est-pl]'); if (pl) { EST.plantilla = pl.dataset.estPl; guardarEstilo(); refrescarEstudio(); return; }
   const co = t.closest('[data-est-co]'); if (co) { EST.color = co.dataset.estCo; guardarEstilo(); refrescarEstudio(); return; }
   if (t.id === 'est-anadir-temas') {
@@ -701,7 +701,7 @@ document.addEventListener('click', e => {
   if (t.id === 'est-descargar') { descargar(c); return; }
   if (t.id === 'est-rehacer') { if (c.estado === 'generando') return; toast('Pidiendo otra versión…'); generar(c.id).then(() => pintarEditor(true)); return; }
   if (t.id === 'est-hecho') {
-    if (c.estado === 'hecho') { c.estado = 'borrador'; guardarC(c); toast('Vuelve a Producir'); pintarEditor(true); return; }
+    if (c.estado === 'hecho') { c.estado = 'borrador'; guardarC(c); toast('Vuelve a Producción'); pintarEditor(true); return; }
     if (!qcMedido(c)) { toast('Espera un segundo: estoy revisando las slides'); pedirQC(c); return; }
     if (qcErrores(c) && EST.forzar !== c.id) { EST.forzar = c.id; pintarQCPanel();
       toast('Hay ' + qcErrores(c) + ' cosas por corregir. Pulsa otra vez si aun así está bien'); return; }
