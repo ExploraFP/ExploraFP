@@ -61,3 +61,13 @@ ol.lista-feed b { flex: none; display: grid; place-items: center; width: 76px; h
 .con-foto-feed .cabecera img { filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
 .con-foto-feed .titulo { font-size: 96px; }
 .con-foto-feed .texto { font-size: 36px; margin-top: 24px; }
+
+/* Jerarquía más fuerte y el óvalo sin pisar la línea de abajo */
+.titulo { font-size: 128px; line-height: 1.04; }
+.tipo-portada .titulo { font-size: 146px; }
+.texto { font-size: 44px; }
+.subtitulo { font-size: 46px; }
+ol.lista-feed li { font-size: 46px; }
+.titulo em.rodeado .ovalo { inset: .02em -.18em -.02em -.2em; }
+.titulo:has(em.rodeado) { line-height: 1.14; }
+.con-foto-feed .cabecera img { filter: drop-shadow(0 1px 8px rgba(0,0,0,.6)); }
