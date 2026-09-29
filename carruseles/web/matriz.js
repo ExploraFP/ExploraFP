@@ -201,17 +201,25 @@ function sugerencias() {
 
 /* Buscador: una caja y dos desplegables. «Formación» junta lo que antes eran Enfoque, Rama y Ciclo. */
 function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? 'c:' + S.f.form : S.f.rama ? 'r:' + S.f.rama : ''; }
+/* Orden fijo pedido por Sandra: Sanidad, Tecnología, Comercio, Administración, Educación Infantil y, al final, los dobles.
+   Sin títulos de sección: cada rama se distingue por un fondo suave. */
+const FORM_ORDEN = [
+  ['Sanidad', '#E4F6F2', ['TCAE', 'Anatomía Patológica y Citodiagnóstico', 'Dietética', 'Laboratorio Clínico y Biomédico']],
+  ['Tecnología', '#E7EFFD', ['SMR', 'ASIR', 'DAM', 'DAW']],
+  ['Comercio', '#FFF0E3', ['Comercio Internacional', 'Marketing y Publicidad', 'Transporte y Logística']],
+  ['Administración', '#F0EBFB', ['Gestión Administrativa', 'Administración y Finanzas', 'Asistencia a la Dirección']],
+  ['', '#FCEAF2', ['Educación Infantil']],
+  ['', '#F1F2EE', ['Doble Laboratorio + Anatomía', 'Doble DAM + DAW', 'Doble Comercio Int. + Transporte', 'Doble Admin. y Finanzas + Asistencia']]];
 function barraBusqueda() {
-  const RAMAS = ['Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
-  const CICLOS = Array.from(new Set(IDEAS.filter(i => i.alcTipo === 'formacion').map(i => i.alcTxt))).sort((a, b) => a.localeCompare(b, 'es'));
-  const v = valorFormacion(), o = (val, txt) => '<option value="' + esc(val) + '"' + (v === val ? ' selected' : '') + '>' + esc(txt) + '</option>';
-  const ramaTxt = r => r === 'Servicios Socioculturales' ? 'Sociocultural' : r;
+  const v = valorFormacion();
+  const o = (val, txt, bg) => '<option value="' + esc(val) + '"' + (bg ? ' style="background:' + bg + '"' : '') + (v === val ? ' selected' : '') + '>' + esc(txt) + '</option>';
+  const hay = new Set(IDEAS.map(i => i.alcTxt));
+  const opciones = FORM_ORDEN.map(g => (g[0] ? o('r:' + g[0], g[0] + ' · toda la rama', g[1]) : '') +
+    g[2].filter(c => hay.has(c)).map(c => o('c:' + c, c, g[1])).join('')).join('');
   return '<h3 class="mz-todas-tit">Todas las ideas</h3><div class="mz-busca"><div class="mz-buscabarra">' +
     '<svg class="mz-lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
     '<input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca una idea: convalidar, TCAE, sueldo…" aria-label="Buscar en la matriz">' +
-    '<span class="mz-sep"></span><select data-forma aria-label="Formación">' + o('', 'Todas las formaciones') + o('gen', 'Transversales (todas las ramas)') +
-      '<optgroup label="Ramas">' + RAMAS.map(r => o('r:' + r, ramaTxt(r))).join('') + '</optgroup>' +
-      '<optgroup label="Ciclos">' + CICLOS.map(c => o('c:' + c, c)).join('') + '</optgroup></select></div>' +
+    '<span class="mz-sep"></span><select data-forma aria-label="Formación">' + o('', 'Todas las formaciones') + o('gen', 'Transversales (todas las ramas)') + opciones + '</select></div>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button class="linkbtn" id="mz-limpiar">Quitar filtros</button>' : '') +
     '</div>';
 }
@@ -266,12 +274,12 @@ function filaMatriz(it) {
 // Los temas empiezan cerrados; se abren solos al buscar o filtrar por tema.
 function temaAbierto(t) {
   if (t in S.abiertos) return S.abiertos[t];
-  return !!(S.q && S.q.trim()) || !!S.f.tema || !!S.f.enf || !!S.f.form;
+  return !!(S.q && S.q.trim()) || !!S.f.tema || !!S.f.enf || !!S.f.form || !!S.f.rama;
 }
 let MZ_CLAVE = '';
 function vMatriz() {
   // al cambiar la búsqueda o el tema, se olvida qué temas se habían abierto o cerrado a mano
-  const clave = (S.q || '') + '|' + (S.f.tema || '') + '|' + (S.f.enf || '') + '|' + (S.f.form || '');
+  const clave = (S.q || '') + '|' + (S.f.tema || '') + '|' + (S.f.enf || '') + '|' + (S.f.form || '') + '|' + (S.f.rama || '');
   if (clave !== MZ_CLAVE) { MZ_CLAVE = clave; S.abiertos = {}; }
   TOKENS = trozosBusqueda();
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort(ordenar);
