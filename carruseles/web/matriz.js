@@ -298,11 +298,13 @@ function pintarProducir() {
     OBJ_ORDEN.map(k => '<button class="est-op" data-prod-obj="' + k + '" aria-pressed="' + (EST_PROD.obj === k) + '">' + esc(OBJETIVOS[k].nombre) + pushPuntos(OBJETIVOS[k].push) + '</button>').join('') + '</div>';
   h += EST_PROD.obj ? '<label class="mz-cta">CTA del cierre<input type="text" id="mz-prod-cta" value="' + esc(EST_PROD.cta) + '"></label>'
     : '<p class="est-pista">Cada carrusel usa el objetivo y el CTA de su idea.</p>';
+  h += '<h4 class="mz-sub">Portada</h4><div class="est-opciones">' +
+    [[true, 'Con foto'], [false, 'Sin foto']].map(o => '<button class="est-op" data-prod-foto="' + o[0] + '" aria-pressed="' + (EST.conFoto === o[0]) + '">' + o[1] + '</button>').join('') + '</div>';
   h += '<h4 class="mz-sub">Plantilla</h4><div class="mz-plantillas">' + EST_PLANTILLAS.map(p => {
-      const v = previa('prod-' + p.id, p.id, EST.color, primera.titular, primera.alcTxt);
+      const v = previa('prod-' + p.id, p.id, EST.color, primera.titular, primera.alcTxt, EST.conFoto);
       return '<button class="mz-plantilla" data-prod-pl="' + p.id + '" aria-pressed="' + (EST.plantilla === p.id) + '">' + mini(v, 0) +
         '<b>' + esc(p.nombre) + '</b><small>' + esc(p.pista) + '</small></button>'; }).join('') + '</div>';
-  h += '<h4 class="mz-sub">Color</h4><div class="est-opciones">' + EST_COLORES.map(c => '<button class="est-op" data-prod-co="' + c.id + '" aria-pressed="' + (EST.color === c.id) + '">' +
+  h += '<h4 class="mz-sub">Color</h4><div class="est-opciones">' + EST_COLORES_ELEGIBLES.map(c => '<button class="est-op" data-prod-co="' + c.id + '" aria-pressed="' + (EST.color === c.id) + '">' +
       '<i style="background:' + c.hex + '"></i>' + esc(c.nombre) + '</button>').join('') + '</div>';
   h += '<p class="est-pista">Luego puedes cambiar plantilla y color de cada carrusel por separado.</p>';
   h += '</div><footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button>' +
@@ -450,6 +452,7 @@ document.addEventListener('click', e => {
   if (pob) { EST_PROD.obj = pob.dataset.prodObj; EST_PROD.cta = EST_PROD.obj ? OBJETIVOS[EST_PROD.obj].cta : ''; pintarProducir(); return; }
   const oid = t.closest('[data-obj-idea]');
   if (oid && S.sel) { cambiarObjetivo(S.sel, oid.dataset.objIdea); pintarFicha(); render(); toast('Movida a ' + OBJETIVOS[oid.dataset.objIdea].nombre); return; }
+  const pfo = t.closest('[data-prod-foto]'); if (pfo) { EST.conFoto = pfo.dataset.prodFoto === 'true'; guardarEstilo(); pintarProducir(); return; }
   const ppl = t.closest('[data-prod-pl]'); if (ppl) { EST.plantilla = ppl.dataset.prodPl; guardarEstilo(); pintarProducir(); return; }
   const pco = t.closest('[data-prod-co]'); if (pco) { EST.color = pco.dataset.prodCo; guardarEstilo(); pintarProducir(); return; }
   if (t.id === 'mz-prod-ok') { e.stopImmediatePropagation(); confirmarProducir(); return; }

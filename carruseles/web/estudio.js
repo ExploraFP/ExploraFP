@@ -15,7 +15,9 @@ const EST = {
   abierto: null, sel: 0,
   sample: null, conectado: false, cola: false
 };
-try { const g = JSON.parse(localStorage.getItem('explora.estilo') || 'null'); if (g) { EST.plantilla = g.plantilla || EST.plantilla; EST.color = g.color || EST.color; } } catch (e) {}
+try { const g = JSON.parse(localStorage.getItem('explora.estilo') || 'null'); if (g) { EST.plantilla = g.plantilla || EST.plantilla; EST.color = g.color || EST.color; if (typeof g.conFoto === 'boolean') EST.conFoto = g.conFoto; } } catch (e) {}
+if (EST.color === 'verde') EST.color = 'verde01';
+if (typeof EST.conFoto !== 'boolean') EST.conFoto = true;
 
 const EST_PLANTILLAS = [
   {id: 'feed', nombre: 'Feed', pista: 'la de vuestro Instagram'},
@@ -26,6 +28,8 @@ const EST_COLORES = [
   {id: 'verde01', nombre: 'Verde 01', hex: '#366B40'}, {id: 'verde02', nombre: 'Verde 02', hex: '#4CCD4B'},
   {id: 'blanco', nombre: 'Blanco', hex: '#FAFFFA'}, {id: 'noche', nombre: 'Noche', hex: '#1B3620'},
   {id: 'lima', nombre: 'Lima', hex: '#EDFEC3'}, {id: 'verde', nombre: 'Verde', hex: '#85E159'}];
+/* «Verde» (#85E159) sale de la web, no de la paleta de marca: sigue en el motor (no se borra nada) pero no se ofrece al elegir. */
+const EST_COLORES_ELEGIBLES = EST_COLORES.filter(c => c.id !== 'verde');
 const EST_TIPOS = {portada: 'Portada', contenido: 'Contenido', lista: 'Lista', dato: 'Dato', cierre: 'Cierre'};
 const EST_ESTADO = {pendiente: 'Sin generar', generando: 'Generando…', borrador: 'Para revisar', hecho: 'Hecho', error: 'Error'};
 const nombrePl = id => (EST_PLANTILLAS.find(p => p.id === id) || {}).nombre || id;
@@ -126,7 +130,7 @@ function borrarC(id) {
 }
 function nuevoC(datos) {
   const id = 'C' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-  const c = Object.assign({id: id, plantilla: EST.plantilla, color: EST.color, estado: 'pendiente', slides: [], copy: '',
+  const c = Object.assign({id: id, plantilla: EST.plantilla, color: EST.color, portada: EST.conFoto ? 'foto' : 'sinfoto', estado: 'pendiente', slides: [], copy: '',
     creado: new Date().toISOString()}, datos);
   guardarC(c); return c;
 }
@@ -184,11 +188,14 @@ function promptCarrusel(c) {
     L.push('- ' + OBJ_PROMPT[c.objetivo]);
   }
   L.push('');
-  if (FOTOS.length) {
-    L.push('FOTOS DISPONIBLES (usa la ruta exacta; opcional):');
+  if (c.portada === 'sinfoto') {
+    L.push('PORTADA SIN FOTO: no pongas "imagen" en la portada.');
+    L.push('');
+  } else if (FOTOS.length) {
+    L.push('FOTOS DISPONIBLES (usa la ruta exacta):');
     FOTOS.forEach(f => L.push('- ' + f.ruta + ' → ' + f.desc));
-    L.push('En la portada, si una foto encaja con el tema, pon "imagen" con su ruta' +
-      (c.plantilla === 'feed' ? ' y "marco": "fondo" (foto a pantalla completa).' : '.'));
+    L.push((c.portada === 'foto' ? 'La portada lleva SIEMPRE foto: pon "imagen" con la ruta de la que mejor encaje con el tema' : 'En la portada, si una foto encaja con el tema, pon "imagen" con su ruta') +
+      (c.plantilla === 'feed' || c.plantilla === 'cuaderno' ? ' y "marco": "fondo" (foto a pantalla completa).' : '.'));
     L.push('');
   }
   if (it) {
@@ -390,7 +397,7 @@ function botonesEstilo() {
       EST_PLANTILLAS.map(p => '<button class="est-op" data-est-pl="' + p.id + '" aria-pressed="' + (EST.plantilla === p.id) + '">' +
         esc(p.nombre) + ' <small>' + esc(p.pista) + '</small></button>').join('') + '</div></div>' +
     '<div class="est-caja"><h3>Color para los nuevos</h3><div class="est-opciones">' +
-      EST_COLORES.map(c => '<button class="est-op" data-est-co="' + c.id + '" aria-pressed="' + (EST.color === c.id) + '">' +
+      EST_COLORES_ELEGIBLES.map(c => '<button class="est-op" data-est-co="' + c.id + '" aria-pressed="' + (EST.color === c.id) + '">' +
         '<i style="background:' + c.hex + '"></i>' + esc(c.nombre) + '</button>').join('') + '</div></div>' +
   '</div>';
 }
@@ -404,12 +411,15 @@ function resaltarTitular(t) {
   if (k >= 0) ps[k] = '*' + ps[k].replace(/([.,:;?!]+)$/, '') + '*' + (ps[k].match(/[.,:;?!]+$/) || [''])[0];
   return ps.join(' ');
 }
-function previa(id, plantilla, color, titulo, etiqueta) {
-  const c = {id: id, plantilla: plantilla, color: color, cinta: '', slides: [{tipo: 'portada', etiqueta: etiqueta || '', titulo: resaltarTitular(titulo)}]};
+const FOTO_PREVIA = (FOTOS.find(f => /cascos/.test(f.ruta)) || FOTOS[0] || {}).ruta;
+function previa(id, plantilla, color, titulo, etiqueta, conFoto) {
+  const s = {tipo: 'portada', etiqueta: etiqueta || '', titulo: resaltarTitular(titulo)};
+  if (conFoto && FOTO_PREVIA) { s.imagen = FOTO_PREVIA; if (plantilla === 'feed' || plantilla === 'cuaderno') s.marco = 'fondo'; }
+  const c = {id: id, plantilla: plantilla, color: color, cinta: '', slides: [s]};
   PREVIAS[id] = c; return c;
 }
 function tarjeta(c) {
-  const vista = c.slides.length ? c : previa('p-' + c.id, c.plantilla, c.color, c.titulo || c.tema, c.idea && IMAP[c.idea] ? IMAP[c.idea].alcTxt : '');
+  const vista = c.slides.length ? c : previa('p-' + c.id, c.plantilla, c.color, c.titulo || c.tema, c.idea && IMAP[c.idea] ? IMAP[c.idea].alcTxt : '', c.portada === 'foto');
   const estado = c.estado === 'generando' ? 'Claude lo está escribiendo…' : c.estado === 'pendiente' ? 'Así quedará la portada' :
     c.estado === 'error' ? c.error : '';
   return '<article class="est-tarjeta' + (c.slides.length ? '' : ' est-previa') + '">' + mini(vista, 0) +
@@ -491,7 +501,7 @@ function pintarEditor(todo) {
     ed.innerHTML = '<div class="est-ecab">' +
       '<button class="btn" id="est-cerrar">← Volver</button><h2>' + esc(c.titulo || '(sin título)') + '</h2>' +
       '<select id="est-e-pl" aria-label="Plantilla">' + EST_PLANTILLAS.map(p => '<option value="' + p.id + '"' + (c.plantilla === p.id ? ' selected' : '') + '>' + esc(p.nombre) + '</option>').join('') + '</select>' +
-      '<select id="est-e-co" aria-label="Color">' + EST_COLORES.map(x => '<option value="' + x.id + '"' + (c.color === x.id ? ' selected' : '') + '>' + esc(x.nombre) + '</option>').join('') + '</select>' +
+      '<select id="est-e-co" aria-label="Color">' + EST_COLORES.filter(x => x.id !== 'verde' || c.color === 'verde').map(x => '<option value="' + x.id + '"' + (c.color === x.id ? ' selected' : '') + '>' + esc(x.nombre) + '</option>').join('') + '</select>' +
       '<button class="btn" id="est-rehacer" title="Pedir a Claude otra versión">Otra versión</button>' +
       '<button class="btn" id="est-descargar">Descargar slides</button>' +
       '<button class="btn ' + (c.estado === 'hecho' ? 'hecho on' : 'pri') + '" id="est-hecho">' + (c.estado === 'hecho' ? '✓ Hecho' : 'Marcar hecho') + '</button>' +
@@ -706,6 +716,6 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('focusout', e => { if (EST.abierto && e.target.dataset && e.target.dataset.estCampo) setTimeout(() => { if (!document.activeElement || !document.activeElement.dataset || !document.activeElement.dataset.estCampo) pintarEditor(true); }, 0); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && EST.abierto) { e.stopImmediatePropagation(); cerrarEditor(); } }, true);
-function guardarEstilo() { try { localStorage.setItem('explora.estilo', JSON.stringify({plantilla: EST.plantilla, color: EST.color})); } catch (e) {} }
+function guardarEstilo() { try { localStorage.setItem('explora.estilo', JSON.stringify({plantilla: EST.plantilla, color: EST.color, conFoto: EST.conFoto})); } catch (e) {} }
 
 conectarEstudio();

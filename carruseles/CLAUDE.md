@@ -32,6 +32,8 @@ Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en
 
 Colores (`plantillas/colores.css`): de marca `verde01` (#366B40, base del 80 %), `verde02` (#4CCD4B), `blanco`;
 de soporte (sacados de la web) `noche` (#1B3620, a Sandra le parece demasiado oscuro: no usarlo de fondo salvo que lo pida), `lima` (#EDFEC3), `verde` (#85E159).
+`verde` (#85E159) NO es de la paleta de marca (dicho por Sandra): sigue en el motor pero la herramienta no lo ofrece.
+Al producir se elige portada «Con foto» (por defecto) o «Sin foto»; feed y cuaderno la ponen a sangre (`marco: fondo`).
 Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slide).
 
 ## Tipos de slide (valen en las 4 composiciones)
