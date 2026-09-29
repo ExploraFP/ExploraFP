@@ -1,0 +1,565 @@
+[
+ {
+  "id": "A01",
+  "titular": "Desde 2022 toda la FP es dual. Traducido",
+  "gancho": "«La FP dual es otra cosa, la mía es normal».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "Qué dice la LOFP: dual general (25-35% de horas en empresa) y dual intensiva (más del 35%, con contrato). Y por qué la formación en empresa ya no es un bloque al final del ciclo.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "TOFU",
+  "datos": [
+   "D01",
+   "D14"
+  ]
+ },
+ {
+  "id": "A02",
+  "titular": "Cotizar en prácticas no es cobrar en prácticas",
+  "gancho": "«Si cotizo, es que me pagan».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "Desde enero de 2024 en prácticas te dan de alta y cotizas aunque no cobres. Qué significa eso (cada día computa 1,61 días cotizados) y de qué depende que haya sueldo.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "MOFU",
+  "datos": [
+   "D02",
+   "D03"
+  ]
+ },
+ {
+  "id": "A03",
+  "titular": "Con Grado Medio entras a Superior sin prueba",
+  "gancho": "«Sin bachillerato no puedo hacer un Grado Superior».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "El título de Técnico da acceso directo a Grado Superior según el RD 659/2023. Y la letra pequeña: acceder no es tener plaza asegurada en cualquier ciclo.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "MOFU",
+  "datos": [
+   "D04"
+  ]
+ },
+ {
+  "id": "A04",
+  "titular": "De Grado Superior a la universidad sin EBAU general",
+  "gancho": "¿Tengo que hacer selectividad para entrar a la uni desde FP?",
+  "ganchoLabel": "Pregunta tal cual la hacen",
+  "dentro": "Tu nota media del ciclo es tu nota de acceso. La fase específica es voluntaria y te sube hasta 14. Ya no hay cupo reservado para FP. Dónde mirar las ponderaciones de tu universidad.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "MOFU",
+  "datos": [
+   "D06"
+  ]
+ },
+ {
+  "id": "A05",
+  "titular": "Qué pasa al año de titularte, según el Ministerio",
+  "gancho": "«Con una FP no encuentras nada».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "La encuesta oficial de inserción: 36,2% trabaja al año en Grado Medio, 51,1% en Grado Superior y 54,7% en dual de Superior. Qué mide el dato y qué no.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "TOFU",
+  "datos": [
+   "D07"
+  ]
+ },
+ {
+  "id": "A06",
+  "titular": "En la FP a distancia ellas son mayoría",
+  "gancho": "«La FP online es para chavales que no quieren ir a clase».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "Datos del Ministerio: 65,0% de mujeres en Grado Medio a distancia y 61,6% en Superior, justo al revés que en presencial. Lo que vemos desde dentro: quién estudia así y por qué.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "TOFU",
+  "datos": [
+   "D09"
+  ]
+ },
+ {
+  "id": "A07",
+  "titular": "Sin la ESO también se entra a Grado Medio",
+  "gancho": "«No tengo la ESO, así que la FP no es para mí».",
+  "ganchoLabel": "Objeción interna",
+  "dentro": "Las cuatro puertas de acceso: ESO, Técnico Básico, prueba de acceso con 17 años cumplidos en el año y curso preparatorio. Quién convoca cada una.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "MOFU",
+  "datos": [
+   "D05"
+  ]
+ },
+ {
+  "id": "A08",
+  "titular": "Beca del Ministerio para FP: lo que nadie lee",
+  "gancho": "¿Puedo pedir la beca si estudio FP online?",
+  "ganchoLabel": "Pregunta tal cual la hacen",
+  "dentro": "Qué cubre la beca general, cuándo fue el último plazo (7 de abril a 19 de mayo de 2026) y por qué hay que leer la convocatoria en el BOE según el tipo de centro antes de dar nada por hecho.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "BOFU",
+  "datos": [
+   "D13"
+  ]
+ },
+ {
+  "id": "A09",
+  "titular": "Los errores que más vemos al elegir ciclo",
+  "gancho": "«Elijo lo que hace mi amiga, total, luego cambio».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "Lo que vemos desde dentro: elegir por el nombre del ciclo, no mirar los módulos, confundir curso con título oficial, no pensar en el Grado Superior siguiente. Cómo evitar cada uno.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "",
+  "funnel": "MOFU",
+  "datos": []
+ },
+ {
+  "id": "A10",
+  "titular": "Certificado de transportista sin examen: el trámite real",
+  "gancho": "«Con el título ya soy transportista, sin hacer nada más».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "El paso a paso: dónde se pide (consejería de transportes de tu CCAA), qué aportas, la tasa de cada modalidad y por qué el certificado solo no basta para operar.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Transporte y Logística",
+  "funnel": "BOFU",
+  "datos": [
+   "D10"
+  ]
+ },
+ {
+  "id": "A11",
+  "titular": "El papel que necesitas para trabajar con peques",
+  "gancho": "«Con el certificado de antecedentes penales ya vale».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "El certificado de delitos de naturaleza sexual: quién lo emite, que es gratis, que no lo sustituye el de antecedentes penales y que se pide para trabajar, no para empezar el ciclo.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Educación Infantil",
+  "funnel": "MOFU",
+  "datos": [
+   "D12"
+  ]
+ },
+ {
+  "id": "A12",
+  "titular": "Elegir un ciclo de Sanidad por descarte sale caro",
+  "gancho": "«No he entrado en Enfermería, pues cualquier cosa sanitaria».",
+  "ganchoLabel": "Objeción interna",
+  "dentro": "Lo que vemos desde dentro: TCAE, Laboratorio, Anatomía Patológica y Dietética son trabajos muy distintos. Tres preguntas para elegir por lo que harás cada día, no por la bata.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Sanidad",
+  "funnel": "MOFU",
+  "datos": []
+ },
+ {
+  "id": "A13",
+  "titular": "Lo que más nos preguntan sobre TCAE, respondido",
+  "gancho": "¿Puedo hacer TCAE online si las prácticas son en un hospital?",
+  "ganchoLabel": "Pregunta tal cual la hacen",
+  "dentro": "Las dudas reales, una por slide: acceso con la ESO, validez del título a distancia, por qué la fase en empresa es presencial y qué implica estar de alta en la Seguridad Social durante las prácticas.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "TCAE",
+  "funnel": "BOFU",
+  "datos": [
+   "D05",
+   "D15",
+   "D02"
+  ]
+ },
+ {
+  "id": "A14",
+  "titular": "Prácticas de Laboratorio con la ley nueva: qué cambia",
+  "gancho": "«Las prácticas son los últimos meses y listo».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "Con la LOFP la formación en empresa se integra en el ciclo. Qué cambia para quien estudia Laboratorio: modalidad general o intensiva, alta en la Seguridad Social y el plan de formación.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Laboratorio Clínico y Biomédico",
+  "funnel": "MOFU",
+  "datos": [
+   "D01",
+   "D02",
+   "D14"
+  ]
+ },
+ {
+  "id": "A15",
+  "titular": "Sin bachillerato también llegas a DAM. El camino",
+  "gancho": "«Para programar necesito bachillerato o carrera».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "El itinerario: con la ESO entras a SMR, y el título de Técnico te da acceso directo a DAM. Qué tener en cuenta con las plazas.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "DAM",
+  "funnel": "MOFU",
+  "datos": [
+   "D04",
+   "D05"
+  ]
+ },
+ {
+  "id": "A16",
+  "titular": "SMR o ASIR: el error que más vemos",
+  "gancho": "¿Empiezo por SMR o voy directo a ASIR?",
+  "ganchoLabel": "Pregunta tal cual la hacen",
+  "dentro": "Uno es Grado Medio y otro Superior: no compiten, se encadenan. Desde dónde entras a cada uno y cuándo tiene sentido hacer los dos.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Tecnología",
+  "funnel": "MOFU",
+  "datos": [
+   "D04",
+   "D05"
+  ]
+ },
+ {
+  "id": "A17",
+  "titular": "«Marketing se aprende en YouTube». Lo que falta",
+  "gancho": "«Para qué un título si hay tutoriales gratis».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "Lo que un tutorial no te da: título oficial, formación en empresa con alta en la Seguridad Social y acceso a la universidad con tu nota del ciclo. Sin despreciar YouTube.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Marketing y Publicidad",
+  "funnel": "TOFU",
+  "datos": [
+   "D02",
+   "D06",
+   "D15"
+  ]
+ },
+ {
+  "id": "A18",
+  "titular": "De Gestión Administrativa a Finanzas sin prueba de acceso",
+  "gancho": "«Con el Grado Medio me quedo en auxiliar para siempre».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "El título de Técnico en Gestión Administrativa da acceso directo a Administración y Finanzas o Asistencia a la Dirección. Cómo se encadenan y qué mirar en la admisión.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Gestión Administrativa",
+  "funnel": "MOFU",
+  "datos": [
+   "D04"
+  ]
+ },
+ {
+  "id": "A19",
+  "titular": "Dual intensiva en Comercio: qué es el contrato",
+  "gancho": "«Si hago dual me pagan seguro».",
+  "ganchoLabel": "Creencia que rompe",
+  "dentro": "Diferencia entre dual general e intensiva: solo la intensiva lleva contrato de formación en alternancia. La retribución en la general depende de la empresa. Y el periodo transitorio hasta 2028.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Comercio",
+  "funnel": "MOFU",
+  "datos": [
+   "D01",
+   "D03"
+  ]
+ },
+ {
+  "id": "A20",
+  "titular": "De Administración y Finanzas a ADE: tu nota",
+  "gancho": "¿Puedo entrar en ADE con Administración y Finanzas?",
+  "ganchoLabel": "Pregunta tal cual la hacen",
+  "dentro": "Tu nota media es la de acceso, la fase específica suma hasta 4 puntos y ya no hay cupo FP. Por qué mirar las ponderaciones de la universidad concreta.",
+  "objetivo": "autoridad",
+  "subtipo": "",
+  "formacion": "Administración y Finanzas",
+  "funnel": "BOFU",
+  "datos": [
+   "D06"
+  ]
+ },
+ {
+  "id": "V01",
+  "titular": "TCAE: expectativa vs realidad del primer turno",
+  "gancho": "Lo que crees por las series de hospitales vs lo que haces de verdad.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Pares expectativa/realidad: el ritmo, la relación con pacientes, el trabajo en equipo con enfermería, el cansancio y lo que te llevas a casa.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "TCAE",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V02",
+  "titular": "Cosas que nadie te cuenta del laboratorio clínico",
+  "gancho": "Pensar que en el laboratorio solo se miran tubos en silencio.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Detalles del día a día: turnos, control de calidad, trazabilidad de muestras, la parte que no sale en ninguna foto y por qué a cierta gente le engancha.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Laboratorio Clínico y Biomédico",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V03",
+  "titular": "Si fueras un ciclo de Sanidad, ¿cuál serías?",
+  "gancho": "No saber qué ciclo sanitario encaja con tu forma de ser.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Perfiles con humor: si te gusta el trato con gente, TCAE; si eres de detalle, Laboratorio; si no te impresiona nada, Anatomía Patológica; si lees etiquetas, Dietética. Cierre: cuál eres tú.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Sanidad",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V04",
+  "titular": "Red flags de un plan de dieta en redes",
+  "gancho": "Creer que cualquier plan viral de comida está bien hecho.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Señales de alerta (promesas milagro, eliminar grupos enteros sin motivo, nadie titulado detrás) y green flags. Cierre: quién puede hacer qué, técnico en Dietética y dietista-nutricionista.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Dietética",
+  "funnel": "TOFU",
+  "datos": [
+   "D11"
+  ]
+ },
+ {
+  "id": "V05",
+  "titular": "POV: estudias DAM y te piden arreglar la impresora",
+  "gancho": "Tu familia cree que informático es igual a técnico de todo.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Escenas en POV de cenas familiares y grupos de WhatsApp. Remate: lo que sí haces en DAM (aplicaciones, bases de datos) explicado para tu tía.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "DAM",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V06",
+  "titular": "Tier list de lenguajes según alguien que estudia DAW",
+  "gancho": "Todo el mundo tiene opinión sobre qué lenguaje aprender.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Tier list con humor y criterio de los lenguajes y tecnologías que tocas en DAW, sin cifras ni rankings de mercado. Cierre: el mejor lenguaje es el que te hace terminar el proyecto.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "DAW",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V07",
+  "titular": "Administrador de sistemas: 2016 vs 2026",
+  "gancho": "Pensar que sistemas es cablear racks en un sótano.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Comparativa cualitativa: servidores en sala vs cloud, tareas manuales vs automatización, seguridad como extra vs seguridad en todo. Qué sigue igual y qué se aprende en ASIR.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "ASIR",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V08",
+  "titular": "Red flags de un curso de programación",
+  "gancho": "Pagar por un curso que promete trabajo en semanas.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Red flags: promesas de empleo garantizado, «título» que no es oficial, sin prácticas en empresa. Green flags: título oficial, código de centro, formación en empresa integrada.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Tecnología",
+  "funnel": "MOFU",
+  "datos": [
+   "D15"
+  ]
+ },
+ {
+  "id": "V09",
+  "titular": "Trabajar en marketing: expectativa vs realidad",
+  "gancho": "Creer que marketing es subir stories y tener ideas geniales.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Pares expectativa/realidad: creatividad vs informes, viralidad vs métricas, libertad vs briefing del cliente. Remate: por qué igualmente engancha.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Marketing y Publicidad",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V10",
+  "titular": "Lo que dice el cliente vs lo que significa",
+  "gancho": "Las frases de cliente que todo el que trabaja en marketing ha oído.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Traducciones: «algo sencillito», «que sea viral», «ponlo más grande el logo», «tienes libertad creativa». Remate: gestionar clientes también se aprende.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Marketing y Publicidad",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V11",
+  "titular": "Cosas que nadie te cuenta de la logística",
+  "gancho": "Pensar que logística es mover cajas en un almacén.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Lo invisible: planificación de rutas, stock, incidencias, la persona que resuelve cuando todo falla. Cierre: el perfil de oficina que sale de Transporte y Logística.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Transporte y Logística",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V12",
+  "titular": "POV: tu contenedor está parado en aduana",
+  "gancho": "Comercio internacional parece viajar y firmar acuerdos.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Secuencia POV de una mañana real: documentación que falta, llamada al transitario, cliente preguntando. Remate: esto es lo que se aprende a resolver en el ciclo.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Comercio Internacional",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V13",
+  "titular": "Tier list de excusas para no estudiar este año",
+  "gancho": "Siempre hay una razón para dejarlo para septiembre que viene.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Tier list de excusas típicas (no tengo tiempo, soy mayor, no tengo la ESO, el online no vale) de «excusa real» a «ya no cuela», cada una con su dato o su salida.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "",
+  "funnel": "TOFU",
+  "datos": [
+   "D05",
+   "D09",
+   "D15"
+  ]
+ },
+ {
+  "id": "V14",
+  "titular": "Lo que dice tu jefe vs lo que significa",
+  "gancho": "Las frases de dirección que nadie te traduce en tu primer trabajo.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Traducciones con humor: «échale un ojo a mi agenda», «cuando puedas», «prepárame algo para la reunión». Remate: anticipar es la habilidad que se entrena en Asistencia a la Dirección.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Asistencia a la Dirección",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V15",
+  "titular": "Trabajar en una gestoría: expectativa vs realidad",
+  "gancho": "Pensar que en una gestoría solo se archivan papeles.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Pares expectativa/realidad: papeles vs software, rutina vs picos de plazos, trato con clientes. Cierre: lo que se toca en Gestión Administrativa.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Gestión Administrativa",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V16",
+  "titular": "Contable en 2016 vs 2026: qué ha cambiado",
+  "gancho": "Creer que la contabilidad es la misma de siempre con otro programa.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Comparativa cualitativa sin cifras: papel vs digital, cuadrar a mano vs automatizar, hacer apuntes vs analizar. Qué sigue siendo tuyo y la IA no hace.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Administración y Finanzas",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V17",
+  "titular": "Green flags de una oficina donde vas a crecer",
+  "gancho": "Aceptar el primer puesto de oficina sin mirar nada más.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Green flags: te explican el porqué, hay a quién preguntar, te dejan asumir cosas. Y sus red flags espejo. Cierre: qué te da ventaja entrando con título.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Administración",
+  "funnel": "MOFU",
+  "datos": []
+ },
+ {
+  "id": "V18",
+  "titular": "POV: es tu primer periodo de adaptación",
+  "gancho": "Pensar que Educación Infantil es jugar con peques todo el día.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Secuencia POV: el llanto de la puerta, la familia que no se va, el peque que al tercer día ya no quiere irse. Remate: lo que no se ve y se aprende en el ciclo.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Educación Infantil",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V19",
+  "titular": "Cosas que nadie te cuenta de Educación Infantil",
+  "gancho": "«Educación Infantil es cuidar niños, eso lo hace cualquiera».",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Lo que no se ve: programar actividades, observar y registrar, hablar con familias, el cansancio físico y lo que engancha. Sin romantizar.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Educación Infantil",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V20",
+  "titular": "Lo que dice un peque vs lo que significa",
+  "gancho": "Los peques hablan en clave y hay que aprender a leerla.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Traducciones: «no tengo sueño», «ha sido él», «me duele la tripa» un lunes. Remate: entender el desarrollo infantil es parte del ciclo.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "Educación Infantil",
+  "funnel": "TOFU",
+  "datos": []
+ },
+ {
+  "id": "V21",
+  "titular": "Red flags de un centro de FP online",
+  "gancho": "Elegir centro por el anuncio más bonito.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Red flags: no dar código de centro, «título propio», prometer que no hay prácticas presenciales. Green flags: título oficial con la misma validez que presencial, formación en empresa explicada.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "",
+  "funnel": "MOFU",
+  "datos": [
+   "D15"
+  ]
+ },
+ {
+  "id": "V22",
+  "titular": "Estudiar FP online: expectativa vs realidad",
+  "gancho": "Creer que online es más fácil o que estás solo.",
+  "ganchoLabel": "Formato tendencia",
+  "dentro": "Pares expectativa/realidad: horario libre vs organizarte tú, sin exámenes vs exámenes, estudiar solo vs gente que pregunta lo mismo que tú. Honesto, sin vender.",
+  "objetivo": "viral",
+  "subtipo": "tendencia",
+  "formacion": "",
+  "funnel": "TOFU",
+  "datos": [
+   "D15"
+  ]
+ }
+]
