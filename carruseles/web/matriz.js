@@ -206,9 +206,9 @@ function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? '
    (mismas clases r-<rama> t-<tipo> del banco), para que el color y la forma sean siempre coherentes. */
 const FORM_RAMAS = [['Sanidad', 'sanidad'], ['Tecnología', 'tech'], ['Comercio', 'comercio'], ['Administración', 'admin']];
 const FORM_CICLOS = [
-  ['sanidad', ['TCAE', 'Anatomía Patológica y Citodiagnóstico', 'Dietética', 'Laboratorio Clínico y Biomédico']],
-  ['tech', ['SMR', 'ASIR', 'DAM', 'DAW']],
-  ['comercio', ['Comercio Internacional', 'Marketing y Publicidad', 'Transporte y Logística']],
+  ['sanidad', ['TCAE', 'Laboratorio Clínico y Biomédico', 'Anatomía Patológica y Citodiagnóstico', 'Dietética']],
+  ['tech', ['SMR', 'DAM', 'DAW', 'ASIR']],
+  ['comercio', ['Marketing y Publicidad', 'Comercio Internacional', 'Transporte y Logística']],
   ['admin', ['Gestión Administrativa', 'Administración y Finanzas', 'Asistencia a la Dirección']],
   ['socio', ['Educación Infantil']],
   ['', ['Doble Laboratorio + Anatomía', 'Doble DAM + DAW', 'Doble Comercio Int. + Transporte', 'Doble Admin. y Finanzas + Asistencia']]];
