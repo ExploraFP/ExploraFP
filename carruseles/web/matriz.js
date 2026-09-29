@@ -223,9 +223,9 @@ function barraBusqueda() {
   return '<section class="mz-buscazona"><div class="mz-busca"><div class="mz-buscabarra">' +
     '<svg class="mz-lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
     '<input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca una idea: convalidar, TCAE, sueldo…" aria-label="Buscar en la matriz">' +
-    '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + actual + '<span class="mz-fflecha" aria-hidden="true">▾</span></button>' +
-    (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div></div>' +
-    (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button class="linkbtn" id="mz-limpiar">Quitar filtros</button>' : '') +
+    '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn' + (v ? ' activo' : '') + '" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + actual + '<span class="mz-fflecha" aria-hidden="true">▾</span></button>' +
+    (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div>' +
+    (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button type="button" class="mz-limpia" id="mz-limpiar" title="Quitar filtros" aria-label="Quitar filtros">✕</button>' : '') + '</div>' +
     '</div></section>';
 }
 function barraMatriz() {
