@@ -70,3 +70,14 @@ button.est-mini[aria-current="true"]{outline:3px solid var(--brand);outline-offs
 .est-progreso{font-size:12.5px;color:var(--ink2)}
 .est-exportar{position:fixed;left:-99999px;top:0;width:1080px;height:1350px;border:0}
 .est-ecab .btn:not(.pri):not(.on){color:var(--ink)}
+
+/* Móvil: el menú de pestañas se desplaza en vez de salirse; en el editor la slide se ve entera y los campos van debajo */
+.views{max-width:100%;overflow-x:auto;scrollbar-width:none}
+.views button{white-space:nowrap}
+@media(max-width:900px){
+  .est-ecuerpo{display:block;overflow-y:auto}
+  .est-escena{overflow:visible;padding:14px 16px}
+  .est-grande{width:100%;max-width:440px}
+  .est-panel{overflow:visible}
+  .est-ecab{padding:10px 16px}
+}
