@@ -125,14 +125,33 @@
   .mz-todas{padding:0 0 12px 38px}
 }
 
-/* ficha mínima */
-.drawer.mz-ancha{width:min(680px,100vw)}
+/* ficha mínima, con aire */
+.drawer.mz-ancha{width:min(720px,100vw);display:flex;flex-direction:column}
+.mz-ancha .dhead{padding:26px 32px 24px;background:var(--surface);border-bottom:1px solid var(--line)}
+.mz-ancha .dhead .drow{gap:10px;margin-bottom:16px}
+.mz-ancha .dhead h2{font-size:27px;line-height:1.15;letter-spacing:-.4px;max-width:34ch}
+.mz-ancha .dclose{margin-left:auto;width:36px;height:36px;border-radius:50%;font-size:15px}
+.mz-ancha .dbody{flex:1;padding:28px 32px 32px;gap:0}
+.mz-ancha .dfoot{padding:18px 32px;background:var(--surface)}
+.mz-ancha .dfoot .btn{min-height:48px;font-size:15px;border-radius:10px}
 .mz-nivel{font-size:13px;color:var(--ink3)}
-.mz-tira{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x mandatory}
-.mz-tira-s{flex:0 0 220px;scroll-snap-align:start;position:relative}
-.mz-tira-s>span{position:absolute;top:6px;left:6px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font:600 11px var(--f-mono);border-radius:99px;padding:1px 7px}
-.mz-sincarr{color:var(--ink3);font-size:14px;margin:4px 0 14px}
-@media(max-width:760px){.mz-tira-s{flex-basis:72vw}}
+.mz-rot{margin:0 0 14px;font-size:11.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink3)}
+.mz-tira{display:flex;gap:16px;overflow-x:auto;padding:2px 2px 18px;margin:0 -32px;padding-left:32px;padding-right:32px;scroll-padding-left:32px;scroll-snap-type:x mandatory}
+.mz-tira-s{flex:0 0 260px;scroll-snap-align:start;position:relative}
+.mz-tira-s .est-mini{border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px rgba(0,0,0,.08)}
+.mz-tira-s>span{position:absolute;top:10px;left:10px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font:600 11px var(--f-mono);border-radius:99px;padding:2px 8px}
+.mz-sincarr{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;border:1.5px dashed var(--line2);border-radius:14px;padding:44px 24px;color:var(--ink3);font-size:14px;margin-bottom:24px}
+.mz-sincarr b{color:var(--ink);font-size:16px}
+.mz-ancha .mz-yahecho{padding:18px 20px;border-radius:14px}
+.mz-ancha .mz-yahecho b{display:block;margin-bottom:12px}
+@media(max-width:760px){
+  .mz-ancha .dhead{padding:18px 20px 18px}
+  .mz-ancha .dhead h2{font-size:23px}
+  .mz-ancha .dbody{padding:22px 20px 24px}
+  .mz-ancha .dfoot{padding:14px 20px}
+  .mz-tira{margin:0 -20px;padding-left:20px;padding-right:20px;scroll-padding-left:20px}
+  .mz-tira-s{flex-basis:70vw}
+}
 .mz-ancha .dclose{margin-left:auto}
 
 /* marca de la herramienta */
@@ -144,3 +163,7 @@
 .mk-txt img{height:13px;width:auto;opacity:.85;align-self:flex-start}
 .mark.mk b{text-transform:none}
 .mark.mk .mk-txt{border:0;padding:0;margin:0;text-transform:none;letter-spacing:0}
+.mz-ancha .dhead h2{max-width:none;text-wrap:pretty}
+.mz-ancha .mz-parhecho{display:flex;align-items:center;gap:14px}
+.mz-ancha .mz-parhecho .mz-mini{width:72px;flex-shrink:0}
+.mz-ancha .mz-parhecho .linkbtn{background:none;border:0;padding:0;font:inherit;font-size:15px;font-weight:600;color:var(--brand);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:left}

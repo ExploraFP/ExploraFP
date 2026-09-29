@@ -341,11 +341,11 @@ pintarFicha = function () {
     '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>';
   let b = '';
   if (c && c.slides && c.slides.length)
-    b += '<div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
-  else if (c) b += '<p class="mz-sincarr">En Producir, todavía sin generar.</p>';
-  else if (o.url) b += '<p class="mz-sincarr">Hecho fuera de la herramienta · <a href="' + esc(o.url) + '" target="_blank" rel="noopener">ver en Drive</a></p>';
+    b += '<h4 class="mz-rot">Carrusel · ' + c.slides.length + ' slides</h4><div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
+  else if (c) b += '<div class="mz-sincarr"><b>En Producir</b>Todavía sin generar.</div>';
+  else if (o.url) b += '<div class="mz-sincarr"><b>Hecho fuera de la herramienta</b><a href="' + esc(o.url) + '" target="_blank" rel="noopener">Ver en Drive</a></div>';
   else {
-    b += '<p class="mz-sincarr">Sin carrusel todavía.</p>';
+    b += '<div class="mz-sincarr"><b>Sin carrusel todavía</b>Pulsa «Producir» para crearlo.</div>';
     const hp = hechosParecidos(it);
     if (hp.length) b += '<div class="mz-yahecho"><b>Ya tienes uno parecido hecho</b>' +
       hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
