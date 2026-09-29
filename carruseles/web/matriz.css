@@ -531,3 +531,19 @@
   .datos a,.dato a,.lo-usan a,[class*="dato"] a{display:inline-block;padding:6px 4px;min-width:30px}
   .est-editor .btn.mini{min-height:34px}
 }
+
+/* espacio fijo entre emoji y palabra en todas las etiquetas */
+.chip.con-emoji{gap:0}
+.chip-emo{margin-right:.15em}
+/* sugerencias: sección con fondo lima clarito */
+.mz-sug{background:var(--limaSoft);border:1px solid var(--limaLine);border-radius:20px;padding:22px 22px 24px}
+.mz-sugficha{border-color:rgba(54,107,64,.14)}
+@media(max-width:760px){.mz-sug{padding:18px 14px 18px;border-radius:16px}.mz-sugfichas{margin:0 -14px;padding:0 14px 6px;scroll-padding-left:14px}}
+/* ===== modo oscuro más legible (sigue oscuro, menos negro, más contraste) ===== */
+:root[data-theme="dark"]{--paper:#1B231C;--surface:#232D24;--surface2:#2A352B;--surface3:#334034;--line:#3A473B;--line2:#4E5E4F;--ink:#F3F8F1;--ink2:#C6D3C4;--ink3:#9CAB9C;--brand2:#12231A;--limaSoft:#2C3A17;--limaLine:#5C7D2A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#1B231C;--surface:#232D24;--surface2:#2A352B;--surface3:#334034;--line:#3A473B;--line2:#4E5E4F;--ink:#F3F8F1;--ink2:#C6D3C4;--ink3:#9CAB9C;--brand2:#12231A;--limaSoft:#2C3A17;--limaLine:#5C7D2A}}
+:root[data-theme="dark"] .mz-sugficha,:root[data-theme="dark"] .mz-grupo,:root[data-theme="dark"] .vstat{border-color:var(--line2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mz-sugficha,:root:not([data-theme="light"]) .mz-grupo,:root:not([data-theme="light"]) .vstat{border-color:var(--line2)}}
+/* Datos en móvil: botones «Lo usan» más grandes */
+@media(max-width:760px){.vinc button,.vinc a{display:inline-block;min-height:32px;min-width:40px;padding:6px 8px}}
+.chip-emo{margin-right:.4em !important}

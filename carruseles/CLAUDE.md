@@ -82,7 +82,9 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   colores) y cada opción es LA MISMA etiqueta (chip r-<rama> t-<tipo>) que en filas y fichas: regla de Sandra, una etiqueta
   se ve igual en todas partes (Transversal, ramas y ciclos). Sin «Abrir todos».
   Etiquetas de ciclo con el emoji del Playbook de Notion de Explora (`FORM_EMOJI` en matriz.js) en vez del punto;
-  Transversal 📚 (pedido por Sandra); las ideas «DAM y DAW» llevan las dos etiquetas (🎮 DAM + 💻 DAW, `ALC_MULTI`) y salen al filtrar por cualquiera; ramas y «varios ciclos» siguen con su punto. El buscador es solo una barra blanca (sin título, sin fondo y SIN marco: a Sandra no le gusta el reborde), texto oscuro, lupa marcada y botón de formación lima. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
+  Transversal 📚 (pedido por Sandra); las ideas «DAM y DAW» llevan las dos etiquetas (🎮 DAM + 💻 DAW, `ALC_MULTI`) y salen al filtrar por cualquiera; ramas y «varios ciclos» siguen con su punto.
+  «Sanidad y Tecnología» se enseña como las dos etiquetas de rama; «Varios ciclos» como la etiqueta de su rama. Emoji de
+  Informativo = 📌 (📋 es de Asistencia a la Dirección). Viral = 🔮. Sugerencias con fondo lima clarito. Modo oscuro aclarado. El buscador es solo una barra blanca (sin título, sin fondo y SIN marco: a Sandra no le gusta el reborde), texto oscuro, lupa marcada y botón de formación lima. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
   Cada grupo es una fila grande plegada (se abren solos al buscar o filtrar por tema); casillas para
   seleccionar ideas y «Producir (N)» arriba. Ficha mínima (pedido de Sandra: nada de más): rama / ciclo, las slides en fila
   horizontal y un solo botón (Producir o Abrir carrusel); si no hay carrusel y hay uno parecido hecho, lo enseña. Tema = el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),

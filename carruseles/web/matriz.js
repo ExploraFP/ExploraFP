@@ -34,7 +34,7 @@ IDEAS.forEach(it => {
 const OBJETIVOS = {
   viral:       {emoji: '🔮', nombre: 'Viral',       push: 1, cta: 'Comenta, etiqueta a alguien o compártelo', pista: 'Tendencia, entretener, comunidad y cercanía'},
   autoridad:   {emoji: '🏆', nombre: 'Autoridad',   push: 2, cta: 'Guárdalo y síguenos para más',              pista: 'Demostrar que somos referentes del sector'},
-  informativo: {emoji: '📋', nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
+  informativo: {emoji: '📌', nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
   leadmagnet:  {emoji: '🧲', nombre: 'Lead magnet', push: 4, cta: 'Comenta PALABRA y te mando [recurso]',     pista: 'Conseguir leads orgánicos con un recurso'},
 };
 /* El titular que se ve es el hook (web/hooks.json); el del banco se conserva en it.titular. */
@@ -215,9 +215,12 @@ const _afinidadBase = afinidad;
 afinidad = function (it, ciclo) { return (ALC_MULTI[it.alcTxt] || []).indexOf(ciclo) >= 0 ? 1 : _afinidadBase(it, ciclo); };
 const _chipAlcanceBase = chipAlcance;
 chipAlcance = function (it, filtra) {
+  // «Sanidad y Tecnología» → las dos etiquetas de rama; «Varios ciclos» → la etiqueta de su rama
+  if (it.alcTxt === 'Sanidad y Tecnología') return ['Sanidad', 'Tecnología'].map(r => chipAlcance(Object.assign({}, it, {alcTxt: r, alcTipo: 'rama', ramaColor: r}), filtra)).join(' ');
+  if (it.alcTipo === 'varias' && it.alcTxt === 'Varios ciclos' && it.ramaColor !== 'Transversal') return chipAlcance(Object.assign({}, it, {alcTxt: it.ramaColor, alcTipo: 'rama'}), filtra);
   if (ALC_MULTI[it.alcTxt]) return ALC_MULTI[it.alcTxt].map(c => chipAlcance(Object.assign({}, it, {alcTxt: c, alcTipo: 'formacion'}), filtra)).join(' ');
   const h = _chipAlcanceBase(it, filtra), e = FORM_EMOJI[it.alcTxt];
-  return e ? h.replace(/class="chip /, 'class="chip con-emoji ').replace(/>([^<]*)<\/(span|button)>$/, '><i class="chip-emo">' + e + '</i>$1</$2>') : h;
+  return e ? h.replace(/class="chip /, 'class="chip con-emoji ').replace(/>([^<]*)<\/(span|button)>$/, '><i class="chip-emo">' + e + '</i> $1</$2>') : h;
 };
 
 /* Orden fijo pedido por Sandra: primero las ramas; luego los ciclos de Sanidad, Tecnología, Comercio, Administración,
@@ -235,7 +238,7 @@ function barraBusqueda() {
   const v = valorFormacion();
   const hay = {}; IDEAS.forEach(i => { if (i.alcTipo === 'formacion') hay[i.alcTxt] = ramaKey(i); });
   let actual = '<span class="mz-ftodas">Todas las formaciones</span>';
-  const chip = (txt, cls) => FORM_EMOJI[txt] ? '<span class="chip con-emoji ' + cls + '"><i class="chip-emo">' + FORM_EMOJI[txt] + '</i>' + esc(txt) + '</span>'
+  const chip = (txt, cls) => FORM_EMOJI[txt] ? '<span class="chip con-emoji ' + cls + '"><i class="chip-emo">' + FORM_EMOJI[txt] + '</i> ' + esc(txt) + '</span>'
     : '<span class="chip ' + cls + '">' + esc(txt) + '</span>';
   const o = (val, html) => { if (v === val) actual = html;
     return '<button type="button" class="mz-fopt' + (v === val ? ' on' : '') + '" data-forma-v="' + esc(val) + '">' + html + '</button>'; };
