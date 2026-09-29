@@ -78,6 +78,9 @@ cambiar('<button data-v="inventario">Inventario</button>', '');
 cambiar(`'<p>Los 16 hechos con fuente comprobada. Si una cifra no está aquí, no sale en un carrusel.</p></div></div>';`,
   `'</div>' +
     '<div class="vstats"><div class="vstat ok"><b>' + DATOS.length + '</b><span>datos con fuente</span></div></div></div>';`);
+// Botón claro/oscuro con un icono limpio (luna) en vez del carácter ◐.
+cambiar('aria-label="Cambiar entre claro y oscuro">◐</button>',
+  'aria-label="Cambiar entre claro y oscuro"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg></button>');
 // Icono de la pestaña: el mismo abanico de slides de la cabecera.
 const ICONO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#1B3620"/>' +
   '<rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/>' +
