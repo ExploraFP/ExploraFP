@@ -201,31 +201,31 @@ function sugerencias() {
 
 /* Buscador: una caja y dos desplegables. «Formación» junta lo que antes eran Enfoque, Rama y Ciclo. */
 function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? 'c:' + S.f.form : S.f.rama ? 'r:' + S.f.rama : ''; }
-/* Orden fijo pedido por Sandra: Sanidad, Tecnología, Comercio, Administración, Educación Infantil y, al final, los dobles.
-   Sin títulos de sección: cada rama se distingue por un fondo suave. */
-const FORM_ORDEN = [
-  ['Sanidad', '#E4F6F2', ['TCAE', 'Anatomía Patológica y Citodiagnóstico', 'Dietética', 'Laboratorio Clínico y Biomédico'], '#14A38B'],
-  ['Tecnología', '#E7EFFD', ['SMR', 'ASIR', 'DAM', 'DAW'], '#3B6FE0'],
-  ['Comercio', '#FFF0E3', ['Comercio Internacional', 'Marketing y Publicidad', 'Transporte y Logística'], '#E0782B'],
-  ['Administración', '#F0EBFB', ['Gestión Administrativa', 'Administración y Finanzas', 'Asistencia a la Dirección'], '#7B5BD6'],
-  ['', '#FCEAF2', ['Educación Infantil'], '#D6558F'],
-  ['', '#F1F2EE', ['Doble Laboratorio + Anatomía', 'Doble DAM + DAW', 'Doble Comercio Int. + Transporte', 'Doble Admin. y Finanzas + Asistencia'], '#7A8074']];
+/* Orden fijo pedido por Sandra: primero las ramas; luego los ciclos de Sanidad, Tecnología, Comercio, Administración,
+   Educación Infantil y, al final, los dobles. Cada opción es LA MISMA etiqueta (chip) que sale en filas y fichas
+   (mismas clases r-<rama> t-<tipo> del banco), para que el color y la forma sean siempre coherentes. */
+const FORM_RAMAS = [['Sanidad', 'sanidad'], ['Tecnología', 'tech'], ['Comercio', 'comercio'], ['Administración', 'admin']];
+const FORM_CICLOS = [
+  ['sanidad', ['TCAE', 'Anatomía Patológica y Citodiagnóstico', 'Dietética', 'Laboratorio Clínico y Biomédico']],
+  ['tech', ['SMR', 'ASIR', 'DAM', 'DAW']],
+  ['comercio', ['Comercio Internacional', 'Marketing y Publicidad', 'Transporte y Logística']],
+  ['admin', ['Gestión Administrativa', 'Administración y Finanzas', 'Asistencia a la Dirección']],
+  ['socio', ['Educación Infantil']],
+  ['', ['Doble Laboratorio + Anatomía', 'Doble DAM + DAW', 'Doble Comercio Int. + Transporte', 'Doble Admin. y Finanzas + Asistencia']]];
 function barraBusqueda() {
   const v = valorFormacion();
-  // desplegable propio (el nativo de Mac no pinta colores): botón + lista
-  let actual = 'Todas las formaciones';
-  const o = (val, txt, bg, dot) => { if (v === val) actual = txt;
-    return '<button type="button" class="mz-fopt' + (v === val ? ' on' : '') + '" data-forma-v="' + esc(val) + '"' + (bg ? ' style="--fbg:' + bg + ';--fdot:' + dot + '"' : '') + '>' +
-      (dot ? '<i></i>' : '') + esc(txt) + '</button>'; };
-  const hay = new Set(IDEAS.map(i => i.alcTxt));
-  // primero las ramas, luego los ciclos en el mismo orden y al final los dobles
-  const opciones = FORM_ORDEN.filter(g => g[0]).map(g => o('r:' + g[0], g[0], g[1], g[3])).join('') + '<hr>' +
-    FORM_ORDEN.map(g => g[2].filter(c => hay.has(c)).map(c => o('c:' + c, c, g[1], g[3])).join('')).join('');
-  const lista = o('', 'Todas las formaciones') + o('gen', 'Transversales (todas las ramas)') + '<hr>' + opciones;
-  return '<section class="mz-buscazona"><h3 class="mz-todas-tit">Todas las ideas</h3><div class="mz-busca"><div class="mz-buscabarra">' +
+  const hay = {}; IDEAS.forEach(i => { if (i.alcTipo === 'formacion') hay[i.alcTxt] = ramaKey(i); });
+  let actual = '<span class="mz-ftodas">Todas las formaciones</span>';
+  const chip = (txt, cls) => '<span class="chip ' + cls + '">' + esc(txt) + '</span>';
+  const o = (val, html) => { if (v === val) actual = html;
+    return '<button type="button" class="mz-fopt' + (v === val ? ' on' : '') + '" data-forma-v="' + esc(val) + '">' + html + '</button>'; };
+  const lista = o('', '<span class="mz-ftodas">Todas las formaciones</span>') + o('gen', chip('Transversal', 'r-trans t-transversal')) + '<hr>' +
+    FORM_RAMAS.map(r => o('r:' + r[0], chip(r[0], 'r-' + r[1] + ' t-rama'))).join('') + '<hr>' +
+    FORM_CICLOS.map(g => g[1].filter(c => hay[c]).map(c => o('c:' + c, chip(c, 'r-' + hay[c] + ' t-formacion'))).join('')).join('');
+  return '<section class="mz-buscazona"><div class="mz-busca"><div class="mz-buscabarra">' +
     '<svg class="mz-lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
     '<input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca una idea: convalidar, TCAE, sueldo…" aria-label="Buscar en la matriz">' +
-    '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + esc(actual) + '<span aria-hidden="true">▾</span></button>' +
+    '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + actual + '<span class="mz-fflecha" aria-hidden="true">▾</span></button>' +
     (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div></div>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button class="linkbtn" id="mz-limpiar">Quitar filtros</button>' : '') +
     '</div></section>';
@@ -297,8 +297,7 @@ function vMatriz() {
   h += sugerencias();
   h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.length;
-  h += '<p class="cuenta">' + (filtrando ? '<b>' + filas.length + '</b>' + (filas.length === 1 ? ' idea' : ' ideas') + ' · ' : '') +
-    (S.agrupar ? '<button class="linkbtn" id="mz-abrirtodos">' + (OBJ_ORDEN.every(temaAbierto) ? 'Cerrar todos' : 'Abrir todos') + '</button>' : '') + '</p>';
+  if (filtrando) h += '<p class="cuenta"><b>' + filas.length + '</b>' + (filas.length === 1 ? ' idea' : ' ideas') + '</p>';
   if (!filas.length) return h + '<div class="vacio"><b>Nada con esos filtros</b>Prueba a quitar alguno, o cambia el estado a «Todas».</div>';
   const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><tbody>' +
     rows.map(filaMatriz).join('') + '</tbody></table></div>';
