@@ -330,18 +330,14 @@ function enlazar(clave, ideaId) {
 }
 
 /* ---------- ficha: solo a qué formación va y las slides en fila ---------- */
-function nivelIdea(it) {
-  const niv = it.nivel ? ' · ' + (NIVEL[it.nivel] || it.nivel) : '';
-  if (it.alcTipo === 'formacion') return 'Rama ' + it.ramaColor + ' / ' + it.alcTxt + niv;
-  if (it.alcTipo === 'rama') return 'Rama ' + it.alcTxt + niv;
-  if (it.alcTipo === 'transversal') return 'Transversal · para todas las ramas';
-  return it.alcTxt + niv;
-}
 pintarFicha = function () {
   const it = IMAP[S.sel]; if (!it) return;
   const e = estadoIdea(it), c = carruselDe(it), o = op(it.id);
   $('#drawer').classList.add('mz-ancha');
-  $('#dhead').innerHTML = '<div class="drow"><span class="mz-nivel">' + esc(nivelIdea(it)) + '</span>' +
+  // la misma etiqueta que en la fila de la matriz, y al lado la rama/nivel si aporta algo
+  const niv = it.nivel ? (NIVEL[it.nivel] || it.nivel) : '';
+  const extra = it.alcTipo === 'formacion' ? 'Rama ' + it.ramaColor + (niv ? ' · ' + niv : '') : it.alcTipo === 'transversal' ? '' : niv;
+  $('#dhead').innerHTML = '<div class="drow">' + chipAlcance(it) + (extra ? '<span class="mz-nivel">' + esc(extra) + '</span>' : '') +
     '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>';
   let b = '';
   if (c && c.slides && c.slides.length)

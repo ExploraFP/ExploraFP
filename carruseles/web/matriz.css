@@ -127,7 +127,7 @@
 
 /* ficha mínima */
 .drawer.mz-ancha{width:min(680px,100vw)}
-.mz-nivel{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--brand)}
+.mz-nivel{font-size:13px;color:var(--ink3)}
 .mz-tira{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x mandatory}
 .mz-tira-s{flex:0 0 220px;scroll-snap-align:start;position:relative}
 .mz-tira-s>span{position:absolute;top:6px;left:6px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font:600 11px var(--f-mono);border-radius:99px;padding:1px 7px}
