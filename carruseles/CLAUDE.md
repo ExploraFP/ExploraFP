@@ -73,7 +73,9 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   el banco desde otra sesión, volver a leer el artifact y guardar aquí su HTML antes de reconstruir.
 - `web/estudio.js` + `web/estudio.css`: pestaña Producción (antes «Producir»), editor, control de calidad y exportación a PNG.
 - `web/matriz.js` + `web/matriz.css`: pestaña Matriz (antes Ideas) e Inventario (antes «Hechos»; junta Hechos + Inventario del banco).
-  Matriz agrupada por OBJETIVO (pedido de Sandra): Viral · Autoridad · Informativo · Lead magnet, de menos a más push, cada uno
+  Matriz = UNA tabla siempre (pedido de Sandra), con «vistas» en pestañas: Todas · 🔮 Viral · 🏆 Autoridad · 📌 Informativo · 🧲 Lead magnet
+  (cada una con su cuenta; se combinan con Formación y búsqueda). En una vista: el CTA sale una vez arriba, «N hechas» y «Seleccionar las N»;
+  en Todas hay columna de objetivo. 60 filas y «Ver 60 más» (`S.vista`, `S.limite`). Objetivos (antes eran grupos plegados): Viral · Autoridad · Informativo · Lead magnet, de menos a más push, cada uno
   con su CTA por defecto (`OBJETIVOS` en matriz.js; Informativo = «Escríbenos tu ciclo por DM y te decimos tu caso»). Cada idea trae
   un objetivo sugerido por reglas (`OBJ_REGLAS`), Sandra lo cambia en la ficha (se guarda en ops/<id>.objetivo). Al producir se
   elige objetivo y CTA; van al carrusel (`objetivo`, `cta`) y al prompt (`OBJ_PROMPT` en estudio.js). Buscador en una línea: caja + «Formación» (todas /
@@ -85,7 +87,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   Transversal 📚 (pedido por Sandra); las ideas «DAM y DAW» llevan las dos etiquetas (🎮 DAM + 💻 DAW, `ALC_MULTI`) y salen al filtrar por cualquiera; ramas y «varios ciclos» siguen con su punto.
   «Sanidad y Tecnología» se enseña como las dos etiquetas de rama; «Varios ciclos» como la etiqueta de su rama. Emoji de
   Informativo = 📌 (📋 es de Asistencia a la Dirección). Viral = 🔮. Sugerencias con fondo lima clarito. Modo oscuro aclarado. El buscador es solo una barra blanca (sin título, sin fondo y SIN marco: a Sandra no le gusta el reborde), texto oscuro, lupa marcada y botón de formación lima. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
-  Cada grupo es una fila grande plegada (se abren solos al buscar o filtrar por tema); casillas para
+  Casillas para
   seleccionar ideas y «Producir (N)» arriba. Ficha mínima (pedido de Sandra: nada de más): rama / ciclo, las slides en fila
   horizontal y un solo botón (Producir o Abrir carrusel); si no hay carrusel y hay uno parecido hecho, lo enseña. Tema = el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),
   filtros Estado/Tema/Alcance rama-ciclo/Cifras, estado de cada idea (por hacer · en producción · hecha, con su

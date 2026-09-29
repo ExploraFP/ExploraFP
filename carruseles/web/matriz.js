@@ -303,6 +303,7 @@ function filaMatriz(it) {
       (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
       (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') + '</td>' +
+    (S.vista ? '' : '<td class="c-obj"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span></td>') +
     '<td class="c-est">' + celdaEstado(it) + '</td></tr>';
 }
 // Los temas empiezan cerrados; se abren solos al buscar o filtrar por tema.
@@ -325,11 +326,23 @@ function vMatriz() {
   h += sugerencias();
   h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.length;
-  if (filtrando) h += '<p class="cuenta"><b>' + filas.length + '</b>' + (filas.length === 1 ? ' idea' : ' ideas') + '</p>';
-  if (!filas.length) return h + '<div class="vacio"><b>Nada con esos filtros</b>Prueba a quitar alguno, o cambia el estado a «Todas».</div>';
-  const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><tbody>' +
-    rows.map(filaMatriz).join('') + '</tbody></table></div>';
-  if (!S.agrupar) return h + tabla(filas);
+  // ---- vistas: una tabla siempre visible; arriba se elige el objetivo (y se combina con formación y búsqueda) ----
+  const cuentaObj = {}; filas.forEach(it => { const k = objDe(it); cuentaObj[k] = (cuentaObj[k] || 0) + 1; });
+  const vistaBtn = (k, txt, n) => '<button class="mz-vista" data-vista="' + k + '" aria-pressed="' + ((S.vista || '') === k) + '">' + txt + ' <span>' + n + '</span></button>';
+  h += '<div class="mz-vistas" role="tablist" aria-label="Vistas por objetivo">' + vistaBtn('', 'Todas', filas.length) +
+    OBJ_ORDEN.map(k => vistaBtn(k, esc(objEt(k)), cuentaObj[k] || 0)).join('') + '</div>';
+  const enVista = S.vista ? filas.filter(it => objDe(it) === S.vista) : filas;
+  const porHacerV = enVista.filter(i => estadoIdea(i) === 'porhacer');
+  const hechasV = enVista.filter(i => estadoIdea(i) === 'hecha').length;
+  h += '<div class="mz-vistabar">' +
+    (S.vista ? '<span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span>' : '<span class="mz-vistainfo">' + enVista.length + ' ideas</span>') +
+    '<span class="mz-vistainfo">' + hechasV + ' hechas</span>' +
+    (porHacerV.length ? '<label class="mz-todas"><input type="checkbox" data-selec-vista="1"' + (porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + '> Seleccionar las ' + porHacerV.length + '</label>' : '') + '</div>';
+  if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra vista, otra formación o quita la búsqueda.</div>';
+  const lim = S.limite || 60, vis = enVista.slice(0, lim);
+  h += '<div class="tablawrap mz-tablavista"><table class="matriz mz-tabla"><tbody>' + vis.map(filaMatriz).join('') + '</tbody></table></div>';
+  if (enVista.length > lim) h += '<div class="mz-vermas"><button class="btn" id="mz-vermas">Ver ' + Math.min(60, enVista.length - lim) + ' más · quedan ' + (enVista.length - lim) + '</button></div>';
+  return h;
   const grupos = {}; filas.forEach(it => { const k = objDe(it); (grupos[k] = grupos[k] || []).push(it); });
   return h + OBJ_ORDEN.filter(t => grupos[t]).map(t => {
     const O = OBJETIVOS[t];
@@ -557,6 +570,9 @@ document.addEventListener('click', e => {
     if (v === 'gen') S.f.enf = 'generico'; else if (v.slice(0, 2) === 'r:') S.f.rama = v.slice(2); else if (v.slice(0, 2) === 'c:') S.f.form = v.slice(2);
     render(); return; }
   if (S.formaAbierta && !t.closest('.mz-flista')) { S.formaAbierta = false; render(); }
+  const vb = t.closest && t.closest('[data-vista]');
+  if (vb) { S.vista = vb.dataset.vista; S.limite = 60; render(); const act = document.querySelector('.mz-vista[aria-pressed="true"]'); if (act) act.scrollIntoView({block:'nearest', inline:'center'}); return; }
+  if (t.id === 'mz-vermas') { S.limite = (S.limite || 60) + 60; render(); return; }
   if (t.id === 'mz-sug-sig') { S.sugOff++; render(); return; }
   if (t.id === 'mz-sug-ant') { S.sugOff--; render(); return; }
   if (t.id === 'mz-abrirtodos') { const v = !OBJ_ORDEN.every(temaAbierto); OBJ_ORDEN.forEach(k => S.abiertos[k] = v); render(); return; }
@@ -599,6 +615,11 @@ function enlazarSinCerrar(clave, ideaId) {
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset && t.dataset.selec) { if (t.checked) SELEC.add(t.dataset.selec); else SELEC.delete(t.dataset.selec); pintarSeleccion(); return; }
+  if (t.dataset && t.dataset.selecVista) {
+    TOKENS = trozosBusqueda();
+    IDEAS.filter(it => pasaMatriz(it) && (!S.vista || objDe(it) === S.vista) && estadoIdea(it) === 'porhacer')
+      .forEach(it => { if (t.checked) SELEC.add(it.id); else SELEC.delete(it.id); });
+    pintarSeleccion(); render(); return; }
   if (t.dataset && t.dataset.selecTema) {
     IDEAS.filter(it => objDe(it) === t.dataset.selecTema && pasaMatriz(it) && estadoIdea(it) === 'porhacer')
       .forEach(it => { if (t.checked) SELEC.add(it.id); else SELEC.delete(it.id); });
