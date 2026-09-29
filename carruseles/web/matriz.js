@@ -193,7 +193,7 @@ function sugerencias() {
     '<div class="mz-sugfichas">' + cinco.map(it => {
       return '<article class="mz-sugficha"><button class="mz-sugabrir" data-abrir="' + it.id + '">' +
         '<b>' + esc(tituloIdea(it)) + '</b>' +
-        '<span class="mz-sugpie"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span>' + chipAlcance(it) + '</span></button>' +
+        '<span class="mz-sugpie"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span><span class="mz-sugform">' + chipAlcance(it) + '</span></span></button>' +
         '<button class="btn mini pri" data-producir="' + it.id + '">Producir</button></article>'; }).join('') + '</div></section>';
 }
 

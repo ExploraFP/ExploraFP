@@ -493,3 +493,4 @@
 .chip.con-emoji::before{display:none}
 .chip-emo{font-style:normal;margin-right:5px;font-size:1.05em;line-height:1}
 .chip-emo{margin-right:0}.chip.con-emoji{align-items:center;gap:5px}
+.mz-sugform{display:flex;flex-wrap:wrap;gap:5px}
