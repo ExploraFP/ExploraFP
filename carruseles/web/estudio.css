@@ -81,3 +81,15 @@ button.est-mini[aria-current="true"]{outline:3px solid var(--brand);outline-offs
   .est-panel{overflow:visible}
   .est-ecab{padding:10px 16px}
 }
+
+/* control de calidad */
+.est-qc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.est-qc li{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;padding:7px 9px;border-radius:8px;border:1px solid}
+.est-qc li b{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em}
+.est-qc li span{flex:1;min-width:150px}
+.est-qc .qc-error{background:var(--dangerSoft);border-color:var(--dangerLine);color:var(--danger)}
+.est-qc .qc-aviso{background:var(--warnSoft);border-color:var(--warnLine);color:var(--warn)}
+.est-qc .btn.mini{padding:2px 8px;font-size:11px;box-shadow:none}
+.est-qc-ok{background:var(--okSoft);border:1px solid var(--okLine);color:var(--ok);border-radius:8px;padding:8px 10px;font-size:12.5px}
+button.est-mini[data-qc="error"]{box-shadow:0 0 0 3px var(--danger)}
+button.est-mini[data-qc="aviso"]{box-shadow:0 0 0 3px var(--warnLine)}

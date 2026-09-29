@@ -76,4 +76,9 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Datos: colección `carruseles` del db (un documento por carrusel: titulo, plantilla, color, slides, copy, estado,
   idea). Estados: pendiente → generando → borrador → hecho. La colección `ops` es la del banco (ideas hechas).
 - Fotos nuevas: añadir a `contenido/img/foto-*.jpg` y su descripción en `DESC` de `web/construir.mjs`.
+- Control de calidad (estudio.js, `avisosTexto` + `medir`): errores = texto que no cabe, palabras prohibidas,
+  titular en mayúsculas, dato sin cifra o sin fuente; avisos = emojis, titular largo o sin resaltado, cifras fuera
+  de la slide de dato, falta el texto del post. Con errores, «Marcar hecho» pide un segundo clic.
+- Descarga en lote: la plataforma NO permite .zip (solo imágenes, PDF, texto y Office). El lote baja los PNG
+  seguidos con nombres ordenados (01-titulo-01.png…) y una confirmación del navegador por archivo.
 - La fuente Gravity se publica con la herramienta (privada); no hacer público el enlace (licencia de Dinamo).

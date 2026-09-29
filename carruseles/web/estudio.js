@@ -55,6 +55,14 @@ async function prepararExportacion() {
 const EST_AJUSTE = '<script>document.fonts.ready.then(function(){var c=document.querySelector(".cifra");' +
   'if(c){var a=function(){var r=document.createRange();r.selectNodeContents(c);return r.getBoundingClientRect().width};' +
   'var t=parseFloat(getComputedStyle(c).fontSize);while(a()>c.clientWidth&&t>80){t-=6;c.style.fontSize=t+"px"}}' +
+  'var sb=0,fs=document.querySelector(".foto-sangre");' +
+  'if(fs){var bf=document.querySelector(".bloque-foto").getBoundingClientRect();sb=Math.max(bf.bottom-1310,200-bf.top,0)}' +
+  'else{var bl=[].slice.call(document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i):not(.velo), .caja, .bloque"));' +
+  'bl=bl.filter(function(b){return b.offsetParent!==null});' +
+  'if(bl.length){var fo=Math.max.apply(0,bl.map(function(b){return b.getBoundingClientRect().bottom})),ar=Math.min.apply(0,bl.map(function(b){return b.getBoundingClientRect().top}));' +
+  'sb=Math.max(fo-1320,30-ar,0)}' +
+  '[].forEach.call(document.querySelectorAll(".contenido *"),function(e){if(e.scrollWidth>e.clientWidth+4&&getComputedStyle(e).overflow!=="visible")sb=Math.max(sb,1)})}' +
+  'document.body.setAttribute("data-sobra",Math.round(sb));' +
   'document.body.setAttribute("data-listo","1")})<\/script>';
 const EST_BASE_URL = location.href.replace(/[#?].*$/, '').replace(/[^/]*$/, '');
 const EST_BASE = '<base href="' + EST_BASE_URL + '">';
@@ -241,6 +249,112 @@ async function generarTodas() {
   toast('Listos para revisar');
 }
 
+/* ---------- control de calidad ----------
+   error = no se puede publicar así · aviso = revisa, puede estar bien */
+const QC_PROHIBIDAS = [
+  [/\bprofesor(a|es|as)?\b/i, '«profesor»: di «guía»'],
+  [/\blecci[oó]n(es)?\b/i, '«lección»: di «expedición»'],
+  [/\bunidad(es)? did[aá]ctica/i, '«unidad didáctica»: di «expedición»'],
+  [/\baulas?\b/i, '«aula»: di «terreno»'],
+  [/matric[uú]late|matric[uú]lese/i, '«matricúlate»: di «trazar mi ruta»'],
+  [/\bFCT\b/, '«FCT»: di «formación en empresa»'],
+  [/\bdesliza\b|swipe/i, 'nada de «desliza» en las slides']];
+const QC_CAMPOS = ['etiqueta', 'antetitulo', 'titulo', 'subtitulo', 'texto', 'cta', 'cinta', 'nota'];
+function firmaQC(c) { return JSON.stringify([c.plantilla, c.color, c.cinta, c.slides]); }
+function avisosTexto(c) {
+  const out = [], add = (i, nivel, msg) => out.push({slide: i, nivel: nivel, msg: msg});
+  c.slides.forEach((s, i) => {
+    const textos = QC_CAMPOS.map(k => s[k]).concat(s.items || []).filter(Boolean).map(String);
+    const todo = textos.join(' · ');
+    QC_PROHIBIDAS.forEach(p => { if (p[0].test(todo)) add(i, 'error', 'Palabra prohibida: ' + p[1]); });
+    if (/\p{Extended_Pictographic}/u.test(todo)) add(i, 'aviso', 'Hay un emoji dentro de la slide (solo van en el texto del post)');
+    const tit = String(s.titulo || '').replace(/\*/g, '');
+    if (/[A-ZÁÉÍÓÚÑ]{2}[^a-záéíóúñ]*[A-ZÁÉÍÓÚÑ]{3}/.test(tit) && tit === tit.toUpperCase() && tit.replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ]/g, '').length > 5)
+      add(i, 'error', 'Titular en mayúsculas: va en minúscula salvo la inicial');
+    const palabras = tit.split(/\s+/).filter(Boolean).length;
+    if (palabras > 10) add(i, 'aviso', 'Titular largo (' + palabras + ' palabras): mejor 8 o menos');
+    if (s.tipo !== 'dato' && s.titulo && !/\*[^*]+\*/.test(s.titulo)) add(i, 'aviso', 'El titular no tiene ninguna palabra resaltada (*así*)');
+    if (s.tipo === 'dato') {
+      if (!s.cifra) add(i, 'error', 'Slide de dato sin cifra');
+      if (!s.fuente) add(i, 'error', 'Cifra sin fuente: cópiala de la pestaña Datos');
+    } else if (/\d+([.,]\d+)?\s?(%|€|euros|horas|h\b|meses|años)/i.test(todo)) {
+      add(i, 'aviso', 'Hay una cifra: comprueba que sale de la pestaña Datos');
+    }
+  });
+  if (c.slides.length && c.slides[0].tipo !== 'portada') add(0, 'aviso', 'La primera slide no es una portada');
+  if (c.slides.length > 1 && c.slides[c.slides.length - 1].tipo !== 'cierre') add(c.slides.length - 1, 'aviso', 'La última slide no es un cierre');
+  if (c.slides.length > 10) add(-1, 'aviso', c.slides.length + ' slides: el ideal está entre 4 y 8');
+  if (!String(c.copy || '').trim()) add(-1, 'aviso', 'Falta el texto del post');
+  return out;
+}
+/* cabe o no cabe: se mide pintando cada slide fuera de pantalla */
+EST.medidas = {};
+async function medir(c) {
+  const firma = firmaQC(c), m = EST.medidas[c.id];
+  if (m && m.firma === firma) return m;
+  const sobras = [];
+  for (let i = 0; i < c.slides.length; i++) {
+    const f = document.createElement('iframe'); f.className = 'est-exportar'; document.body.appendChild(f);
+    try {
+      await new Promise(ok => { f.onload = ok; f.srcdoc = docSlide(c, i); });
+      const d = f.contentDocument;
+      for (let t = 0; t < 80 && !d.body.getAttribute('data-listo'); t++) await new Promise(r => setTimeout(r, 50));
+      sobras.push(+(d.body.getAttribute('data-sobra') || 0));
+    } catch (e) { sobras.push(0); } finally { f.remove(); }
+  }
+  return EST.medidas[c.id] = {firma: firma, sobras: sobras};
+}
+function avisos(c) {
+  const out = avisosTexto(c), m = EST.medidas[c.id];
+  if (m && m.firma === firmaQC(c)) m.sobras.forEach((px, i) => { if (px > 0) out.unshift({slide: i, nivel: 'error', msg: 'El texto no cabe en la slide: recórtalo'}); });
+  return out;
+}
+const qcMedido = c => { const m = EST.medidas[c.id]; return !!(m && m.firma === firmaQC(c)); };
+const qcErrores = c => avisos(c).filter(a => a.nivel === 'error').length;
+/* cola: mide de uno en uno para no saturar el navegador */
+EST.qcCola = []; EST.qcActivo = false;
+function pedirQC(c) { if (!c || !c.slides.length || qcMedido(c) || EST.qcCola.indexOf(c.id) >= 0) return; EST.qcCola.push(c.id); correrQC(); }
+async function correrQC() {
+  if (EST.qcActivo) return; EST.qcActivo = true;
+  while (EST.qcCola.length) {
+    const c = EST.lista[EST.qcCola.shift()];
+    if (c && c.slides.length) { await medir(c); refrescarQCVisible(c.id); }
+  }
+  EST.qcActivo = false;
+}
+function chipQC(c) {
+  if (!c.slides.length) return '';
+  if (!qcMedido(c)) { pedirQC(c); return '<span class="chip e-pendiente">Revisando…</span>'; }
+  const a = avisos(c), e = a.filter(x => x.nivel === 'error').length, w = a.length - e;
+  return e ? '<span class="chip e-error" title="' + esc(a.filter(x => x.nivel === 'error').map(x => x.msg).join(' · ')) + '">⚠ ' + e + ' a corregir</span>'
+    : w ? '<span class="chip e-generando" title="' + esc(a.map(x => x.msg).join(' · ')) + '">' + w + (w === 1 ? ' aviso' : ' avisos') + '</span>'
+    : '<span class="chip e-hecho">✓ Listo</span>';
+}
+function refrescarQCVisible(id) {
+  document.querySelectorAll('[data-qc-chip="' + id + '"]').forEach(el => { const c = EST.lista[id]; if (c) el.innerHTML = chipQC(c); });
+  if (EST.abierto === id) pintarQCPanel();
+  const h = document.getElementById('est-lote-hueco'); if (h) h.innerHTML = botonLote();
+}
+function pintarQCPanel() {
+  const c = EST.lista[EST.abierto], caja = document.getElementById('est-qc'); if (!c || !caja) return;
+  caja.innerHTML = htmlQC(c);
+  document.querySelectorAll('#est-editor [data-est-sel]').forEach(b => {
+    const i = +b.dataset.estSel, a = avisos(c).filter(x => x.slide === i);
+    b.dataset.qc = a.some(x => x.nivel === 'error') ? 'error' : a.length ? 'aviso' : '';
+  });
+  const h = document.getElementById('est-hecho');
+  if (h && c.estado !== 'hecho') { const e = qcErrores(c); h.textContent = e && EST.forzar === c.id ? 'Marcar hecho igualmente' : 'Marcar hecho'; }
+}
+function htmlQC(c) {
+  if (!qcMedido(c)) { pedirQC(c); return '<h3>Control de calidad</h3><p class="est-pista">Revisando las slides…</p>'; }
+  const a = avisos(c);
+  if (!a.length) return '<h3>Control de calidad</h3><div class="est-qc-ok">✓ Todo en orden: cabe, sin palabras prohibidas, sin cifras sin fuente.</div>';
+  return '<h3>Control de calidad</h3><ul class="est-qc">' + a.map(x =>
+    '<li class="qc-' + x.nivel + '"><b>' + (x.nivel === 'error' ? 'Corregir' : 'Revisar') + '</b>' +
+    (x.slide >= 0 ? '<button class="btn mini" data-est-sel="' + x.slide + '">Slide ' + (x.slide + 1) + '</button>' : '') +
+    '<span>' + esc(x.msg) + '</span></li>').join('') + '</ul>';
+}
+
 /* ---------- vistas ---------- */
 function botonesEstilo() {
   return '<div class="est-estilo">' +
@@ -258,6 +372,7 @@ function tarjeta(c) {
     '<div class="est-tmeta"><span class="chip e-' + c.estado + '">' + esc(EST_ESTADO[c.estado] || c.estado) + '</span>' +
       '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span>' +
       (c.idea ? '<span class="mono">' + esc(c.idea) + '</span>' : '') + '</div>' +
+    (c.slides.length && c.estado !== 'generando' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
     (c.error ? '<p class="est-pista" style="color:var(--danger)">' + esc(c.error) + '</p>' : '') +
     '<div class="est-tpie">' +
       (c.estado === 'generando' ? '<button class="btn" disabled>Generando…</button>'
@@ -279,6 +394,7 @@ function vProducir() {
     '<button class="btn" id="est-anadir-temas">Añadir temas</button> <button class="btn" data-ir="ideas">Elegir de Ideas</button></div>';
   h += '<div class="est-acciones">' +
     (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el pendiente' : 'los ' + sinGenerar + ' pendientes') + '</button>' : '') +
+    '<span id="est-lote-hueco">' + botonLote() + '</span>' +
     (EST.progreso ? '<span class="est-progreso">' + esc(EST.progreso) + '</span>' : '') +
     (!EST.sample && EST.conectado ? '<span class="est-pista">Generar con Claude solo funciona abriendo la herramienta en claude.ai.</span>' : '') +
     '</div>';
@@ -288,12 +404,15 @@ function vProducir() {
 function vHechos() {
   const lista = carruselesDe('hecho');
   let h = '<div class="vhead"><h2>Carruseles hechos</h2><p>Los que has dado por buenos. Ábrelos para volver a descargar las slides o copiar el texto del post.</p></div>';
+  if (lista.length) h += '<div class="est-acciones"><button class="btn pri" data-lote="hechos">Descargar todos (' + lista.length + ')</button>' +
+    (EST.progreso ? '<span class="est-progreso">' + esc(EST.progreso) + '</span>' : '') + '</div>';
   if (!lista.length) return h + '<div class="vacio"><b>Todavía no hay ninguno</b>Cuando revises un carrusel y pulses «Marcar hecho», aparece aquí.</div>';
   return h + '<div class="est-rejilla">' + lista.map(c => '<article class="est-tarjeta">' + mini(c, 0) +
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || '(sin título)') + '</h4>' +
     '<div class="est-tmeta"><span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + ' · ' + c.slides.length + ' slides</span>' +
       (c.fecha ? '<span>' + esc(fCorta(c.fecha)) + '</span>' : '') + '</div>' +
     '<div class="est-tpie"><button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button>' +
+      '<button class="btn" data-est-descargar="' + c.id + '">Descargar</button>' +
       '<button class="btn" data-est-copiar="' + c.id + '">Copiar texto</button></div></div></article>').join('') + '</div>';
 }
 function refrescarEstudio() {
@@ -341,7 +460,7 @@ function pintarEditor(todo) {
     '</div><div class="est-panel" id="est-panel"></div></div>';
   }
   const tipo = s.tipo || 'contenido';
-  let p = '<h3>Slide ' + (EST.sel + 1) + ' de ' + c.slides.length + '</h3>' +
+  let p = '<div id="est-qc">' + htmlQC(c) + '</div><h3>Slide ' + (EST.sel + 1) + ' de ' + c.slides.length + '</h3>' +
     '<div class="est-fila"><button class="btn mini" data-est-mover="-1"' + (EST.sel === 0 ? ' disabled' : '') + '>↑ Antes</button>' +
     '<button class="btn mini" data-est-mover="1"' + (EST.sel >= c.slides.length - 1 ? ' disabled' : '') + '>↓ Después</button>' +
     '<button class="btn mini" id="est-duplicar">Duplicar</button><button class="btn mini" id="est-borrar-slide"' + (c.slides.length < 2 ? ' disabled' : '') + '>Quitar</button></div>' +
@@ -356,14 +475,13 @@ function pintarEditor(todo) {
       [['', 'Según la plantilla'], ['fondo', 'Foto a pantalla completa'], ['notas', 'Notas a mano de fondo']].map(o =>
         '<option value="' + o[0] + '"' + ((s.marco || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></label></div>';
   }
-  if (tipo === 'dato' && !s.fuente) p += '<div class="est-avisos">Una cifra sin fuente no se publica. Cópiala de la pestaña Datos.</div>';
   p += '<h3>Añadir slide</h3><div class="est-fila">' + Object.keys(EST_TIPOS).map(k => '<button class="btn mini" data-est-nueva="' + k + '">+ ' + EST_TIPOS[k] + '</button>').join('') + '</div>';
   p += '<h3>Texto del post</h3><div class="est-campos"><textarea data-est-copy rows="6">' + esc(c.copy || '') + '</textarea>' +
     '<button class="btn mini" data-est-copiar="' + c.id + '">Copiar texto del post</button></div>';
   if (!campoActivo) $('#est-panel').innerHTML = p;
-  pintarMinis(ed);
+  pintarMinis(ed); pintarQCPanel();
 }
-let estTempo, estVista;
+let estTempo, estVista, estQC;
 function editarCampo(k, v) {
   const c = EST.lista[EST.abierto]; if (!c) return;
   const s = c.slides[EST.sel]; if (!s) return;
@@ -372,6 +490,7 @@ function editarCampo(k, v) {
   c.upd = new Date().toISOString();
   clearTimeout(estVista); estVista = setTimeout(() => pintarMinis($('#est-editor')), 250);
   clearTimeout(estTempo); estTempo = setTimeout(() => guardarC(c), 600);
+  clearTimeout(estQC); estQC = setTimeout(() => { pintarQCPanel(); pedirQC(c); }, 900);
 }
 
 /* ---------- exportar PNG ---------- */
@@ -396,23 +515,38 @@ async function pngDe(c, i) {
     return await (await fetch(url)).blob();
   } finally { f.remove(); }
 }
-async function descargar(c) {
+/* La plataforma no deja descargar .zip desde una herramienta publicada (solo imágenes, PDF,
+   texto y Office). Por eso el lote sale como PNG seguidos, con nombres que se ordenan solos:
+   «01-titulo-01.png», «01-titulo-02.png», «01-titulo-texto.txt», «02-otro-01.png»… */
+const nombreBase = c => (c.titulo || 'carrusel').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'carrusel';
+async function descargarLote(lista) {
+  if (EST.descargando) return;
   const down = DOWN || (typeof claude !== 'undefined' && claude.use ? await claude.use('downloads') : null);
   if (!down) { toast('La descarga no está disponible en esta vista'); return; }
-  const base = (c.titulo || 'carrusel').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'carrusel';
-  for (let i = 0; i < c.slides.length; i++) {
-    toast('Preparando la slide ' + (i + 1) + ' de ' + c.slides.length + '…');
-    try {
-      const blob = await pngDe(c, i);
-      await down.save({filename: base + '-' + String(i + 1).padStart(2, '0') + '.png', data: blob});
-    } catch (e) {
-      if (e && e.code === 'declined') { toast('Descarga cancelada'); return; }
-      toast('No he podido descargar la slide ' + (i + 1) + (e && e.code ? ' (' + e.code + ')' : '')); return;
+  const total = lista.reduce((n, c) => n + c.slides.length + (c.copy ? 1 : 0), 0);
+  let hecho = 0; EST.descargando = true;
+  try {
+    for (let k = 0; k < lista.length; k++) {
+      const c = lista[k], base = (lista.length > 1 ? String(k + 1).padStart(2, '0') + '-' : '') + nombreBase(c);
+      for (let i = 0; i < c.slides.length; i++) {
+        EST.progreso = 'Descargando ' + (++hecho) + ' de ' + total + '…'; toast(EST.progreso); actualizarProgreso();
+        await down.save({filename: base + '-' + String(i + 1).padStart(2, '0') + '.png', data: await pngDe(c, i)});
+      }
+      if (c.copy) { EST.progreso = 'Descargando ' + (++hecho) + ' de ' + total + '…'; actualizarProgreso();
+        await down.save({filename: base + '-texto.txt', data: c.copy}); }
     }
-  }
-  if (c.copy) { try { await down.save({filename: base + '-texto.txt', data: c.copy}); } catch (e) {} }
-  toast('Slides descargadas');
+    toast(lista.length > 1 ? lista.length + ' carruseles descargados' : 'Carrusel descargado');
+  } catch (e) {
+    toast(e && e.code === 'declined' ? 'Descarga cancelada' : 'No he podido terminar la descarga' + (e && e.code ? ' (' + e.code + ')' : ''));
+  } finally { EST.descargando = false; EST.progreso = ''; actualizarProgreso(); }
 }
+function actualizarProgreso() { document.querySelectorAll('.est-progreso').forEach(el => { el.textContent = EST.progreso || ''; }); }
+const descargar = c => descargarLote([c]);
+/* listos = generados, sin errores de calidad y ya medidos */
+const botonLote = () => { const n = listosLote().length;
+  return n ? '<button class="btn" data-lote="listos">Descargar ' + (n === 1 ? 'el listo' : 'los ' + n + ' listos') + '</button>' : ''; };
+const listosLote = () => carruselesDe('pendientes').filter(c => c.estado === 'borrador' && c.slides.length && qcMedido(c) && !qcErrores(c));
 
 /* ---------- enganches con el banco ---------- */
 const _vIdeas = vIdeas;
@@ -464,6 +598,10 @@ document.addEventListener('click', e => {
   if (qu) { if (qu.dataset.seguro) { borrarC(qu.dataset.estQuitar); refrescarEstudio(); toast('Quitado'); }
     else { qu.dataset.seguro = '1'; qu.textContent = '¿Quitar?'; setTimeout(() => { if (qu.isConnected) { delete qu.dataset.seguro; qu.textContent = '✕'; } }, 3000); }
     return; }
+  const lo = t.closest('[data-lote]');
+  if (lo) { const l = lo.dataset.lote === 'hechos' ? carruselesDe('hecho') : listosLote();
+    if (!l.length) { toast('No hay nada que descargar'); return; } descargarLote(l); return; }
+  const dc = t.closest('[data-est-descargar]'); if (dc) { const c = EST.lista[dc.dataset.estDescargar]; if (c) descargar(c); return; }
   const ab = t.closest('[data-est-abrir]'); if (ab) { abrirEditor(ab.dataset.estAbrir); return; }
   const cp = t.closest('[data-est-copiar]'); if (cp) { const c = EST.lista[cp.dataset.estCopiar]; copiar(c && c.copy || '', 'Texto del post copiado'); return; }
   if (!EST.abierto) return;
@@ -485,6 +623,10 @@ document.addEventListener('click', e => {
   if (t.id === 'est-descargar') { descargar(c); return; }
   if (t.id === 'est-hecho') {
     if (c.estado === 'hecho') { c.estado = 'borrador'; guardarC(c); toast('Vuelve a Producir'); pintarEditor(true); return; }
+    if (!qcMedido(c)) { toast('Espera un segundo: estoy revisando las slides'); pedirQC(c); return; }
+    if (qcErrores(c) && EST.forzar !== c.id) { EST.forzar = c.id; pintarQCPanel();
+      toast('Hay ' + qcErrores(c) + ' cosas por corregir. Pulsa otra vez si aun así está bien'); return; }
+    EST.forzar = null;
     c.estado = 'hecho'; c.fecha = fISO(hoy()); guardarC(c);
     if (c.idea && IMAP[c.idea]) guardar(c.idea, {hecho: true, fecha: c.fecha});
     toast('Hecho. Lo tienes en «Hechos»'); pintarEditor(true); return; }
