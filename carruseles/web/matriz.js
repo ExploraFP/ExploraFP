@@ -179,7 +179,7 @@ function vMatriz() {
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort(ordenar);
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
   let h = '<div class="mz-cab"><div><h2>Matriz de contenido</h2>' +
-    '<p>' + IDEAS.length + ' ideas · <b>' + n.hecha + '</b> hechas · <b>' + n.produccion + '</b> en producción · <b>' + n.porhacer + '</b> por hacer</p></div>' +
+    '<p><b>' + n.hecha + '</b> de ' + IDEAS.length + ' ideas hechas' + (n.produccion ? ' · <b>' + n.produccion + '</b> en producción' : '') + '</p></div>' +
     '<div class="mz-progreso"><i style="width:' + (100 * n.hecha / IDEAS.length).toFixed(1) + '%"></i><i class="p" style="width:' + (100 * n.produccion / IDEAS.length).toFixed(1) + '%"></i></div></div>';
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += '<div class="buscador"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca por palabra: plaza, convalidar, prácticas, sueldo…" aria-label="Buscar en la matriz"></div>';
@@ -187,14 +187,14 @@ function vMatriz() {
   h += '<button class="btn mz-verfiltros" id="mz-verfiltros" aria-expanded="' + !!S.verFiltros + '">Filtros' + (nAct ? ' · ' + nAct + ' activos' : '') + '</button>';
   h += '<div class="mz-filtros' + (S.verFiltros ? ' on' : '') + '">' + barraMatriz() + '</div>';
   const foco = S.f.form || (S.f.rama && S.f.rama !== 'Transversal' ? S.f.rama : '');
-  h += '<p class="cuenta">' + filas.length + (filas.length === 1 ? ' idea' : ' ideas') +
+  const filtrando = filas.length !== IDEAS.length;
+  h += '<p class="cuenta">' + (filtrando ? filas.length + (filas.length === 1 ? ' idea' : ' ideas') : '') +
     (foco ? (S.t.solo ? ' solo de ' + esc(foco) + ' · <button class="linkbtn" data-solo="0">ver también las transversales que le sirven</button>'
                       : ' que sirven para ' + esc(foco) + ' · <button class="linkbtn" data-solo="1">ver solo las de ' + esc(foco) + '</button>') : '') +
-    ' · <button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por tema') + '</button>' +
+    (filtrando ? ' · ' : '') + '<button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por tema') + '</button>' +
     (S.agrupar ? ' · <button class="linkbtn" id="mz-abrirtodos">' + (TEMAS.every(temaAbierto) ? 'Cerrar todos los temas' : 'Abrir todos') + '</button>' : '') + '</p>';
   if (!filas.length) return h + '<div class="vacio"><b>Nada con esos filtros</b>Prueba a quitar alguno, o cambia el estado a «Todas».</div>';
-  const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><thead><tr>' +
-    '<th class="c-chk"></th><th class="c-alc">Alcance</th><th class="c-idea">Idea</th><th class="c-est">Carrusel</th></tr></thead><tbody>' +
+  const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><tbody>' +
     rows.map(filaMatriz).join('') + '</tbody></table></div>';
   if (!S.agrupar) return h + tabla(filas);
   const grupos = {}; filas.forEach(it => (grupos[it.tema] = grupos[it.tema] || []).push(it));
@@ -207,9 +207,11 @@ function vMatriz() {
     return '<section class="mz-grupo' + (abierto ? ' abierto' : '') + '"><header>' +
       '<button class="mz-plegar" data-tema-plegar="' + esc(t) + '" aria-expanded="' + abierto + '">' +
       '<span class="mz-flecha" aria-hidden="true">' + (abierto ? '▾' : '▸') + '</span>' +
-      '<span class="mz-tema-txt"><h3>' + esc(t) + '</h3><small>' + rows.length + (rows.length === 1 ? ' idea' : ' ideas') +
-        (porHacer ? ' · ' + porHacer + ' por hacer' : '') + (enProd ? ' · <b class="p">' + enProd + ' en producción</b>' : '') +
-        (nSel ? ' · <b class="s">' + nSel + ' seleccionadas</b>' : '') + '</small></span>' +
+      '<span class="mz-tema-txt"><h3>' + esc(t) + '</h3>' + (() => { const x = [];
+        if (rows.length !== todas.length) x.push(rows.length + (rows.length === 1 ? ' coincide' : ' coinciden'));
+        if (enProd) x.push('<b class="p">' + enProd + ' en producción</b>');
+        if (nSel) x.push('<b class="s">' + nSel + (nSel === 1 ? ' seleccionada' : ' seleccionadas') + '</b>');
+        return x.length ? '<small>' + x.join(' · ') + '</small>' : ''; })() + '</span>' +
       '<span class="mz-tema-prog"><span class="mz-mini-prog"><i style="width:' + pct.toFixed(0) + '%"></i></span>' +
         '<span class="mz-hechas">' + hechas_ + '/' + todas.length + ' hechas</span></span></button>' +
       (abierto && porHacer ? '<label class="mz-todas"><input type="checkbox" data-selec-tema="' + esc(t) + '"' +
@@ -341,17 +343,17 @@ pintarFicha = function () {
     '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>';
   let b = '';
   if (c && c.slides && c.slides.length)
-    b += '<h4 class="mz-rot">Carrusel · ' + c.slides.length + ' slides</h4><div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
-  else if (c) b += '<div class="mz-sincarr"><b>En Producir</b>Todavía sin generar.</div>';
-  else if (o.url) b += '<div class="mz-sincarr"><b>Hecho fuera de la herramienta</b><a href="' + esc(o.url) + '" target="_blank" rel="noopener">Ver en Drive</a></div>';
+    b += '<div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
+  else if (c) b += '<div class="mz-sincarr">Todavía sin generar.</div>';
+  else if (o.url) b += '<div class="mz-sincarr">Hecho fuera de la herramienta.</div>';
   else {
-    b += '<div class="mz-sincarr"><b>Sin carrusel todavía</b>Pulsa «Producir» para crearlo.</div>';
     const hp = hechosParecidos(it);
     if (hp.length) b += '<div class="mz-yahecho"><b>Ya tienes uno parecido hecho</b>' +
       hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
         '<span>' + (hh.carrusel ? '<button class="linkbtn" data-est-abrir="' + hh.carrusel.id + '">' + esc(hh.titulo) + '</button>' : esc(hh.titulo)) + '</span></div>').join('') + '</div>';
   }
   $('#dbody').innerHTML = b;
+  if (!c && o.url) { $('#dfoot').innerHTML = '<a class="btn pri" href="' + esc(o.url) + '" target="_blank" rel="noopener">Ver en Drive</a>'; pintarMinis($('#dbody')); return; }
   $('#dfoot').innerHTML = c ? (c.slides && c.slides.length ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir carrusel</button>' : '<button class="btn pri" data-ir="producir">Ir a Producir</button>')
     : e === 'porhacer' ? '<button class="btn pri" data-producir="' + it.id + '">Producir</button>' : '';
   pintarMinis($('#dbody'));
