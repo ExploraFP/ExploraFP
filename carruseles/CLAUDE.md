@@ -77,16 +77,16 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   con su CTA por defecto (`OBJETIVOS` en matriz.js; Informativo = «Escríbenos tu ciclo por DM y te decimos tu caso»). Cada idea trae
   un objetivo sugerido por reglas (`OBJ_REGLAS`), Sandra lo cambia en la ficha (se guarda en ops/<id>.objetivo). Al producir se
   elige objetivo y CTA; van al carrusel (`objetivo`, `cta`) y al prompt (`OBJ_PROMPT` en estudio.js). Buscador en una línea: caja + «Formación» (todas /
-  solo genéricas / una rama / un ciclo; junta los antiguos Enfoque, Rama y Ciclo). Sin filtro de estado (Sandra: eso se ve en Producción). Cifras ya no se muestra. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
+  transversales / una rama / un ciclo; junta los antiguos Enfoque, Rama y Ciclo). Sin filtro de estado (Sandra: eso se ve en Producción). Cifras ya no se muestra. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
   Cada grupo es una fila grande plegada (se abren solos al buscar o filtrar por tema); casillas para
   seleccionar ideas y «Producir (N)» arriba. Ficha mínima (pedido de Sandra: nada de más): rama / ciclo, las slides en fila
   horizontal y un solo botón (Producir o Abrir carrusel); si no hay carrusel y hay uno parecido hecho, lo enseña. Tema = el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),
   filtros Estado/Tema/Alcance rama-ciclo/Cifras, estado de cada idea (por hacer · en producción · hecha, con su
   carrusel enlazado) y «parecidas» (≥2 palabras con contenido en común y ≥60 %). Lo parecido ya hecho se le pasa
   a Claude al generar para que busque otro ángulo. En Hechos, «Unir a una idea» enlaza un hecho suelto a su idea.
-- «Para producir ahora · <mes>»: 5 fichas arriba de la matriz según el calendario académico del banco (CATALOGO.momentos con
+- «Sugerencias de contenido» (subtítulo por mes en `MES_FRASE`): 5 fichas arriba de la matriz según el calendario académico del banco (CATALOGO.momentos con
   sus meses; `momentosActivos`/`deTemporada`). Solo ideas por hacer, BOFU primero, variadas (máx. 2 por objetivo y por alcance);
-  «Otras 5» pasa a la siguiente tanda sin repetir.
+  flechas ‹ › con contador (1/N) pasan de tanda sin repetir.
 - Titulares = HOOKS (pedido de Sandra): `web/hooks.json` {id: hook} reescribe el titular de cada idea como gancho de portada
   (informativo/autoridad claros; viral/lead magnet persuasivos). El titular original del banco se conserva (`it.titular`) y va
   también al prompt. Ficha: titular arriba y debajo Formación · Objetivo · De qué va (`dentro`) · CTA final.

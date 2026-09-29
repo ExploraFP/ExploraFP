@@ -160,6 +160,11 @@ function selMatriz(dim, etiqueta, todas, opciones, fn) {
    Momentos del banco (CATALOGO.momentos, con sus meses) → ideas por hacer de ese momento, con más peso a las que más
    empujan (BOFU) y variadas: como mucho 2 del mismo objetivo y del mismo alcance. «Otras 5» pasa a las siguientes. */
 S.sugOff = S.sugOff || 0;
+/* una frase por mes (del calendario académico) para el subtítulo de las sugerencias */
+const MES_FRASE = {1: 'Enero: el segundo arranque del año', 2: 'Febrero: segundo arranque y convalidaciones', 3: 'Marzo: toca convalidar y acreditar',
+  4: 'Abril: convalidaciones y becas', 5: 'Mayo: becas, trámites y admisión', 6: 'Junio: admisión, notas y decidir en verano',
+  7: 'Julio: admisión y decidir en verano', 8: 'Agosto: decidir antes de septiembre', 9: 'Septiembre: el pico más alto de matriculación',
+  10: 'Octubre: todavía se puede entrar', 11: 'Noviembre: comparar y pagar', 12: 'Diciembre: comparar antes del segundo arranque'};
 function candidatasMes() {
   const acts = momentosActivos().map(m => m.k);
   const peso = it => (it.funnel === 'BOFU' ? 3 : it.funnel === 'MOFU' ? 2 : 1) + (it.momentos.indexOf(acts[0]) >= 0 ? 1 : 0);
@@ -178,13 +183,13 @@ function tandasDeCinco() {
   }
   return tandas;
 }
-function elegirCinco() { const t = tandasDeCinco(); return t.length ? t[S.sugOff % t.length] : []; }
+function elegirCinco() { const t = tandasDeCinco(); return t.length ? t[((S.sugOff % t.length) + t.length) % t.length] : []; }
 function sugerencias() {
   const cinco = elegirCinco(); if (!cinco.length) return '';
-  const acts = momentosActivos(), total = candidatasMes().length;
-  return '<section class="mz-sug"><header><div><h3>Para producir ahora · ' + esc(MESES[mesActual()]) + '</h3>' +
-    '<p>' + acts.map(m => esc(m.n)).join(' · ') + '</p></div>' +
-    (total > 5 ? '<button class="linkbtn" id="mz-sug-otras">Otras 5</button>' : '') + '</header>' +
+  const acts = momentosActivos(), nT = tandasDeCinco().length, pos = ((S.sugOff % nT) + nT) % nT + 1;
+  return '<section class="mz-sug"><header><div><h3>Sugerencias de contenido</h3>' +
+    '<p>' + esc(MES_FRASE[mesActual()]) + '</p></div>' +
+    (nT > 1 ? '<div class="mz-sugnav"><button id="mz-sug-ant" aria-label="Anteriores">‹</button><span>' + pos + '/' + nT + '</span><button id="mz-sug-sig" aria-label="Siguientes">›</button></div>' : '') + '</header>' +
     '<div class="mz-sugfichas">' + cinco.map(it => {
       const m = acts.find(x => it.momentos.indexOf(x.k) >= 0);
       return '<article class="mz-sugficha"><button class="mz-sugabrir" data-abrir="' + it.id + '">' +
@@ -201,10 +206,12 @@ function barraBusqueda() {
   const CICLOS = Array.from(new Set(IDEAS.filter(i => i.alcTipo === 'formacion').map(i => i.alcTxt))).sort((a, b) => a.localeCompare(b, 'es'));
   const v = valorFormacion(), o = (val, txt) => '<option value="' + esc(val) + '"' + (v === val ? ' selected' : '') + '>' + esc(txt) + '</option>';
   const ramaTxt = r => r === 'Servicios Socioculturales' ? 'Sociocultural' : r;
-  return '<div class="mz-busca"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Buscar idea…" aria-label="Buscar en la matriz">' +
-    '<select data-forma aria-label="Formación">' + o('', 'Todas las formaciones') + o('gen', 'Solo genéricas') +
+  return '<h3 class="mz-todas-tit">Todas las ideas</h3><div class="mz-busca"><div class="mz-buscabarra">' +
+    '<svg class="mz-lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
+    '<input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca una idea: convalidar, TCAE, sueldo…" aria-label="Buscar en la matriz">' +
+    '<span class="mz-sep"></span><select data-forma aria-label="Formación">' + o('', 'Todas las formaciones') + o('gen', 'Transversales (todas las ramas)') +
       '<optgroup label="Ramas">' + RAMAS.map(r => o('r:' + r, ramaTxt(r))).join('') + '</optgroup>' +
-      '<optgroup label="Ciclos">' + CICLOS.map(c => o('c:' + c, c)).join('') + '</optgroup></select>' +
+      '<optgroup label="Ciclos">' + CICLOS.map(c => o('c:' + c, c)).join('') + '</optgroup></select></div>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button class="linkbtn" id="mz-limpiar">Quitar filtros</button>' : '') +
     '</div>';
 }
@@ -434,31 +441,35 @@ function enlazar(clave, ideaId) {
 /* ---------- ficha: solo a qué formación va y las slides en fila ---------- */
 pintarFicha = function () {
   const it = IMAP[S.sel]; if (!it) return;
-  const e = estadoIdea(it), c = carruselDe(it), o = op(it.id);
+  const e = estadoIdea(it), c = carruselDe(it), o = op(it.id), obj = objDe(it);
   $('#drawer').classList.add('mz-ancha');
-  // titular arriba y debajo la lista de datos: formación, objetivo, de qué va y la acción que buscamos
   const niv = it.nivel ? (NIVEL[it.nivel] || it.nivel) : '';
   const extra = it.alcTipo === 'formacion' ? 'Rama ' + it.ramaColor + (niv ? ' · ' + niv : '') : it.alcTipo === 'transversal' ? 'Para todas las ramas' : niv;
-  const cta = (c && c.cta) || OBJETIVOS[objDe(it)].cta;
-  const fila = (k, v) => '<div class="mz-meta"><dt>' + k + '</dt><dd>' + v + '</dd></div>';
-  $('#dhead').innerHTML = '<div class="drow"><h2>' + esc(tituloIdea(it)) + '</h2><button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div>' +
-    '<dl class="mz-metas">' +
-      fila('Formación', chipAlcance(it) + (extra ? '<span class="mz-nivel">' + esc(extra) + '</span>' : '')) +
-      fila('Objetivo', '<div class="mz-fobj" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k => '<button data-obj-idea="' + k + '" aria-pressed="' + (objDe(it) === k) + '">' +
-        esc(objEt(k)) + '</button>').join('') + '</div>') +
-      fila('De qué va', esc(it.dentro || it.gancho)) +
-      fila('CTA final', '<b>' + esc(cta) + '</b>') +
-    '</dl>';
-  let b = '';
+  const cta = (c && c.cta) || OBJETIVOS[obj].cta;
+  // cabecera: estado, hook y formación
+  $('#dhead').innerHTML = '<div class="fx-top"><span class="fx-estado fx-' + e + '">' + esc(ESTADOS_IDEA[e]) + '</span>' +
+      (deTemporada(it) ? '<span class="fx-mes">📅 ' + esc(MESES[mesActual()]) + '</span>' : '') +
+      '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div>' +
+    '<h2 class="fx-tit">' + esc(tituloIdea(it)) + '</h2>' +
+    '<div class="fx-form">' + chipAlcance(it) + (extra ? '<span>' + esc(extra) + '</span>' : '') + '</div>';
+  // cuerpo: de qué va, objetivo + CTA, y el carrusel (o cómo quedaría la portada)
+  let b = '<section class="fx-sec"><h4>De qué va</h4><p class="fx-dentro">' + esc(it.dentro || it.gancho) + '</p></section>';
+  b += '<div class="fx-par">' +
+    '<section class="fx-caja"><h4>Objetivo</h4><div class="fx-objs" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k =>
+      '<button data-obj-idea="' + k + '" aria-pressed="' + (obj === k) + '">' + esc(objEt(k)) + '</button>').join('') + '</div></section>' +
+    '<section class="fx-caja fx-cta"><h4>CTA final</h4><p>' + esc(cta) + '</p></section></div>';
   if (c && c.slides && c.slides.length)
-    b += '<div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
-  else if (c) b += '<div class="mz-sincarr">Todavía sin generar.</div>';
+    b += '<section class="fx-sec"><h4>El carrusel</h4><div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div></section>';
+  else if (c) b += '<div class="mz-sincarr">En Producción, todavía sin generar.</div>';
   else if (o.url) b += '<div class="mz-sincarr">Hecho fuera de la herramienta.</div>';
   else {
     const hp = hechosParecidos(it);
     if (hp.length) b += '<div class="mz-yahecho"><b>Ya tienes uno parecido hecho</b>' +
       hp.slice(0, 2).map(hh => '<div class="mz-parhecho">' + (hh.carrusel ? '<span class="mz-mini">' + mini(hh.carrusel, 0) + '</span>' : '') +
         '<span>' + (hh.carrusel ? '<button class="linkbtn" data-est-abrir="' + hh.carrusel.id + '">' + esc(hh.titulo) + '</button>' : esc(hh.titulo)) + '</span></div>').join('') + '</div>';
+    const v = previa('fx-' + it.id, EST.plantilla, EST.color, tituloIdea(it), it.alcTxt, EST.conFoto);
+    b += '<section class="fx-sec"><h4>Así quedaría la portada</h4><div class="fx-previa">' + mini(v, 0) +
+      '<p>Con tu última plantilla (' + esc(nombrePl(EST.plantilla)) + ' · ' + esc(nombreCo(EST.color)) + '). La cambias al producir.</p></div></section>';
   }
   $('#dbody').innerHTML = b;
   if (!c && o.url) { $('#dfoot').innerHTML = '<a class="btn pri" href="' + esc(o.url) + '" target="_blank" rel="noopener">Ver en Drive</a>'; pintarMinis($('#dbody')); return; }
@@ -498,7 +509,8 @@ document.addEventListener('click', e => {
   const t = e.target;
   const pl = t.closest('[data-tema-plegar]');
   if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = !temaAbierto(k); render(); return; }
-  if (t.id === 'mz-sug-otras') { S.sugOff++; render(); return; }
+  if (t.id === 'mz-sug-sig') { S.sugOff++; render(); return; }
+  if (t.id === 'mz-sug-ant') { S.sugOff--; render(); return; }
   if (t.id === 'mz-abrirtodos') { const v = !OBJ_ORDEN.every(temaAbierto); OBJ_ORDEN.forEach(k => S.abiertos[k] = v); render(); return; }
   const en = t.closest('[data-enlazar]'); if (en) { e.stopImmediatePropagation(); abrirEnlazar(en.dataset.enlazar); return; }
   const ea = t.closest('[data-enlazar-a]'); if (ea) { e.stopImmediatePropagation(); enlazar(ea.dataset.clave, ea.dataset.enlazarA); return; }
