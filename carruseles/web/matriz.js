@@ -155,6 +155,23 @@ function selMatriz(dim, etiqueta, todas, opciones, fn) {
       return '<option value="' + esc(o[0]) + '"' + (sel === o[0] ? ' selected' : '') + (n ? '' : ' disabled') + '>' + esc(o[1]) + ' (' + n + ')</option>'; }).join('') +
     '</select></label>';
 }
+/* Buscador: una caja y dos desplegables. «Formación» junta lo que antes eran Enfoque, Rama y Ciclo. */
+function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? 'c:' + S.f.form : S.f.rama ? 'r:' + S.f.rama : ''; }
+function barraBusqueda() {
+  const RAMAS = ['Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
+  const CICLOS = Array.from(new Set(IDEAS.filter(i => i.alcTipo === 'formacion').map(i => i.alcTxt))).sort((a, b) => a.localeCompare(b, 'es'));
+  const v = valorFormacion(), o = (val, txt) => '<option value="' + esc(val) + '"' + (v === val ? ' selected' : '') + '>' + esc(txt) + '</option>';
+  const ramaTxt = r => r === 'Servicios Socioculturales' ? 'Sociocultural' : r;
+  const est = S.f.estado || '';
+  return '<div class="mz-busca"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Buscar idea…" aria-label="Buscar en la matriz">' +
+    '<select data-forma aria-label="Formación">' + o('', 'Todas las formaciones') + o('gen', 'Solo genéricas') +
+      '<optgroup label="Ramas">' + RAMAS.map(r => o('r:' + r, ramaTxt(r))).join('') + '</optgroup>' +
+      '<optgroup label="Ciclos">' + CICLOS.map(c => o('c:' + c, c)).join('') + '</optgroup></select>' +
+    '<select data-dim="estado" aria-label="Estado">' + [['', 'Todos los estados']].concat(Object.keys(ESTADOS_IDEA).map(k => [k, ESTADOS_IDEA[k]]))
+      .map(x => '<option value="' + x[0] + '"' + (est === x[0] ? ' selected' : '') + '>' + esc(x[1]) + '</option>').join('') + '</select>' +
+    (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button class="linkbtn" id="mz-limpiar">Quitar filtros</button>' : '') +
+    '</div>';
+}
 function barraMatriz() {
   const RAMASF = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
   const CICLOS = Array.from(new Set(IDEAS.filter(i => i.alcTipo === 'formacion' && (!S.f.rama || i.ramaColor === S.f.rama)).map(i => i.alcTxt)))
@@ -219,17 +236,10 @@ function vMatriz() {
   let h = cabecera('Matriz de contenido', '',
     [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
-  h += '<div class="buscador"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca por palabra: plaza, convalidar, prácticas, sueldo…" aria-label="Buscar en la matriz"></div>';
-  const nAct = ['rama', 'form', 'cif', 'tema', 'estado', 'enf'].filter(k => S.f[k]).length;
-  h += '<button class="btn mz-verfiltros" id="mz-verfiltros" aria-expanded="' + !!S.verFiltros + '">Filtros' + (nAct ? ' · ' + nAct + ' activos' : '') + '</button>';
-  h += '<div class="mz-filtros' + (S.verFiltros ? ' on' : '') + '">' + barraMatriz() + '</div>';
-  const foco = S.f.form || (S.f.rama && S.f.rama !== 'Transversal' ? S.f.rama : '');
+  h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.length;
-  h += '<p class="cuenta">' + (filtrando ? filas.length + (filas.length === 1 ? ' idea' : ' ideas') : '') +
-    (foco ? (S.t.solo ? ' solo de ' + esc(foco) + ' · <button class="linkbtn" data-solo="0">ver también las transversales que le sirven</button>'
-                      : ' que sirven para ' + esc(foco) + ' · <button class="linkbtn" data-solo="1">ver solo las de ' + esc(foco) + '</button>') : '') +
-    (filtrando ? ' · ' : '') + '<button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por objetivo') + '</button>' +
-    (S.agrupar ? ' · <button class="linkbtn" id="mz-abrirtodos">' + (OBJ_ORDEN.every(temaAbierto) ? 'Cerrar todos' : 'Abrir todos') + '</button>' : '') + '</p>';
+  h += '<p class="cuenta">' + (filtrando ? '<b>' + filas.length + '</b>' + (filas.length === 1 ? ' idea' : ' ideas') + ' · ' : '') +
+    (S.agrupar ? '<button class="linkbtn" id="mz-abrirtodos">' + (OBJ_ORDEN.every(temaAbierto) ? 'Cerrar todos' : 'Abrir todos') + '</button>' : '') + '</p>';
   if (!filas.length) return h + '<div class="vacio"><b>Nada con esos filtros</b>Prueba a quitar alguno, o cambia el estado a «Todas».</div>';
   const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><tbody>' +
     rows.map(filaMatriz).join('') + '</tbody></table></div>';
@@ -477,6 +487,10 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset && (t.dataset.dim === 'tema' || t.dataset.dim === 'estado' || t.dataset.dim === 'enf')) { e.stopImmediatePropagation(); S.f[t.dataset.dim] = t.value; render(); }
+  if (t.dataset && 'forma' in t.dataset) { e.stopImmediatePropagation();
+    const v = t.value; S.f.enf = ''; S.f.rama = ''; S.f.form = ''; S.t.solo = true;
+    if (v === 'gen') S.f.enf = 'generico'; else if (v.slice(0, 2) === 'r:') S.f.rama = v.slice(2); else if (v.slice(0, 2) === 'c:') S.f.form = v.slice(2);
+    render(); }
 }, true);
 
 /* usar un hecho parecido para otra idea: se marca la idea como hecha y enlazada a ese carrusel */

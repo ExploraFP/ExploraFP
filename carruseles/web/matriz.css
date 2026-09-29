@@ -213,3 +213,10 @@
 .mz-meta dd b{color:var(--ink);font-weight:600}
 .mz-ancha .mz-fobj{margin-top:0}
 @media(max-width:760px){.mz-meta{grid-template-columns:1fr;gap:5px}}
+
+/* buscador en una línea */
+.mz-busca{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 6px}
+.mz-busca input[type=search]{flex:1 1 320px;min-width:0;font:inherit;font-size:15px;padding:12px 16px;border:1px solid var(--line2);border-radius:12px;background:var(--surface)}
+.mz-busca select{flex:0 1 220px;font:inherit;font-size:14px;padding:11px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--surface);color:var(--ink)}
+.mz-busca .linkbtn{font:inherit;font-size:13px;background:none;border:0;padding:0;color:var(--brand);text-decoration:underline;cursor:pointer}
+@media(max-width:760px){.mz-busca input[type=search]{flex-basis:100%}.mz-busca select{flex:1 1 40%}}
