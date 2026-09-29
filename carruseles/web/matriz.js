@@ -191,11 +191,10 @@ function sugerencias() {
     '<p class="mz-sugmes">📅 ' + esc(MESES[mesActual()].charAt(0).toUpperCase() + MESES[mesActual()].slice(1)) + '</p></div>' +
     (nT > 1 ? '<div class="mz-sugnav"><button id="mz-sug-ant" aria-label="Anteriores">‹</button><span>' + pos + '/' + nT + '</span><button id="mz-sug-sig" aria-label="Siguientes">›</button></div>' : '') + '</header>' +
     '<div class="mz-sugfichas">' + cinco.map(it => {
-      const m = acts.find(x => it.momentos.indexOf(x.k) >= 0);
       return '<article class="mz-sugficha"><button class="mz-sugabrir" data-abrir="' + it.id + '">' +
         '<span class="mz-sugobj">' + esc(objEt(objDe(it))) + '</span>' +
         '<b>' + esc(tituloIdea(it)) + '</b>' +
-        '<span class="mz-sugpie">' + chipAlcance(it) + (m ? '<small>' + esc(m.n) + '</small>' : '') + '</span></button>' +
+        '<span class="mz-sugpie">' + chipAlcance(it) + '</span></button>' +
         '<button class="btn mini pri" data-producir="' + it.id + '">Producir</button></article>'; }).join('') + '</div></section>';
 }
 
