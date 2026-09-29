@@ -214,8 +214,9 @@ function barraBusqueda() {
   const v = valorFormacion();
   const o = (val, txt, bg) => '<option value="' + esc(val) + '"' + (bg ? ' style="background:' + bg + '"' : '') + (v === val ? ' selected' : '') + '>' + esc(txt) + '</option>';
   const hay = new Set(IDEAS.map(i => i.alcTxt));
-  const opciones = FORM_ORDEN.map(g => (g[0] ? o('r:' + g[0], g[0] + ' · toda la rama', g[1]) : '') +
-    g[2].filter(c => hay.has(c)).map(c => o('c:' + c, c, g[1])).join('')).join('');
+  // primero las ramas, luego los ciclos en el mismo orden y al final los dobles
+  const opciones = FORM_ORDEN.filter(g => g[0]).map(g => o('r:' + g[0], g[0], g[1])).join('') +
+    FORM_ORDEN.map(g => g[2].filter(c => hay.has(c)).map(c => o('c:' + c, c, g[1])).join('')).join('');
   return '<h3 class="mz-todas-tit">Todas las ideas</h3><div class="mz-busca"><div class="mz-buscabarra">' +
     '<svg class="mz-lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
     '<input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca una idea: convalidar, TCAE, sueldo…" aria-label="Buscar en la matriz">' +
