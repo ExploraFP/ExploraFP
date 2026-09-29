@@ -494,3 +494,40 @@
 .chip-emo{font-style:normal;margin-right:5px;font-size:1.05em;line-height:1}
 .chip-emo{margin-right:0}.chip.con-emoji{align-items:center;gap:5px}
 .mz-sugform{display:flex;flex-wrap:wrap;gap:5px}
+#tema svg,#tema path,.mz-fbtn *,.mz-limpia *{pointer-events:none}
+
+/* ===== modo oscuro: nada en verde oscuro sobre fondo oscuro ===== */
+:root[data-theme="dark"] .vhead h2,:root[data-theme="dark"] .mz-sug h3,:root[data-theme="dark"] .mz-todas-tit,:root[data-theme="dark"] .mz-ancha .dhead .fx-tit{color:var(--lima)}
+:root[data-theme="dark"] .mz-sugficha .btn.pri{background:transparent;color:var(--ink);border-color:var(--line2)}
+:root[data-theme="dark"] .mz-sugficha .btn.pri:hover{background:var(--lima);color:#12200F;border-color:var(--lima)}
+:root[data-theme="dark"] .mz-ctapill{color:var(--ink);background:rgba(216,255,110,.08);border-color:rgba(216,255,110,.3)}
+:root[data-theme="dark"] .mz-ctapill b{color:var(--lima)}
+:root[data-theme="dark"] .mz-lupa,:root[data-theme="dark"] .mz-buscazona .mz-lupa{color:var(--lima)}
+:root[data-theme="dark"] .mz-flecha{color:var(--lima);background:rgba(216,255,110,.08);border-color:rgba(216,255,110,.3)}
+:root[data-theme="dark"] .mz-grupo.abierto .mz-flecha{background:var(--lima);color:#12200F;border-color:var(--lima)}
+:root[data-theme="dark"] .fx-cta p{color:var(--ink)}
+:root[data-theme="dark"] .fx-objs button[aria-pressed="true"],:root[data-theme="dark"] .mz-fobj button[aria-pressed="true"]{background:var(--lima);color:#12200F;border-color:var(--lima)}
+:root[data-theme="dark"] .mz-sugmes,:root[data-theme="dark"] .mz-sug header p.mz-sugmes{color:var(--ink2)}
+:root[data-theme="dark"] .mz-fbtn.activo{background:var(--surface2);color:var(--ink)}
+:root[data-theme="dark"] .vstat.ok b{color:var(--lima)}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]) .vhead h2,:root:not([data-theme="light"]) .mz-sug h3,:root:not([data-theme="light"]) .mz-todas-tit,:root:not([data-theme="light"]) .mz-ancha .dhead .fx-tit{color:var(--lima)}
+:root:not([data-theme="light"]) .mz-sugficha .btn.pri{background:transparent;color:var(--ink);border-color:var(--line2)}
+:root:not([data-theme="light"]) .mz-sugficha .btn.pri:hover{background:var(--lima);color:#12200F;border-color:var(--lima)}
+:root:not([data-theme="light"]) .mz-ctapill{color:var(--ink);background:rgba(216,255,110,.08);border-color:rgba(216,255,110,.3)}
+:root:not([data-theme="light"]) .mz-ctapill b{color:var(--lima)}
+:root:not([data-theme="light"]) .mz-lupa,:root:not([data-theme="light"]) .mz-buscazona .mz-lupa{color:var(--lima)}
+:root:not([data-theme="light"]) .mz-flecha{color:var(--lima);background:rgba(216,255,110,.08);border-color:rgba(216,255,110,.3)}
+:root:not([data-theme="light"]) .mz-grupo.abierto .mz-flecha{background:var(--lima);color:#12200F;border-color:var(--lima)}
+:root:not([data-theme="light"]) .fx-cta p{color:var(--ink)}
+:root:not([data-theme="light"]) .fx-objs button[aria-pressed="true"],:root:not([data-theme="light"]) .mz-fobj button[aria-pressed="true"]{background:var(--lima);color:#12200F;border-color:var(--lima)}
+:root:not([data-theme="light"]) .mz-sugmes,:root:not([data-theme="light"]) .mz-sug header p.mz-sugmes{color:var(--ink2)}
+:root:not([data-theme="light"]) .mz-fbtn.activo{background:var(--surface2);color:var(--ink)}
+:root:not([data-theme="light"]) .vstat.ok b{color:var(--lima)}
+}
+/* objetivos táctiles más cómodos en móvil */
+@media(max-width:760px){
+  .mz-chk,.mz-todas input{width:24px;height:24px}
+  .datos a,.dato a,.lo-usan a,[class*="dato"] a{display:inline-block;padding:6px 4px;min-width:30px}
+  .est-editor .btn.mini{min-height:34px}
+}
