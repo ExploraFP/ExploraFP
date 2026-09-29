@@ -291,3 +291,16 @@
   .mz-busca .mz-buscabarra select{flex:1 1 100%;max-width:none;border-top:1px solid var(--line);border-radius:0;padding:12px 2px}
 }
 .mz-sug h3,.mz-todas-tit{line-height:1}
+/* sugerencias más compactas */
+.mz-sug{margin-bottom:18px}
+.mz-sug>header{margin-bottom:10px}
+.mz-sugfichas{gap:10px}
+.mz-sugficha{padding:11px 12px;gap:8px;border-radius:12px}
+.mz-sugabrir{gap:6px}
+.mz-sugobj{font-size:11.5px}
+.mz-sugficha b{font-size:14.5px;line-height:1.22;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.mz-sugpie{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px}
+.mz-sugpie .chip{font-size:11px;padding:1px 7px}
+.mz-sugpie small{font-size:11px}
+.mz-sugficha .btn{min-height:0;padding:6px 10px;font-size:12.5px}
+.mz-sugficha .btn.mini,.mz-sugficha .btn{height:30px;min-height:30px;padding:0 10px;font-size:12.5px;line-height:30px}
