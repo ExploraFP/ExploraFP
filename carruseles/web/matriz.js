@@ -126,7 +126,8 @@ function estadoIdea(it) {
 const ESTADOS_IDEA = {porhacer: 'Por hacer', produccion: 'En producción', hecha: 'Hecha'};
 
 /* ---------- filtros ---------- */
-S.f.tema = S.f.tema || ''; S.f.estado = S.f.estado || ''; S.f.enf = S.f.enf || '';
+S.f.tema = S.f.tema || ''; S.f.estado = '';   // en la matriz no se filtra por estado (eso se ve en Producción)
+ S.f.enf = S.f.enf || '';
 const SELEC = new Set();
 S.agrupar = true; S.abiertos = S.abiertos || {};
 function pasaMatriz(it, salvo) {
@@ -162,13 +163,10 @@ function barraBusqueda() {
   const CICLOS = Array.from(new Set(IDEAS.filter(i => i.alcTipo === 'formacion').map(i => i.alcTxt))).sort((a, b) => a.localeCompare(b, 'es'));
   const v = valorFormacion(), o = (val, txt) => '<option value="' + esc(val) + '"' + (v === val ? ' selected' : '') + '>' + esc(txt) + '</option>';
   const ramaTxt = r => r === 'Servicios Socioculturales' ? 'Sociocultural' : r;
-  const est = S.f.estado || '';
   return '<div class="mz-busca"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Buscar idea…" aria-label="Buscar en la matriz">' +
     '<select data-forma aria-label="Formación">' + o('', 'Todas las formaciones') + o('gen', 'Solo genéricas') +
       '<optgroup label="Ramas">' + RAMAS.map(r => o('r:' + r, ramaTxt(r))).join('') + '</optgroup>' +
       '<optgroup label="Ciclos">' + CICLOS.map(c => o('c:' + c, c)).join('') + '</optgroup></select>' +
-    '<select data-dim="estado" aria-label="Estado">' + [['', 'Todos los estados']].concat(Object.keys(ESTADOS_IDEA).map(k => [k, ESTADOS_IDEA[k]]))
-      .map(x => '<option value="' + x[0] + '"' + (est === x[0] ? ' selected' : '') + '>' + esc(x[1]) + '</option>').join('') + '</select>' +
     (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button class="linkbtn" id="mz-limpiar">Quitar filtros</button>' : '') +
     '</div>';
 }
