@@ -372,3 +372,11 @@
 @media(max-width:760px){.mz-fsel{border-top:0;padding:4px 0 6px}.mz-fbtn{width:100%;justify-content:space-between;padding:11px 14px}}
 .mz-fbtn,.mz-fbtn .mz-ftodas{font-size:14.5px}.mz-fbtn .chip{font-size:13px}
 .mz-sug header p.mz-sugmes{font-size:15px;font-weight:600;color:var(--ink2)}
+/* colores invertidos: marco verde oscuro, botón de formación lima */
+.mz-buscazona{background:var(--brand2);border:0;box-shadow:0 4px 16px rgba(27,54,32,.18)}
+.mz-buscazona .mz-buscabarra{border:0}
+.mz-buscazona .mz-buscabarra:focus-within{box-shadow:0 0 0 2px var(--lima)}
+.mz-fbtn{background:var(--lima);color:var(--brand2)}
+.mz-fbtn:hover{background:var(--limaLine)}
+.mz-fbtn .mz-ftodas{color:var(--brand2)}
+.mz-fbtn .mz-fflecha{color:var(--brand2)}
