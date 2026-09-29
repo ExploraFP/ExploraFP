@@ -173,7 +173,9 @@ function vMatriz() {
     '<p>' + IDEAS.length + ' ideas · <b>' + n.hecha + '</b> hechas · <b>' + n.produccion + '</b> en producción · <b>' + n.porhacer + '</b> por hacer</p></div>' +
     '<div class="mz-progreso"><i style="width:' + (100 * n.hecha / IDEAS.length).toFixed(1) + '%"></i><i class="p" style="width:' + (100 * n.produccion / IDEAS.length).toFixed(1) + '%"></i></div></div>';
   h += '<div class="buscador"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca por palabra: plaza, convalidar, prácticas, sueldo…" aria-label="Buscar en la matriz"></div>';
-  h += barraMatriz();
+  const nAct = ['rama', 'form', 'cif', 'tema'].filter(k => S.f[k]).length + (S.f.estado !== 'porhacer' ? 1 : 0);
+  h += '<button class="btn mz-verfiltros" id="mz-verfiltros" aria-expanded="' + !!S.verFiltros + '">Filtros' + (nAct ? ' · ' + nAct + ' activos' : '') + '</button>';
+  h += '<div class="mz-filtros' + (S.verFiltros ? ' on' : '') + '">' + barraMatriz() + '</div>';
   const foco = S.f.form || (S.f.rama && S.f.rama !== 'Transversal' ? S.f.rama : '');
   h += '<p class="cuenta">' + filas.length + (filas.length === 1 ? ' idea' : ' ideas') +
     (foco ? (S.t.solo ? ' solo de ' + esc(foco) + ' · <button class="linkbtn" data-solo="0">ver también las transversales que le sirven</button>'
@@ -309,6 +311,7 @@ document.addEventListener('click', e => {
   if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = S.abiertos[k] === false; render(); return; }
   const en = t.closest('[data-enlazar]'); if (en) { e.stopImmediatePropagation(); abrirEnlazar(en.dataset.enlazar); return; }
   const ea = t.closest('[data-enlazar-a]'); if (ea) { e.stopImmediatePropagation(); enlazar(ea.dataset.clave, ea.dataset.enlazarA); return; }
+  if (t.id === 'mz-verfiltros') { S.verFiltros = !S.verFiltros; render(); return; }
   if (t.id === 'mz-agrupar') { S.agrupar = !S.agrupar; render(); return; }
   if (t.id === 'mz-limpiar') { e.stopImmediatePropagation(); S.f = {rama: '', form: '', cif: '', tema: '', estado: 'porhacer'}; S.t.solo = false; S.q = ''; render(); return; }
   const pt = t.closest('[data-producir-tema]');

@@ -49,3 +49,21 @@
 
 .cuenta .linkbtn{background:none;border:0;padding:0;color:var(--brand);font:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 .cuenta .linkbtn:hover{color:var(--ink)}
+
+/* móvil: filtros plegados tras un botón y cada idea en bloque (sin columnas apretadas) */
+.mz-verfiltros{display:none}
+@media(max-width:760px){
+  .mz-verfiltros{display:inline-block;margin:12px 0 0}
+  .mz-filtros{display:none}
+  .mz-filtros.on{display:block}
+  .mz-barra .filtro{flex:1 1 100%}
+  .mz-progreso{flex:1 1 100%}
+  .mz-tabla thead{display:none}
+  .mz-tabla,.mz-tabla tbody,.mz-tabla tr{display:block;width:100%}
+  .mz-tabla tr{border-bottom:1px solid var(--line);padding:4px 0 10px}
+  .mz-tabla td{display:block;width:100% !important;border:0;padding:8px 14px 0}
+  .mz-tabla td.c-alc{display:block}
+  .mz-tabla .acciones{justify-content:flex-start}
+  .mz-grupo>header .btn{margin-left:auto}
+  .mz-hechas{margin-right:0}
+}
