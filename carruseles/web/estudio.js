@@ -32,6 +32,11 @@ const EST_COLORES = [
 const EST_COLORES_ELEGIBLES = EST_COLORES.filter(c => c.id !== 'verde');
 const EST_TIPOS = {portada: 'Portada', contenido: 'Contenido', lista: 'Lista', dato: 'Dato', cierre: 'Cierre'};
 const EST_ESTADO = {pendiente: 'Sin generar', generando: 'Generando…', borrador: 'Para revisar', hecho: 'Hecho', error: 'Error'};
+/* Cabecera común de cada pestaña: título, una línea y las cifras que importan (stats: [[número, etiqueta, clase]]). */
+function cabecera(titulo, desc, stats) {
+  return '<div class="vhead vcab"><div class="vtxt"><h2>' + esc(titulo) + '</h2>' + (desc ? '<p>' + desc + '</p>' : '') + '</div>' +
+    (stats && stats.length ? '<div class="vstats">' + stats.map(x => '<div class="vstat' + (x[2] ? ' ' + x[2] : '') + '"><b>' + x[0] + '</b><span>' + esc(x[1]) + '</span></div>').join('') + '</div>' : '') + '</div>';
+}
 const nombrePl = id => (EST_PLANTILLAS.find(p => p.id === id) || {}).nombre || id;
 const nombreCo = id => (EST_COLORES.find(c => c.id === id) || {}).nombre || id;
 
@@ -424,7 +429,7 @@ function tarjeta(c) {
     c.estado === 'error' ? c.error : '';
   return '<article class="est-tarjeta' + (c.slides.length ? '' : ' est-previa') + '">' + mini(vista, 0) +
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || c.tema || '(sin título)') + '</h4>' +
-    '<div class="est-tmeta">' + (c.objetivo && typeof OBJETIVOS !== 'undefined' && OBJETIVOS[c.objetivo] ? '<span class="mz-objchip o-' + c.objetivo + '">' + esc(OBJETIVOS[c.objetivo].nombre) + '</span>' : '') + '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span></div>' +
+    '<div class="est-tmeta">' + (c.objetivo && typeof OBJETIVOS !== 'undefined' && OBJETIVOS[c.objetivo] ? '<span class="mz-objchip o-' + c.objetivo + '">' + esc(objEt(c.objetivo)) + '</span>' : '') + '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span></div>' +
     (estado ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(estado) + '</p>' : '') +
     (c.slides.length && c.estado !== 'generando' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
     '<div class="est-tpie">' +
@@ -437,8 +442,9 @@ function tarjeta(c) {
 function vProducir() {
   const lista = carruselesDe('pendientes');
   const sinGenerar = lista.filter(c => c.estado === 'pendiente' || c.estado === 'error').length;
-  let h = '<div class="vhead"><h2>Producir</h2>' +
-    '<p>Lo que has mandado desde la matriz. Genera, revisa y márcalo hecho: aparecerá unido a su idea.</p></div>';
+  const revisar = lista.filter(c => c.estado === 'borrador').length;
+  let h = cabecera('Producir', 'Lo que has mandado desde la matriz. Genera, revisa y márcalo hecho.',
+    [[lista.length, 'en la mesa'], [sinGenerar, 'sin generar'], [revisar, 'para revisar', revisar ? 'lima' : '']]);
   h += '<div class="est-acciones">' +
     (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el que falta' : 'los ' + sinGenerar + ' que faltan') + '</button>' : '') +
     '<span id="est-lote-hueco">' + botonLote() + '</span>' +
@@ -459,7 +465,7 @@ function vHechos() {
   if (!lista.length) return h + '<div class="vacio"><b>Todavía no hay ninguno</b>Cuando revises un carrusel y pulses «Marcar hecho», aparece aquí.</div>';
   return h + '<div class="est-rejilla">' + lista.map(c => '<article class="est-tarjeta">' + mini(c, 0) +
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || '(sin título)') + '</h4>' +
-    '<div class="est-tmeta">' + (c.objetivo && typeof OBJETIVOS !== 'undefined' && OBJETIVOS[c.objetivo] ? '<span class="mz-objchip o-' + c.objetivo + '">' + esc(OBJETIVOS[c.objetivo].nombre) + '</span>' : '') + '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + ' · ' + c.slides.length + ' slides</span>' +
+    '<div class="est-tmeta">' + (c.objetivo && typeof OBJETIVOS !== 'undefined' && OBJETIVOS[c.objetivo] ? '<span class="mz-objchip o-' + c.objetivo + '">' + esc(objEt(c.objetivo)) + '</span>' : '') + '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + ' · ' + c.slides.length + ' slides</span>' +
       (c.fecha ? '<span>' + esc(fCorta(c.fecha)) + '</span>' : '') + '</div>' +
     '<div class="est-tpie"><button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button>' +
       '<button class="btn" data-est-descargar="' + c.id + '">Descargar</button>' +

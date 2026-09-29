@@ -32,11 +32,12 @@ IDEAS.forEach(it => {
    Cada idea trae un objetivo sugerido (reglas de abajo); ella lo cambia en la ficha y se guarda en ops/<id>.objetivo.
    El carrusel lo hereda al producir y ahí se puede cambiar, junto con el CTA. */
 const OBJETIVOS = {
-  viral:       {nombre: 'Viral',       push: 1, cta: 'Comenta, etiqueta a alguien o compártelo', pista: 'Tendencia, entretener, comunidad y cercanía'},
-  autoridad:   {nombre: 'Autoridad',   push: 2, cta: 'Guárdalo y síguenos para más',              pista: 'Demostrar que somos referentes del sector'},
-  informativo: {nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
-  leadmagnet:  {nombre: 'Lead magnet', push: 4, cta: 'Comenta PALABRA y te mando [recurso]',     pista: 'Conseguir leads orgánicos con un recurso'},
+  viral:       {emoji: '🔥', nombre: 'Viral',       push: 1, cta: 'Comenta, etiqueta a alguien o compártelo', pista: 'Tendencia, entretener, comunidad y cercanía'},
+  autoridad:   {emoji: '🏆', nombre: 'Autoridad',   push: 2, cta: 'Guárdalo y síguenos para más',              pista: 'Demostrar que somos referentes del sector'},
+  informativo: {emoji: '📋', nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
+  leadmagnet:  {emoji: '🧲', nombre: 'Lead magnet', push: 4, cta: 'Comenta PALABRA y te mando [recurso]',     pista: 'Conseguir leads orgánicos con un recurso'},
 };
+const objEt = k => OBJETIVOS[k].emoji + ' ' + OBJETIVOS[k].nombre;   // nombre con su emoji, para la interfaz
 const OBJ_ORDEN = ['viral', 'autoridad', 'informativo', 'leadmagnet'];
 const OBJ_REGLAS = [
   ['leadmagnet', /\b(\d+|dos|tres|cuatro|cinco|seis|siete|ocho|diez)\s+(preguntas|pasos|errores|frases|se[nñ]ales|cosas|claves|documentos|requisitos|rutas|ciclos)\b|checklist|gu[ií]a|\bmapa\b|la tabla|documentaci[oó]n exacta|las cuentas|precio real|ruta completa|por d[oó]nde se empieza/i],
@@ -59,7 +60,6 @@ function cambiarObjetivo(id, obj) {
 /* genérico = transversal · rama = una rama entera · formación = un ciclo o un doble */
 const ENFOQUES = {generico: 'Genéricas', rama: 'De una rama', formacion: 'De un ciclo'};
 const enfoqueDe = it => it.alcTipo === 'transversal' ? 'generico' : it.alcTipo === 'rama' ? 'rama' : 'formacion';
-const pushPuntos = n => '<span class="mz-push" title="Push ' + n + ' de 4">' + [1, 2, 3, 4].map(k => '<i' + (k <= n ? ' class="on"' : '') + '></i>').join('') + '</span>';
 
 /* ---------- parecidas ----------
    Palabras con contenido (sin las vacías), recortadas a su raíz, y cuántas comparten. */
@@ -213,9 +213,8 @@ function vMatriz() {
   TOKENS = trozosBusqueda();
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort(ordenar);
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
-  let h = '<div class="mz-cab"><div><h2>Matriz de contenido</h2>' +
-    '<p><b>' + n.hecha + '</b> de ' + IDEAS.length + ' ideas hechas' + (n.produccion ? ' · <b>' + n.produccion + '</b> en producción' : '') + '</p></div>' +
-    '<div class="mz-progreso"><i style="width:' + (100 * n.hecha / IDEAS.length).toFixed(1) + '%"></i><i class="p" style="width:' + (100 * n.produccion / IDEAS.length).toFixed(1) + '%"></i></div></div>';
+  let h = cabecera('Matriz de contenido', 'Tus ideas agrupadas por objetivo, de menos a más push. Marca las que quieras y pulsa Producir.',
+    [[n.hecha + '<small>/' + IDEAS.length + '</small>', 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += '<div class="buscador"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca por palabra: plaza, convalidar, prácticas, sueldo…" aria-label="Buscar en la matriz"></div>';
   const nAct = ['rama', 'form', 'cif', 'tema', 'estado', 'enf'].filter(k => S.f[k]).length;
@@ -243,7 +242,7 @@ function vMatriz() {
     return '<section class="mz-grupo' + (abierto ? ' abierto' : '') + '"><header>' +
       '<button class="mz-plegar" data-tema-plegar="' + esc(t) + '" aria-expanded="' + abierto + '">' +
       '<span class="mz-flecha" aria-hidden="true">' + (abierto ? '▾' : '▸') + '</span>' +
-      '<span class="mz-tema-txt"><h3>' + esc(O.nombre) + pushPuntos(O.push) + '</h3>' + (() => { const x = [O.pista + ' · CTA: «' + O.cta + '»'];
+      '<span class="mz-tema-txt"><h3>' + esc(objEt(t)) + '</h3>' + (() => { const x = [O.pista + ' · CTA: «' + O.cta + '»'];
         if (rows.length !== todas.length) x.push(rows.length + (rows.length === 1 ? ' coincide' : ' coinciden'));
         if (enProd) x.push('<b class="p">' + enProd + ' en producción</b>');
         if (nSel) x.push('<b class="s">' + nSel + (nSel === 1 ? ' seleccionada' : ' seleccionadas') + '</b>');
@@ -295,7 +294,7 @@ function pintarProducir() {
   const mixto = new Set(ids.map(id => objDe(IMAP[id]))).size > 1;
   h += '<h4 class="mz-sub">Objetivo</h4><div class="est-opciones mz-objs">' +
     (mixto ? '<button class="est-op" data-prod-obj="" aria-pressed="' + !EST_PROD.obj + '">Cada una el suyo</button>' : '') +
-    OBJ_ORDEN.map(k => '<button class="est-op" data-prod-obj="' + k + '" aria-pressed="' + (EST_PROD.obj === k) + '">' + esc(OBJETIVOS[k].nombre) + pushPuntos(OBJETIVOS[k].push) + '</button>').join('') + '</div>';
+    OBJ_ORDEN.map(k => '<button class="est-op" data-prod-obj="' + k + '" aria-pressed="' + (EST_PROD.obj === k) + '">' + esc(objEt(k)) + '</button>').join('') + '</div>';
   h += EST_PROD.obj ? '<label class="mz-cta">CTA del cierre<input type="text" id="mz-prod-cta" value="' + esc(EST_PROD.cta) + '"></label>'
     : '<p class="est-pista">Cada carrusel usa el objetivo y el CTA de su idea.</p>';
   h += '<h4 class="mz-sub">Portada</h4><div class="est-opciones">' +
@@ -328,7 +327,9 @@ function vTodoHecho() {
   const q = norm(S.q).trim();
   let lista = todoHecho();
   if (q) lista = lista.filter(x => norm(x.titulo).indexOf(q) >= 0);
-  let h = '<div class="vhead"><h2>Hechos</h2><p>Todo lo publicado en un sitio: lo que haces con la herramienta y lo que enlazas de Drive. Cada uno queda unido a su idea de la matriz.</p></div>';
+  const todos = todoHecho();
+  let h = cabecera('Hechos', 'Todo lo publicado en un sitio: lo de la herramienta y lo que enlazas de Drive, unido a su idea.',
+    [[todos.length, 'publicados', 'ok'], [todos.filter(x => !x.idea).length, 'sin idea']]);
   h += '<div class="est-acciones"><button class="btn pri" id="nuevoCarrusel">+ Añadir uno ya publicado</button>' +
     (Object.values(EST.lista).some(c => c.estado === 'hecho') ? '<button class="btn" data-lote="hechos">Descargar los hechos con la herramienta</button>' : '') +
     '<input type="search" id="buscar" class="invbusca" value="' + esc(S.q) + '" placeholder="Buscar…" aria-label="Buscar en hechos">' +
@@ -339,7 +340,7 @@ function vTodoHecho() {
     const c = x.carrusel, it = x.idea ? IMAP[x.idea] : null;
     return '<article class="est-tarjeta">' + (c ? mini(c, 0) : '<div class="est-mini"><span class="est-vacia">' + (x.url ? 'En Drive' : 'Añadido a mano') + '</span></div>') +
       '<div class="est-tcuerpo"><h4>' + esc(x.titulo || '(sin título)') + '</h4>' +
-      '<div class="est-tmeta">' + (it ? chipAlcance(it) + '<span>' + esc(OBJETIVOS[objDe(it)].nombre) + '</span>' : '<span class="chip temp">sin idea</span>') +
+      '<div class="est-tmeta">' + (it ? chipAlcance(it) + '<span>' + esc(objEt(objDe(it))) + '</span>' : '<span class="chip temp">sin idea</span>') +
         (x.fecha ? '<span>' + esc(fCorta(x.fecha)) + '</span>' : '') + '</div>' +
       '<div class="est-tpie">' +
         (c ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button><button class="btn" data-est-descargar="' + c.id + '">Descargar</button>' : '') +
@@ -360,7 +361,7 @@ function abrirEnlazar(clave, q) {
   const toks = norm(q || '').split(/\s+/).filter(t => t.length > 1);
   const busca = toks.length ? IDEAS.filter(it => toks.every(t => it.buscar.indexOf(t) >= 0)).slice(0, 12) : [];
   const item = it => '<li><button class="mz-elegir" data-enlazar-a="' + it.id + '" data-clave="' + esc(clave) + '">' +
-    '<b>' + esc(it.titular) + '</b><small>' + esc(OBJETIVOS[objDe(it)].nombre) + ' · ' + esc(it.alcTxt) + ' · ' + esc(ESTADOS_IDEA[estadoIdea(it)]) + '</small></button></li>';
+    '<b>' + esc(it.titular) + '</b><small>' + esc(objEt(objDe(it))) + ' · ' + esc(it.alcTxt) + ' · ' + esc(ESTADOS_IDEA[estadoIdea(it)]) + '</small></button></li>';
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja" role="dialog" aria-modal="true" aria-label="Unir a una idea">' +
     '<header><k>Unir a una idea de la matriz</k><h2>' + esc(x.titulo) + '</h2></header><div class="cuerpo">' +
@@ -390,7 +391,7 @@ pintarFicha = function () {
   $('#dhead').innerHTML = '<div class="drow">' + chipAlcance(it) + (extra ? '<span class="mz-nivel">' + esc(extra) + '</span>' : '') +
     '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>' +
     '<div class="mz-fobj" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k => '<button data-obj-idea="' + k + '" aria-pressed="' + (objDe(it) === k) + '">' +
-      esc(OBJETIVOS[k].nombre) + '</button>').join('') + '</div>';
+      esc(objEt(k)) + '</button>').join('') + '</div>';
   let b = '';
   if (c && c.slides && c.slides.length)
     b += '<div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
@@ -451,7 +452,7 @@ document.addEventListener('click', e => {
   const pob = t.closest('[data-prod-obj]');
   if (pob) { EST_PROD.obj = pob.dataset.prodObj; EST_PROD.cta = EST_PROD.obj ? OBJETIVOS[EST_PROD.obj].cta : ''; pintarProducir(); return; }
   const oid = t.closest('[data-obj-idea]');
-  if (oid && S.sel) { cambiarObjetivo(S.sel, oid.dataset.objIdea); pintarFicha(); render(); toast('Movida a ' + OBJETIVOS[oid.dataset.objIdea].nombre); return; }
+  if (oid && S.sel) { cambiarObjetivo(S.sel, oid.dataset.objIdea); pintarFicha(); render(); toast('Movida a ' + objEt(oid.dataset.objIdea)); return; }
   const pfo = t.closest('[data-prod-foto]'); if (pfo) { EST.conFoto = pfo.dataset.prodFoto === 'true'; guardarEstilo(); pintarProducir(); return; }
   const ppl = t.closest('[data-prod-pl]'); if (ppl) { EST.plantilla = ppl.dataset.prodPl; guardarEstilo(); pintarProducir(); return; }
   const pco = t.closest('[data-prod-co]'); if (pco) { EST.color = pco.dataset.prodCo; guardarEstilo(); pintarProducir(); return; }
