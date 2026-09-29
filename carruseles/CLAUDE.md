@@ -71,7 +71,12 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   el banco desde otra sesión, volver a leer el artifact y guardar aquí su HTML antes de reconstruir.
 - `web/estudio.js` + `web/estudio.css`: pestaña Producir, editor, control de calidad y exportación a PNG.
 - `web/matriz.js` + `web/matriz.css`: pestaña Matriz (antes Ideas) y Hechos (junta Hechos + Inventario).
-  Matriz agrupada por tema, cada tema una fila grande plegada (se abren solos al buscar o filtrar por tema); casillas para
+  Matriz agrupada por OBJETIVO (pedido de Sandra): Viral · Autoridad · Informativo · Lead magnet, de menos a más push, cada uno
+  con su CTA por defecto (`OBJETIVOS` en matriz.js; Informativo = «Escríbenos tu ciclo por DM y te decimos tu caso»). Cada idea trae
+  un objetivo sugerido por reglas (`OBJ_REGLAS`), Sandra lo cambia en la ficha (se guarda en ops/<id>.objetivo). Al producir se
+  elige objetivo y CTA; van al carrusel (`objetivo`, `cta`) y al prompt (`OBJ_PROMPT` en estudio.js). Filtro «Enfoque»:
+  genéricas / de una rama / de un ciclo. Antes era por tema; el tema (`TEMA_REGLAS`) sigue calculado pero no se muestra.
+  Cada grupo es una fila grande plegada (se abren solos al buscar o filtrar por tema); casillas para
   seleccionar ideas y «Producir (N)» arriba. Ficha mínima (pedido de Sandra: nada de más): rama / ciclo, las slides en fila
   horizontal y un solo botón (Producir o Abrir carrusel); si no hay carrusel y hay uno parecido hecho, lo enseña. Tema = el `eje` del banco, o deducido por palabras clave en `TEMA_REGLAS` para las ~230 sin eje),
   filtros Estado/Tema/Alcance rama-ciclo/Cifras, estado de cada idea (por hacer · en producción · hecha, con su

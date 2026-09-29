@@ -167,3 +167,19 @@
 .mz-ancha .mz-parhecho{display:flex;align-items:center;gap:14px}
 .mz-ancha .mz-parhecho .mz-mini{width:72px;flex-shrink:0}
 .mz-ancha .mz-parhecho .linkbtn{background:none;border:0;padding:0;font:inherit;font-size:15px;font-weight:600;color:var(--brand);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:left}
+
+/* objetivos */
+.mz-push{display:inline-flex;gap:3px;margin-left:10px;vertical-align:middle}
+.mz-push i{width:7px;height:7px;border-radius:50%;background:var(--surface3);display:block}
+.mz-push i.on{background:var(--brand)}
+.mz-plegar h3{display:flex;align-items:center}
+.mz-fobj{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.mz-fobj button{border:1px solid var(--line2);background:var(--surface);color:var(--ink2);border-radius:999px;padding:6px 13px;font:inherit;font-size:13px;cursor:pointer}
+.mz-fobj button[aria-pressed="true"]{background:var(--brand2);border-color:var(--brand2);color:#fff;font-weight:600}
+.mz-objs .est-op{display:inline-flex;align-items:center}
+.mz-objs .mz-push{margin-left:8px}
+.mz-cta{display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink2);margin:12px 0 4px}
+.mz-cta input{font:inherit;font-size:14px;font-weight:400;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;background:var(--surface)}
+.mz-objchip{font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 9px;background:var(--limaSoft);color:var(--brand);border:1px solid var(--limaLine)}
+[aria-pressed="true"] .mz-push i{background:rgba(255,255,255,.3)}
+[aria-pressed="true"] .mz-push i.on{background:var(--lima)}

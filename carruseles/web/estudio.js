@@ -133,16 +133,23 @@ function nuevoC(datos) {
 const carruselesDe = estado => Object.values(EST.lista).filter(c => estado === 'hecho' ? c.estado === 'hecho' : c.estado !== 'hecho')
   .sort((a, b) => (b.upd || '').localeCompare(a.upd || ''));
 function yaEnProduccion(ideaId) { return Object.values(EST.lista).some(c => c.idea === ideaId && c.estado !== 'hecho'); }
-function mandarAProducir(ids) {
+function mandarAProducir(ids, extra) {
   let n = 0;
   ids.forEach(id => {
     const it = IMAP[id]; if (!it || yaEnProduccion(id)) return;
-    nuevoC({idea: id, titulo: it.titular}); n++;
+    nuevoC(Object.assign({idea: id, titulo: it.titular}, extra ? extra(id) : {})); n++;
   });
   return n;
 }
 
 /* ---------- Claude escribe el carrusel ---------- */
+/* Cómo cambia el carrusel según su objetivo (los objetivos están en matriz.js). */
+const OBJ_PROMPT = {
+  viral: 'Que se comparta: una situación que el lector reconozca como suya, humor o complicidad, cero venta. El copy acaba con una pregunta abierta de verdad.',
+  autoridad: 'Que se note que sabemos más que nadie: precisión, desmontar el mito con hechos (usa un dato verificado si lo hay), cero venta. Que merezca guardarse.',
+  informativo: 'Práctico y claro: requisitos, pasos o plazos en orden, una cosa por slide. Que quien lo lea sepa qué hacer después y quiera preguntarnos su caso.',
+  leadmagnet: 'Da valor de verdad pero deja claro que el recurso completo se lo lleva quien comente la palabra. Las slides generan la necesidad del recurso; el cierre lo presenta.',
+};
 function promptCarrusel(c) {
   const it = c.idea ? IMAP[c.idea] : null;
   const datos = it ? datosDe(it).concat(datosSugDe(it)).filter(d => d && !/^BAJA/.test(d.confianza)) : [];
@@ -163,7 +170,19 @@ function promptCarrusel(c) {
   L.push('- Etiqueta (opcional, arriba de la slide): 1 a 3 palabras.');
   L.push('- Nada de emojis dentro de las slides. Nada de «desliza». Una idea por slide, que se entienda en dos segundos.');
   L.push('- NO inventes cifras, porcentajes, sueldos ni plazos. Solo puedes usar una slide "dato" con uno de los DATOS VERIFICADOS de abajo, copiando la cifra y la fuente tal cual. Si no hay datos, no hagas slide "dato".');
-  L.push('- Cierre: un titular corto y un "cta" que sea una coordenada, nunca una venta: ' + CTAS.map(x => x.replace(/\s*\S+$/, '')).join(' · ') + '. "cinta": "Enlace en el perfil".');
+  const O = c.objetivo && typeof OBJETIVOS !== 'undefined' ? OBJETIVOS[c.objetivo] : null;
+  if (O && c.cta) {
+    L.push('- Cierre: un titular corto y un "cta" con ESTA acción, dicha con el tono de marca y adaptada al tema: «' + c.cta + '».' +
+      (/PALABRA|\[recurso\]/.test(c.cta) ? ' Sustituye PALABRA por una palabra clave corta en mayúsculas que encaje (p. ej. REQUISITOS) y [recurso] por el recurso concreto que se llevaría (p. ej. «el checklist de tu ciclo»).' : ''));
+    L.push('- El texto del post ("copy") termina repitiendo esa misma acción.');
+  } else {
+    L.push('- Cierre: un titular corto y un "cta" que sea una coordenada, nunca una venta: ' + CTAS.map(x => x.replace(/\s*\S+$/, '')).join(' · ') + '. "cinta": "Enlace en el perfil".');
+  }
+  if (O) {
+    L.push('');
+    L.push('OBJETIVO DEL CARRUSEL: ' + O.nombre.toUpperCase() + ' (push ' + O.push + ' de 4)');
+    L.push('- ' + OBJ_PROMPT[c.objetivo]);
+  }
   L.push('');
   if (FOTOS.length) {
     L.push('FOTOS DISPONIBLES (usa la ruta exacta; opcional):');
@@ -390,12 +409,12 @@ function previa(id, plantilla, color, titulo, etiqueta) {
   PREVIAS[id] = c; return c;
 }
 function tarjeta(c) {
-  const vista = c.slides.length ? c : previa('p-' + c.id, c.plantilla, c.color, c.titulo || c.tema, c.idea && IMAP[c.idea] ? IMAP[c.idea].tema : '');
+  const vista = c.slides.length ? c : previa('p-' + c.id, c.plantilla, c.color, c.titulo || c.tema, c.idea && IMAP[c.idea] ? IMAP[c.idea].alcTxt : '');
   const estado = c.estado === 'generando' ? 'Claude lo está escribiendo…' : c.estado === 'pendiente' ? 'Así quedará la portada' :
     c.estado === 'error' ? c.error : '';
   return '<article class="est-tarjeta' + (c.slides.length ? '' : ' est-previa') + '">' + mini(vista, 0) +
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || c.tema || '(sin título)') + '</h4>' +
-    '<div class="est-tmeta"><span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span></div>' +
+    '<div class="est-tmeta">' + (c.objetivo && typeof OBJETIVOS !== 'undefined' && OBJETIVOS[c.objetivo] ? '<span class="mz-objchip o-' + c.objetivo + '">' + esc(OBJETIVOS[c.objetivo].nombre) + '</span>' : '') + '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span></div>' +
     (estado ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(estado) + '</p>' : '') +
     (c.slides.length && c.estado !== 'generando' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
     '<div class="est-tpie">' +
@@ -430,7 +449,7 @@ function vHechos() {
   if (!lista.length) return h + '<div class="vacio"><b>Todavía no hay ninguno</b>Cuando revises un carrusel y pulses «Marcar hecho», aparece aquí.</div>';
   return h + '<div class="est-rejilla">' + lista.map(c => '<article class="est-tarjeta">' + mini(c, 0) +
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || '(sin título)') + '</h4>' +
-    '<div class="est-tmeta"><span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + ' · ' + c.slides.length + ' slides</span>' +
+    '<div class="est-tmeta">' + (c.objetivo && typeof OBJETIVOS !== 'undefined' && OBJETIVOS[c.objetivo] ? '<span class="mz-objchip o-' + c.objetivo + '">' + esc(OBJETIVOS[c.objetivo].nombre) + '</span>' : '') + '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + ' · ' + c.slides.length + ' slides</span>' +
       (c.fecha ? '<span>' + esc(fCorta(c.fecha)) + '</span>' : '') + '</div>' +
     '<div class="est-tpie"><button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button>' +
       '<button class="btn" data-est-descargar="' + c.id + '">Descargar</button>' +

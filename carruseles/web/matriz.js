@@ -27,6 +27,40 @@ IDEAS.forEach(it => {
   it.tema = r ? r[0] : 'Más dudas del ciclo';
 });
 
+/* ---------- objetivo de cada idea ----------
+   La matriz se agrupa por lo que Sandra quiere conseguir con el carrusel, de menos a más push.
+   Cada idea trae un objetivo sugerido (reglas de abajo); ella lo cambia en la ficha y se guarda en ops/<id>.objetivo.
+   El carrusel lo hereda al producir y ahí se puede cambiar, junto con el CTA. */
+const OBJETIVOS = {
+  viral:       {nombre: 'Viral',       push: 1, cta: 'Comenta, etiqueta a alguien o compártelo', pista: 'Tendencia, entretener, comunidad y cercanía'},
+  autoridad:   {nombre: 'Autoridad',   push: 2, cta: 'Guárdalo y síguenos para más',              pista: 'Demostrar que somos referentes del sector'},
+  informativo: {nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
+  leadmagnet:  {nombre: 'Lead magnet', push: 4, cta: 'Comenta PALABRA y te mando [recurso]',     pista: 'Conseguir leads orgánicos con un recurso'},
+};
+const OBJ_ORDEN = ['viral', 'autoridad', 'informativo', 'leadmagnet'];
+const OBJ_REGLAS = [
+  ['leadmagnet', /\b(\d+|dos|tres|cuatro|cinco|seis|siete|ocho|diez)\s+(preguntas|pasos|errores|frases|se[nñ]ales|cosas|claves|documentos|requisitos|rutas|ciclos)\b|checklist|gu[ií]a|\bmapa\b|la tabla|documentaci[oó]n exacta|las cuentas|precio real|ruta completa|por d[oó]nde se empieza/i],
+  ['viral', /martes cualquiera|sin postureo|ruta honesta|falso dilema|no es empezar de cero|lo que nadie|te lo cuento/i],
+];
+IDEAS.forEach(it => {
+  const t = it.titular + ' ' + it.gancho;
+  const r = OBJ_REGLAS.find(x => x[1].test(t));
+  if (r) it.objAuto = r[0];
+  else if (it.tipo === 'PERSONA' || it.tema === 'Para quién es') it.objAuto = 'viral';
+  else if (['Dinero', 'Calendario y trámites', 'Acceso y requisitos', 'Convalidaciones', 'Titulación y después', 'Formación en empresa'].indexOf(it.tema) >= 0) it.objAuto = 'informativo';
+  else if (['Oficial de verdad', 'Contra el humo', 'Salidas y mercado', 'Qué se aprende'].indexOf(it.tema) >= 0 || it.ganchoLabel === 'Creencia que rompe') it.objAuto = 'autoridad';
+  else it.objAuto = 'informativo';
+});
+function objDe(it) { const o = S.ops[it.id]; return (o && OBJETIVOS[o.objetivo]) ? o.objetivo : it.objAuto; }
+function cambiarObjetivo(id, obj) {
+  S.ops[id] = Object.assign({}, S.ops[id], {objetivo: obj, upd: new Date().toISOString()});
+  if (DB) DB.doc('ops/' + id).set(S.ops[id]).catch(() => {}); else { try { localStorage.setItem('explora.ops', JSON.stringify(S.ops)); } catch (e) {} }
+}
+/* genérico = transversal · rama = una rama entera · formación = un ciclo o un doble */
+const ENFOQUES = {generico: 'Genéricas', rama: 'De una rama', formacion: 'De un ciclo'};
+const enfoqueDe = it => it.alcTipo === 'transversal' ? 'generico' : it.alcTipo === 'rama' ? 'rama' : 'formacion';
+const pushPuntos = n => '<span class="mz-push" title="Push ' + n + ' de 4">' + [1, 2, 3, 4].map(k => '<i' + (k <= n ? ' class="on"' : '') + '></i>').join('') + '</span>';
+
 /* ---------- parecidas ----------
    Palabras con contenido (sin las vacías), recortadas a su raíz, y cuántas comparten. */
 const VACIAS = new Set(('a al ante bajo con contra de del desde durante en entre hacia hasta para por segun sin sobre tras ' +
@@ -89,7 +123,7 @@ function estadoIdea(it) {
 const ESTADOS_IDEA = {porhacer: 'Por hacer', produccion: 'En producción', hecha: 'Hecha'};
 
 /* ---------- filtros ---------- */
-S.f.tema = S.f.tema || ''; S.f.estado = S.f.estado || '';
+S.f.tema = S.f.tema || ''; S.f.estado = S.f.estado || ''; S.f.enf = S.f.enf || '';
 const SELEC = new Set();
 S.agrupar = true; S.abiertos = S.abiertos || {};
 function pasaMatriz(it, salvo) {
@@ -105,6 +139,7 @@ function pasaMatriz(it, salvo) {
   }
   if (salvo !== 'cif' && f.cif && cifraDe(it) !== f.cif) return false;
   if (salvo !== 'tema' && f.tema && it.tema !== f.tema) return false;
+  if (salvo !== 'enf' && f.enf && enfoqueDe(it) !== f.enf) return false;
   if (salvo !== 'estado' && f.estado && estadoIdea(it) !== f.estado) return false;
   return true;
 }
@@ -121,10 +156,10 @@ function barraMatriz() {
   const RAMASF = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
   const CICLOS = Array.from(new Set(IDEAS.filter(i => i.alcTipo === 'formacion' && (!S.f.rama || i.ramaColor === S.f.rama)).map(i => i.alcTxt)))
     .sort((a, b) => a.localeCompare(b, 'es'));
-  const activos = ['rama', 'form', 'cif', 'tema', 'estado'].some(k => S.f[k]);
+  const activos = ['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]);
   return '<div class="barra mz-barra">' +
     selMatriz('estado', 'Estado', 'Todas', Object.keys(ESTADOS_IDEA).map(k => [k, ESTADOS_IDEA[k]]), estadoIdea) +
-    selMatriz('tema', 'Tema', 'Todos los temas', TEMAS.map(t => [t, t]), it => it.tema) +
+    selMatriz('enf', 'Enfoque', 'Todas', Object.keys(ENFOQUES).map(k => [k, ENFOQUES[k]]), enfoqueDe) +
     selMatriz('rama', 'Alcance: rama', 'Todas', RAMASF.map(r => [r, r === 'Servicios Socioculturales' ? 'Sociocultural' : r]), it => it.ramaColor) +
     selMatriz('form', S.f.rama ? 'Alcance: ciclo de ' + (S.f.rama === 'Servicios Socioculturales' ? 'Sociocultural' : S.f.rama) : 'Alcance: ciclo', 'Todos', CICLOS.map(c => [c, c]), it => it.alcTxt) +
     selMatriz('cif', 'Cifras', 'Cualquiera', ['sin', 'listo', 'repasar', 'comprobar', 'nopublicar'].map(k => [k, CIF[k]]), cifraDe) +
@@ -168,12 +203,12 @@ function filaMatriz(it) {
 // Los temas empiezan cerrados; se abren solos al buscar o filtrar por tema.
 function temaAbierto(t) {
   if (t in S.abiertos) return S.abiertos[t];
-  return !!(S.q && S.q.trim()) || !!S.f.tema;
+  return !!(S.q && S.q.trim()) || !!S.f.tema || !!S.f.enf || !!S.f.form;
 }
 let MZ_CLAVE = '';
 function vMatriz() {
   // al cambiar la búsqueda o el tema, se olvida qué temas se habían abierto o cerrado a mano
-  const clave = (S.q || '') + '|' + (S.f.tema || '');
+  const clave = (S.q || '') + '|' + (S.f.tema || '') + '|' + (S.f.enf || '') + '|' + (S.f.form || '');
   if (clave !== MZ_CLAVE) { MZ_CLAVE = clave; S.abiertos = {}; }
   TOKENS = trozosBusqueda();
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort(ordenar);
@@ -183,7 +218,7 @@ function vMatriz() {
     '<div class="mz-progreso"><i style="width:' + (100 * n.hecha / IDEAS.length).toFixed(1) + '%"></i><i class="p" style="width:' + (100 * n.produccion / IDEAS.length).toFixed(1) + '%"></i></div></div>';
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += '<div class="buscador"><input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca por palabra: plaza, convalidar, prácticas, sueldo…" aria-label="Buscar en la matriz"></div>';
-  const nAct = ['rama', 'form', 'cif', 'tema', 'estado'].filter(k => S.f[k]).length;
+  const nAct = ['rama', 'form', 'cif', 'tema', 'estado', 'enf'].filter(k => S.f[k]).length;
   h += '<button class="btn mz-verfiltros" id="mz-verfiltros" aria-expanded="' + !!S.verFiltros + '">Filtros' + (nAct ? ' · ' + nAct + ' activos' : '') + '</button>';
   h += '<div class="mz-filtros' + (S.verFiltros ? ' on' : '') + '">' + barraMatriz() + '</div>';
   const foco = S.f.form || (S.f.rama && S.f.rama !== 'Transversal' ? S.f.rama : '');
@@ -191,23 +226,24 @@ function vMatriz() {
   h += '<p class="cuenta">' + (filtrando ? filas.length + (filas.length === 1 ? ' idea' : ' ideas') : '') +
     (foco ? (S.t.solo ? ' solo de ' + esc(foco) + ' · <button class="linkbtn" data-solo="0">ver también las transversales que le sirven</button>'
                       : ' que sirven para ' + esc(foco) + ' · <button class="linkbtn" data-solo="1">ver solo las de ' + esc(foco) + '</button>') : '') +
-    (filtrando ? ' · ' : '') + '<button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por tema') + '</button>' +
-    (S.agrupar ? ' · <button class="linkbtn" id="mz-abrirtodos">' + (TEMAS.every(temaAbierto) ? 'Cerrar todos los temas' : 'Abrir todos') + '</button>' : '') + '</p>';
+    (filtrando ? ' · ' : '') + '<button class="linkbtn" id="mz-agrupar">' + (S.agrupar ? 'Ver en una sola lista' : 'Agrupar por objetivo') + '</button>' +
+    (S.agrupar ? ' · <button class="linkbtn" id="mz-abrirtodos">' + (OBJ_ORDEN.every(temaAbierto) ? 'Cerrar todos' : 'Abrir todos') + '</button>' : '') + '</p>';
   if (!filas.length) return h + '<div class="vacio"><b>Nada con esos filtros</b>Prueba a quitar alguno, o cambia el estado a «Todas».</div>';
   const tabla = rows => '<div class="tablawrap"><table class="matriz mz-tabla"><tbody>' +
     rows.map(filaMatriz).join('') + '</tbody></table></div>';
   if (!S.agrupar) return h + tabla(filas);
-  const grupos = {}; filas.forEach(it => (grupos[it.tema] = grupos[it.tema] || []).push(it));
-  return h + TEMAS.filter(t => grupos[t]).map(t => {
+  const grupos = {}; filas.forEach(it => { const k = objDe(it); (grupos[k] = grupos[k] || []).push(it); });
+  return h + OBJ_ORDEN.filter(t => grupos[t]).map(t => {
+    const O = OBJETIVOS[t];
     // el progreso cuenta lo que entra en los filtros de alcance, sea cual sea su estado
-    const rows = grupos[t], todas = IDEAS.filter(i => i.tema === t && pasaMatriz(i, 'estado')), hechas_ = todas.filter(i => estadoIdea(i) === 'hecha').length;
+    const rows = grupos[t], todas = IDEAS.filter(i => objDe(i) === t && pasaMatriz(i, 'estado')), hechas_ = todas.filter(i => estadoIdea(i) === 'hecha').length;
     const porHacer = rows.filter(i => estadoIdea(i) === 'porhacer').length, enProd = rows.filter(i => estadoIdea(i) === 'produccion').length;
     const abierto = temaAbierto(t), pct = todas.length ? 100 * hechas_ / todas.length : 0;
     const nSel = rows.filter(i => SELEC.has(i.id)).length;
     return '<section class="mz-grupo' + (abierto ? ' abierto' : '') + '"><header>' +
       '<button class="mz-plegar" data-tema-plegar="' + esc(t) + '" aria-expanded="' + abierto + '">' +
       '<span class="mz-flecha" aria-hidden="true">' + (abierto ? '▾' : '▸') + '</span>' +
-      '<span class="mz-tema-txt"><h3>' + esc(t) + '</h3>' + (() => { const x = [];
+      '<span class="mz-tema-txt"><h3>' + esc(O.nombre) + pushPuntos(O.push) + '</h3>' + (() => { const x = [O.pista + ' · CTA: «' + O.cta + '»'];
         if (rows.length !== todas.length) x.push(rows.length + (rows.length === 1 ? ' coincide' : ' coinciden'));
         if (enProd) x.push('<b class="p">' + enProd + ' en producción</b>');
         if (nSel) x.push('<b class="s">' + nSel + (nSel === 1 ? ' seleccionada' : ' seleccionadas') + '</b>');
@@ -236,7 +272,9 @@ function pintarSeleccion() {
 function abrirProducir(ids) {
   ids = ids.filter(id => IMAP[id] && estadoIdea(IMAP[id]) === 'porhacer');
   if (!ids.length) { toast('Esas ideas ya están en Producir o hechas'); return; }
-  EST_PROD = {ids: ids};
+  const objs = Array.from(new Set(ids.map(id => objDe(IMAP[id]))));
+  const obj = objs.length === 1 ? objs[0] : '';   // '' = cada una con el suyo
+  EST_PROD = {ids: ids, obj: obj, cta: obj ? OBJETIVOS[obj].cta : ''};
   pintarProducir();
 }
 let EST_PROD = null;
@@ -254,8 +292,14 @@ function pintarProducir() {
           '<span><small>Ya hecho' + (hh.fecha ? ' · ' + esc(fCorta(hh.fecha)) : '') + '</small>' + esc(hh.titulo) + '</span></div>').join('') +
         '<button class="btn mini" data-usar-hecho="' + x.it.id + '" data-clave="' + esc(x.hp[0].clave) + '">Usar el hecho</button></div>').join('') + '</div>';
   }
+  const mixto = new Set(ids.map(id => objDe(IMAP[id]))).size > 1;
+  h += '<h4 class="mz-sub">Objetivo</h4><div class="est-opciones mz-objs">' +
+    (mixto ? '<button class="est-op" data-prod-obj="" aria-pressed="' + !EST_PROD.obj + '">Cada una el suyo</button>' : '') +
+    OBJ_ORDEN.map(k => '<button class="est-op" data-prod-obj="' + k + '" aria-pressed="' + (EST_PROD.obj === k) + '">' + esc(OBJETIVOS[k].nombre) + pushPuntos(OBJETIVOS[k].push) + '</button>').join('') + '</div>';
+  h += EST_PROD.obj ? '<label class="mz-cta">CTA del cierre<input type="text" id="mz-prod-cta" value="' + esc(EST_PROD.cta) + '"></label>'
+    : '<p class="est-pista">Cada carrusel usa el objetivo y el CTA de su idea.</p>';
   h += '<h4 class="mz-sub">Plantilla</h4><div class="mz-plantillas">' + EST_PLANTILLAS.map(p => {
-      const v = previa('prod-' + p.id, p.id, EST.color, primera.titular, primera.tema);
+      const v = previa('prod-' + p.id, p.id, EST.color, primera.titular, primera.alcTxt);
       return '<button class="mz-plantilla" data-prod-pl="' + p.id + '" aria-pressed="' + (EST.plantilla === p.id) + '">' + mini(v, 0) +
         '<b>' + esc(p.nombre) + '</b><small>' + esc(p.pista) + '</small></button>'; }).join('') + '</div>';
   h += '<h4 class="mz-sub">Color</h4><div class="est-opciones">' + EST_COLORES.map(c => '<button class="est-op" data-prod-co="' + c.id + '" aria-pressed="' + (EST.color === c.id) + '">' +
@@ -266,8 +310,10 @@ function pintarProducir() {
   $('#onb').hidden = false; $('#onb').innerHTML = h; pintarMinis($('#onb'));
 }
 function confirmarProducir() {
-  const ids = EST_PROD.ids; EST_PROD = null;
-  const n = mandarAProducir(ids);
+  const ids = EST_PROD.ids, EST_PROD_OBJ = EST_PROD.obj; EST_PROD = null;
+  const i = $('#mz-prod-cta'); const cta = i ? i.value.trim() : '';
+  const n = mandarAProducir(ids, id => { const o = EST_PROD_OBJ || objDe(IMAP[id]);
+    return {objetivo: o, cta: EST_PROD_OBJ ? (cta || OBJETIVOS[o].cta) : OBJETIVOS[o].cta}; });
   ids.forEach(id => SELEC.delete(id));
   cerrarPanel(); S.sel = null; $('#velo').classList.remove('on'); $('#drawer').classList.remove('on');
   S.v = 'producir'; render();
@@ -291,7 +337,7 @@ function vTodoHecho() {
     const c = x.carrusel, it = x.idea ? IMAP[x.idea] : null;
     return '<article class="est-tarjeta">' + (c ? mini(c, 0) : '<div class="est-mini"><span class="est-vacia">' + (x.url ? 'En Drive' : 'Añadido a mano') + '</span></div>') +
       '<div class="est-tcuerpo"><h4>' + esc(x.titulo || '(sin título)') + '</h4>' +
-      '<div class="est-tmeta">' + (it ? chipAlcance(it) + '<span>' + esc(it.tema) + '</span>' : '<span class="chip temp">sin idea</span>') +
+      '<div class="est-tmeta">' + (it ? chipAlcance(it) + '<span>' + esc(OBJETIVOS[objDe(it)].nombre) + '</span>' : '<span class="chip temp">sin idea</span>') +
         (x.fecha ? '<span>' + esc(fCorta(x.fecha)) + '</span>' : '') + '</div>' +
       '<div class="est-tpie">' +
         (c ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button><button class="btn" data-est-descargar="' + c.id + '">Descargar</button>' : '') +
@@ -312,7 +358,7 @@ function abrirEnlazar(clave, q) {
   const toks = norm(q || '').split(/\s+/).filter(t => t.length > 1);
   const busca = toks.length ? IDEAS.filter(it => toks.every(t => it.buscar.indexOf(t) >= 0)).slice(0, 12) : [];
   const item = it => '<li><button class="mz-elegir" data-enlazar-a="' + it.id + '" data-clave="' + esc(clave) + '">' +
-    '<b>' + esc(it.titular) + '</b><small>' + esc(it.tema) + ' · ' + esc(it.alcTxt) + ' · ' + esc(ESTADOS_IDEA[estadoIdea(it)]) + '</small></button></li>';
+    '<b>' + esc(it.titular) + '</b><small>' + esc(OBJETIVOS[objDe(it)].nombre) + ' · ' + esc(it.alcTxt) + ' · ' + esc(ESTADOS_IDEA[estadoIdea(it)]) + '</small></button></li>';
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja" role="dialog" aria-modal="true" aria-label="Unir a una idea">' +
     '<header><k>Unir a una idea de la matriz</k><h2>' + esc(x.titulo) + '</h2></header><div class="cuerpo">' +
@@ -340,7 +386,9 @@ pintarFicha = function () {
   const niv = it.nivel ? (NIVEL[it.nivel] || it.nivel) : '';
   const extra = it.alcTipo === 'formacion' ? 'Rama ' + it.ramaColor + (niv ? ' · ' + niv : '') : it.alcTipo === 'transversal' ? '' : niv;
   $('#dhead').innerHTML = '<div class="drow">' + chipAlcance(it) + (extra ? '<span class="mz-nivel">' + esc(extra) + '</span>' : '') +
-    '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>';
+    '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div><h2>' + esc(it.titular) + '</h2>' +
+    '<div class="mz-fobj" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k => '<button data-obj-idea="' + k + '" aria-pressed="' + (objDe(it) === k) + '">' +
+      esc(OBJETIVOS[k].nombre) + '</button>').join('') + '</div>';
   let b = '';
   if (c && c.slides && c.slides.length)
     b += '<div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div>';
@@ -367,8 +415,8 @@ PARECIDOS_PARA_PROMPT = function (c) {
 
 /* ---------- enganches ---------- */
 const _mandarMz = mandarAProducir;
-mandarAProducir = function (ids) {
-  const n = _mandarMz(ids);
+mandarAProducir = function (ids, extra) {
+  const n = _mandarMz(ids, extra);
   if (ids.length === 1) { const it = IMAP[ids[0]], hp = it ? hechosParecidos(it) : [];
     if (n && hp.length) setTimeout(() => toast('Ojo: se parece a «' + hp[0].titulo + '», ya hecho. Claude buscará otro ángulo'), 2700); }
   return n;
@@ -390,13 +438,18 @@ document.addEventListener('click', e => {
   const t = e.target;
   const pl = t.closest('[data-tema-plegar]');
   if (pl) { const k = pl.dataset.temaPlegar; S.abiertos[k] = !temaAbierto(k); render(); return; }
-  if (t.id === 'mz-abrirtodos') { const v = !TEMAS.every(temaAbierto); TEMAS.forEach(k => S.abiertos[k] = v); render(); return; }
+  if (t.id === 'mz-abrirtodos') { const v = !OBJ_ORDEN.every(temaAbierto); OBJ_ORDEN.forEach(k => S.abiertos[k] = v); render(); return; }
   const en = t.closest('[data-enlazar]'); if (en) { e.stopImmediatePropagation(); abrirEnlazar(en.dataset.enlazar); return; }
   const ea = t.closest('[data-enlazar-a]'); if (ea) { e.stopImmediatePropagation(); enlazar(ea.dataset.clave, ea.dataset.enlazarA); return; }
   const pd = t.closest('[data-producir]');
   if (pd && !t.closest('#onb')) { e.stopImmediatePropagation(); abrirProducir([pd.dataset.producir]); return; }
   if (t.id === 'mz-producir') { abrirProducir([...SELEC]); return; }
   if (t.id === 'mz-deseleccionar') { SELEC.clear(); pintarSeleccion(); document.querySelectorAll('[data-selec-tema]').forEach(x => x.checked = false); return; }
+  if (EST_PROD && $('#mz-prod-cta')) EST_PROD.cta = $('#mz-prod-cta').value;   // no perder lo escrito al repintar
+  const pob = t.closest('[data-prod-obj]');
+  if (pob) { EST_PROD.obj = pob.dataset.prodObj; EST_PROD.cta = EST_PROD.obj ? OBJETIVOS[EST_PROD.obj].cta : ''; pintarProducir(); return; }
+  const oid = t.closest('[data-obj-idea]');
+  if (oid && S.sel) { cambiarObjetivo(S.sel, oid.dataset.objIdea); pintarFicha(); render(); toast('Movida a ' + OBJETIVOS[oid.dataset.objIdea].nombre); return; }
   const ppl = t.closest('[data-prod-pl]'); if (ppl) { EST.plantilla = ppl.dataset.prodPl; guardarEstilo(); pintarProducir(); return; }
   const pco = t.closest('[data-prod-co]'); if (pco) { EST.color = pco.dataset.prodCo; guardarEstilo(); pintarProducir(); return; }
   if (t.id === 'mz-prod-ok') { e.stopImmediatePropagation(); confirmarProducir(); return; }
@@ -406,11 +459,11 @@ document.addEventListener('click', e => {
     if (!EST_PROD.ids.length) { EST_PROD = null; cerrarPanel(); render(); } else pintarProducir(); return; }
   if (t.id === 'mz-verfiltros') { S.verFiltros = !S.verFiltros; render(); return; }
   if (t.id === 'mz-agrupar') { S.agrupar = !S.agrupar; render(); return; }
-  if (t.id === 'mz-limpiar') { e.stopImmediatePropagation(); S.f = {rama: '', form: '', cif: '', tema: '', estado: ''}; S.t.solo = false; S.q = ''; render(); return; }
+  if (t.id === 'mz-limpiar') { e.stopImmediatePropagation(); S.f = {rama: '', form: '', cif: '', tema: '', estado: '', enf: ''}; S.t.solo = false; S.q = ''; render(); return; }
 }, true);
 document.addEventListener('change', e => {
   const t = e.target;
-  if (t.dataset && (t.dataset.dim === 'tema' || t.dataset.dim === 'estado')) { e.stopImmediatePropagation(); S.f[t.dataset.dim] = t.value; render(); }
+  if (t.dataset && (t.dataset.dim === 'tema' || t.dataset.dim === 'estado' || t.dataset.dim === 'enf')) { e.stopImmediatePropagation(); S.f[t.dataset.dim] = t.value; render(); }
 }, true);
 
 /* usar un hecho parecido para otra idea: se marca la idea como hecha y enlazada a ese carrusel */
@@ -422,7 +475,7 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset && t.dataset.selec) { if (t.checked) SELEC.add(t.dataset.selec); else SELEC.delete(t.dataset.selec); pintarSeleccion(); return; }
   if (t.dataset && t.dataset.selecTema) {
-    IDEAS.filter(it => it.tema === t.dataset.selecTema && pasaMatriz(it) && estadoIdea(it) === 'porhacer')
+    IDEAS.filter(it => objDe(it) === t.dataset.selecTema && pasaMatriz(it) && estadoIdea(it) === 'porhacer')
       .forEach(it => { if (t.checked) SELEC.add(it.id); else SELEC.delete(it.id); });
     pintarSeleccion(); }
 });
