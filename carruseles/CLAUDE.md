@@ -117,7 +117,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   cada una es un doc `fotos/<assetId>` en el db con su ficha (desc, rama, personas, tono, orientación, etiquetas) que Claude rellena al subirla
   (`sample` con imagen) y Sandra corrige («✏️ Editar ficha») o borra (🗑, con confirmación; borra el asset y el doc). Las 11 de serie no se borran:
   se ocultan (`fotos/base-<clave>` con `oculta: true`). `FOTOS` se rehace en sitio con las no ocultas: las usan Producción, el editor y el prompt.
-  Filtros = buscador + 4 desplegables (rama, personas, tono, orientación) en una línea, nada de filas de chips. Galería tipo Pinterest (CSS columns, cada foto con su alto). Cada tarjeta: ✏️ Editar ficha · ⬇ Descargar (capacidad downloads) · 🗑. Publicar con capabilities {db, downloads, sample, assets}.
+  Filtros = buscador + 4 desplegables (rama, personas, tono, orientación) en una línea, nada de filas de chips. Galería tipo Pinterest (CSS columns, cada foto con su alto). Cada tarjeta: ✏️ Editar ficha · ⬇ Descargar (capacidad downloads) · 🗑. Pulsar la foto abre el visor a pantalla completa (× cierra, ‹ › pasan dentro de lo filtrado, teclado ← → Esc, deslizar en móvil). Columnas repartidas en orden de lectura (`colsGaleria`). Publicar con capabilities {db, downloads, sample, assets}.
 - Control de calidad (estudio.js, `avisosTexto` + `medir`): errores = texto que no cabe, palabras prohibidas,
   titular en mayúsculas, dato sin cifra o sin fuente; avisos = emojis, titular largo o sin resaltado, cifras fuera
   de la slide de dato, falta el texto del post. Con errores, «Marcar hecho» pide un segundo clic.

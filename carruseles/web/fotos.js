@@ -134,6 +134,47 @@ async function bajarFoto(id, btn) {
   } catch (e) { if (!(e && e.code === 'declined')) toast('No he podido descargarla. Prueba otra vez'); }
   finally { if (btn) btn.disabled = false; }
 }
+/* visor: la foto en grande, × para cerrar, flechas para pasar (dentro de lo filtrado), ← → Esc y deslizar en móvil */
+function colsGaleria() { const w = Math.min(window.innerWidth, 1680) - 48; return window.innerWidth <= 720 ? 2 : Math.max(2, Math.min(5, Math.floor(w / 270))); }
+let FT_COLS = 0;
+window.addEventListener('resize', () => { if (S.v !== 'fotos') return; const n = colsGaleria(); if (n !== FT_COLS) { FT_COLS = n; render(); } });
+function fotosVisibles() { return fotosCatalogo().filter(pasaFoto); }
+function abrirVisor(id) { FT.visor = id; pintarVisor(); }
+function cerrarVisor() { FT.visor = ''; const v = document.getElementById('ft-visor'); if (v) v.remove(); document.body.style.overflow = ''; }
+function pasarVisor(d) {
+  const l = fotosVisibles(); if (!l.length) return cerrarVisor();
+  const i = l.findIndex(f => f.id === FT.visor);
+  FT.visor = l[((i < 0 ? 0 : i) + d + l.length) % l.length].id; pintarVisor();
+}
+function pintarVisor() {
+  const l = fotosVisibles(), i = l.findIndex(f => f.id === FT.visor); if (i < 0) return cerrarVisor();
+  const f = l[i];
+  let v = document.getElementById('ft-visor');
+  if (!v) { v = document.createElement('div'); v.id = 'ft-visor'; v.className = 'ft-visor'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-modal', 'true'); document.body.appendChild(v); }
+  document.body.style.overflow = 'hidden';
+  v.setAttribute('aria-label', f.desc);
+  v.innerHTML = '<button class="ft-v-x" data-ft-vx="1" aria-label="Cerrar">×</button>' +
+    (l.length > 1 ? '<button class="ft-v-flecha ant" data-ft-vpasa="-1" aria-label="Anterior">‹</button><button class="ft-v-flecha sig" data-ft-vpasa="1" aria-label="Siguiente">›</button>' : '') +
+    '<figure class="ft-v-fig"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '">' +
+    '<figcaption><span class="ft-v-n">' + (i + 1) + ' / ' + l.length + '</span><span class="ft-v-desc">' + esc(f.desc) + '</span>' +
+    '<button class="btn ft-v-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button></figcaption></figure>';
+  const sig = l[(i + 1) % l.length]; if (sig) { const im = new Image(); im.src = sig.ruta; }
+}
+document.addEventListener('keydown', e => {
+  if (FT.visor) {
+    if (e.key === 'Escape') { cerrarVisor(); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { pasarVisor(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { pasarVisor(-1); e.preventDefault(); }
+    return;
+  }
+  const t = e.target; if ((e.key === 'Enter' || e.key === ' ') && t.dataset && t.dataset.ftVer) { abrirVisor(t.dataset.ftVer); e.preventDefault(); }
+});
+let FT_TOQUE = null;
+document.addEventListener('touchstart', e => { if (FT.visor && e.touches.length === 1) FT_TOQUE = e.touches[0].clientX; }, {passive: true});
+document.addEventListener('touchend', e => {
+  if (!FT.visor || FT_TOQUE == null) return; const dx = e.changedTouches[0].clientX - FT_TOQUE; FT_TOQUE = null;
+  if (Math.abs(dx) > 50) pasarVisor(dx < 0 ? 1 : -1);
+}, {passive: true});
 function pasaFoto(f) {
   if (f.oculta && !FT.verOcultas) return false;
   if (FT.verOcultas && !f.oculta) return false;
@@ -157,7 +198,7 @@ function tarjetaFoto(f) {
       '<button class="btn" data-ft-no="1">No</button><button class="btn ft-si" data-ft-si="' + esc(f.id) + '">' + (f.base ? 'Ocultar' : 'Borrar') + '</button></div>'
     : '<div class="ft-acc">' + (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Volver a usar</button>' :
       '<button class="btn" data-ft-editar="' + esc(f.id) + '">✏️ Editar ficha</button><button class="btn ft-ico" data-ft-bajar="' + esc(f.id) + '" aria-label="Descargar foto" title="Descargar">⬇</button><button class="btn ft-borra ft-ico" data-ft-borrar="' + esc(f.id) + '" aria-label="' + (f.base ? 'Ocultar' : 'Borrar') + ' foto">🗑</button>') + '</div>';
-  return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '"><div class="ft-img"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy">' +
+  return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '"><div class="ft-img" data-ft-ver="' + esc(f.id) + '" role="button" tabindex="0" aria-label="Ver grande"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy">' +
     (f.base ? '<span class="ft-serie">De serie</span>' : '') + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + '</div>' +
     '<figcaption><p class="ft-desc">' + esc(f.desc) + '</p><div class="ft-tags">' +
     (f.rama ? '<span class="ft-tag">' + esc(f.rama) + '</span>' : '') +
@@ -180,7 +221,10 @@ function vFotos() {
     desplegableFiltro('orientacion', 'Vertical u horizontal', FOTO_ORIENT, FOTO_OR_EMO) +
     (FT.f.rama || FT.f.personas || FT.f.tono || FT.f.orientacion || FT.f.q ? '<button class="ft-limpiar" id="ft-limpiar" aria-label="Quitar filtros" title="Quitar filtros">×</button>' : '') + '</div></div>' +
     (ocultas ? '<label class="mz-todas ft-ocultas"><input type="checkbox" id="ft-verocultas"' + (FT.verOcultas ? ' checked' : '') + '> Ver ocultas (' + ocultas + ')</label>' : '') + '</div>';
-  h += vis.length ? '<div class="ft-grid">' + vis.map(tarjetaFoto).join('') + '</div>' : '<div class="vacio"><b>Ninguna foto con esos filtros</b>Quita algún filtro o sube fotos nuevas.</div>';
+  // galería tipo Pinterest: columnas repartidas en orden de lectura (1ª foto col 1, 2ª col 2…), así «siguiente» en el visor va de izquierda a derecha
+  const nc = colsGaleria(), cols = Array.from({length: nc}, () => []);
+  vis.forEach((f, i) => cols[i % nc].push(tarjetaFoto(f)));
+  h += vis.length ? '<div class="ft-grid" style="--cols:' + nc + '">' + cols.map(c => '<div class="ft-col">' + c.join('') + '</div>').join('') + '</div>' : '<div class="vacio"><b>Ninguna foto con esos filtros</b>Quita algún filtro o sube fotos nuevas.</div>';
   return h;
 }
 function abrirFichaFoto(id) {
@@ -204,13 +248,17 @@ async function guardarFichaFoto() {
 
 const _renderFt = render;
 render = function () {
-  if (S.v === 'fotos') { $('#canvas').innerHTML = vFotos(); marcarPestana(); return; }
+  if (S.v !== 'fotos' && FT.visor) cerrarVisor();
+  if (S.v === 'fotos') { if (FT.visor) pintarVisor(); $('#canvas').innerHTML = vFotos(); marcarPestana(); return; }
   _renderFt();
 };
 const _refrescarEstudioFt = refrescarEstudio;
 refrescarEstudio = function () { if (S.v === 'fotos') { if (!EST.abierto) render(); return; } _refrescarEstudioFt(); };
 document.addEventListener('click', e => {
   const t = e.target;
+  const ver = t.closest('[data-ft-ver]'); if (ver) { abrirVisor(ver.dataset.ftVer); return; }
+  if (t.closest('[data-ft-vx]') || t.id === 'ft-visor' || t.classList.contains('ft-v-fig')) { cerrarVisor(); return; }
+  const vp = t.closest('[data-ft-vpasa]'); if (vp) { pasarVisor(+vp.dataset.ftVpasa); return; }
   if (t.id === 'ft-limpiar') { FT.f = {rama: '', personas: '', tono: '', orientacion: '', q: ''}; render(); return; }
   const dl = t.closest('[data-ft-bajar]'); if (dl) { bajarFoto(dl.dataset.ftBajar, dl); return; }
   const bo = t.closest('[data-ft-borrar]'); if (bo) { FT.borrar = bo.dataset.ftBorrar; render(); return; }
