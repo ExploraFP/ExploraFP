@@ -673,3 +673,21 @@
 .mz-estlinea .mz-mini{width:28px;height:35px;flex:none;overflow:hidden;border-radius:5px}
 .mz-estlinea .mz-hecho span:last-child{display:inline-flex;gap:6px;align-items:baseline;font-size:12.5px}
 .mz-estlinea small{display:inline !important;margin:0 !important}
+/* «Seleccionar todas» a la izquierda de las vistas */
+.mz-vistafila{display:flex;align-items:center;gap:14px;margin:0 0 14px}
+.mz-vistafila .mz-vistas{margin:0;flex:1;min-width:0}
+.mz-todas-izq{flex:none;padding:8px 14px 8px 12px !important;border:1.5px solid var(--line2);border-radius:999px;background:var(--surface);font-weight:600;font-size:14px !important;color:var(--ink) !important;margin:0 !important}
+.mz-todas-izq.off{opacity:.5}
+.mz-vistabar{justify-content:flex-end}
+@media (max-width:720px){ .mz-vistafila{gap:8px} .mz-vistafila .mz-vistas{margin:0 -16px 0 0;padding:0 16px 4px 0} .mz-todas-izq{padding:7px 10px !important;font-size:13px !important} }
+/* columna del carrusel: fija detrás de la idea; lo que sobra de ancho, al final (c-hueco) */
+.mz-tabla td.c-alc{width:170px}
+.mz-tabla td.c-obj{width:140px}
+.mz-tabla td.c-idea{width:520px}
+.mz-tabla td.c-est{width:160px;text-align:left;padding-left:8px;padding-right:8px}
+.mz-tabla td.c-hueco{width:auto;padding:0}
+.mz-tabla td.c-est .mz-hecho{display:inline-flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;max-width:100%;margin:0}
+.mz-tabla td.c-est .mz-mini{width:30px;height:38px;flex:none;overflow:hidden;border-radius:5px}
+.mz-tabla td.c-est .mz-hecho span:last-child{font-size:12.5px;white-space:nowrap}
+@media (max-width:1180px){ .mz-tabla td.c-idea{width:auto} .mz-tabla td.c-hueco{display:none} .mz-tabla td.c-alc{width:150px} .mz-tabla td.c-obj{width:130px} }
+@media (max-width:720px){ .mz-tabla td.c-est:empty{display:none} .mz-tabla td.c-est{width:100% !important;padding:8px 14px 0} }

@@ -312,8 +312,9 @@ function filaMatriz(it) {
       (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') + (it.origen === 'claude' ? ' <span class="mz-tend mz-delmes">🆕 ' + esc(nombreMesClave(it.mes)) + '</span>' : '') +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
       (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') +
-      // el carrusel hecho / en producción va debajo de su idea (antes era una columna suelta a la derecha)
-      (e !== 'porhacer' ? '<div class="mz-estlinea">' + celdaEstado(it) + '</div>' : '') + '</td></tr>';
+'</td>' +
+    // columna del carrusel justo después de la idea (ni cortada ni pegada al borde); el hueco sobrante va al final
+    '<td class="c-est">' + celdaEstado(it) + '</td><td class="c-hueco" aria-hidden="true"></td></tr>';
 }
 // Los temas empiezan cerrados; se abren solos al buscar o filtrar por tema.
 function temaAbierto(t) {
@@ -342,14 +343,14 @@ function vMatrizDentro() {
   const cuentaObj = {}, porHacerF = filas.filter(it => estadoIdea(it) === 'porhacer');
   porHacerF.forEach(it => { const k = objDe(it); cuentaObj[k] = (cuentaObj[k] || 0) + 1; });
   const vistaBtn = (k, txt, n) => '<button class="mz-vista" data-vista="' + k + '" aria-pressed="' + ((S.vista || '') === k) + '">' + txt + ' <span title="' + n + ' por hacer">' + n + '</span></button>';
-  h += '<div class="mz-vistas" role="tablist" aria-label="Vistas por objetivo">' + vistaBtn('', 'Todas', porHacerF.length) +
-    OBJ_ORDEN.map(k => vistaBtn(k, esc(objEt(k)), cuentaObj[k] || 0)).join('') + '</div>';
   const enVista = S.vista ? filas.filter(it => objDe(it) === S.vista) : filas;
   const porHacerV = enVista.filter(i => estadoIdea(i) === 'porhacer');
-  // selección a la izquierda (a la altura de las casillas); CTA y cifras a la derecha
-  h += '<div class="mz-vistabar">' +
-    (porHacerV.length ? '<label class="mz-todas"><input type="checkbox" data-selec-vista="1"' + (porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + '> Seleccionar todas</label>' : '') +
-    (S.vista ? '<div class="mz-vbder"><span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span></div>' : '') + '</div>';
+  // «Seleccionar todas» a la izquierda de las vistas (pedido de Sandra), a la altura de las casillas de la tabla
+  h += '<div class="mz-vistafila"><label class="mz-todas mz-todas-izq' + (porHacerV.length ? '' : ' off') + '" title="Seleccionar todas las de esta vista"><input type="checkbox" data-selec-vista="1"' +
+      (porHacerV.length && porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + (porHacerV.length ? '' : ' disabled') + '> Seleccionar</label>' +
+    '<div class="mz-vistas" role="tablist" aria-label="Vistas por objetivo">' + vistaBtn('', 'Todas', porHacerF.length) +
+    OBJ_ORDEN.map(k => vistaBtn(k, esc(objEt(k)), cuentaObj[k] || 0)).join('') + '</div></div>';
+  if (S.vista) h += '<div class="mz-vistabar"><div class="mz-vbder"><span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span></div></div>';
   if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra vista, otra formación o quita la búsqueda.</div>';
   const lim = S.limite || 60, vis = enVista.slice(0, lim);
   h += '<div class="tablawrap mz-tablavista"><form class="mz-filanueva mz-nueva" id="mz-nueva" autocomplete="off"><span class="mz-nueva-ico" aria-hidden="true">✏️</span>' +
