@@ -375,7 +375,7 @@ function chipQC(c) {
 function refrescarQCVisible(id) {
   document.querySelectorAll('[data-qc-chip="' + id + '"]').forEach(el => { const c = EST.lista[id]; if (c) el.innerHTML = chipQC(c); });
   if (EST.abierto === id) pintarQCPanel();
-  const h = document.getElementById('est-lote-hueco'); if (h) h.innerHTML = botonLote();
+  // (Sandra no quiere el botón «Descargar el listo / los N listos»)
 }
 function pintarQCPanel() {
   const c = EST.lista[EST.abierto], caja = document.getElementById('est-qc'); if (!c || !caja) return;
@@ -449,7 +449,6 @@ function vProducir() {
     [[lista.length, 'en la mesa'], [sinGenerar, 'sin generar'], [revisar, 'para revisar', revisar ? 'lima' : '']]);
   h += '<div class="est-acciones">' +
     (sinGenerar ? '<button class="btn pri" id="est-generar-todas"' + (EST.cola ? ' disabled' : '') + '>Generar ' + (sinGenerar === 1 ? 'el que falta' : 'los ' + sinGenerar + ' que faltan') + '</button>' : '') +
-    '<span id="est-lote-hueco">' + botonLote() + '</span>' +
     '<span class="est-progreso">' + esc(EST.progreso || '') + '</span>' +
     '' +
     (!EST.sample && EST.conectado ? '<span class="est-pista">Generar con Claude solo funciona abriendo la herramienta en claude.ai.</span>' : '') +

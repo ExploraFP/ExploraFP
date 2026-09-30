@@ -16,10 +16,9 @@ function vInicio() {
   h += sugerencias() || '';
   // 2. en producción ahora
   const pend = carruselesDe('pendientes');
-  const listos = typeof listosLote === 'function' ? listosLote().length : 0;
   h += bloqueInicio('En producción ahora',
     pend.length ? '<button class="in-ver" data-ir="producir">Ver todo en Producción (' + pend.length + ') →</button>' : '',
-    pend.length ? '<div class="in-acc">' + (listos ? botonLote() : '') + '</div><div class="est-rejilla in-prod">' + pend.slice(0, 4).map(tarjeta).join('') + '</div>'
+    pend.length ? '<div class="est-rejilla in-prod">' + pend.slice(0, 4).map(tarjeta).join('') + '</div>'
       : '<p class="in-vacio">No hay nada en producción. Elige una sugerencia de arriba o busca en la <button class="in-link" data-ir="ideas">Matriz</button>.</p>');
   // 3. lo nuevo: ideas del mes que prepara Claude + las que has anotado tú y aún no has producido
   const mk = mesClave();

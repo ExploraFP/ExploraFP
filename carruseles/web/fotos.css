@@ -219,3 +219,12 @@
 @media (max-width:900px){ .ft-v-fig>img{max-height:52vh} .ft-v-par button{width:54px;height:54px} .ft-v-par>span{display:none} }
 #ir-home{cursor:pointer}
 #ir-home:focus-visible{outline:2px solid var(--lima);outline-offset:4px;border-radius:8px}
+/* el sombreado lima abarca toda la ficha (foto + línea de usos); el degradado oscuro solo sobre la foto */
+.ft-card::after{bottom:0 !important;border-radius:14px !important;background:none !important}
+.ft-img{position:relative;overflow:hidden}
+.ft-img::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .2s;
+  background:linear-gradient(180deg,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 32%,rgba(0,0,0,0) 62%,rgba(0,0,0,.35) 100%)}
+.ft-card:hover .ft-img::after,.ft-card:focus-within .ft-img::after{opacity:1}
+.ft-card{z-index:0}
+.ft-card::after{z-index:3}
+.ft-sincat{background:#fff !important;color:#8A5A00 !important}

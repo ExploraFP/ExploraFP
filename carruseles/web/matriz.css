@@ -657,3 +657,13 @@
 .inv-busca{min-height:44px;max-width:420px;flex:1 1 280px;margin-left:auto;padding:0 12px 0 14px}
 .inv-busca input.invbusca{flex:1;min-width:0;border:0 !important;outline:0;background:none !important;box-shadow:none !important;font:inherit;font-size:15px;padding:10px 8px !important;color:var(--ink);width:auto !important;margin:0 !important}
 @media (max-width:720px){ .inv-busca{margin-left:0;max-width:none;flex-basis:100%} }
+/* añadir idea en una línea */
+.mz-nueva{display:flex;align-items:center;gap:10px;margin:0}
+.mz-nueva-ico{font-size:16px}
+.mz-nueva input{flex:1;min-width:0;border:1.5px dashed var(--limaLine);border-radius:10px;background:var(--surface);padding:10px 14px;font:inherit;font-size:15px;color:var(--ink);outline:0}
+.mz-nueva input:focus{border-style:solid;border-color:var(--brand);box-shadow:0 0 0 3px var(--limaSoft)}
+.mz-mas{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;padding:6px 2px}
+/* hechas y en producción: marca en la columna de la casilla para que todo quede alineado */
+.mz-okchk{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--okSoft);color:var(--ok);font-weight:800;font-size:13px}
+.mz-okchk.prod{background:var(--limaSoft);color:var(--brand);font-size:10px}
+@media (max-width:720px){ .mz-nueva{flex-wrap:wrap} .mz-nueva input{flex-basis:calc(100% - 30px)} .mz-nueva .btn{flex:1} }

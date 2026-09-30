@@ -304,7 +304,8 @@ function filaMatriz(it) {
   const e = estadoIdea(it), sel = SELEC.has(it.id), hp = hechosParecidos(it);
   const puede = e === 'porhacer';
   return '<tr class="mz-' + e + (sel ? ' mz-sel' : '') + (S.sel === it.id ? ' sel' : '') + '">' +
-    '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">' : '') + '</td>' +
+    '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">'
+      : e === 'hecha' ? '<span class="mz-okchk" title="Hecha">✓</span>' : '<span class="mz-okchk prod" title="En producción">●</span>') + '</td>' +
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
     (S.vista ? '' : '<td class="c-obj"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span></td>') +
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
@@ -350,7 +351,9 @@ function vMatrizDentro() {
     (S.vista ? '<div class="mz-vbder"><span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span></div>' : '') + '</div>';
   if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra vista, otra formación o quita la búsqueda.</div>';
   const lim = S.limite || 60, vis = enVista.slice(0, lim);
-  h += '<div class="tablawrap mz-tablavista"><div class="mz-filanueva"><button type="button" class="mz-idearap" id="mz-idea-rapida">✏️ Anota tu idea <small>sale aquí arriba, en la matriz</small></button></div><table class="matriz mz-tabla"><tbody>' + vis.map(filaMatriz).join('') + '</tbody></table></div>';
+  h += '<div class="tablawrap mz-tablavista"><form class="mz-filanueva mz-nueva" id="mz-nueva" autocomplete="off"><span class="mz-nueva-ico" aria-hidden="true">✏️</span>' +
+    '<input type="text" id="mz-nueva-tit" maxlength="90" placeholder="Escribe tu idea y pulsa Enter" aria-label="Nueva idea">' +
+    '<button type="submit" class="btn mini pri">Añadir</button><button type="button" class="mz-mas" id="mz-idea-rapida">Más detalles</button></form><table class="matriz mz-tabla"><tbody>' + vis.map(filaMatriz).join('') + '</tbody></table></div>';
   if (enVista.length > lim) h += '<div class="mz-vermas"><button class="btn" id="mz-vermas">Ver ' + Math.min(60, enVista.length - lim) + ' más · quedan ' + (enVista.length - lim) + '</button></div>';
   return h;
   const grupos = {}; filas.forEach(it => { const k = objDe(it); (grupos[k] = grupos[k] || []).push(it); });
@@ -452,7 +455,7 @@ function vTodoHecho() {
   if (q) lista = lista.filter(x => norm(x.titulo).indexOf(q) >= 0);
   const todos = todoHecho();
   let h = cabecera('Inventario', '',
-    [[todos.length, 'publicados', 'ok'], [todos.filter(x => !x.idea).length, 'sin idea']]);
+    [[todos.length, 'publicados', 'ok']]);
   h += '<div class="est-acciones"><button class="btn pri" id="nuevoCarrusel">+ Añadir uno ya publicado</button>' +
     (Object.values(EST.lista).some(c => c.estado === 'hecho') ? '<button class="btn" data-lote="hechos">Descargar todos los PNG</button>' : '') +
     '<div class="mz-buscabarra inv-busca"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><input type="search" id="buscar" class="invbusca" value="' + esc(S.q) + '" placeholder="Busca un carrusel publicado…" aria-label="Buscar en el inventario"></div>' +
@@ -694,6 +697,21 @@ function abrirIdeaRapida() {
     '</div><footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" id="ir-ok">Añadir a la matriz</button></footer></div>';
   setTimeout(() => { const i = $('#ir-tit'); if (i) i.focus(); }, 30);
 }
+// añadir a mano en una línea: el objetivo de la vista abierta y la formación del filtro (o Transversal)
+function guardarIdeaLinea(tit) {
+  tit = (tit || '').trim(); if (!tit) { toast('Escribe la idea'); return; }
+  const form = S.f.form || S.f.rama || '';
+  const d = {id: 'N' + Date.now().toString(36).toUpperCase(), titular: tit.charAt(0).toUpperCase() + tit.slice(1), dentro: '', gancho: '', ganchoLabel: 'Idea',
+    objetivo: S.vista || 'informativo', subtipo: '', formacion: form, funnel: 'TOFU', creada: new Date().toISOString()};
+  const it = anadirIdea(d, true);
+  if (DB) DB.doc('ideas/' + d.id).set(d).catch(() => toast('No he podido guardarla en el equipo; queda en este navegador'));
+  try { const l = JSON.parse(localStorage.getItem('explora.ideas') || '[]'); l.push(d); localStorage.setItem('explora.ideas', JSON.stringify(l)); } catch (e) {}
+  S.q = ''; render(); const i = $('#mz-nueva-tit'); if (i) i.focus();
+  toast('Idea añadida arriba · ' + objEt(it.objAuto) + (form ? ' · ' + form : '') + '. Ábrela para completarla');
+}
+document.addEventListener('submit', e => { if (e.target.id === 'mz-nueva') { e.preventDefault(); guardarIdeaLinea($('#mz-nueva-tit').value); } });
+// «/» lleva al buscador… salvo si estás escribiendo en otra caja
+document.addEventListener('keydown', e => { const t = e.target; if (e.key === '/' && t && t.id !== 'buscar' && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) e.stopImmediatePropagation(); }, true);
 function guardarIdeaRapida() {
   const tit = ($('#ir-tit').value || '').trim(); if (!tit) { toast('Escribe al menos el titular'); $('#ir-tit').focus(); return; }
   const d = {id: 'N' + Date.now().toString(36).toUpperCase(), titular: tit.charAt(0).toUpperCase() + tit.slice(1), dentro: ($('#ir-dentro').value || '').trim(),
