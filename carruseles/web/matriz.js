@@ -167,10 +167,15 @@ const MES_FRASE = {1: 'Enero: el segundo arranque del año', 2: 'Febrero: segund
   4: 'Abril: convalidaciones y becas', 5: 'Mayo: becas, trámites y admisión', 6: 'Junio: admisión, notas y decidir en verano',
   7: 'Julio: admisión y decidir en verano', 8: 'Agosto: decidir antes de septiembre', 9: 'Septiembre: el pico más alto de matriculación',
   10: 'Octubre: todavía se puede entrar', 11: 'Noviembre: comparar y pagar', 12: 'Diciembre: comparar antes del segundo arranque'};
+// «2026-10»: clave del mes (d = desplazamiento en meses). Las ideas del mes que añade Claude cada día 25 la llevan en `mes`.
+function mesClave(d) { const x = hoy(); const f = new Date(x.getFullYear(), x.getMonth() + (d || 0), 1); return f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0'); }
+function nombreMesClave(k) { const m = +String(k || '').slice(5, 7); return m ? 'Nueva de ' + MESES_NOMBRE[m - 1] : 'Nueva'; }
+const MESES_NOMBRE = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 function candidatasMes() {
-  const acts = momentosActivos().map(m => m.k);
-  const peso = it => (it.funnel === 'BOFU' ? 3 : it.funnel === 'MOFU' ? 2 : 1) + (it.momentos.indexOf(acts[0]) >= 0 ? 1 : 0);
-  return IDEAS.filter(it => estadoIdea(it) === 'porhacer' && deTemporada(it))
+  const acts = momentosActivos().map(m => m.k), mk = mesClave();
+  // las ideas nuevas de este mes van primero; luego el calendario académico
+  const peso = it => (it.mes === mk ? 10 : 0) + (it.funnel === 'BOFU' ? 3 : it.funnel === 'MOFU' ? 2 : 1) + (it.momentos.indexOf(acts[0]) >= 0 ? 1 : 0);
+  return IDEAS.filter(it => estadoIdea(it) === 'porhacer' && (deTemporada(it) || it.mes === mk))
     .sort((a, b) => peso(b) - peso(a) || a.id.localeCompare(b.id));
 }
 function tandasDeCinco() {
@@ -300,7 +305,7 @@ function filaMatriz(it) {
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
     (S.vista ? '' : '<td class="c-obj"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span></td>') +
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
-      (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') +
+      (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') + (it.origen === 'claude' ? ' <span class="mz-tend mz-delmes">🆕 ' + esc(nombreMesClave(it.mes)) + '</span>' : '') +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
       (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') + '</td>' +
     '<td class="c-est">' + celdaEstado(it) + '</td></tr>';
@@ -318,7 +323,8 @@ function vMatrizDentro() {
   if (clave !== MZ_CLAVE) { MZ_CLAVE = clave; S.abiertos = {}; }
   TOKENS = trozosBusqueda();
   // las ideas que apunta Sandra salen primero (las más nuevas arriba)
-  const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => (b.propia ? 1 : 0) - (a.propia ? 1 : 0) || (a.propia && b.propia ? b.id.localeCompare(a.id) : ordenar(a, b)));
+  const arriba = it => it.propia ? 2 : it.origen === 'claude' && it.mes >= mesClave(-1) ? 1 : 0;
+  const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => arriba(b) - arriba(a) || (arriba(a) && arriba(b) ? b.id.localeCompare(a.id) : ordenar(a, b)));
   const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
   let h = cabecera('Matriz de contenido', '',
     [[n.hecha, 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
@@ -509,7 +515,8 @@ pintarFicha = function () {
     '<h2 class="fx-tit">' + esc(tituloIdea(it)) + '</h2>' +
     '<div class="fx-form">' + chipAlcance(it) + (extra ? '<span>' + esc(extra) + '</span>' : '') + '</div>';
   // cuerpo: de qué va, objetivo + CTA, y el carrusel (o cómo quedaría la portada)
-  let b = '<section class="fx-sec"><h4>De qué va</h4><p class="fx-dentro">' + esc(it.dentro || it.gancho) + '</p></section>';
+  let b = '<section class="fx-sec"><h4>De qué va</h4><p class="fx-dentro">' + esc(it.dentro || it.gancho) + '</p>' +
+    (it.fuentes && it.fuentes.length ? '<p class="fx-fuentes">Fuentes: ' + it.fuentes.map((u, i) => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]) + '</a>').join(' · ') + '</p>' : '') + '</section>';
   b += '<div class="fx-par">' +
     '<section class="fx-caja"><h4>Objetivo</h4><div class="fx-objs" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k =>
       '<button data-obj-idea="' + k + '" aria-pressed="' + (obj === k) + '">' + esc(objEt(k)) + '</button>').join('') + '</div></section>' +
@@ -647,7 +654,8 @@ function anadirIdea(d, propia) {
     dentro: d.dentro || '', funnel: d.funnel || 'TOFU', verificar: '', eje: '', alcance: f || 'Transversal', buyer: '', blog: '', formacion: f,
     nivel: '', familia: ramaColor, rama: ramaColor, tipo: '', leads: '', google: '', situacion: '', ciclos: '', raw: {}, formacionCanon: '',
     datos: d.datos || [], datosSug: [], bloqueada: false, momentos: d.momentos || [], nueva: true, tambienEn: [], alcDetalle: '',
-    alcTipo: alcTipo, alcTxt: f || 'Transversal', ramaColor: ramaColor, subtipo: d.subtipo || '', propia: !!propia};
+    alcTipo: alcTipo, alcTxt: f || 'Transversal', ramaColor: ramaColor, subtipo: d.subtipo || '', propia: !!propia && d.origen !== 'claude',
+    origen: d.origen || '', mes: d.mes || '', fuentes: [].concat(d.fuentes || []).filter(x => /^https?:\/\//.test(x)).slice(0, 4)};
   it.buscar = norm([it.id, it.titular, it.gancho, it.dentro, f].join(' '));
   const t = (it.titular + ' ' + it.gancho + ' ' + it.dentro).toLowerCase(), r = TEMA_REGLAS.find(x => x[1].test(t));
   it.tema = r ? r[0] : 'Más dudas del ciclo';

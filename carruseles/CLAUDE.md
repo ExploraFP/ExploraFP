@@ -109,6 +109,10 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Datos: colección `carruseles` del db (un documento por carrusel: titulo, plantilla, color, slides, copy, estado,
   idea). Estados: pendiente → generando → borrador → hecho. La colección `ops` es la del banco (ideas hechas).
 - Fotos nuevas: añadir a `contenido/img/foto-*.jpg` y su descripción en `DESC` de `web/construir.mjs`.
+- Ideas del mes (tarea programada «Ideas del mes», día 25 a las 8:46 Madrid, sesión nueva): Claude investiga el mes siguiente y escribe
+  8-10 ideas en la colección `ideas` del db del artefacto con `origen: 'claude'`, `mes: 'AAAA-MM'` (el mes siguiente), `subtipo: 'tendencia'`,
+  `momentos`, `fuentes` (URLs) e id `M<AAAAMM><letra>`. Salen arriba de la matriz con la pastilla «🆕 Nueva de <mes>» y van primero en
+  Sugerencias ese mes (`candidatasMes`, peso +10). No hace falta republicar la web: las lee del db.
 - Pestaña «Fotos» (`web/fotos.js` + `web/fotos.css`): banco de fotos. Sandra sube fotos desde la web (capacidad `assets`, reducidas a 1800 px JPEG);
   cada una es un doc `fotos/<assetId>` en el db con su ficha (desc, rama, personas, tono, orientación, etiquetas) que Claude rellena al subirla
   (`sample` con imagen) y Sandra corrige («✏️ Editar ficha») o borra (🗑, con confirmación; borra el asset y el doc). Las 11 de serie no se borran:
