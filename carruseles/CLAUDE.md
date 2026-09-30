@@ -104,6 +104,8 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   (informativo/autoridad claros; viral/lead magnet persuasivos). El titular original del banco se conserva (`it.titular`) y va
   también al prompt. Ficha: titular arriba y debajo Formación · Objetivo · De qué va (`dentro`) · CTA final.
 - `motor.js`: el motor de diseño, compartido por render.js y la web → lo que se ve en la web es lo que sale en PNG.
+- Datos (`web/datos.js` + `web/datos.css`): agrupados por tema (`DATO_GRUPO`; los de confianza BAJA arriba en «No lo uses todavía»), buscador, una fila por dato con la frase citable; al abrirla, Cuidado, norma, fuente, «Copiar la frase» y las ideas que lo usan por su titular (no por código).
+- Tildes: los buscadores (`buscar`, `ft-q`, `dt-q`) no reaccionan durante la composición de la tecla muerta (´+e), solo al terminarla (`BUSCADORES` en inicio.js).
 - Inicio (`web/inicio.js` + `web/inicio.css`): pantalla con la que se entra y a la que lleva el logo (`#ir-home`, cierra ficha/visor/editor). Es la primera pestaña, «Inicio». En móvil las seis pestañas van en un menú lateral que se abre con ☰ (junto al botón del tema). Bloques: Sugerencias de contenido (se mudaron aquí; la Matriz ya no las lleva) · En producción ahora (4 tarjetas + «Ver todo en Producción») · Lo nuevo (ideas 🆕 del mes y las anotadas por Sandra, sin repetir las de Sugerencias) · Avisos (solo si hay: errores de calidad, foto en ≥3 carruseles, fotos a medio catalogar). Sin cifras de ritmo ni objetivos por semana: Sandra aún no tiene estrategia de redes.
 - `node web/construir.mjs` → `web/dist/` (HTML + fotos, logos, trazos, fuentes). Publicar con root `web/dist`,
   `files` = `web/dist/archivos.json`, capacidades `{db, downloads, sample}`.
