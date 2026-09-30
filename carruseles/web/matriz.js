@@ -455,7 +455,7 @@ function vTodoHecho() {
     [[todos.length, 'publicados', 'ok'], [todos.filter(x => !x.idea).length, 'sin idea']]);
   h += '<div class="est-acciones"><button class="btn pri" id="nuevoCarrusel">+ Añadir uno ya publicado</button>' +
     (Object.values(EST.lista).some(c => c.estado === 'hecho') ? '<button class="btn" data-lote="hechos">Descargar todos los PNG</button>' : '') +
-    '<input type="search" id="buscar" class="invbusca" value="' + esc(S.q) + '" placeholder="Buscar…" aria-label="Buscar en hechos">' +
+    '<div class="mz-buscabarra inv-busca"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><input type="search" id="buscar" class="invbusca" value="' + esc(S.q) + '" placeholder="Busca un carrusel publicado…" aria-label="Buscar en el inventario"></div>' +
     '<span class="est-progreso">' + esc(EST.progreso || '') + '</span></div>';
   if (!lista.length) return h + '<div class="vacio"><b>' + (q ? 'Nada con esa búsqueda' : 'Todavía no hay nada') + '</b>' +
     (q ? 'Prueba con otra palabra.' : 'Marca hecho un carrusel en Producción, o añade uno que ya tengas publicado.') + '</div>';
@@ -463,7 +463,7 @@ function vTodoHecho() {
     const c = x.carrusel, it = x.idea ? IMAP[x.idea] : null;
     return '<article class="est-tarjeta">' + (c ? mini(c, 0) : '<div class="est-mini"><span class="est-vacia">' + (x.url ? 'En Drive' : 'Añadido a mano') + '</span></div>') +
       '<div class="est-tcuerpo"><h4>' + esc(x.titulo || '(sin título)') + '</h4>' +
-      '<div class="est-tmeta">' + (it ? chipAlcance(it) + '<span>' + esc(objEt(objDe(it))) + '</span>' : '<span class="chip temp">sin idea</span>') +
+      '<div class="est-tmeta">' + (it ? chipAlcance(it) + '<span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span>' : '<span class="chip temp">sin idea</span>') +
         (x.fecha ? '<span>' + esc(fCorta(x.fecha)) + '</span>' : '') + '</div>' +
       '<div class="est-tpie">' +
         (c ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button><button class="btn" data-est-descargar="' + c.id + '">Descargar</button>' : '') +

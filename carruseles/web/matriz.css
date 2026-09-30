@@ -650,3 +650,10 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mz-delmes{color:#9FEBD8;background:#12352E;border-color:#23574B}}
 .fx-fuentes{margin:8px 0 0;font-size:12.5px;color:var(--ink3)}
 .fx-fuentes a{color:var(--brand);text-underline-offset:2px}
+/* auditoría: naranja de Comercio un poco más oscuro en claro (el texto de la etiqueta no llegaba a 3:1) */
+:root[data-theme="light"] .r-comercio{--c:#B0600A}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .r-comercio{--c:#B0600A}}
+/* auditoría: buscador del Inventario con el mismo estilo que los demás */
+.inv-busca{min-height:44px;max-width:420px;flex:1 1 280px;margin-left:auto;padding:0 12px 0 14px}
+.inv-busca input.invbusca{flex:1;min-width:0;border:0 !important;outline:0;background:none !important;box-shadow:none !important;font:inherit;font-size:15px;padding:10px 8px !important;color:var(--ink);width:auto !important;margin:0 !important}
+@media (max-width:720px){ .inv-busca{margin-left:0;max-width:none;flex-basis:100%} }

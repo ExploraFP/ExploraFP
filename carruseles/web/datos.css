@@ -44,3 +44,9 @@
   .dt-est{grid-area:est}.dt-flecha{grid-area:fl;justify-self:end}.dt-txt{grid-area:txt}.dt-usos{grid-area:usos}
   .dt-cuerpo{padding:0 14px 16px}
 }
+/* auditoría: «No lo uses todavía» siempre en rojo, también en oscuro */
+.dt-g-bloq h3,:root[data-theme="dark"] .dt-g-bloq h3{color:var(--danger)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .dt-g-bloq h3{color:#FF8A80}}
+:root[data-theme="dark"] .dt-g-bloq h3{color:#FF8A80}
+:root[data-theme="dark"] .dt-est.bloq{background:#B3261E;color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .dt-est.bloq{background:#B3261E;color:#fff}}
