@@ -132,7 +132,10 @@ S.f.tema = S.f.tema || ''; S.f.estado = '';   // en la matriz no se filtra por e
  S.f.enf = S.f.enf || '';
 const SELEC = new Set();
 S.agrupar = true; S.abiertos = S.abiertos || {};
+// las ideas del mes que prepara Claude el día 25 no se ven hasta que empieza ese mes (pedido de Sandra)
+const yaVisible = it => !(it.origen === 'claude' && it.mes && it.mes > mesClave());
 function pasaMatriz(it, salvo) {
+  if (!yaVisible(it)) return false;
   const f = S.f, tokens = trozosBusqueda();
   if (tokens.length && !tokens.every(t => (it.buscar + ' ' + norm(it.tema)).indexOf(t) >= 0)) return false;
   if (salvo !== 'rama' && f.rama) {
@@ -175,7 +178,7 @@ function candidatasMes() {
   const acts = momentosActivos().map(m => m.k), mk = mesClave();
   // las ideas nuevas de este mes van primero; luego el calendario académico
   const peso = it => (it.mes === mk ? 10 : 0) + (it.funnel === 'BOFU' ? 3 : it.funnel === 'MOFU' ? 2 : 1) + (it.momentos.indexOf(acts[0]) >= 0 ? 1 : 0);
-  return IDEAS.filter(it => estadoIdea(it) === 'porhacer' && (deTemporada(it) || it.mes === mk))
+  return IDEAS.filter(it => yaVisible(it) && estadoIdea(it) === 'porhacer' && (deTemporada(it) || it.mes === mk))
     .sort((a, b) => peso(b) - peso(a) || a.id.localeCompare(b.id));
 }
 function tandasDeCinco() {
@@ -325,13 +328,13 @@ function vMatrizDentro() {
   // las ideas que apunta Sandra salen primero (las más nuevas arriba)
   const arriba = it => it.propia ? 2 : it.origen === 'claude' && it.mes >= mesClave(-1) ? 1 : 0;
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => arriba(b) - arriba(a) || (arriba(a) && arriba(b) ? b.id.localeCompare(a.id) : ordenar(a, b)));
-  const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.forEach(it => n[estadoIdea(it)]++);
+  const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.filter(yaVisible).forEach(it => n[estadoIdea(it)]++);
   let h = cabecera('Matriz de contenido', '',
     [[n.hecha, 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += sugerencias();
   h += barraBusqueda();
-  const filtrando = filas.length !== IDEAS.length;
+  const filtrando = filas.length !== IDEAS.filter(yaVisible).length;
   // ---- vistas: una tabla siempre visible; arriba se elige el objetivo (y se combina con formación y búsqueda) ----
   // las cuentas de las pestañas son SOLO por hacer (cuadran con «por hacer» de la cabecera; lo hecho no suma)
   const cuentaObj = {}, porHacerF = filas.filter(it => estadoIdea(it) === 'porhacer');
@@ -479,7 +482,7 @@ function abrirEnlazar(clave, q) {
   const sug = IDEAS.map(it => ({it: it, p: parecido(hx, it._h) + (hx.size ? 0 : 0)}))
     .filter(o => o.p > 0).sort((a, b) => b.p - a.p).slice(0, 5).map(o => o.it);
   const toks = norm(q || '').split(/\s+/).filter(t => t.length > 1);
-  const busca = toks.length ? IDEAS.filter(it => toks.every(t => it.buscar.indexOf(t) >= 0)).slice(0, 12) : [];
+  const busca = toks.length ? IDEAS.filter(it => yaVisible(it) && toks.every(t => it.buscar.indexOf(t) >= 0)).slice(0, 12) : [];
   const item = it => '<li><button class="mz-elegir" data-enlazar-a="' + it.id + '" data-clave="' + esc(clave) + '">' +
     '<b>' + esc(tituloIdea(it)) + '</b><small>' + esc(objEt(objDe(it))) + ' · ' + esc(it.alcTxt) + ' · ' + esc(ESTADOS_IDEA[estadoIdea(it)]) + '</small></button></li>';
   $('#onb').hidden = false;

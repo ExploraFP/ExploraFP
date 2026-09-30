@@ -112,7 +112,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Ideas del mes (tarea programada «Ideas del mes», día 25 a las 8:46 Madrid, sesión nueva): Claude investiga el mes siguiente y escribe
   8-10 ideas en la colección `ideas` del db del artefacto con `origen: 'claude'`, `mes: 'AAAA-MM'` (el mes siguiente), `subtipo: 'tendencia'`,
   `momentos`, `fuentes` (URLs) e id `M<AAAAMM><letra>`. Salen arriba de la matriz con la pastilla «🆕 Nueva de <mes>» y van primero en
-  Sugerencias ese mes (`candidatasMes`, peso +10). No hace falta republicar la web: las lee del db.
+  Sugerencias ese mes (`candidatasMes`, peso +10). No hace falta republicar la web: las lee del db. No se ven hasta el día 1 de su mes (`yaVisible`). TCAE, SMR, DAM… = SIEMPRE el ciclo de FP, nunca la oposición que se llama igual: nada de noticias de oposiciones, plazas o exámenes (Sandra borró 3 ideas de octubre por eso). La tarea lleva ese FILTRO ESTRICTO y pide 6-8 ideas.
 - Pestaña «Imágenes» (antes «Fotos») (`web/fotos.js` + `web/fotos.css`): banco de fotos. Sandra sube fotos desde la web (capacidad `assets`, reducidas a 1800 px JPEG);
   cada una es un doc `fotos/<assetId>` en el db con su ficha (desc, rama, personas, tono, orientación, etiquetas) que Claude rellena al subirla
   (`sample` con imagen) y Sandra corrige («✏️ Editar ficha») o borra (🗑, con confirmación; borra el asset y el doc). Las 11 de serie no se borran:
