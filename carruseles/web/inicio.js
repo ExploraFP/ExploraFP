@@ -1,5 +1,5 @@
 /* ===================== Inicio: lo que importa hoy, en una pantalla =====================
-   Se abre al entrar y al pulsar el logo (sin pestaña propia: en móvil no caben seis).
+   Pestaña «Inicio» (la primera); se abre al entrar y al pulsar el logo. En móvil las pestañas van en un menú lateral (☰).
    Bloques: Sugerencias de contenido (se mudan aquí desde la Matriz) · En producción ahora · Lo nuevo · Avisos (solo si hay).
    Sin cifras de ritmo ni de objetivos por semana: Sandra aún no tiene estrategia de redes. */
 function bloqueInicio(titulo, extra, cuerpo, clase) {
@@ -63,3 +63,19 @@ document.addEventListener('click', e => {
 });
 // se entra por Inicio
 S.v = 'inicio';
+
+/* móvil: menú lateral con las pestañas */
+function menuMovil(abrir) {
+  document.body.classList.toggle('menu-abierto', abrir);
+  const b = document.getElementById('menu-movil'); if (!b) return;
+  b.setAttribute('aria-expanded', String(abrir)); b.setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú');
+  b.innerHTML = abrir ? '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>'
+    : '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+}
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest && t.closest('#menu-movil')) { menuMovil(!document.body.classList.contains('menu-abierto')); return; }
+  if (document.body.classList.contains('menu-abierto') && (t.closest('#vistas button') || t.id === 'menu-velo')) menuMovil(false);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('menu-abierto')) menuMovil(false); });
+(function () { const v = document.createElement('div'); v.id = 'menu-velo'; document.body.appendChild(v); })();

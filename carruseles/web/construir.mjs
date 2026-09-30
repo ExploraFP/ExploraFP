@@ -72,7 +72,7 @@ const motor = readFileSync(join(RAIZ, "motor.js"), "utf8").replace(/^export /gm,
 let h = readFileSync(join(WEB, "banco-base.html"), "utf8");
 const cambiar = (de, a) => { if (!h.includes(de)) throw new Error("No encuentro en el banco: " + de.slice(0, 60)); h = h.replace(de, () => a); };
 cambiar('<button data-v="ideas" aria-current="true">Ideas</button>',
-  '<button data-v="ideas" aria-current="true">Matriz</button>\n      <button data-v="producir">Producción</button>\n      <button data-v="hechos">Inventario</button>\n      <button data-v="fotos">Imágenes</button>');
+  '<button data-v="inicio" aria-current="true">Inicio</button>\n      <button data-v="ideas">Matriz</button>\n      <button data-v="producir">Producción</button>\n      <button data-v="hechos">Inventario</button>\n      <button data-v="fotos">Imágenes</button>');
 cambiar('<button data-v="inventario">Inventario</button>', '');
 // Cabecera de Datos con el mismo formato que las demás pestañas.
 cambiar(`'<p>Los 16 hechos con fuente comprobada. Si una cifra no está aquí, no sale en un carrusel.</p></div></div>';`,
@@ -98,6 +98,8 @@ cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <spa
   '<rect x="22.5" y="19.5" width="14" height="2" rx="1" fill="#85E159" transform="rotate(9 29 21)"/>' +
   '<rect x="22.5" y="23.5" width="9" height="2" rx="1" fill="#85E159" transform="rotate(9 29 21)"/></svg>' +
   '<span class="mk-txt"><b>Banco de carruseles</b><img src="logos/blanco.webp" alt="Explora × Ucademy"></span></div>');
+// Móvil: las pestañas se abren desde un lateral (botón ☰ junto al del tema).
+cambiar('<div class="top-right">', '<div class="top-right"><button class="icon-btn" id="menu-movil" aria-label="Abrir menú" aria-expanded="false" aria-controls="vistas"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>');
 cambiar('<div class="toast" id="toast" role="status" aria-live="polite"></div>',
   '<div class="toast" id="toast" role="status" aria-live="polite"></div>\n<div class="est-editor" id="est-editor" hidden></div>');
 cambiar("<script>\nconst CATALOGO", `<style>\n${readFileSync(join(WEB, "estudio.css"), "utf8")}\n${readFileSync(join(WEB, "matriz.css"), "utf8")}
