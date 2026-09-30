@@ -667,3 +667,9 @@
 .mz-okchk{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--okSoft);color:var(--ok);font-weight:800;font-size:13px}
 .mz-okchk.prod{background:var(--limaSoft);color:var(--brand);font-size:10px}
 @media (max-width:720px){ .mz-nueva{flex-wrap:wrap} .mz-nueva input{flex-basis:calc(100% - 30px)} .mz-nueva .btn{flex:1} }
+/* estado del carrusel bajo la idea, compacto */
+.mz-estlinea{margin-top:8px}
+.mz-estlinea .mz-hecho{display:inline-flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:10px;min-height:0}
+.mz-estlinea .mz-mini{width:28px;height:35px;flex:none;overflow:hidden;border-radius:5px}
+.mz-estlinea .mz-hecho span:last-child{display:inline-flex;gap:6px;align-items:baseline;font-size:12.5px}
+.mz-estlinea small{display:inline !important;margin:0 !important}

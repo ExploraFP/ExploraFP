@@ -22,7 +22,7 @@
 #menu-movil{display:none}
 #menu-movil svg{pointer-events:none}
 #menu-velo{display:none}
-@media (max-width:720px){
+@media (max-width:900px){
   #menu-movil{display:inline-flex;align-items:center;justify-content:center}
   .top-right{margin-left:auto;display:flex;gap:8px}
   .top-in .views{position:fixed;top:0;right:0;bottom:0;width:min(78vw,300px);z-index:60;margin:0;border-radius:0;border:0;
@@ -33,10 +33,19 @@
   body.menu-abierto #menu-velo{display:block;position:fixed;inset:0;z-index:39;background:rgba(0,0,0,.45)}
   body.menu-abierto #menu-movil{position:relative;z-index:61}
 }
-@media (max-width:720px){
+@media (max-width:900px){
   .top-in .views{justify-content:flex-start !important}
   .top-in .views button{flex:0 0 auto !important;width:100%}
   .top-in .mk-txt b{font-size:20px}
   .top-in .mark{min-width:0;flex:1 1 auto}
 }
 @media (max-width:380px){ .top-in .mk-txt b{font-size:18px} }
+/* cabecera entre 721 y 1150 px (p. ej. la web abierta en el panel de claude.ai): que no se parta en dos filas */
+@media (min-width:901px) and (max-width:1150px){
+  .top-in{flex-wrap:nowrap;gap:12px;padding-left:16px;padding-right:16px}
+  .top-in .mark{padding-right:12px;flex:none}
+  .top-in .mk-txt b{font-size:20px}
+  .top-in .views{flex:0 1 auto;min-width:0;overflow-x:auto}
+  .top-in .views button{padding:8px 10px;font-size:13px}
+  .top-right{margin-left:auto;flex:none}
+}

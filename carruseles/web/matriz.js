@@ -311,8 +311,9 @@ function filaMatriz(it) {
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
       (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') + (it.origen === 'claude' ? ' <span class="mz-tend mz-delmes">🆕 ' + esc(nombreMesClave(it.mes)) + '</span>' : '') +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
-      (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') + '</td>' +
-    '<td class="c-est">' + celdaEstado(it) + '</td></tr>';
+      (hp.length && puede ? '<button class="mz-aviso-par" data-abrir="' + it.id + '">⚠ Ya hay uno parecido hecho</button>' : '') +
+      // el carrusel hecho / en producción va debajo de su idea (antes era una columna suelta a la derecha)
+      (e !== 'porhacer' ? '<div class="mz-estlinea">' + celdaEstado(it) + '</div>' : '') + '</td></tr>';
 }
 // Los temas empiezan cerrados; se abren solos al buscar o filtrar por tema.
 function temaAbierto(t) {
