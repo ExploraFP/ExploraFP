@@ -195,3 +195,15 @@
 .ft-aviso-borrar footer{justify-content:flex-end}
 /* táctil: en fila (las fotos apaisadas son bajitas en 2 columnas), ⬇ sigue pegado a la esquina */
 @media (hover:none){ .ft-botones{flex-direction:row;right:6px;bottom:6px;gap:5px} .ft-red{width:32px;height:32px;font-size:13px} }
+/* línea fija bajo la foto: en cuántos carruseles sale */
+.ft-card{display:flex;flex-direction:column}
+.ft-usos{padding:7px 12px 8px;font-size:12px;font-weight:600;color:var(--ink2);background:var(--surface);border-top:1px solid var(--line)}
+.ft-usos.cero{color:var(--ink3);font-weight:500}
+.ft-card::after{bottom:0}
+.ft-m-usos{margin:4px 0 0;padding-left:16px;font-size:12.5px;color:#4A5D48;width:100%}
+.ft-m-usos li{margin:2px 0}
+.ft-usos{height:31px;box-sizing:border-box;line-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ft-botones{bottom:41px}
+.ft-card::after{bottom:31px;border-radius:14px 14px 0 0}
+.ft-cat{bottom:41px}
+@media (hover:none){ .ft-botones{bottom:37px} }

@@ -30,7 +30,7 @@ const FT = {docs: {}, assets: null, subiendo: 0, f: {rama: '', personas: '', ton
 const claveBase = ruta => ruta.replace(/^fotos\//, '').replace(/\.[^.]+$/, '');
 function fotosCatalogo() {
   const base = FOTOS_BASE.map(f => { const k = claveBase(f.ruta), c = FOTO_CAT_BASE[k] || ['Una persona', 'Neutro', []], d = FT.docs['base-' + k] || {};
-    return Object.assign({id: 'base-' + k, base: true, ruta: f.ruta, desc: f.desc, rama: 'General', personas: c[0], tono: c[1], etiquetas: c[2], orientacion: f.w ? orientacionDe(f.w, f.h) : 'Horizontal'}, d, {ruta: f.ruta}); });
+    return Object.assign({id: 'base-' + k, base: true, ruta: f.ruta, desc: f.desc, rama: 'General', personas: c[0], tono: c[1], etiquetas: c[2], orientacion: f.w ? orientacionDe(f.w, f.h) : 'Horizontal', w: f.w, h: f.h}, d, {ruta: f.ruta}); });
   const subidas = Object.keys(FT.docs).filter(k => k.slice(0, 5) !== 'base-' && FT.docs[k].asset).map(k => Object.assign({id: k}, FT.docs[k], {ruta: '/_blob/' + FT.docs[k].asset}))
     .sort((a, b) => String(b.subida || '').localeCompare(String(a.subida || '')));
   return subidas.concat(base);
@@ -194,13 +194,28 @@ function desplegableFiltro(k, todas, lista, emo) {
     '<option value="">' + esc(todas) + '</option>' +
     lista.map(v => '<option value="' + esc(v) + '"' + (FT.f[k] === v ? ' selected' : '') + '>' + (emo && emo[v] ? emo[v] + ' ' : '') + esc(v) + '</option>').join('') + '</select></label>';
 }
+// en qué carruseles sale cada foto (portada o slides), para la línea de debajo y la ficha
+function usoFotos() {
+  const u = {};
+  Object.values(EST.lista || {}).forEach(c => {
+    const rutas = new Set((c.slides || []).map(x => x && x.imagen).filter(Boolean));
+    rutas.forEach(r => { (u[r] = u[r] || []).push(c); });
+  });
+  return u;
+}
+const usosDe = f => (usoFotos()[f.ruta] || []);
+const fechaLarga = iso => { try { return new Date(iso).toLocaleDateString('es-ES', {day: 'numeric', month: 'short', year: 'numeric'}); } catch (e) { return ''; } };
 // ficha completa (desc, rama, personas, tono, orientación, etiquetas): solo en el visor, a la derecha de la foto
 function metaFoto(f) {
   const fila = (k, v) => v ? '<div class="ft-m-fila"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : '';
   return '<p class="ft-m-desc">' + esc(f.desc) + '</p><dl class="ft-m">' +
     fila('Rama', esc(f.rama)) + fila('Personas', f.personas ? FOTO_PER_EMO[f.personas] + ' ' + esc(f.personas) : '') +
     fila('Tono', f.tono ? FOTO_TONO_EMO[f.tono] + ' ' + esc(f.tono) : '') + fila('Orientación', f.orientacion ? FOTO_OR_EMO[f.orientacion] + ' ' + esc(f.orientacion) : '') +
-    fila('Etiquetas', (f.etiquetas || []).map(x => '<span class="ft-tag ft-et">#' + esc(x) + '</span>').join(' ')) + '</dl>';
+    fila('Etiquetas', (f.etiquetas || []).map(x => '<span class="ft-tag ft-et">#' + esc(x) + '</span>').join(' ')) +
+    fila('Subida', f.subida ? esc(fechaLarga(f.subida)) : 'Ya estaba en el banco') +
+    fila('Tamaño', f.w ? f.w + ' × ' + f.h + ' px' : '') +
+    fila('Usada en', (() => { const us = usosDe(f); return us.length ? us.length + (us.length === 1 ? ' carrusel' : ' carruseles') + '<ul class="ft-m-usos">' +
+      us.map(c => '<li>' + esc(c.titulo || c.id) + (c.fecha ? ' · ' + esc(fCorta(c.fecha)) : '') + '</li>').join('') + '</ul>' : 'Todavía en ninguno'; })()) + '</dl>';
 }
 // aviso antes de borrar: ventana con la foto, el mensaje y un botón para confirmar (pedido de Sandra)
 function avisoBorrar(id) {
@@ -224,7 +239,8 @@ function tarjetaFoto(f) {
       '<button class="ft-red" data-ft-bajar="' + esc(f.id) + '" aria-label="Descargar" title="Descargar">⬇</button></div>';
   return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '' + '">' +
     '<div class="ft-img" data-ft-ver="' + esc(f.id) + '" role="button" tabindex="0" aria-label="Ver grande: ' + esc(t) + '"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy"></div>' +
-    '<div class="ft-tit" title="' + esc(t) + '">' + esc(t) + '</div>' + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + capa + '</figure>';
+    '<div class="ft-tit" title="' + esc(t) + '">' + esc(t) + '</div>' + (() => { const n = usosDe(f).length;
+      return '<div class="ft-usos' + (n ? '' : ' cero') + '">' + (n ? 'En ' + n + (n === 1 ? ' carrusel' : ' carruseles') : 'Sin usar todavía') + '</div>'; })() + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + capa + '</figure>';
 }
 function vFotos() {
   const todas = fotosCatalogo(), vis = todas.filter(pasaFoto), ocultas = todas.filter(f => f.oculta).length;
