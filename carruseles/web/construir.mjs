@@ -35,10 +35,10 @@ for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^foto-.*
     const k = Math.min(1, 1500 / Math.max(i.width, i.height));
     const c = document.createElement("canvas"); c.width = Math.round(i.width * k); c.height = Math.round(i.height * k);
     c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
-    return c.toDataURL("image/jpeg", 0.84);
+    return { url: c.toDataURL("image/jpeg", 0.84), w: c.width, h: c.height };
   }, `data:image/jpeg;base64,${readFileSync(join(RAIZ, "contenido/img", f)).toString("base64")}`);
-  writeFileSync(join(DIST, "fotos", clave + ".jpg"), Buffer.from(datos.split(",")[1], "base64"));
-  FOTOS.push({ ruta: `fotos/${clave}.jpg`, desc: DESC[clave] || clave.replace(/^foto-/, "").replace(/-/g, " ") });
+  writeFileSync(join(DIST, "fotos", clave + ".jpg"), Buffer.from(datos.url.split(",")[1], "base64"));
+  FOTOS.push({ ruta: `fotos/${clave}.jpg`, desc: DESC[clave] || clave.replace(/^foto-/, "").replace(/-/g, " "), w: datos.w, h: datos.h });
 }
 await nav.close();
 

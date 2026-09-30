@@ -49,3 +49,35 @@
 }
 @media (max-width:370px){ .views button{padding:8px 6px;font-size:12.5px} }
 .ft-ocultas{padding:0 !important}
+/* filtros: buscador + 3 desplegables en una línea */
+.ft-linea{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ft-linea .ft-busca{flex:1 1 300px;max-width:none;min-height:50px}
+.ft-sels{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ft-sel{position:relative;display:inline-flex}
+.ft-sel .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.ft-sel select{appearance:none;-webkit-appearance:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:var(--surface);border:1.5px solid var(--line2);border-radius:999px;padding:12px 36px 12px 16px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23366B40' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.ft-sel select:hover{border-color:var(--brand)}
+.ft-sel.activo select{background-color:var(--lima);border-color:var(--lima);color:#12200F}
+.ft-limpiar{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line2);background:var(--surface);color:var(--ink2);font-size:20px;line-height:1;cursor:pointer}
+.ft-limpiar:hover{border-color:var(--brand);color:var(--ink)}
+/* galería tipo Pinterest: columnas, cada foto con su alto natural */
+.ft-grid{display:block;columns:4 240px;column-gap:16px}
+.ft-card{break-inside:avoid;margin:0 0 16px;display:flex}
+.ft-img{aspect-ratio:auto}
+.ft-img img{height:auto}
+.ft-ico{min-width:40px;padding-left:0;padding-right:0}
+.ft-acc .btn:first-child{flex:1}
+@media (max-width:720px){
+  .ft-grid{columns:2 150px;column-gap:10px}
+  .ft-card{margin-bottom:10px}
+  .ft-linea .ft-busca{flex-basis:100%}
+  .ft-sels{flex-wrap:nowrap;overflow-x:auto;width:calc(100% + 32px);margin:0 -16px;padding:0 16px 2px}
+  .ft-sel select{white-space:nowrap;padding:10px 32px 10px 13px;font-size:13.5px}
+  .ft-acc{flex-wrap:wrap}
+  .ft-acc .btn:first-child{flex:1 1 100%}
+  .ft-acc .ft-ico{flex:1}
+}
+@media (max-width:420px){ .ft-grid{columns:2 140px} }
+:root[data-theme="dark"] .ft-sel.activo select{color:#12200F}
+@media (max-width:720px){ .ft-et,.ft-or{display:none} .ft-desc{font-size:12.5px} .ft-tag{font-size:11px} }

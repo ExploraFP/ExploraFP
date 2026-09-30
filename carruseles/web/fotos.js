@@ -8,7 +8,9 @@ const FOTOS_BASE = FOTOS.slice();
 const FOTO_RAMAS = ['General', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Educación'];
 const FOTO_PERSONAS = ['Una persona', 'Varias personas', 'Sin personas'];
 const FOTO_TONOS = ['Positivo', 'Problema', 'Neutro'];
+const FOTO_ORIENT = ['Vertical', 'Horizontal', 'Cuadrada'];
 const FOTO_TONO_EMO = {Positivo: '🙂', Problema: '😣', Neutro: '😐'};
+const FOTO_OR_EMO = {Vertical: '▯', Horizontal: '▭', Cuadrada: '□'};
 const FOTO_PER_EMO = {'Una persona': '👤', 'Varias personas': '👥', 'Sin personas': '📦'};
 // ficha de las fotos de serie
 const FOTO_CAT_BASE = {
@@ -24,11 +26,11 @@ const FOTO_CAT_BASE = {
   'foto-chica-escritorio-sonrie': ['Una persona', 'Positivo', ['testimonio', 'cercanía', 'escritorio']],
   'foto-chica-agobiada-examen': ['Una persona', 'Problema', ['estrés', 'exámenes', 'bloqueo']],
 };
-const FT = {docs: {}, assets: null, subiendo: 0, f: {rama: '', personas: '', tono: '', q: ''}, verOcultas: false, borrar: '', editar: ''};
+const FT = {docs: {}, assets: null, subiendo: 0, f: {rama: '', personas: '', tono: '', orientacion: '', q: ''}, verOcultas: false, borrar: '', editar: ''};
 const claveBase = ruta => ruta.replace(/^fotos\//, '').replace(/\.[^.]+$/, '');
 function fotosCatalogo() {
   const base = FOTOS_BASE.map(f => { const k = claveBase(f.ruta), c = FOTO_CAT_BASE[k] || ['Una persona', 'Neutro', []], d = FT.docs['base-' + k] || {};
-    return Object.assign({id: 'base-' + k, base: true, ruta: f.ruta, desc: f.desc, rama: 'General', personas: c[0], tono: c[1], etiquetas: c[2], orientacion: 'Horizontal'}, d, {ruta: f.ruta}); });
+    return Object.assign({id: 'base-' + k, base: true, ruta: f.ruta, desc: f.desc, rama: 'General', personas: c[0], tono: c[1], etiquetas: c[2], orientacion: f.w ? orientacionDe(f.w, f.h) : 'Horizontal'}, d, {ruta: f.ruta}); });
   const subidas = Object.keys(FT.docs).filter(k => k.slice(0, 5) !== 'base-' && FT.docs[k].asset).map(k => Object.assign({id: k}, FT.docs[k], {ruta: '/_blob/' + FT.docs[k].asset}))
     .sort((a, b) => String(b.subida || '').localeCompare(String(a.subida || '')));
   return subidas.concat(base);
@@ -119,18 +121,34 @@ async function borrarFoto(id) {
   } catch (e) { toast('No he podido borrarla. Prueba otra vez'); }
 }
 
+// descarga la foto tal cual está guardada (JPEG), con un nombre sacado de su descripción
+async function bajarFoto(id, btn) {
+  const f = fotosCatalogo().find(x => x.id === id); if (!f) return;
+  const nombre = 'explora-' + (norm(f.desc).replace(/\(.*$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50) || 'foto') + '.jpg';
+  if (btn) btn.disabled = true;
+  try {
+    const blob = await (await fetch(f.ruta)).blob();
+    const down = DOWN || (typeof claude !== 'undefined' && claude.use ? await claude.use('downloads') : null);
+    if (down) { await guardarArchivo(down, nombre, blob); toast('Foto descargada'); }
+    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+  } catch (e) { if (!(e && e.code === 'declined')) toast('No he podido descargarla. Prueba otra vez'); }
+  finally { if (btn) btn.disabled = false; }
+}
 function pasaFoto(f) {
   if (f.oculta && !FT.verOcultas) return false;
   if (FT.verOcultas && !f.oculta) return false;
   if (FT.f.rama && f.rama !== FT.f.rama) return false;
   if (FT.f.personas && f.personas !== FT.f.personas) return false;
   if (FT.f.tono && f.tono !== FT.f.tono) return false;
+  if (FT.f.orientacion && f.orientacion !== FT.f.orientacion) return false;
   if (FT.f.q) { const q = norm(FT.f.q); if (norm([f.desc, f.rama, f.personas, f.tono].concat(f.etiquetas || []).join(' ')).indexOf(q) < 0) return false; }
   return true;
 }
-function chipsFiltro(k, lista, emo) {
-  return '<div class="ft-filtro"><button class="ft-chip" data-ft-f="' + k + ':" aria-pressed="' + !FT.f[k] + '">Todas</button>' +
-    lista.map(v => '<button class="ft-chip" data-ft-f="' + k + ':' + esc(v) + '" aria-pressed="' + (FT.f[k] === v) + '">' + (emo && emo[v] ? emo[v] + ' ' : '') + esc(v) + '</button>').join('') + '</div>';
+// filtros = tres desplegables en la misma línea que el buscador (pedido de Sandra: nada de filas de chips)
+function desplegableFiltro(k, todas, lista, emo) {
+  return '<label class="ft-sel' + (FT.f[k] ? ' activo' : '') + '"><span class="sr">' + esc(todas) + '</span><select data-ft-sel="' + k + '">' +
+    '<option value="">' + esc(todas) + '</option>' +
+    lista.map(v => '<option value="' + esc(v) + '"' + (FT.f[k] === v ? ' selected' : '') + '>' + (emo && emo[v] ? emo[v] + ' ' : '') + esc(v) + '</option>').join('') + '</select></label>';
 }
 function tarjetaFoto(f) {
   const cat = f.estado === 'catalogando';
@@ -138,14 +156,14 @@ function tarjetaFoto(f) {
     ? '<div class="ft-confirma"><span>' + (f.base ? '¿Ocultarla? Es de serie, no se borra.' : '¿Borrarla para siempre? Los carruseles que ya la usen se quedarán sin foto.') + '</span>' +
       '<button class="btn" data-ft-no="1">No</button><button class="btn ft-si" data-ft-si="' + esc(f.id) + '">' + (f.base ? 'Ocultar' : 'Borrar') + '</button></div>'
     : '<div class="ft-acc">' + (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Volver a usar</button>' :
-      '<button class="btn" data-ft-editar="' + esc(f.id) + '">✏️ Editar ficha</button><button class="btn ft-borra" data-ft-borrar="' + esc(f.id) + '" aria-label="' + (f.base ? 'Ocultar' : 'Borrar') + ' foto">🗑</button>') + '</div>';
+      '<button class="btn" data-ft-editar="' + esc(f.id) + '">✏️ Editar ficha</button><button class="btn ft-ico" data-ft-bajar="' + esc(f.id) + '" aria-label="Descargar foto" title="Descargar">⬇</button><button class="btn ft-borra ft-ico" data-ft-borrar="' + esc(f.id) + '" aria-label="' + (f.base ? 'Ocultar' : 'Borrar') + ' foto">🗑</button>') + '</div>';
   return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '"><div class="ft-img"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy">' +
     (f.base ? '<span class="ft-serie">De serie</span>' : '') + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + '</div>' +
     '<figcaption><p class="ft-desc">' + esc(f.desc) + '</p><div class="ft-tags">' +
     (f.rama ? '<span class="ft-tag">' + esc(f.rama) + '</span>' : '') +
     (f.personas ? '<span class="ft-tag">' + FOTO_PER_EMO[f.personas] + ' ' + esc(f.personas) + '</span>' : '') +
     (f.tono ? '<span class="ft-tag">' + FOTO_TONO_EMO[f.tono] + ' ' + esc(f.tono) + '</span>' : '') +
-    (f.orientacion ? '<span class="ft-tag">' + esc(f.orientacion) + '</span>' : '') +
+    (f.orientacion ? '<span class="ft-tag ft-or">' + FOTO_OR_EMO[f.orientacion] + ' ' + esc(f.orientacion) + '</span>' : '') +
     (f.etiquetas || []).map(x => '<span class="ft-tag ft-et">#' + esc(x) + '</span>').join('') + '</div>' + pie + '</figcaption></figure>';
 }
 function vFotos() {
@@ -155,9 +173,12 @@ function vFotos() {
   if (FT.assets) h += '<label class="ft-subir" id="ft-zona"><input type="file" id="ft-input" accept="image/jpeg,image/png,image/webp,image/heic,.heic" multiple hidden>' +
     '<b>📷 Sube fotos</b><span>' + (FT.subiendo ? 'Subiendo ' + FT.subiendo + '…' : 'Arrástralas aquí o haz clic. Claude las cataloga solo; tú corriges o borras.') + '</span></label>';
   else h += '<p class="ft-aviso">Para subir fotos abre la web en claude.ai con permiso de edición.</p>';
-  h += '<div class="ft-filtros"><div class="mz-buscabarra ft-busca"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>' +
+  h += '<div class="ft-filtros"><div class="ft-linea"><div class="mz-buscabarra ft-busca"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>' +
     '<input type="search" id="ft-q" placeholder="Busca: portátil, estrés, sanidad…" value="' + esc(FT.f.q) + '" aria-label="Buscar fotos"></div>' +
-    chipsFiltro('rama', FOTO_RAMAS) + chipsFiltro('personas', FOTO_PERSONAS, FOTO_PER_EMO) + chipsFiltro('tono', FOTO_TONOS, FOTO_TONO_EMO) +
+    '<div class="ft-sels">' + desplegableFiltro('rama', 'Todas las ramas', FOTO_RAMAS) + desplegableFiltro('personas', 'Con o sin personas', FOTO_PERSONAS, FOTO_PER_EMO) +
+    desplegableFiltro('tono', 'Cualquier tono', FOTO_TONOS, FOTO_TONO_EMO) +
+    desplegableFiltro('orientacion', 'Vertical u horizontal', FOTO_ORIENT, FOTO_OR_EMO) +
+    (FT.f.rama || FT.f.personas || FT.f.tono || FT.f.orientacion || FT.f.q ? '<button class="ft-limpiar" id="ft-limpiar" aria-label="Quitar filtros" title="Quitar filtros">×</button>' : '') + '</div></div>' +
     (ocultas ? '<label class="mz-todas ft-ocultas"><input type="checkbox" id="ft-verocultas"' + (FT.verOcultas ? ' checked' : '') + '> Ver ocultas (' + ocultas + ')</label>' : '') + '</div>';
   h += vis.length ? '<div class="ft-grid">' + vis.map(tarjetaFoto).join('') + '</div>' : '<div class="vacio"><b>Ninguna foto con esos filtros</b>Quita algún filtro o sube fotos nuevas.</div>';
   return h;
@@ -190,7 +211,8 @@ const _refrescarEstudioFt = refrescarEstudio;
 refrescarEstudio = function () { if (S.v === 'fotos') { if (!EST.abierto) render(); return; } _refrescarEstudioFt(); };
 document.addEventListener('click', e => {
   const t = e.target;
-  const ff = t.closest('[data-ft-f]'); if (ff) { const [k, v] = ff.dataset.ftF.split(':'); FT.f[k] = v; render(); return; }
+  if (t.id === 'ft-limpiar') { FT.f = {rama: '', personas: '', tono: '', orientacion: '', q: ''}; render(); return; }
+  const dl = t.closest('[data-ft-bajar]'); if (dl) { bajarFoto(dl.dataset.ftBajar, dl); return; }
   const bo = t.closest('[data-ft-borrar]'); if (bo) { FT.borrar = bo.dataset.ftBorrar; render(); return; }
   if (t.closest('[data-ft-no]')) { FT.borrar = ''; render(); return; }
   const si = t.closest('[data-ft-si]'); if (si) { borrarFoto(si.dataset.ftSi); return; }
@@ -200,6 +222,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'ft-input') { subirFotos(e.target.files); e.target.value = ''; }
+  if (e.target.dataset && e.target.dataset.ftSel) { FT.f[e.target.dataset.ftSel] = e.target.value; render(); return; }
   if (e.target.id === 'ft-verocultas') { FT.verOcultas = e.target.checked; render(); }
 });
 document.addEventListener('input', e => {
