@@ -90,7 +90,7 @@ const ICONO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><rect
 cambiar('<title>Banco de carruseles</title>', '<title>Banco de carruseles</title>\n<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' + encodeURIComponent(ICONO) + '">');
 // Marca de la herramienta: icono de slides en abanico + nombre en Gravity + logo real de Explora × Ucademy.
 cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <span>Explora <em>×</em> Ucademy</span>\n    </div>',
-  '<div class="mark mk" id="ir-home" role="link" tabindex="0" aria-label="Ir al inicio (Matriz)" title="Ir al inicio"><svg class="mk-ico" viewBox="0 0 44 44" aria-hidden="true">' +
+  '<div class="mark mk" id="ir-home" role="link" tabindex="0" aria-label="Ir al inicio" title="Ir al inicio"><svg class="mk-ico" viewBox="0 0 44 44" aria-hidden="true">' +
   '<rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/>' +
   '<rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/>' +
   '<rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/>' +
@@ -101,13 +101,14 @@ cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <spa
 cambiar('<div class="toast" id="toast" role="status" aria-live="polite"></div>',
   '<div class="toast" id="toast" role="status" aria-live="polite"></div>\n<div class="est-editor" id="est-editor" hidden></div>');
 cambiar("<script>\nconst CATALOGO", `<style>\n${readFileSync(join(WEB, "estudio.css"), "utf8")}\n${readFileSync(join(WEB, "matriz.css"), "utf8")}
-${readFileSync(join(WEB, "fotos.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
+${readFileSync(join(WEB, "fotos.css"), "utf8")}
+${readFileSync(join(WEB, "inicio.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
 const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== */\n${motor}\n` +
   `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\n` +
   `const HOOKS = ${existsSync(join(WEB, 'hooks.json')) ? readFileSync(join(WEB, 'hooks.json'), 'utf8').trim() : '{}'};\n` +
   `const OBJ_REV = ${existsSync(join(WEB, 'objetivos-revisados.json')) ? readFileSync(join(WEB, 'objetivos-revisados.json'), 'utf8').trim() : '{}'};\n` +
   `const IDEAS_EXTRA = ${existsSync(join(WEB, 'ideas-extra.json')) ? readFileSync(join(WEB, 'ideas-extra.json'), 'utf8').trim() : '[]'};\n` +
-  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\n${readFileSync(join(WEB, "fotos.js"), "utf8")}\nrender();\n</script>\n`;
+  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\n${readFileSync(join(WEB, "fotos.js"), "utf8")}\n${readFileSync(join(WEB, "inicio.js"), "utf8")}\nrender();\n</script>\n`;
 cambiar("</body></html>", script + "</body></html>");
 writeFileSync(join(DIST, "banco-de-carruseles.html"), h);
 

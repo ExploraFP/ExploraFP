@@ -332,7 +332,7 @@ function vMatrizDentro() {
   let h = cabecera('Matriz de contenido', '',
     [[n.hecha, 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
-  h += sugerencias();
+  // las sugerencias viven en Inicio (inicio.js)
   h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.filter(yaVisible).length;
   // ---- vistas: una tabla siempre visible; arriba se elige el objetivo (y se combina con formación y búsqueda) ----
