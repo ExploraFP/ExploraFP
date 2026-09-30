@@ -334,3 +334,14 @@ document.addEventListener('input', e => {
 document.addEventListener('dragover', e => { const z = e.target.closest && e.target.closest('#ft-zona'); if (z) { e.preventDefault(); z.classList.add('encima'); } });
 document.addEventListener('dragleave', e => { const z = e.target.closest && e.target.closest('#ft-zona'); if (z) z.classList.remove('encima'); });
 document.addEventListener('drop', e => { const z = e.target.closest && e.target.closest('#ft-zona'); if (z) { e.preventDefault(); z.classList.remove('encima'); subirFotos(e.dataTransfer.files); } });
+
+/* el logo lleva al inicio: la Matriz arriba del todo, sin ficha, visor ni editor abiertos */
+function irHome() {
+  if (FT.visor) cerrarVisor();
+  if (!$('#onb').hidden) cerrarPanel();
+  if (EST.abierto) cerrarEditor();
+  if (S.sel) cerrar();
+  S.v = 'ideas'; S.q = ''; render(); window.scrollTo({top: 0, behavior: 'smooth'});
+}
+document.addEventListener('click', e => { if (e.target.closest && e.target.closest('#ir-home')) irHome(); });
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'ir-home') { e.preventDefault(); irHome(); } });

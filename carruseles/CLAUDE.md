@@ -104,6 +104,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   (informativo/autoridad claros; viral/lead magnet persuasivos). El titular original del banco se conserva (`it.titular`) y va
   también al prompt. Ficha: titular arriba y debajo Formación · Objetivo · De qué va (`dentro`) · CTA final.
 - `motor.js`: el motor de diseño, compartido por render.js y la web → lo que se ve en la web es lo que sale en PNG.
+- El logo de la cabecera (`#ir-home`) lleva al inicio: Matriz arriba del todo, cerrando ficha, visor, editor o ventana abiertos (`irHome` en fotos.js).
 - `node web/construir.mjs` → `web/dist/` (HTML + fotos, logos, trazos, fuentes). Publicar con root `web/dist`,
   `files` = `web/dist/archivos.json`, capacidades `{db, downloads, sample}`.
 - Datos: colección `carruseles` del db (un documento por carrusel: titulo, plantilla, color, slides, copy, estado,

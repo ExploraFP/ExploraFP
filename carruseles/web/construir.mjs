@@ -90,7 +90,7 @@ const ICONO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><rect
 cambiar('<title>Banco de carruseles</title>', '<title>Banco de carruseles</title>\n<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' + encodeURIComponent(ICONO) + '">');
 // Marca de la herramienta: icono de slides en abanico + nombre en Gravity + logo real de Explora × Ucademy.
 cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <span>Explora <em>×</em> Ucademy</span>\n    </div>',
-  '<div class="mark mk"><svg class="mk-ico" viewBox="0 0 44 44" aria-hidden="true">' +
+  '<div class="mark mk" id="ir-home" role="link" tabindex="0" aria-label="Ir al inicio (Matriz)" title="Ir al inicio"><svg class="mk-ico" viewBox="0 0 44 44" aria-hidden="true">' +
   '<rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/>' +
   '<rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/>' +
   '<rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/>' +
