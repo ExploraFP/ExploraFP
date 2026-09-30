@@ -67,3 +67,14 @@
 .pr-col .pr-tarjeta .btn{font-size:13px;padding-top:7px;padding-bottom:7px}
 /* el panel ya dice «Slide N de M» en la pestaña */
 .pr-tab-slide>h3:first-child{display:none}
+/* ===== Producción en secciones con tarjetas grandes (sustituye al tablero de columnas) ===== */
+.pr-sec{margin:0 0 30px}
+.pr-sec>header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.pr-sec h3{margin:0;font-family:"Gravity Condensed","Archivo",sans-serif;font-weight:700;font-size:24px;line-height:1;color:var(--brand2)}
+.pr-sec h3 b{font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--ink3);background:var(--surface2);border-radius:999px;padding:1px 8px;vertical-align:middle}
+.pr-sec header p{margin:0;font-size:13px;color:var(--ink3)}
+.pr-sec.pr-listo>header h3::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--lima);box-shadow:0 0 0 2px var(--limaLine);margin-right:8px;vertical-align:middle}
+.pr-sec .pr-vacio{text-align:left}
+:root[data-theme="dark"] .pr-sec h3{color:var(--lima)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pr-sec h3{color:var(--lima)}}
+.pr-sec.pr-listo{background:none;border:0}
