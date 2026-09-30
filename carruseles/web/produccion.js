@@ -24,6 +24,7 @@ const itemMenu = (attr, txt, peligro) => '<button type="button" class="' + (peli
 tarjeta = function (c) {
   const e = etapaDe(c);
   const vista = c.slides.length ? c : previa('p-' + c.id, c.plantilla, c.color, c.titulo || c.tema, c.idea && IMAP[c.idea] ? IMAP[c.idea].alcTxt : '', c.portada === 'foto');
+  const notaCopia = c.origen ? '<p class="pr-copia">♻️ Reutilizado' + (c.origenFecha ? ' · publicado el ' + esc(new Date(c.origenFecha + 'T00:00:00').toLocaleDateString('es-ES')) : '') + '</p>' : '';
   const nota = c.estado === 'generando' ? '✨ Claude lo está escribiendo…' : c.estado === 'error' ? '⚠ ' + (c.error || 'No se pudo generar') : c.estado === 'pendiente' ? 'Así quedará la portada' : '';
   let pri = '';
   if (e === 'generar') pri = c.estado === 'generando' ? '<button class="btn pri" disabled>Generando…</button>'
@@ -40,7 +41,7 @@ tarjeta = function (c) {
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || c.tema || '(sin título)') + '</h4>' +
     '<div class="est-tmeta">' + objChip(c) + '<span>' + esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + (c.slides.length ? ' · ' + c.slides.length + ' slides' : '') + '</span></div>' +
     (nota ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(nota) + '</p>' : '') +
-    (e === 'revision' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
+    (e === 'revision' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') + notaCopia +
     '<div class="est-tpie pr-pie">' + pri + menu + '</div></div></article>';
 };
 // el chip de calidad ya no dice «Listo» (Listo es una etapa que da Sandra): dice «Sin avisos»
@@ -103,6 +104,20 @@ function abrirDevolver(id) {
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" data-pr-devolver-ok="' + esc(id) + '">Devolver</button></footer></div>';
 }
 
+/* ---------- reutilizar uno publicado: copia en «En revisión»; el original se queda en Inventario ---------- */
+function reutilizar(id) {
+  const o = EST.lista[id]; if (!o) return;
+  const ya = Object.values(EST.lista).find(x => x.origen === id && x.estado !== 'hecho');
+  if (ya) { cerrarPanel(); if (EST.abierto) cerrarEditor(); S.v = 'producir'; render(); toast('Ya tienes una copia en Producción'); return; }
+  const copia = JSON.parse(JSON.stringify(o));
+  ['id', 'fecha', 'ig', 'upd', 'creado'].forEach(k => delete copia[k]);
+  const c = nuevoC(Object.assign(copia, {estado: 'borrador', listo: false, origen: id, origenFecha: o.fecha || ''}));
+  if (EST.abierto) cerrarEditor();
+  S.v = 'producir'; render(); window.scrollTo({top: 0});
+  toast('♻️ Copia en «En revisión»: cámbiale lo que haga falta y dale el OK');
+  return c;
+}
+
 /* ---------- editor: cabecera con la etapa, pestañas y fotos con buscador ---------- */
 EST.pestana = 'slide'; EST.fq = ''; EST.fr = ''; EST.fo = '';
 function gridFotosEditor(s) {
@@ -126,7 +141,7 @@ pintarEditor = function (todo) {
     const hb = cab.querySelector('#est-hecho');
     if (hb) hb.outerHTML = e === 'revision' ? '<button class="btn pri" id="pr-ok">✓ Dar el OK</button>'
       : e === 'listo' ? '<button class="btn pri" data-pr-publicar="' + c.id + '">Marcar como publicado</button>'
-      : e === 'publicado' ? '<span class="pr-pub">✓ Publicado' + (c.fecha ? ' el ' + esc(fCorta(c.fecha)) : '') + '</span>' : '';
+      : e === 'publicado' ? '<span class="pr-pub">✓ Publicado' + (c.fecha ? ' el ' + esc(fCorta(c.fecha)) : '') + '</span><button class="btn pri" data-pr-reutilizar="' + c.id + '">♻️ Reutilizar</button>' : '';
     const dl = cab.querySelector('#est-descargar'); if (dl) dl.textContent = '⬇ Descargar';
   }
   const panel = $('#est-panel'); if (!panel || panel.querySelector('.pr-tabs')) return;
@@ -193,11 +208,12 @@ vTodoHecho = function () {
         it ? itemMenu('data-abrir="' + it.id + '"', 'Ver ficha de la idea') : itemMenu('data-enlazar="' + esc(x.clave) + '"', 'Unir a una idea'),
         c ? itemMenu('data-pr-publicar="' + c.id + '"', 'Cambiar fecha o enlace') : '',
         x.propio ? itemMenu('data-editar="' + x.id + '"', 'Editar') : '']);
-      const pri = c ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button>'
+      const pri = c ? '<button class="btn" data-est-abrir="' + c.id + '">Abrir</button><button class="btn pri" data-pr-reutilizar="' + c.id + '" title="Hace una copia en Producción para volver a publicarlo">♻️ Reutilizar</button>'
         : x.url ? '<a class="btn pri" href="' + esc(x.url) + '" target="_blank" rel="noopener">Abrir en Drive</a>' : (x.propio ? '<button class="btn pri" data-editar="' + x.id + '">Editar</button>' : '');
       return '<article class="est-tarjeta pr-tarjeta">' + (c ? mini(c, 0) : '<div class="est-mini"><span class="est-vacia">' + (x.url ? 'En Drive' : 'Añadido a mano') + '</span></div>') +
         '<div class="est-tcuerpo"><h4>' + esc(x.titulo || '(sin título)') + '</h4>' +
         '<div class="est-tmeta">' + (it ? chipAlcance(it) : '') + (ob && OBJETIVOS[ob] ? '<span class="mz-objtag">' + esc(objEt(ob)) + '</span>' : '') + '</div>' +
+        (c && c.origen ? '<p class="pr-copia">♻️ Reutilizado de uno publicado' + (c.origenFecha ? ' el ' + esc(new Date(c.origenFecha + 'T00:00:00').toLocaleDateString('es-ES')) : '') + '</p>' : '') +
         '<p class="inv-fecha">' + (x.fecha ? 'Publicado el ' + esc(new Date(x.fecha + 'T00:00:00').toLocaleDateString('es-ES')) : 'Sin fecha') + (c && c.ig ? ' · <a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Instagram ↗</a>' : '') + '</p>' +
         '<div class="est-tpie pr-pie">' + pri + menu + '</div></div></article>';
     }).join('') + '</div></section>';
@@ -209,6 +225,7 @@ document.addEventListener('click', e => {
   const t = e.target; if (!t.closest) return;
   // cerrar los menús ⋯ al pulsar fuera o al elegir
   document.querySelectorAll('details.pr-menu[open]').forEach(d => { if (!d.contains(t) || t.closest('.pr-menu-lista')) d.open = false; });
+  const ru = t.closest('[data-pr-reutilizar]'); if (ru) { e.stopImmediatePropagation(); reutilizar(ru.dataset.prReutilizar); return; }
   const pb = t.closest('[data-pr-publicar]'); if (pb) { e.stopImmediatePropagation(); abrirPublicar(pb.dataset.prPublicar); return; }
   const po = t.closest('[data-pr-publicar-ok]'); if (po) { publicar(po.dataset.prPublicarOk); return; }
   const dv = t.closest('[data-pr-devolver]'); if (dv) { abrirDevolver(dv.dataset.prDevolver); return; }
