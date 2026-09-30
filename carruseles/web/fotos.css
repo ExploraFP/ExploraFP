@@ -158,3 +158,40 @@
 .ft-acc{gap:8px}
 .ft-acc .ft-ico{min-width:40px}
 @media (max-width:720px){ .ft-card figcaption{padding:10px} .ft-acc{gap:8px} .ft-acc .ft-bajar{font-size:inherit} }
+/* ===== tarjeta estilo Envato ===== */
+.ft-card{position:relative;overflow:hidden;border-radius:14px;border:0;background:var(--surface2);box-shadow:0 1px 3px rgba(0,0,0,.08);transition:box-shadow .2s,transform .2s}
+.ft-card figcaption{display:none}
+.ft-img,.ft-img[data-ft-ver]{cursor:default}
+.ft-img img{transition:transform .35s ease}
+.ft-card::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .2s;
+  background:linear-gradient(180deg,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 32%,rgba(0,0,0,0) 62%,rgba(0,0,0,.35) 100%);box-shadow:inset 0 0 0 3px var(--lima)}
+.ft-tit{position:absolute;top:0;left:0;right:0;padding:12px 14px;color:#fff;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2;opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.ft-botones{position:absolute;right:10px;bottom:10px;display:flex;flex-direction:column;gap:8px;z-index:2;opacity:0;transform:translateX(6px);transition:opacity .2s,transform .2s}
+.ft-red{width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:#16241A;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .15s,background .15s}
+.ft-red:hover{transform:scale(1.08);background:var(--lima)}
+.ft-red-txt{width:auto;padding:0 16px;border-radius:999px;font-size:13px;font-weight:700}
+.ft-card:hover,.ft-card:focus-within{box-shadow:0 10px 26px rgba(0,0,0,.18);transform:translateY(-2px)}
+.ft-card:hover .ft-img img,.ft-card:focus-within .ft-img img{transform:scale(1.03)}
+.ft-card:hover::after,.ft-card:focus-within::after,.ft-card.confirmando::after{opacity:1}
+.ft-card:hover .ft-tit,.ft-card:focus-within .ft-tit,.ft-card:hover .ft-botones,.ft-card:focus-within .ft-botones{opacity:1;transform:none}
+.ft-card.oculta .ft-botones{opacity:1;transform:none}
+.ft-cat{top:auto;bottom:10px;left:10px;right:auto;z-index:2}
+.ft-conf{position:absolute;inset:0;z-index:3;background:rgba(10,18,12,.78);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;font-weight:700;font-size:15px}
+.ft-conf div{display:flex;gap:8px}
+.ft-conf .btn{background:#fff;color:#16241A;border-color:#fff}
+.ft-conf .ft-si{background:#B3261E !important;border-color:#B3261E !important;color:#fff !important}
+/* táctil (sin ratón): botones siempre visibles, más pequeños; el título aparece al tocar la foto en el visor */
+@media (hover:none){
+  .ft-botones{opacity:1;transform:none;right:8px;bottom:8px;gap:6px}
+  .ft-red{width:34px;height:34px;font-size:14px}
+  .ft-card:hover{transform:none}
+}
+/* aviso de borrado */
+.ft-aviso-borrar{max-width:400px;text-align:center}
+.ft-aviso-borrar .cuerpo{padding:22px 22px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ft-aviso-borrar img{width:120px;height:120px;object-fit:cover;border-radius:12px}
+.ft-aviso-borrar h2{margin:6px 0 0;font-size:19px;line-height:1.25;color:var(--ink)}
+.ft-aviso-borrar p{margin:0;font-size:13.5px;color:var(--ink2)}
+.ft-aviso-borrar footer{justify-content:flex-end}
+/* táctil: en fila (las fotos apaisadas son bajitas en 2 columnas), ⬇ sigue pegado a la esquina */
+@media (hover:none){ .ft-botones{flex-direction:row;right:6px;bottom:6px;gap:5px} .ft-red{width:32px;height:32px;font-size:13px} }

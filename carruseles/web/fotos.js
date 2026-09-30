@@ -157,13 +157,14 @@ function pintarVisor() {
     (l.length > 1 ? '<button class="ft-v-flecha ant" data-ft-vpasa="-1" aria-label="Anterior">‹</button><button class="ft-v-flecha sig" data-ft-vpasa="1" aria-label="Siguiente">›</button>' : '') +
     '<div class="ft-v-caja"><div class="ft-v-fig"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '"></div>' +
     '<aside class="ft-v-panel"><span class="ft-v-n">' + (i + 1) + ' / ' + l.length + '</span>' + metaFoto(f) +
-    '<div class="ft-v-acc">' + (FT.borrar === f.id ? confirmaBorrar(f) : '<button class="btn ft-v-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button>' +
+    '<div class="ft-v-acc">' + ('<button class="btn ft-v-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button>' +
       (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Recuperar</button>' :
       '<button class="btn" data-ft-editar="' + esc(f.id) + '">✏️ Editar ficha</button><button class="btn ft-borra" data-ft-borrar="' + esc(f.id) + '">🗑 Borrar</button>')) + '</div></aside></div>';
   const sig = l[(i + 1) % l.length]; if (sig) { const im = new Image(); im.src = sig.ruta; }
 }
 document.addEventListener('keydown', e => {
   if (FT.visor) {
+    if (!$('#onb').hidden) return;
     if (e.key === 'Escape') { cerrarVisor(); e.preventDefault(); }
     else if (e.key === 'ArrowRight') { pasarVisor(1); e.preventDefault(); }
     else if (e.key === 'ArrowLeft') { pasarVisor(-1); e.preventDefault(); }
@@ -201,18 +202,29 @@ function metaFoto(f) {
     fila('Tono', f.tono ? FOTO_TONO_EMO[f.tono] + ' ' + esc(f.tono) : '') + fila('Orientación', f.orientacion ? FOTO_OR_EMO[f.orientacion] + ' ' + esc(f.orientacion) : '') +
     fila('Etiquetas', (f.etiquetas || []).map(x => '<span class="ft-tag ft-et">#' + esc(x) + '</span>').join(' ')) + '</dl>';
 }
-function confirmaBorrar(f) {
-  return '<div class="ft-confirma"><span>¿Borrarla? Los carruseles que ya la usen se quedarán sin ella.</span>' +
-    '<button class="btn" data-ft-no="1">No</button><button class="btn ft-si" data-ft-si="' + esc(f.id) + '">Borrar</button></div>';
+// aviso antes de borrar: ventana con la foto, el mensaje y un botón para confirmar (pedido de Sandra)
+function avisoBorrar(id) {
+  const f = fotosCatalogo().find(x => x.id === id); if (!f) return;
+  $('#onb').hidden = false;
+  $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="ft-ab-t"><div class="cuerpo">' +
+    '<img src="' + esc(f.ruta) + '" alt="">' +
+    '<h2 id="ft-ab-t">¿Seguro que quieres borrar esta imagen?</h2>' +
+    '<p>' + (f.base ? 'Dejará de salir en la galería y en los carruseles nuevos. Podrás recuperarla desde «Ver borradas».' : 'Se borrará para siempre. Los carruseles que ya la usen se quedarán sin ella.') + '</p></div>' +
+    '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" data-ft-si="' + esc(f.id) + '">Sí, borrar</button></footer></div>';
+  setTimeout(() => { const b = document.querySelector('.ft-aviso-borrar #onbCerrar'); if (b) b.focus(); }, 30);
 }
-// tarjeta de la galería: solo la foto y Descargar (grande) · ✏️ · 🗑 (pedido de Sandra: nada de etiquetas aquí)
+// tarjeta de la galería al estilo Envato: solo la foto; al pasar el ratón, arriba el título (cortado) y a la derecha,
+// pegados a la esquina inferior, tres botones redondos: ⬇ descargar (abajo), ✏️ editar, 🗑 borrar (arriba)
+const tituloFoto = f => String(f.desc || '').replace(/\s*\(.*$/, '') || 'Imagen';
 function tarjetaFoto(f) {
-  const cat = f.estado === 'catalogando';
-  const pie = FT.borrar === f.id ? confirmaBorrar(f)
-    : '<div class="ft-acc">' + (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Recuperar</button>' :
-      '<button class="btn ft-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button><button class="btn ft-ico" data-ft-editar="' + esc(f.id) + '" aria-label="Editar ficha" title="Editar ficha">✏️</button><button class="btn ft-borra ft-ico" data-ft-borrar="' + esc(f.id) + '" aria-label="Borrar" title="Borrar">🗑</button>') + '</div>';
-  return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '"><div class="ft-img" data-ft-ver="' + esc(f.id) + '" role="button" tabindex="0" aria-label="Ver grande: ' + esc(f.desc) + '"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy">' +
-    (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + '</div><figcaption>' + pie + '</figcaption></figure>';
+  const cat = f.estado === 'catalogando', t = tituloFoto(f);
+  const capa = f.oculta ? '<div class="ft-botones"><button class="ft-red ft-red-txt" data-ft-mostrar="' + esc(f.id) + '">Recuperar</button></div>'
+    : '<div class="ft-botones"><button class="ft-red" data-ft-borrar="' + esc(f.id) + '" aria-label="Borrar" title="Borrar">🗑</button>' +
+      '<button class="ft-red" data-ft-editar="' + esc(f.id) + '" aria-label="Editar ficha" title="Editar ficha">✏️</button>' +
+      '<button class="ft-red" data-ft-bajar="' + esc(f.id) + '" aria-label="Descargar" title="Descargar">⬇</button></div>';
+  return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '' + '">' +
+    '<div class="ft-img" data-ft-ver="' + esc(f.id) + '" role="button" tabindex="0" aria-label="Ver grande: ' + esc(t) + '"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy"></div>' +
+    '<div class="ft-tit" title="' + esc(t) + '">' + esc(t) + '</div>' + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + capa + '</figure>';
 }
 function vFotos() {
   const todas = fotosCatalogo(), vis = todas.filter(pasaFoto), ocultas = todas.filter(f => f.oculta).length;
@@ -267,9 +279,8 @@ document.addEventListener('click', e => {
   const vp = t.closest('[data-ft-vpasa]'); if (vp) { pasarVisor(+vp.dataset.ftVpasa); return; }
   if (t.id === 'ft-limpiar') { FT.f = {rama: '', personas: '', tono: '', orientacion: '', q: ''}; render(); return; }
   const dl = t.closest('[data-ft-bajar]'); if (dl) { bajarFoto(dl.dataset.ftBajar, dl); return; }
-  const bo = t.closest('[data-ft-borrar]'); if (bo) { FT.borrar = bo.dataset.ftBorrar; render(); return; }
-  if (t.closest('[data-ft-no]')) { FT.borrar = ''; render(); return; }
-  const si = t.closest('[data-ft-si]'); if (si) { const id = si.dataset.ftSi; if (FT.visor === id) { FT.borrar = ''; if (fotosVisibles().length > 1) pasarVisor(1); else cerrarVisor(); } borrarFoto(id); return; }
+  const bo = t.closest('[data-ft-borrar]'); if (bo) { avisoBorrar(bo.dataset.ftBorrar); return; }
+  const si = t.closest('[data-ft-si]'); if (si) { const id = si.dataset.ftSi; cerrarPanel(); if (FT.visor === id) { if (fotosVisibles().length > 1) pasarVisor(1); else cerrarVisor(); } borrarFoto(id); return; }
   const mo = t.closest('[data-ft-mostrar]'); if (mo) { const id = mo.dataset.ftMostrar; DB.doc('fotos/' + id).set(Object.assign({}, FT.docs[id], {oculta: false})); return; }
   const ed = t.closest('[data-ft-editar]'); if (ed) { abrirFichaFoto(ed.dataset.ftEditar); return; }
   if (t.id === 'ft-e-ok') { guardarFichaFoto(); return; }
