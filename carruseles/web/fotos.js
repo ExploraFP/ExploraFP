@@ -210,7 +210,7 @@ function tarjetaFoto(f) {
 function vFotos() {
   const todas = fotosCatalogo(), vis = todas.filter(pasaFoto), ocultas = todas.filter(f => f.oculta).length;
   const subidas = todas.filter(f => !f.base).length;
-  let h = cabecera('Banco de fotos', '', [[todas.length - ocultas, 'en uso', 'ok'], [subidas, 'subidas por ti']]);
+  let h = cabecera('Banco de imágenes', '', [[todas.length - ocultas, 'en uso', 'ok'], [subidas, 'subidas por ti']]);
   if (FT.assets) h += '<label class="ft-subir" id="ft-zona"><input type="file" id="ft-input" accept="image/jpeg,image/png,image/webp,image/heic,.heic" multiple hidden>' +
     '<b>📷 Sube fotos</b><span>' + (FT.subiendo ? 'Subiendo ' + FT.subiendo + '…' : 'Arrástralas aquí o haz clic. Claude las cataloga solo; tú corriges o borras.') + '</span></label>';
   else h += '<p class="ft-aviso">Para subir fotos abre la web en claude.ai con permiso de edición.</p>';
