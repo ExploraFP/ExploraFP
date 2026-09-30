@@ -140,6 +140,22 @@ let FT_COLS = 0;
 window.addEventListener('resize', () => { if (S.v !== 'fotos') return; const n = colsGaleria(); if (n !== FT_COLS) { FT_COLS = n; render(); } });
 function fotosVisibles() { return fotosCatalogo().filter(pasaFoto); }
 function abrirVisor(id) { FT.visor = id; pintarVisor(); }
+// fotos parecidas: misma rama, personas, tono, orientación, etiquetas y palabras de la descripción en común
+const palabrasFoto = f => new Set(norm(tituloFoto(f) + ' ' + (f.etiquetas || []).join(' ')).split(/[^a-z0-9ñ]+/).filter(w => w.length > 3));
+function parecidas(f, n) {
+  const pf = palabrasFoto(f), et = new Set(f.etiquetas || []);
+  return fotosCatalogo().filter(x => x.id !== f.id && !x.oculta).map(x => {
+    let p = (x.rama === f.rama && f.rama !== 'General' ? 3 : 0) + (x.personas === f.personas ? 2 : 0) + (x.tono === f.tono ? 2 : 0) + (x.orientacion === f.orientacion ? 1 : 0);
+    (x.etiquetas || []).forEach(e => { if (et.has(e)) p += 3; });
+    palabrasFoto(x).forEach(w => { if (pf.has(w)) p += 2; });
+    return [p, x];
+  }).filter(a => a[0] >= 4).sort((a, b) => b[0] - a[0]).slice(0, n).map(a => a[1]);
+}
+// abrir una parecida: si los filtros la esconden, se quitan para poder seguir pasando
+function abrirParecida(id) {
+  if (!fotosVisibles().some(x => x.id === id)) { FT.f = {rama: '', personas: '', tono: '', orientacion: '', q: ''}; FT.visor = id; render(); }
+  else abrirVisor(id);
+}
 function cerrarVisor() { FT.visor = ''; const v = document.getElementById('ft-visor'); if (v) v.remove(); document.body.style.overflow = ''; }
 function pasarVisor(d) {
   const l = fotosVisibles(); if (!l.length) return cerrarVisor();
@@ -155,7 +171,10 @@ function pintarVisor() {
   v.setAttribute('aria-label', f.desc);
   v.innerHTML = '<button class="ft-v-x" data-ft-vx="1" aria-label="Cerrar">×</button>' +
     (l.length > 1 ? '<button class="ft-v-flecha ant" data-ft-vpasa="-1" aria-label="Anterior">‹</button><button class="ft-v-flecha sig" data-ft-vpasa="1" aria-label="Siguiente">›</button>' : '') +
-    '<div class="ft-v-caja"><div class="ft-v-fig"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '"></div>' +
+    '<div class="ft-v-caja"><div class="ft-v-fig"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '">' +
+      (() => { const ps = parecidas(f, 6); return ps.length ? '<div class="ft-v-par"><span>Parecidas</span><div>' +
+        ps.map(x => '<button data-ft-par="' + esc(x.id) + '" title="' + esc(tituloFoto(x)) + '" aria-label="Ver ' + esc(tituloFoto(x)) + '"><img src="' + esc(x.ruta) + '" alt="" loading="lazy"></button>').join('') + '</div></div>' : ''; })() +
+    '</div>' +
     '<aside class="ft-v-panel"><span class="ft-v-n">' + (i + 1) + ' / ' + l.length + '</span>' + metaFoto(f) +
     '<div class="ft-v-acc">' + ('<button class="btn ft-v-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button>' +
       (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Recuperar</button>' :
@@ -292,6 +311,7 @@ document.addEventListener('click', e => {
   const t = e.target;
   const ver = t.closest('[data-ft-ver]'); if (ver) { abrirVisor(ver.dataset.ftVer); return; }
   if (t.closest('[data-ft-vx]') || t.id === 'ft-visor' || t.classList.contains('ft-v-fig')) { cerrarVisor(); return; }
+  const pa = t.closest('[data-ft-par]'); if (pa) { abrirParecida(pa.dataset.ftPar); return; }
   const vp = t.closest('[data-ft-vpasa]'); if (vp) { pasarVisor(+vp.dataset.ftVpasa); return; }
   if (t.id === 'ft-limpiar') { FT.f = {rama: '', personas: '', tono: '', orientacion: '', q: ''}; render(); return; }
   const dl = t.closest('[data-ft-bajar]'); if (dl) { bajarFoto(dl.dataset.ftBajar, dl); return; }
