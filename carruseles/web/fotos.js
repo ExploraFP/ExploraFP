@@ -114,7 +114,7 @@ async function catalogarFoto(id, blob) {
 async function borrarFoto(id) {
   const f = fotosCatalogo().find(x => x.id === id); if (!f) return;
   FT.borrar = '';
-  if (f.base) { await DB.doc('fotos/' + id).set(Object.assign({}, FT.docs[id], {oculta: true})); toast('Foto oculta: ya no saldrá en los carruseles nuevos'); return; }
+  if (f.base) { await DB.doc('fotos/' + id).set(Object.assign({}, FT.docs[id], {oculta: true})); toast('Foto borrada. Puedes recuperarla en «Ver borradas»'); return; }
   try {
     if (FT.assets) await FT.assets.delete(f.asset);
     await DB.doc('fotos/' + id).delete(); delete FT.docs[id]; rehacerFotos(); render(); toast('Foto borrada');
@@ -155,9 +155,11 @@ function pintarVisor() {
   v.setAttribute('aria-label', f.desc);
   v.innerHTML = '<button class="ft-v-x" data-ft-vx="1" aria-label="Cerrar">×</button>' +
     (l.length > 1 ? '<button class="ft-v-flecha ant" data-ft-vpasa="-1" aria-label="Anterior">‹</button><button class="ft-v-flecha sig" data-ft-vpasa="1" aria-label="Siguiente">›</button>' : '') +
-    '<figure class="ft-v-fig"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '">' +
-    '<figcaption><span class="ft-v-n">' + (i + 1) + ' / ' + l.length + '</span><span class="ft-v-desc">' + esc(f.desc) + '</span>' +
-    '<button class="btn ft-v-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button></figcaption></figure>';
+    '<div class="ft-v-caja"><div class="ft-v-fig"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '"></div>' +
+    '<aside class="ft-v-panel"><span class="ft-v-n">' + (i + 1) + ' / ' + l.length + '</span>' + metaFoto(f) +
+    '<div class="ft-v-acc">' + (FT.borrar === f.id ? confirmaBorrar(f) : '<button class="btn ft-v-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button>' +
+      (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Recuperar</button>' :
+      '<button class="btn" data-ft-editar="' + esc(f.id) + '">✏️ Editar ficha</button><button class="btn ft-borra" data-ft-borrar="' + esc(f.id) + '">🗑 Borrar</button>')) + '</div></aside></div>';
   const sig = l[(i + 1) % l.length]; if (sig) { const im = new Image(); im.src = sig.ruta; }
 }
 document.addEventListener('keydown', e => {
@@ -191,26 +193,30 @@ function desplegableFiltro(k, todas, lista, emo) {
     '<option value="">' + esc(todas) + '</option>' +
     lista.map(v => '<option value="' + esc(v) + '"' + (FT.f[k] === v ? ' selected' : '') + '>' + (emo && emo[v] ? emo[v] + ' ' : '') + esc(v) + '</option>').join('') + '</select></label>';
 }
+// ficha completa (desc, rama, personas, tono, orientación, etiquetas): solo en el visor, a la derecha de la foto
+function metaFoto(f) {
+  const fila = (k, v) => v ? '<div class="ft-m-fila"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : '';
+  return '<p class="ft-m-desc">' + esc(f.desc) + '</p><dl class="ft-m">' +
+    fila('Rama', esc(f.rama)) + fila('Personas', f.personas ? FOTO_PER_EMO[f.personas] + ' ' + esc(f.personas) : '') +
+    fila('Tono', f.tono ? FOTO_TONO_EMO[f.tono] + ' ' + esc(f.tono) : '') + fila('Orientación', f.orientacion ? FOTO_OR_EMO[f.orientacion] + ' ' + esc(f.orientacion) : '') +
+    fila('Etiquetas', (f.etiquetas || []).map(x => '<span class="ft-tag ft-et">#' + esc(x) + '</span>').join(' ')) + '</dl>';
+}
+function confirmaBorrar(f) {
+  return '<div class="ft-confirma"><span>¿Borrarla? Los carruseles que ya la usen se quedarán sin ella.</span>' +
+    '<button class="btn" data-ft-no="1">No</button><button class="btn ft-si" data-ft-si="' + esc(f.id) + '">Borrar</button></div>';
+}
+// tarjeta de la galería: solo la foto y Descargar (grande) · ✏️ · 🗑 (pedido de Sandra: nada de etiquetas aquí)
 function tarjetaFoto(f) {
   const cat = f.estado === 'catalogando';
-  const pie = FT.borrar === f.id
-    ? '<div class="ft-confirma"><span>' + (f.base ? '¿Ocultarla? Es de serie, no se borra.' : '¿Borrarla para siempre? Los carruseles que ya la usen se quedarán sin foto.') + '</span>' +
-      '<button class="btn" data-ft-no="1">No</button><button class="btn ft-si" data-ft-si="' + esc(f.id) + '">' + (f.base ? 'Ocultar' : 'Borrar') + '</button></div>'
-    : '<div class="ft-acc">' + (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Volver a usar</button>' :
-      '<button class="btn" data-ft-editar="' + esc(f.id) + '">✏️ Editar ficha</button><button class="btn ft-ico" data-ft-bajar="' + esc(f.id) + '" aria-label="Descargar foto" title="Descargar">⬇</button><button class="btn ft-borra ft-ico" data-ft-borrar="' + esc(f.id) + '" aria-label="' + (f.base ? 'Ocultar' : 'Borrar') + ' foto">🗑</button>') + '</div>';
-  return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '"><div class="ft-img" data-ft-ver="' + esc(f.id) + '" role="button" tabindex="0" aria-label="Ver grande"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy">' +
-    (f.base ? '<span class="ft-serie">De serie</span>' : '') + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + '</div>' +
-    '<figcaption><p class="ft-desc">' + esc(f.desc) + '</p><div class="ft-tags">' +
-    (f.rama ? '<span class="ft-tag">' + esc(f.rama) + '</span>' : '') +
-    (f.personas ? '<span class="ft-tag">' + FOTO_PER_EMO[f.personas] + ' ' + esc(f.personas) + '</span>' : '') +
-    (f.tono ? '<span class="ft-tag">' + FOTO_TONO_EMO[f.tono] + ' ' + esc(f.tono) + '</span>' : '') +
-    (f.orientacion ? '<span class="ft-tag ft-or">' + FOTO_OR_EMO[f.orientacion] + ' ' + esc(f.orientacion) + '</span>' : '') +
-    (f.etiquetas || []).map(x => '<span class="ft-tag ft-et">#' + esc(x) + '</span>').join('') + '</div>' + pie + '</figcaption></figure>';
+  const pie = FT.borrar === f.id ? confirmaBorrar(f)
+    : '<div class="ft-acc">' + (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Recuperar</button>' :
+      '<button class="btn ft-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button><button class="btn ft-ico" data-ft-editar="' + esc(f.id) + '" aria-label="Editar ficha" title="Editar ficha">✏️</button><button class="btn ft-borra ft-ico" data-ft-borrar="' + esc(f.id) + '" aria-label="Borrar" title="Borrar">🗑</button>') + '</div>';
+  return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '"><div class="ft-img" data-ft-ver="' + esc(f.id) + '" role="button" tabindex="0" aria-label="Ver grande: ' + esc(f.desc) + '"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy">' +
+    (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : '') + '</div><figcaption>' + pie + '</figcaption></figure>';
 }
 function vFotos() {
   const todas = fotosCatalogo(), vis = todas.filter(pasaFoto), ocultas = todas.filter(f => f.oculta).length;
-  const subidas = todas.filter(f => !f.base).length;
-  let h = cabecera('Banco de imágenes', '', [[todas.length - ocultas, 'en uso', 'ok'], [subidas, 'subidas por ti']]);
+  let h = cabecera('Banco de imágenes', '', [[todas.length - ocultas, 'imágenes', 'ok']]);
   if (FT.assets) h += '<label class="ft-subir" id="ft-zona"><input type="file" id="ft-input" accept="image/jpeg,image/png,image/webp,image/heic,.heic" multiple hidden>' +
     '<b>📷 Sube fotos</b><span>' + (FT.subiendo ? 'Subiendo ' + FT.subiendo + '…' : 'Arrástralas aquí o haz clic. Claude las cataloga solo; tú corriges o borras.') + '</span></label>';
   else h += '<p class="ft-aviso">Para subir fotos abre la web en claude.ai con permiso de edición.</p>';
@@ -220,7 +226,7 @@ function vFotos() {
     desplegableFiltro('tono', 'Cualquier tono', FOTO_TONOS, FOTO_TONO_EMO) +
     desplegableFiltro('orientacion', 'Vertical u horizontal', FOTO_ORIENT, FOTO_OR_EMO) +
     (FT.f.rama || FT.f.personas || FT.f.tono || FT.f.orientacion || FT.f.q ? '<button class="ft-limpiar" id="ft-limpiar" aria-label="Quitar filtros" title="Quitar filtros">×</button>' : '') + '</div></div>' +
-    (ocultas ? '<label class="mz-todas ft-ocultas"><input type="checkbox" id="ft-verocultas"' + (FT.verOcultas ? ' checked' : '') + '> Ver ocultas (' + ocultas + ')</label>' : '') + '</div>';
+    (ocultas ? '<label class="mz-todas ft-ocultas"><input type="checkbox" id="ft-verocultas"' + (FT.verOcultas ? ' checked' : '') + '> Ver borradas (' + ocultas + ')</label>' : '') + '</div>';
   // galería tipo Pinterest: columnas repartidas en orden de lectura (1ª foto col 1, 2ª col 2…), así «siguiente» en el visor va de izquierda a derecha
   const nc = colsGaleria(), cols = Array.from({length: nc}, () => []);
   vis.forEach((f, i) => cols[i % nc].push(tarjetaFoto(f)));
@@ -263,7 +269,7 @@ document.addEventListener('click', e => {
   const dl = t.closest('[data-ft-bajar]'); if (dl) { bajarFoto(dl.dataset.ftBajar, dl); return; }
   const bo = t.closest('[data-ft-borrar]'); if (bo) { FT.borrar = bo.dataset.ftBorrar; render(); return; }
   if (t.closest('[data-ft-no]')) { FT.borrar = ''; render(); return; }
-  const si = t.closest('[data-ft-si]'); if (si) { borrarFoto(si.dataset.ftSi); return; }
+  const si = t.closest('[data-ft-si]'); if (si) { const id = si.dataset.ftSi; if (FT.visor === id) { FT.borrar = ''; if (fotosVisibles().length > 1) pasarVisor(1); else cerrarVisor(); } borrarFoto(id); return; }
   const mo = t.closest('[data-ft-mostrar]'); if (mo) { const id = mo.dataset.ftMostrar; DB.doc('fotos/' + id).set(Object.assign({}, FT.docs[id], {oculta: false})); return; }
   const ed = t.closest('[data-ft-editar]'); if (ed) { abrirFichaFoto(ed.dataset.ftEditar); return; }
   if (t.id === 'ft-e-ok') { guardarFichaFoto(); return; }
