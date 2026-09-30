@@ -150,3 +150,11 @@
   .ft-acc .ft-bajar{flex:1 1 100% !important}
   .ft-acc .ft-ico{flex:1 1 0 !important;min-width:0}
 }
+/* botones como antes (blancos, mismo espacio), solo cambia el orden: Descargar · ✏️ · 🗑 */
+.ft-acc .ft-bajar,:root[data-theme="dark"] .ft-acc .ft-bajar{background:var(--surface) !important;border-color:var(--line2) !important;color:var(--ink) !important;font-weight:600}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ft-acc .ft-bajar{background:var(--surface) !important;border-color:var(--line2) !important;color:var(--ink) !important}}
+.ft-acc .ft-bajar:hover{filter:none;border-color:var(--brand) !important}
+.ft-card figcaption{padding:12px 13px 13px}
+.ft-acc{gap:8px}
+.ft-acc .ft-ico{min-width:40px}
+@media (max-width:720px){ .ft-card figcaption{padding:10px} .ft-acc{gap:8px} .ft-acc .ft-bajar{font-size:inherit} }

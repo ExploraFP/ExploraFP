@@ -469,7 +469,7 @@ function vTodoHecho() {
         (c ? '<button class="btn pri" data-est-abrir="' + c.id + '">Abrir</button><button class="btn" data-est-descargar="' + c.id + '">Descargar</button>' : '') +
         (x.url ? '<a class="btn' + (c ? '' : ' pri') + '" href="' + esc(x.url) + '" target="_blank" rel="noopener">Drive</a>' : '') +
         (x.propio ? '<button class="btn" data-editar="' + x.id + '">Editar</button>' : '') +
-        (it ? '<button class="btn" data-abrir="' + it.id + '">Ver idea</button>'
+        (it ? '<button class="btn" data-abrir="' + it.id + '">Ver ficha</button>'
             : '<button class="btn" data-enlazar="' + esc(x.clave) + '">Unir a una idea</button>') +
       '</div></div></article>';
   }).join('') + '</div>';
@@ -509,7 +509,7 @@ pintarFicha = function () {
   const e = estadoIdea(it), c = carruselDe(it), o = op(it.id), obj = objDe(it);
   $('#drawer').classList.add('mz-ancha');
   const niv = it.nivel ? (NIVEL[it.nivel] || it.nivel) : '';
-  const extra = it.alcTipo === 'formacion' ? 'Rama ' + it.ramaColor + (niv ? ' · ' + niv : '') : it.alcTipo === 'transversal' ? 'Para todas las ramas' : niv;
+  const extra = it.alcTipo === 'formacion' ? 'Rama ' + it.ramaColor + (niv ? ' · ' + niv : '') : it.alcTipo === 'transversal' ? '' : niv;
   const cta = (c && c.cta) || OBJETIVOS[obj].cta;
   // cabecera: estado, hook y formación
   $('#dhead').innerHTML = '<div class="fx-top"><span class="fx-estado fx-' + e + '">' + esc(ESTADOS_IDEA[e]) + '</span>' +
