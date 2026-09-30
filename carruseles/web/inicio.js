@@ -79,3 +79,9 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('menu-abierto')) menuMovil(false); });
 (function () { const v = document.createElement('div'); v.id = 'menu-velo'; document.body.appendChild(v); })();
+
+/* Tildes en los buscadores: en Mac la tilde es una «tecla muerta» (´ + e = é) y el navegador lo trata como composición.
+   Si la página se repinta a mitad, la tilde se pierde. Mientras se compone no se reacciona; al terminar, sí. */
+const BUSCADORES = ['buscar', 'ft-q'];
+document.addEventListener('input', e => { if (e.isComposing && BUSCADORES.indexOf(e.target.id) >= 0) e.stopImmediatePropagation(); }, true);
+document.addEventListener('compositionend', e => { if (BUSCADORES.indexOf(e.target.id) >= 0) e.target.dispatchEvent(new Event('input', {bubbles: true})); }, true);
