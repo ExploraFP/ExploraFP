@@ -24,11 +24,17 @@ const DESC = {
   "foto-chica-gafas-portatil-parque": "chica con gafas de sol y portátil en un parque (estudiar donde quieras, flexibilidad)",
   "foto-chica-escritorio-sonrie": "chica sonriente en su escritorio mirando a cámara (tutora, testimonio, cercanía)",
   "foto-chica-agobiada-examen": "chica agobiada con la mano en la cabeza escribiendo (estrés, lo malo, bloqueo, exámenes)",
+  // capturas de nuestra plataforma (datos ficticios, aprobadas): van dentro del portátil
+  "plataforma-calendario": "captura de la plataforma: calendario del mes con las clases en directo (organización, horarios, clases)",
+  "plataforma-chat-tutor": "captura de la plataforma: chat con el tutor personal (acompañamiento, dudas, tutor)",
+  "plataforma-practicar": "captura de la plataforma: estadísticas de práctica, racha y cursos recomendados (progreso, practicar)",
+  "plataforma-test": "captura de la plataforma: test de práctica con la corrección explicada (exámenes, aprender, practicar)",
+  "plataforma-mis-cursos": "captura de la plataforma: mis cursos con el progreso de cada módulo (ciclo, módulos, progreso)",
 };
 const FOTOS = [];
 const nav = await chromium.launch();
 const pag = await nav.newPage();
-for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^foto-.*\.(jpe?g|png|webp)$/.test(f)).sort()) {
+for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^(foto|plataforma)-.*\.(jpe?g|png|webp)$/.test(f)).sort()) {
   const clave = f.replace(/\.[^.]+$/, "");
   const datos = await pag.evaluate(async (src) => {
     const i = new Image(); i.src = src; await i.decode();
@@ -36,9 +42,9 @@ for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^foto-.*
     const c = document.createElement("canvas"); c.width = Math.round(i.width * k); c.height = Math.round(i.height * k);
     c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
     return { url: c.toDataURL("image/jpeg", 0.84), w: c.width, h: c.height };
-  }, `data:image/jpeg;base64,${readFileSync(join(RAIZ, "contenido/img", f)).toString("base64")}`);
+  }, `data:image/${/\.webp$/.test(f) ? "webp" : /\.png$/.test(f) ? "png" : "jpeg"};base64,${readFileSync(join(RAIZ, "contenido/img", f)).toString("base64")}`);
   writeFileSync(join(DIST, "fotos", clave + ".jpg"), Buffer.from(datos.url.split(",")[1], "base64"));
-  FOTOS.push({ ruta: `fotos/${clave}.jpg`, desc: DESC[clave] || clave.replace(/^foto-/, "").replace(/-/g, " "), w: datos.w, h: datos.h });
+  FOTOS.push({ ruta: `fotos/${clave}.jpg`, desc: DESC[clave] || clave.replace(/^(foto|plataforma)-/, "").replace(/-/g, " "), w: datos.w, h: datos.h, tipo: /^plataforma-/.test(clave) ? "Plataforma" : "Stock" });
 }
 await nav.close();
 

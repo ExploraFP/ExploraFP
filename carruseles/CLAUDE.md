@@ -55,7 +55,7 @@ Si un YAML falla, el render sigue con los demás y lo lista al final.
 ## Recursos
 - Logos en `assets/logos/`, trazos originales en `assets/trazos/` (óvalo, flecha, notas, post-it).
   Se aplican como máscara CSS incrustada en base64 (Chrome exige CORS para máscaras con file://).
-- Capturas de la plataforma en `contenido/img/plataforma-*.webp`: mockups de producto con datos ficticios, aprobados.
+- Capturas de la plataforma en `contenido/img/plataforma-*.webp`: mockups de producto con datos ficticios, aprobados. Desde oct-2026 también están en el banco de imágenes de la web (construir.mjs lee `foto-*` y `plataforma-*`), con «Tipo: Plataforma» (filtro «Tipo» y campo en la ficha; las de stock son «Stock»). En la lista que ve Claude llevan la nota: solo en slides de contenido con `marco: portatil`, nunca en portada ni a pantalla completa. Para añadir más capturas: `contenido/img/plataforma-<nombre>.webp|png|jpg` + su descripción en `DESC` de construir.mjs, y publicar el nuevo `fotos/plataforma-<nombre>.jpg` en `files`.
 - `contenido/img/foto-web-alumnos.jpg`: recorte de la foto de la home de explorafp.com.
 - Tipografía titular: Gravity Condensed en `fonts/GravityCondensed.otf` (fuera de git por licencia).
   Licencia pagada por Explora (el nombre interno es "ABC Gravity Edu"). La licencia de Dinamo prohíbe

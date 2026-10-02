@@ -9,6 +9,8 @@ const FOTO_RAMAS = ['General', 'Sanidad', 'Tecnología', 'Comercio', 'Administra
 const FOTO_PERSONAS = ['Una persona', 'Varias personas', 'Sin personas'];
 const FOTO_TONOS = ['Positivo', 'Problema', 'Neutro'];
 const FOTO_ORIENT = ['Vertical', 'Horizontal', 'Cuadrada'];
+// Tipo: fotos de stock o capturas de nuestra plataforma (estas van dentro del portátil de las plantillas: «marco: portatil»)
+const FOTO_TIPOS = ['Stock', 'Plataforma'];
 const FOTO_TONO_EMO = {Positivo: '🙂', Problema: '😣', Neutro: '😐'};
 const FOTO_OR_EMO = {Vertical: '▯', Horizontal: '▭', Cuadrada: '□'};
 const FOTO_PER_EMO = {'Una persona': '👤', 'Varias personas': '👥', 'Sin personas': '📦'};
@@ -25,13 +27,18 @@ const FOTO_CAT_BASE = {
   'foto-chica-gafas-portatil-parque': ['Una persona', 'Positivo', ['flexibilidad', 'parque', 'portátil']],
   'foto-chica-escritorio-sonrie': ['Una persona', 'Positivo', ['testimonio', 'cercanía', 'escritorio']],
   'foto-chica-agobiada-examen': ['Una persona', 'Problema', ['estrés', 'exámenes', 'bloqueo']],
+  'plataforma-calendario': ['Sin personas', 'Positivo', ['plataforma', 'calendario', 'clases']],
+  'plataforma-chat-tutor': ['Sin personas', 'Positivo', ['plataforma', 'tutor', 'dudas']],
+  'plataforma-practicar': ['Sin personas', 'Positivo', ['plataforma', 'progreso', 'práctica']],
+  'plataforma-test': ['Sin personas', 'Positivo', ['plataforma', 'test', 'exámenes']],
+  'plataforma-mis-cursos': ['Sin personas', 'Positivo', ['plataforma', 'cursos', 'progreso']],
 };
-const FT = {docs: {}, assets: null, subiendo: 0, f: {rama: '', personas: '', tono: '', orientacion: '', q: ''}, verOcultas: false, borrar: '', editar: ''};
+const FT = {docs: {}, assets: null, subiendo: 0, f: {tipo: '', rama: '', personas: '', tono: '', orientacion: '', q: ''}, verOcultas: false, borrar: '', editar: ''};
 const claveBase = ruta => ruta.replace(/^fotos\//, '').replace(/\.[^.]+$/, '');
 function fotosCatalogo() {
   const base = FOTOS_BASE.map(f => { const k = claveBase(f.ruta), c = FOTO_CAT_BASE[k] || ['Una persona', 'Neutro', []], d = FT.docs['base-' + k] || {};
-    return Object.assign({id: 'base-' + k, base: true, ruta: f.ruta, desc: f.desc, rama: 'General', personas: c[0], tono: c[1], etiquetas: c[2], orientacion: f.w ? orientacionDe(f.w, f.h) : 'Horizontal', w: f.w, h: f.h}, d, {ruta: f.ruta}); });
-  const subidas = Object.keys(FT.docs).filter(k => k.slice(0, 5) !== 'base-' && FT.docs[k].asset).map(k => Object.assign({id: k}, FT.docs[k], {ruta: '/_blob/' + FT.docs[k].asset}))
+    return Object.assign({id: 'base-' + k, base: true, ruta: f.ruta, desc: f.desc, rama: 'General', personas: c[0], tono: c[1], etiquetas: c[2], orientacion: f.w ? orientacionDe(f.w, f.h) : 'Horizontal', w: f.w, h: f.h, tipo: f.tipo || 'Stock'}, d, {ruta: f.ruta}); });
+  const subidas = Object.keys(FT.docs).filter(k => k.slice(0, 5) !== 'base-' && FT.docs[k].asset).map(k => Object.assign({id: k}, FT.docs[k], {ruta: '/_blob/' + FT.docs[k].asset, tipo: FT.docs[k].tipo || 'Stock'}))
     .sort((a, b) => String(b.subida || '').localeCompare(String(a.subida || '')));
   return subidas.concat(base);
 }
@@ -39,7 +46,8 @@ function fotosCatalogo() {
 function rehacerFotos() {
   const lista = fotosCatalogo().filter(f => !f.oculta && f.estado !== 'subiendo');
   FOTOS.length = 0;
-  lista.forEach(f => FOTOS.push({ruta: f.ruta, desc: f.desc + (f.base ? '' : ' [' + [f.rama, f.personas, f.tono].concat(f.etiquetas || []).filter(Boolean).join(', ') + ']')}));
+  lista.forEach(f => FOTOS.push({ruta: f.ruta, desc: f.desc + (f.base ? '' : ' [' + [f.rama, f.personas, f.tono].concat(f.etiquetas || []).filter(Boolean).join(', ') + ']') +
+    (f.tipo === 'Plataforma' ? ' [CAPTURA DE NUESTRA PLATAFORMA: úsala solo en una slide de contenido, con "marco": "portatil"; nunca en la portada ni a pantalla completa]' : '')}));
 }
 (function cargarFotos() {
   let n = 0; const t = setInterval(async () => {
@@ -171,7 +179,7 @@ function parecidas(f, n) {
 }
 // abrir una parecida: si los filtros la esconden, se quitan para poder seguir pasando
 function abrirParecida(id) {
-  if (!fotosVisibles().some(x => x.id === id)) { FT.f = {rama: '', personas: '', tono: '', orientacion: '', q: ''}; FT.visor = id; render(); }
+  if (!fotosVisibles().some(x => x.id === id)) { FT.f = {tipo: '', rama: '', personas: '', tono: '', orientacion: '', q: ''}; FT.visor = id; render(); }
   else abrirVisor(id);
 }
 function cerrarVisor() { FT.visor = ''; const v = document.getElementById('ft-visor'); if (v) v.remove(); document.body.style.overflow = ''; }
@@ -222,6 +230,7 @@ function pasaFoto(f) {
   if (FT.f.rama && f.rama !== FT.f.rama) return false;
   if (FT.f.personas && f.personas !== FT.f.personas) return false;
   if (FT.f.tono && f.tono !== FT.f.tono) return false;
+  if (FT.f.tipo && f.tipo !== FT.f.tipo) return false;
   if (FT.f.orientacion && f.orientacion !== FT.f.orientacion) return false;
   if (FT.f.q) { const q = norm(FT.f.q); if (norm([f.desc, f.rama, f.personas, f.tono].concat(f.etiquetas || []).join(' ')).indexOf(q) < 0) return false; }
   return true;
@@ -247,7 +256,7 @@ const fechaLarga = iso => { try { return new Date(iso).toLocaleDateString('es-ES
 function metaFoto(f) {
   const fila = (k, v) => v ? '<div class="ft-m-fila"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : '';
   return '<p class="ft-m-desc">' + esc(f.desc) + '</p><dl class="ft-m">' +
-    fila('Rama', esc(f.rama)) + fila('Personas', f.personas ? FOTO_PER_EMO[f.personas] + ' ' + esc(f.personas) : '') +
+    fila('Tipo', f.tipo === 'Plataforma' ? 'Captura de la plataforma (va dentro del portátil)' : 'Stock') + fila('Rama', esc(f.rama)) + fila('Personas', f.personas ? FOTO_PER_EMO[f.personas] + ' ' + esc(f.personas) : '') +
     fila('Tono', f.tono ? FOTO_TONO_EMO[f.tono] + ' ' + esc(f.tono) : '') + fila('Orientación', f.orientacion ? esc(f.orientacion) : '') +
     fila('Etiquetas', (f.etiquetas || []).map(x => '<span class="ft-tag ft-et">#' + esc(x) + '</span>').join(' ')) +
     fila('Subida', f.subida ? esc(fechaLarga(f.subida)) : 'Ya estaba en el banco') +
@@ -288,10 +297,10 @@ function vFotos() {
   else h += '<p class="ft-aviso">Para subir fotos abre la web en claude.ai con permiso de edición.</p>';
   h += '<div class="ft-filtros"><div class="ft-linea"><div class="mz-buscabarra ft-busca"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>' +
     '<input type="search" id="ft-q" placeholder="Busca: portátil, estrés, sanidad…" value="' + esc(FT.f.q) + '" aria-label="Buscar fotos"></div>' +
-    '<div class="ft-sels">' + desplegableFiltro('rama', 'Rama', FOTO_RAMAS) + desplegableFiltro('personas', 'Personas', FOTO_PERSONAS, FOTO_PER_EMO) +
+    '<div class="ft-sels">' + desplegableFiltro('tipo', 'Tipo', FOTO_TIPOS) + desplegableFiltro('rama', 'Rama', FOTO_RAMAS) + desplegableFiltro('personas', 'Personas', FOTO_PERSONAS, FOTO_PER_EMO) +
     desplegableFiltro('tono', 'Tono', FOTO_TONOS, FOTO_TONO_EMO) +
     desplegableFiltro('orientacion', 'Orientación', FOTO_ORIENT) +
-    (FT.f.rama || FT.f.personas || FT.f.tono || FT.f.orientacion || FT.f.q ? '<button class="ft-limpiar" id="ft-limpiar" aria-label="Quitar filtros" title="Quitar filtros">×</button>' : '') + '</div></div>' +
+    (FT.f.tipo || FT.f.rama || FT.f.personas || FT.f.tono || FT.f.orientacion || FT.f.q ? '<button class="ft-limpiar" id="ft-limpiar" aria-label="Quitar filtros" title="Quitar filtros">×</button>' : '') + '</div></div>' +
     (ocultas ? '<label class="mz-todas ft-ocultas"><input type="checkbox" id="ft-verocultas"' + (FT.verOcultas ? ' checked' : '') + '> Ver borradas (' + ocultas + ')</label>' : '') + '</div>';
   // galería tipo Pinterest: columnas repartidas en orden de lectura (1ª foto col 1, 2ª col 2…), así «siguiente» en el visor va de izquierda a derecha
   const nc = colsGaleria(), cols = Array.from({length: nc}, () => []);
@@ -306,13 +315,13 @@ function abrirFichaFoto(id) {
   $('#onb').innerHTML = '<div class="onbcaja mz-rapida" role="dialog" aria-modal="true" aria-label="Ficha de la foto"><header><k>Ficha de la foto</k><h2>✏️ Corrige lo que haga falta</h2></header><div class="cuerpo">' +
     '<img class="ft-fichaimg" src="' + esc(f.ruta) + '" alt="">' +
     '<label class="mz-cta">Qué se ve y para qué sirve<textarea id="ft-e-desc" rows="3">' + esc(f.desc) + '</textarea></label>' +
-    '<div class="ft-e-fila"><label class="mz-cta">Rama' + sel('ft-e-rama', FOTO_RAMAS, f.rama) + '</label><label class="mz-cta">Personas' + sel('ft-e-per', FOTO_PERSONAS, f.personas) + '</label>' +
+    '<div class="ft-e-fila"><label class="mz-cta">Tipo' + sel('ft-e-tipo', FOTO_TIPOS, f.tipo || 'Stock') + '</label><label class="mz-cta">Rama' + sel('ft-e-rama', FOTO_RAMAS, f.rama) + '</label><label class="mz-cta">Personas' + sel('ft-e-per', FOTO_PERSONAS, f.personas) + '</label>' +
     '<label class="mz-cta">Tono' + sel('ft-e-tono', FOTO_TONOS, f.tono) + '</label></div>' +
     '<label class="mz-cta">Etiquetas (separadas por comas)<input type="text" id="ft-e-et" value="' + esc((f.etiquetas || []).join(', ')) + '"></label>' +
     '</div><footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" id="ft-e-ok">Guardar</button></footer></div>';
 }
 async function guardarFichaFoto() {
-  const id = FT.editar, d = {desc: ($('#ft-e-desc').value || '').trim().slice(0, 160), rama: $('#ft-e-rama').value, personas: $('#ft-e-per').value, tono: $('#ft-e-tono').value,
+  const id = FT.editar, d = {desc: ($('#ft-e-desc').value || '').trim().slice(0, 160), tipo: $('#ft-e-tipo').value, rama: $('#ft-e-rama').value, personas: $('#ft-e-per').value, tono: $('#ft-e-tono').value,
     etiquetas: ($('#ft-e-et').value || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean).slice(0, 6)};
   cerrarPanel();
   try { await DB.doc('fotos/' + id).set(Object.assign({}, FT.docs[id], d)); toast('Ficha guardada'); } catch (e) { toast('No he podido guardarla'); }
@@ -333,7 +342,7 @@ document.addEventListener('click', e => {
   const rc = t.closest('[data-ft-recat]'); if (rc) { recatalogar(rc.dataset.ftRecat, rc); return; }
   const pa = t.closest('[data-ft-par]'); if (pa) { abrirParecida(pa.dataset.ftPar); return; }
   const vp = t.closest('[data-ft-vpasa]'); if (vp) { pasarVisor(+vp.dataset.ftVpasa); return; }
-  if (t.id === 'ft-limpiar') { FT.f = {rama: '', personas: '', tono: '', orientacion: '', q: ''}; render(); return; }
+  if (t.id === 'ft-limpiar') { FT.f = {tipo: '', rama: '', personas: '', tono: '', orientacion: '', q: ''}; render(); return; }
   const dl = t.closest('[data-ft-bajar]'); if (dl) { bajarFoto(dl.dataset.ftBajar, dl); return; }
   const bo = t.closest('[data-ft-borrar]'); if (bo) { avisoBorrar(bo.dataset.ftBorrar); return; }
   const si = t.closest('[data-ft-si]'); if (si) { const id = si.dataset.ftSi; cerrarPanel(); if (FT.visor === id) { if (fotosVisibles().length > 1) pasarVisor(1); else cerrarVisor(); } borrarFoto(id); return; }
@@ -365,3 +374,6 @@ function irHome() {
 }
 document.addEventListener('click', e => { if (e.target.closest && e.target.closest('#ir-home')) irHome(); });
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'ir-home') { e.preventDefault(); irHome(); } });
+
+// la lista que ve Claude, ya con el tipo marcado, desde el primer momento (luego se rehace con el db)
+rehacerFotos();
