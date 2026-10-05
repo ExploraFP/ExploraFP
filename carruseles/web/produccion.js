@@ -1,7 +1,7 @@
 /* ===================== Producción e Inventario, más claros =====================
    Cuatro estados con nombre fijo en toda la web: Por generar → En revisión → Listo → Publicado.
    · Producción es un tablero de 3 columnas; cada tarjeta tiene UN botón principal según su columna y un menú ⋯.
-   · «Dar el OK» pasa de En revisión a Listo (c.listo = true); «Marcar como publicado» pide fecha y enlace de Instagram
+   · «Aprobar» pasa de En revisión a Listo (c.listo = true); «Marcar como publicado» pide fecha y enlace de Instagram
      (c.estado = 'hecho', c.fecha, c.ig) y lo manda a Inventario.
    · Editor: pestañas «Slide» / «Caption», selector de fotos con buscador y filtros, avisos que llevan a su slide.
    · Inventario: por meses, con buscador y filtros de objetivo y formación; un botón (Abrir) y el resto en ⋯. */
@@ -139,7 +139,7 @@ pintarEditor = function (todo) {
   if (cab && !cab.querySelector('.pr-etapa')) {
     const h2 = cab.querySelector('h2'); if (h2) h2.insertAdjacentHTML('afterend', pillEtapa(c));
     const hb = cab.querySelector('#est-hecho');
-    if (hb) hb.outerHTML = e === 'revision' ? '<button class="btn pri" id="pr-ok">✓ Dar el OK</button>'
+    if (hb) hb.outerHTML = e === 'revision' ? '<button class="btn pri" id="pr-ok">Aprobar</button>'
       : e === 'listo' ? '<button class="btn pri" data-pr-publicar="' + c.id + '">Marcar como publicado</button>'
       : e === 'publicado' ? '<span class="pr-pub">✓ Publicado' + (c.fecha ? ' el ' + esc(fCorta(c.fecha)) : '') + '</span>' : '';
     const dl = cab.querySelector('#est-descargar'); if (dl) dl.textContent = '⬇ Descargar';
