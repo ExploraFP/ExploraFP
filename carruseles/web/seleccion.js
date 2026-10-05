@@ -64,9 +64,9 @@ pintarEditor = function (todo) {
     const meta = document.createElement('div'); meta.className = 'eb-meta';
     [etapa, q('.eb-links'), guardado].forEach(x => x && meta.appendChild(x));
     if (h2) tit.appendChild(h2); tit.appendChild(meta);
-    [volver, tit].forEach(x => x && izq.appendChild(x));
+    [volver, deshacer, tit].forEach(x => x && izq.appendChild(x));   // ↶ a la izquierda, junto a ← (pedido de Sandra)
     const der = document.createElement('div'); der.className = 'eb-der';
-    (et === 'listo' ? [deshacer, principal, descargar] : [deshacer, descargar, menu, principal]).forEach(x => x && x.isConnected !== false && der.appendChild(x));
+    (et === 'listo' ? [principal, descargar] : [descargar, menu, principal]).forEach(x => x && x.isConnected !== false && der.appendChild(x));
     cab.innerHTML = ''; cab.appendChild(izq); if (diseno) cab.appendChild(diseno); cab.appendChild(der);
   }
   // Listo y Terminado: solo se ven (pedido de Sandra). Para cambiar algo, «Volver a revisión».
@@ -84,6 +84,9 @@ pintarEditor = function (todo) {
     }
     return;
   }
+  // la ventana de diseño nunca se sale de la pantalla
+  const dp = ed.querySelector('.sel-diseno-pop');
+  if (dp) { dp.style.left = '0px'; const r = dp.getBoundingClientRect(), sobra = r.right - (window.innerWidth - 12); if (sobra > 0) dp.style.left = Math.max(-r.left + 12, -sobra) + 'px'; }
   // panel: sin formulario. Chat arriba, tipo de slide y «Añadir»
   const tab = ed.querySelector('.pr-tab-slide');
   if (tab && !tab.dataset.sel) {
@@ -266,6 +269,8 @@ window.addEventListener('click', e => {
   const mc = t.closest('[data-sel-marco]');
   if (mc) { e.stopImmediatePropagation(); const c = EST.lista[EST.abierto], s = c.slides[EST.sel]; if (mc.dataset.selMarco) s.marco = mc.dataset.selMarco; else delete s.marco; guardarC(c); pintarEditor(true); return; }
   if (t.closest('#sel-pop')) return;
+  // pinchar «al aire» (fuera de la slide, de lo seleccionado y de sus ventanas) quita la selección
+  if (SEL.pop && !t.closest('.est-grande, #onb, [data-mesa-mas], [data-pr-fotos], .sel-diseno')) { cerrarPop(); }
   // «Añadir: + campo» abre el editor flotante para ese campo
   const mas = t.closest('[data-mesa-mas]');
   if (mas) {
