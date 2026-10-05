@@ -152,7 +152,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 ## Caption
 - Con la identidad verbal (Instagram = empatía a fuego): frases cortas con saltos de línea y una línea en blanco entre bloques (gancho · desarrollo · coordenada final tipo «Trazar mi ruta 📍»), emojis que vibran al final de las frases.
 - Al final, en su propia línea, exactamente 5 hashtags. El revisor avisa si no son 5 o si va todo seguido.
-- 5-oct-2026: los captions de los 19 carruseles de Producción se reescribieron con esta voz (solo el campo `copy`; slides sin tocar). Los hooks de la Matriz (`web/hooks.json`) siguen como estaban: antes de reescribirlos, muestra a Sandra una muestra para que la apruebe (riesgo de caricatura si se mete el glosario en todos).
+- 5-oct-2026: los captions de los 19 carruseles de Producción se reescribieron con esta voz (solo el campo `copy`; slides sin tocar). Hooks de la Matriz (`web/hooks.json`, que también puede pisar el titular de las ideas de ideas-extra): Sandra aprobó el criterio y se reescribieron 37 de 377 con el glosario de Explora (pisar barro, abrir brecha, manos a…, machete en mano, visto y hecho, ruta, trastear, botín), cada expresión 2–4 veces como mucho. Los de trámites, datos, homologación y los memes (V*) se dejan claros: no metas el glosario en todos (caricatura).
 
 ## Pendientes (anotados por Sandra)
 - **Verificar contenido**: distinguir en la Matriz lo que propone Claude (ideas, hooks, objetivos, datos) de lo que Sandra ha revisado y dado el OK. Algo tendremos que hacer: estado «Propuesta de Claude» / «Revisada ✓» por idea, y que solo lo revisado se pueda producir o salga primero. Incluye las 42 ideas de ideas-extra, la clasificación automática de objetivos, las ideas del mes y el dato D13 (becas).
