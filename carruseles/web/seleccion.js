@@ -51,23 +51,32 @@ pintarEditor = function (todo) {
     cab.dataset.eb = '1';
     const q = sel => cab.querySelector(sel);
     const volver = q('#est-cerrar'), h2 = q('h2'), etapa = q('.pr-etapa'), guardado = q('#mesa-guardado'), diseno = q('.sel-diseno'),
-      deshacer = q('#mesa-deshacer'), descargar = q('#est-descargar'), menu = q('.pr-menu-cab'),
+      deshacer = q('#mesa-deshacer'), menu = q('.pr-menu-cab');
+    let descargar = q('#est-descargar');
+    const
       principal = q('#pr-ok') || q('[data-pr-publicar].btn') || q('.pr-pub');
     if (volver) { volver.innerHTML = '<span aria-hidden="true">←</span>'; volver.className = 'eb-icono'; volver.setAttribute('aria-label', 'Volver a Producción'); volver.title = 'Volver a Producción'; }
     if (deshacer) { deshacer.innerHTML = '<span aria-hidden="true">↶</span>'; deshacer.className = 'eb-icono'; deshacer.setAttribute('aria-label', 'Deshacer'); deshacer.title = 'Deshacer (Ctrl/⌘ + Z)'; }
     // descargar solo cuando está aprobado: en revisión no aparece; en «Listo» es la acción principal y «Marcar como publicado» va al lado
     const et = etapaDe(c);
-    if (descargar) { descargar.textContent = 'Descargar'; descargar.className = et === 'listo' ? 'eb-pri' : 'eb-sec'; if (et === 'revision' || et === 'generar') descargar.remove(); }
+    if (descargar) { descargar.textContent = 'Descargar'; descargar.className = et === 'listo' ? 'eb-pri' : 'eb-sec'; if (et === 'revision' || et === 'generar') { descargar.remove(); descargar = null; } }
     if (principal && principal.tagName === 'BUTTON') principal.className = et === 'listo' ? 'eb-sec' : 'eb-pri';
     const izq = document.createElement('div'); izq.className = 'eb-izq';
     const tit = document.createElement('div'); tit.className = 'eb-tit';
     const meta = document.createElement('div'); meta.className = 'eb-meta';
     [etapa, q('.eb-links'), guardado].forEach(x => x && meta.appendChild(x));
     if (h2) tit.appendChild(h2); tit.appendChild(meta);
-    [volver, deshacer, tit].forEach(x => x && izq.appendChild(x));   // ↶ a la izquierda, junto a ← (pedido de Sandra)
+    [volver, tit].forEach(x => x && izq.appendChild(x));
     const der = document.createElement('div'); der.className = 'eb-der';
-    (et === 'listo' ? [principal, descargar] : [descargar, menu, principal]).forEach(x => x && x.isConnected !== false && der.appendChild(x));
-    cab.innerHTML = ''; cab.appendChild(izq); if (diseno) cab.appendChild(diseno); cab.appendChild(der);
+    // en Listo, «Volver a revisión» es un botón más (como enlace casi no se veía)
+    let volverRev = null;
+    if (et === 'listo') { volverRev = meta.querySelector('[data-pr-revision]'); if (volverRev) volverRev.className = 'eb-sec'; }
+    (et === 'listo' ? [volverRev, principal, descargar] : [descargar, menu, principal]).forEach(x => x && der.appendChild(x));
+    meta.querySelectorAll('.eb-links').forEach(l => { if (!l.children.length) l.remove(); });
+    // ↶ justo a la izquierda del botón de diseño (pedido de Sandra)
+    const centro = document.createElement('div'); centro.className = 'eb-centro';
+    [deshacer, diseno].forEach(x => x && centro.appendChild(x));
+    cab.innerHTML = ''; cab.appendChild(izq); cab.appendChild(centro); cab.appendChild(der);
   }
   // Listo y Terminado: solo se ven (pedido de Sandra). Para cambiar algo, «Volver a revisión».
   const soloVer = ['listo', 'publicado'].indexOf(etapaDe(c)) >= 0;
