@@ -360,12 +360,11 @@ const SEL_CHECK = [
   ['Datos sensibles', /Dato interno/],
   ['Cifras con fuente', /[Cc]ifra|fuente/],
   ['Titulares', /[Tt]itular/],
-  ['Sin emojis en las slides', /emoji/],
-  ['Estructura: portada y cierre', /portada|cierre|slides:/],
-  ['Caption: bloques y 5 hashtags', /caption/i]];
+  ['Sin emojis en las slides', /emoji/]];
+// fuera de la checklist (Sandra no los quiere ver): estructura (portada / cierre / nº de slides) y caption
 htmlQC = function (c) {
   const medido = qcMedido(c); if (!medido) pedirQC(c);
-  const a = avisos(c);
+  const a = avisos(c).filter(x => SEL_CHECK.some(([, re]) => re.test(x.msg)));
   const filas = SEL_CHECK.map(([nombre, re]) => {
     const mios = a.filter(x => re.test(x.msg));
     const err = mios.some(x => x.nivel === 'error'), av = mios.length && !err;
