@@ -6,6 +6,7 @@
    · Pulsar la foto la marca y el formulario enseña solo sus opciones (cambiar, quitar, cómo va).
    · Sin nada seleccionado, el panel tiene el chat con Claude y «Añadir: + campo» (sin «Tipo de slide»).
    · Plantilla y color: un solo sitio, el botón «Diseño» de la barra de arriba (sin desplegables repetidos).
+   · Aprobar cierra el carrusel; en Listo y Terminado solo se ve (slides, caption con «Copiar caption», Descargar, publicar). Para editar: «Volver a revisión».
    · Sin «Otra versión» (Sandra: se cambia a mano o con el chat).
    · Al recargar, la web vuelve a la pestaña (y al carrusel) donde estaba. */
 const SEL = {pop: null, diseno: false, original: null, tempo: 0};
@@ -67,6 +68,21 @@ pintarEditor = function (todo) {
     const der = document.createElement('div'); der.className = 'eb-der';
     (et === 'listo' ? [deshacer, principal, descargar] : [deshacer, descargar, menu, principal]).forEach(x => x && x.isConnected !== false && der.appendChild(x));
     cab.innerHTML = ''; cab.appendChild(izq); if (diseno) cab.appendChild(diseno); cab.appendChild(der);
+  }
+  // Listo y Terminado: solo se ven (pedido de Sandra). Para cambiar algo, «Volver a revisión».
+  const soloVer = ['listo', 'publicado'].indexOf(etapaDe(c)) >= 0;
+  ed.classList.toggle('solo-ver', soloVer);
+  if (soloVer) {
+    SEL.pop = null; SEL.diseno = false;
+    ed.querySelectorAll('.sel-diseno, #mesa-deshacer, #mesa-guardado, .est-tira-acc, .est-tira-mas').forEach(x => x.remove());
+    ed.querySelectorAll('.est-tira [data-est-sel]').forEach(b => { b.draggable = false; b.title = ''; });
+    const panel = ed.querySelector('#est-panel');
+    if (panel && !panel.querySelector('.sv-aviso')) {
+      panel.innerHTML = '<div class="sv-aviso">' + (etapaDe(c) === 'listo' ? 'Aprobado: ya no se edita. Para cambiar algo, «Volver a revisión».' : 'Publicado: ya no se edita.') + '</div>' +
+        '<h3 class="sv-h">Caption</h3><div class="sv-caption">' + esc(c.copy || 'Sin caption') + '</div>' +
+        (c.copy ? '<button type="button" class="btn" data-est-copiar="' + c.id + '">Copiar caption</button>' : '');
+    }
+    return;
   }
   // panel: sin formulario. Chat arriba, tipo de slide y «Añadir»
   const tab = ed.querySelector('.pr-tab-slide');
@@ -141,7 +157,7 @@ function objetivoEn(fr, x, y) {
 }
 let SEL_SOBRE = null;
 document.addEventListener('mousemove', e => {
-  const g = e.target.closest && e.target.closest('.est-grande'); const fr = g && g.querySelector('iframe');
+  const g = e.target.closest && !document.querySelector('#est-editor.solo-ver') && e.target.closest('.est-grande'); const fr = g && g.querySelector('iframe');
   const o = fr ? objetivoEn(fr, e.clientX, e.clientY) : null, el = o && o.el;
   if (SEL_SOBRE && SEL_SOBRE !== el) SEL_SOBRE.classList.remove('sel-sobre');
   if (el) el.classList.add('sel-sobre'); SEL_SOBRE = el;
@@ -259,7 +275,8 @@ window.addEventListener('click', e => {
     guardarC(c); const ed = $('#est-editor'); if (ed) pintarMinis(ed);
     return;
   }
-  // pulsar en la slide grande
+  // pulsar en la slide grande (no en Listo / Terminado: solo se ven)
+  if (t.closest('#est-editor.solo-ver .est-grande')) { e.stopImmediatePropagation(); return; }
   const g = t.closest('.est-grande');
   if (g) {
     e.stopImmediatePropagation();
@@ -282,3 +299,7 @@ window.addEventListener('keydown', e => {
   if (e.key === 'Escape' && (SEL.diseno || SEL.pop)) { e.stopImmediatePropagation(); if (SEL.pop) cerrarPop(); else { SEL.diseno = false; pintarEditor(true); } }
 }, true);
 window.addEventListener('resize', () => { if (SEL.pop) colocarPop(); });
+
+// Ctrl/⌘+Z no deshace nada en un carrusel que solo se ve
+const _deshacerSel = deshacer;
+deshacer = function () { if (document.querySelector('#est-editor.solo-ver')) return; return _deshacerSel(); };

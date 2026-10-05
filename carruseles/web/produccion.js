@@ -73,7 +73,7 @@ vProducir = function () {
 function darOK(c, forzar) {
   if (!qcMedido(c)) { toast('Espera un segundo: estoy revisando las slides'); pedirQC(c); return false; }
   if (qcErrores(c) && !forzar && EST.forzar !== c.id) { EST.forzar = c.id; toast('Hay ' + qcErrores(c) + ' cosas por corregir. Pulsa otra vez si aun así está bien'); if (EST.abierto) pintarEditor(true); return false; }
-  EST.forzar = null; c.listo = true; guardarC(c); toast('✓ Listo para publicar'); return true;
+  EST.forzar = null; c.listo = true; guardarC(c); return true;
 }
 function abrirPublicar(id) {
   const c = EST.lista[id]; if (!c) return;
@@ -238,7 +238,8 @@ document.addEventListener('click', e => {
   const dvo = t.closest('[data-pr-devolver-ok]'); if (dvo) { borrarC(dvo.dataset.prDevolverOk); cerrarPanel(); render(); toast('Borrado de Producción'); return; }
   const ok = t.closest('[data-pr-ok]'); if (ok) { const c = EST.lista[ok.dataset.prOk]; if (c && darOK(c)) render(); return; }
   const rv = t.closest('[data-pr-revision]'); if (rv) { const c = EST.lista[rv.dataset.prRevision]; if (c) { c.listo = false; guardarC(c); render(); if (EST.abierto) pintarEditor(true); toast('Vuelve a revisión'); } return; }
-  if (t.id === 'pr-ok') { const c = EST.lista[EST.abierto]; if (c && darOK(c)) pintarEditor(true); return; }
+  // al aprobar se cierra: un carrusel aprobado ya no se edita, solo se ve en «Listo para publicar»
+  if (t.id === 'pr-ok') { const c = EST.lista[EST.abierto]; if (c && darOK(c)) { cerrarEditor(); S.v = 'producir'; render(); toast('✓ Aprobado. Está en «Listo para publicar»'); } return; }
   const tab = t.closest('[data-pr-tab]'); if (tab) { EST.pestana = tab.dataset.prTab; const p = $('#est-panel'); if (p) p.dataset.tab = EST.pestana;
     document.querySelectorAll('[data-pr-tab]').forEach(b => b.setAttribute('aria-selected', String(b === tab))); return; }
   if (t.closest('#est-qc [data-est-sel]') || t.closest('#est-qc li')) { EST.pestana = 'slide';
