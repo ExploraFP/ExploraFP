@@ -1,0 +1,16 @@
+{
+  "pais": "ES",
+  "marcas": {
+    "ILERNA":    {"buscar": ["ILERNA"],              "paginas": ["ilerna"]},
+    "MEDAC":     {"buscar": ["MEDAC"],               "paginas": ["medac"]},
+    "Planeta FP":{"buscar": ["Planeta FP", "Planeta Formación"], "paginas": ["planeta fp", "planeta formación", "planeta formacion"]},
+    "CEAC":      {"buscar": ["CEAC"],                "paginas": ["ceac"]},
+    "UNIVERSAE": {"buscar": ["UNIVERSAE"],           "paginas": ["universae"]}
+  },
+  "palabras_laboratorio": [
+    "laboratorio clínico", "laboratorio clinico", "biomédic", "biomedic",
+    "análisis clínico", "analisis clinico", "técnico de laboratorio", "tecnico de laboratorio",
+    "tslcb", "lab clínico", "lab clinico"
+  ],
+  "solo_laboratorio": false
+}
