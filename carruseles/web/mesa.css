@@ -1,0 +1,50 @@
+/* ===== Mesa de trabajo ===== */
+.mesa-hueco{flex:1}
+.est-ecab{flex-wrap:wrap;row-gap:8px}
+.mesa-guardado{font-size:12.5px;color:#C9DAC7;white-space:nowrap;min-width:84px;text-align:right}
+.mesa-guardado.ok{color:var(--lima)}
+.est-ecab .btn.on{background:var(--lima);border-color:var(--lima);color:#12200F}
+.est-ecab .btn[disabled]{opacity:.45;cursor:default}
+/* control de calidad en una línea */
+.mesa-qc{font-size:13px;padding:8px 12px;border-radius:10px;background:var(--surface2);color:var(--ink2)}
+.mesa-qc.ok{background:var(--okSoft);color:var(--ok);font-weight:600}
+.mesa-qc.mal{background:#FFF6DB;border:1px solid #F3DC9A;color:#6B4A00}
+.mesa-qc.mal summary{cursor:pointer;font-weight:700}
+.mesa-qc.mal .est-qc{margin:8px 0 2px}
+/* caja de Claude */
+.mesa-claude{border:1.5px solid var(--limaLine);background:var(--limaSoft);border-radius:14px;padding:12px;margin:4px 0 14px;display:flex;flex-direction:column;gap:8px}
+.mesa-claude-t{font-weight:700;font-size:14px;color:var(--ink)}
+.mesa-claude-t span{font-weight:500;font-size:12px;color:var(--ink3);margin-left:4px}
+.mesa-atajos{display:flex;flex-wrap:wrap;gap:6px}
+.mesa-atajos button{border:1.5px solid var(--line2);background:var(--surface);border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer}
+.mesa-atajos button:hover{border-color:var(--brand)}
+.mesa-atajos button[disabled]{opacity:.5;cursor:default}
+.mesa-claude-f{display:flex;gap:6px}
+.mesa-claude-f input{flex:1;min-width:0;border:1.5px solid var(--line2);border-radius:10px;padding:8px 10px;font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink)}
+.mesa-claude-f .btn{white-space:nowrap}
+/* campos: «+ Añadir» */
+.mesa-mas{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:2px}
+.mesa-mas span{font-size:12px;color:var(--ink3)}
+.mesa-mas button{border:1.5px dashed var(--line2);background:none;border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}
+.mesa-mas button:hover{border-color:var(--brand);color:var(--ink)}
+.mesa-brilla{box-shadow:0 0 0 3px var(--lima) !important;transition:box-shadow .3s}
+/* slide grande: se puede pulsar un texto */
+.est-grande{cursor:text}
+/* carrusel completo */
+.mesa-todo{display:flex;gap:14px;overflow-x:auto;padding:6px 4px 14px;width:100%}
+.mesa-todo figure{margin:0;flex:0 0 220px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.mesa-todo .est-mini{width:220px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.mesa-todo figcaption{font-size:12px;color:var(--ink3);font-family:var(--f-mono)}
+.mesa-todo-pista{text-align:center;margin:0}
+/* arrastrar miniaturas */
+.est-tira [data-est-sel]{cursor:grab}
+.mesa-arrastrando{opacity:.4}
+.mesa-destino{outline:3px dashed var(--brand);outline-offset:2px}
+@media (max-width:720px){ .mesa-hueco{display:none} .mesa-guardado{min-width:0} .mesa-todo figure{flex-basis:160px} .mesa-todo .est-mini{width:160px} }
+/* cabecera de la mesa más compacta para que quepa en una línea */
+.est-ecab{gap:8px}
+.est-ecab .btn{padding:7px 11px;font-size:13px}
+.est-ecab select{max-width:120px}
+.est-ecab h2{min-width:0;flex:0 1 auto;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:1250px){ .est-ecab h2{max-width:180px} .mesa-guardado{min-width:0} }
+@media (max-width:720px){ .est-ecab h2{max-width:none;flex:1 1 60%} .est-ecab .btn{padding:6px 9px;font-size:12.5px} }
