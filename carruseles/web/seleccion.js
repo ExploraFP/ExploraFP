@@ -357,11 +357,9 @@ avisosTexto = function (c) {
 const SEL_CHECK = [
   ['Diseño: todo cabe en la slide', /no cabe/],
   ['Palabras prohibidas', /Palabra prohibida/],
-  ['Datos sensibles', /Dato interno/],
-  ['Cifras con fuente', /[Cc]ifra|fuente/],
-  ['Titulares', /[Tt]itular/],
-  ['Sin emojis en las slides', /emoji/]];
-// fuera de la checklist (Sandra no los quiere ver): estructura (portada / cierre / nº de slides) y caption
+  // una sola fila para lo que tiene que ver con datos: cifras sin fuente y datos internos que no se pueden publicar
+  ['Datos y cifras', /Dato interno|[Cc]ifra|fuente/]];
+// fuera de la checklist (Sandra no los quiere ver): titulares, emojis, estructura (portada / cierre / nº de slides) y caption
 htmlQC = function (c) {
   const medido = qcMedido(c); if (!medido) pedirQC(c);
   const a = avisos(c).filter(x => SEL_CHECK.some(([, re]) => re.test(x.msg)));
