@@ -119,6 +119,7 @@ const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== 
   `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\n` +
   `const HOOKS = ${existsSync(join(WEB, 'hooks.json')) ? readFileSync(join(WEB, 'hooks.json'), 'utf8').trim() : '{}'};\n` +
   `const OBJ_REV = ${existsSync(join(WEB, 'objetivos-revisados.json')) ? readFileSync(join(WEB, 'objetivos-revisados.json'), 'utf8').trim() : '{}'};\n` +
+  `const VOZ = ${JSON.stringify(readFileSync(join(WEB, 'identidad-verbal.md'), 'utf8'))};\n` +
   `const PERSONA = ${readFileSync(join(WEB, 'persona.json'), 'utf8').trim()};\n` +
   `const IDEAS_FUERA = ${existsSync(join(WEB, 'ideas-fuera.json')) ? readFileSync(join(WEB, 'ideas-fuera.json'), 'utf8').trim() : '{}'};\n` +
   `const IDEAS_EXTRA = ${existsSync(join(WEB, 'ideas-extra.json')) ? readFileSync(join(WEB, 'ideas-extra.json'), 'utf8').trim() : '[]'};\n` +

@@ -179,11 +179,9 @@ function promptCarrusel(c) {
   const L = [];
   L.push('Escribe un carrusel de Instagram para Explora (FP online oficial de Ucademy). Responde SOLO con JSON válido, sin texto antes ni después.');
   L.push('');
-  L.push('TONO DE MARCA');
-  L.push('- Sin filtros: frases cortas, verdades concretas, cero relleno, de tú a tú, como a un colega. Si suena a folleto, reescríbelo.');
-  L.push('- A fuego: verbos de acción en presente que empujan al siguiente paso. Nombra la barrera y desactívala.');
-  L.push('- Prohibido: «profesor» (es guía), «lección/unidad» (expedición), «aula» (terreno), «matricúlate» (trazar mi ruta), «FCT» (formación en empresa).');
-  L.push('- Glosario que puedes usar con moderación: pisar barro, abrir brecha, cazar el botín, prueba y falla, machete en mano.');
+  // la identidad verbal completa (web/identidad-verbal.md, del manual de Notion) manda sobre cualquier otra pista de tono
+  if (typeof VOZ !== 'undefined' && VOZ) { L.push(VOZ.trim()); L.push(''); }
+  L.push('PALABRAS PROHIBIDAS: «profesor» (es guía), «lección/unidad» (expedición), «aula» (terreno), «matricúlate» (trazar mi ruta), «FCT» (formación en empresa), «desliza».');
   L.push('');
   L.push('REGLAS DE LAS SLIDES');
   L.push('- El titular de la portada es el HOOK: lo que para el scroll. Informativo o autoridad: claro y concreto, promete una respuesta. Viral o lead magnet: persuasivo, curiosidad o identificación.');
@@ -247,7 +245,7 @@ function promptCarrusel(c) {
   }
   L.push('');
   L.push('FORMATO DE RESPUESTA (JSON):');
-  L.push('{"copy": "caption de Instagram: frases cortas separadas por saltos de línea, con una línea en blanco entre bloques (gancho · desarrollo · llamada a la acción), mismo tono, emojis de energía permitidos, y al final, en su propia línea, EXACTAMENTE 5 hashtags",');
+  L.push('{"copy": "caption de Instagram con la IDENTIDAD VERBAL de arriba (Instagram = empatía a fuego; gerundios y glosario de Explora; nombra la barrera y desactívala): frases cortas separadas por saltos de línea, una línea en blanco entre bloques (gancho · desarrollo · coordenada final tipo «Trazar mi ruta 📍»), emojis que vibran al final de las frases (velocidad, energía, expedición; nada cuquis), y al final, en su propia línea, EXACTAMENTE 5 hashtags",');
   L.push(' "slides": [');
   L.push('  {"tipo":"portada","etiqueta":"FP Online","titulo":"...","subtitulo":"...","imagen":"fotos/...","marco":"fondo"},');
   L.push('  {"tipo":"contenido","numero":"01","titulo":"...","texto":"..."},');

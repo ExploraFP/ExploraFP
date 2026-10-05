@@ -143,8 +143,13 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Perfiles secundarios que también son comprador (los pidió Sandra, no se quitan): jóvenes que hacen un ciclo de sanidad para entrar después en la carrera, y gente con negocio propio que estudia Marketing.
 - Ideas P01–P19 de `web/ideas-extra.json`: escritas a partir del customer persona (frenos, objeciones y persona por formación).
 
+## Identidad verbal
+- `web/identidad-verbal.md`: resumen del manual «Ucademy: Identidad Verbal» (Notion, Ucademy Brand Guidelines; la copia del enlace de Soluble Studio no es accesible, se usó la del espacio de Explora, editada el 29/05/2026). Tono Sin filtros & A fuego, intención romper barreras, checklist (calle, empuja ya, sin relleno, traducir el BOE, emojis que vibran, CTAs de navegación), recursos de Ucademy (navegación, método salvaje) y de Explora (gerundios, safari laboral, glosario: pisar barro, cazar el botín, abriendo brecha, machete en mano…), Instagram = empatía a fuego.
+- Entra entero en el prompt de generar, en el chat de la mesa y en la rutina «Ideas del mes» (const `VOZ`, construir.mjs). Si el manual cambia, actualizar ese archivo.
+- «Machete en mano» y «pisar barro» SON de la marca (glosario de Explora): no quitarlos.
+
 ## Caption
-- Frases cortas con saltos de línea y una línea en blanco entre bloques (gancho · desarrollo · llamada a la acción).
+- Con la identidad verbal (Instagram = empatía a fuego): frases cortas con saltos de línea y una línea en blanco entre bloques (gancho · desarrollo · coordenada final tipo «Trazar mi ruta 📍»), emojis que vibran al final de las frases.
 - Al final, en su propia línea, exactamente 5 hashtags. El revisor avisa si no son 5 o si va todo seguido.
 
 ## Pendientes (anotados por Sandra)
