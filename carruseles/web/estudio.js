@@ -532,14 +532,17 @@ function pintarEditor(todo) {
       '<button class="btn ' + (c.estado === 'hecho' ? 'hecho on' : 'pri') + '" id="est-hecho">' + (c.estado === 'hecho' ? '✓ Hecho' : 'Marcar hecho') + '</button>' +
     '</div><div class="est-ecuerpo"><div class="est-escena">' +
       '<div class="est-grande">' + mini(c, EST.sel) + '</div>' +
-      '<div class="est-tira">' + c.slides.map((x, i) => mini(c, i, {boton: 'data-est-sel="' + i + '" aria-current="' + (i === EST.sel) + '" aria-label="Slide ' + (i + 1) + '"'})).join('') + '</div>' +
+      // miniaturas: aquí se duplican, se quitan y se añaden slides (no en el panel lateral)
+      '<div class="est-tira">' + c.slides.map((x, i) => '<div class="est-tira-it">' + mini(c, i, {boton: 'data-est-sel="' + i + '" aria-current="' + (i === EST.sel) + '" aria-label="Slide ' + (i + 1) + '"'}) +
+        '<span class="est-tira-acc"><button type="button" data-est-dup="' + i + '" title="Duplicar slide ' + (i + 1) + '" aria-label="Duplicar slide ' + (i + 1) + '">⧉</button>' +
+        (c.slides.length > 1 ? '<button type="button" data-est-quita="' + i + '" title="Quitar slide ' + (i + 1) + '" aria-label="Quitar slide ' + (i + 1) + '">🗑</button>' : '') + '</span></div>').join('') +
+        '<div class="est-tira-mas"><button type="button" class="est-mas" id="est-mas" aria-expanded="' + !!EST.menuNueva + '" title="Añadir slide">+<span>Añadir</span></button>' +
+        (EST.menuNueva ? '<div class="est-mas-menu" role="menu">' + Object.keys(EST_TIPOS).map(k => '<button type="button" role="menuitem" data-est-nueva="' + k + '">' + EST_TIPOS[k] + '</button>').join('') + '</div>' : '') + '</div>' +
+      '</div>' +
     '</div><div class="est-panel" id="est-panel"></div></div>';
   }
   const tipo = s.tipo || 'contenido';
   let p = '<div id="est-qc">' + htmlQC(c) + '</div><h3>Slide ' + (EST.sel + 1) + ' de ' + c.slides.length + '</h3>' +
-    '<div class="est-fila"><button class="btn mini" data-est-mover="-1"' + (EST.sel === 0 ? ' disabled' : '') + '>↑ Antes</button>' +
-    '<button class="btn mini" data-est-mover="1"' + (EST.sel >= c.slides.length - 1 ? ' disabled' : '') + '>↓ Después</button>' +
-    '<button class="btn mini" id="est-duplicar">Duplicar</button><button class="btn mini" id="est-borrar-slide"' + (c.slides.length < 2 ? ' disabled' : '') + '>Quitar</button></div>' +
     '<div class="est-campos"><label>Tipo de slide<select data-est-campo="tipo">' +
       Object.keys(EST_TIPOS).map(k => '<option value="' + k + '"' + (tipo === k ? ' selected' : '') + '>' + EST_TIPOS[k] + '</option>').join('') + '</select></label>' +
     CAMPOS_TIPO[tipo].map(f => campoE(f[0], f[1], f[0] === 'items' ? (s.items || []).join('\n') : s[f[0]], f[2])).join('') +
@@ -551,7 +554,6 @@ function pintarEditor(todo) {
       [['', 'Según la plantilla'], ['fondo', 'Foto a pantalla completa'], ['notas', 'Notas a mano de fondo']].map(o =>
         '<option value="' + o[0] + '"' + ((s.marco || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></label></div>';
   }
-  p += '<h3>Añadir slide</h3><div class="est-fila">' + Object.keys(EST_TIPOS).map(k => '<button class="btn mini" data-est-nueva="' + k + '">+ ' + EST_TIPOS[k] + '</button>').join('') + '</div>';
   p += '<h3>Caption</h3><div class="est-campos"><textarea data-est-copy rows="6">' + esc(c.copy || '') + '</textarea>' +
     '<button class="btn mini" data-est-copiar="' + c.id + '">Copiar caption</button></div>';
   if (!campoActivo) $('#est-panel').innerHTML = p;
@@ -708,8 +710,15 @@ document.addEventListener('click', e => {
     const x = c.slides.splice(EST.sel, 1)[0]; c.slides.splice(j, 0, x); EST.sel = j; guardarC(c); pintarEditor(true); return; }
   if (t.id === 'est-duplicar') { c.slides.splice(EST.sel + 1, 0, JSON.parse(JSON.stringify(c.slides[EST.sel]))); EST.sel++; guardarC(c); pintarEditor(true); return; }
   if (t.id === 'est-borrar-slide') { c.slides.splice(EST.sel, 1); guardarC(c); pintarEditor(true); return; }
+  if (t.closest('#est-mas')) { EST.menuNueva = !EST.menuNueva; pintarEditor(true); return; }
+  const dp = t.closest('[data-est-dup]');
+  if (dp) { const i = +dp.dataset.estDup; c.slides.splice(i + 1, 0, JSON.parse(JSON.stringify(c.slides[i]))); EST.sel = i + 1; guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' duplicada'); return; }
+  const qt = t.closest('[data-est-quita]');
+  if (qt) { if (c.slides.length < 2) return; const i = +qt.dataset.estQuita; c.slides.splice(i, 1); if (EST.sel >= c.slides.length || EST.sel > i) EST.sel = Math.max(0, EST.sel - 1);
+    guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' quitada · si te has equivocado: ↶ Deshacer'); return; }
+  if (EST.menuNueva && !t.closest('.est-mas-menu')) { EST.menuNueva = false; pintarEditor(true); }
   const nv = t.closest('[data-est-nueva]');
-  if (nv) { const tipo = nv.dataset.estNueva; c.slides.splice(EST.sel + 1, 0, tipo === 'lista' ? {tipo: tipo, titulo: 'Nuevo *titular*', items: ['Primer punto', 'Segundo punto']}
+  if (nv) { EST.menuNueva = false; EST.sel = c.slides.length - 1; const tipo = nv.dataset.estNueva; c.slides.splice(EST.sel + 1, 0, tipo === 'lista' ? {tipo: tipo, titulo: 'Nuevo *titular*', items: ['Primer punto', 'Segundo punto']}
     : {tipo: tipo, titulo: tipo === 'dato' ? undefined : 'Nuevo *titular*', cifra: tipo === 'dato' ? '0' : undefined});
     c.slides[EST.sel + 1] = JSON.parse(JSON.stringify(c.slides[EST.sel + 1])); EST.sel++; guardarC(c); pintarEditor(true); return; }
   const fo = t.closest('[data-est-foto]');

@@ -93,3 +93,17 @@ button.est-mini[aria-current="true"]{outline:3px solid var(--brand);outline-offs
 .est-qc-ok{background:var(--okSoft);border:1px solid var(--okLine);color:var(--ok);border-radius:8px;padding:8px 10px;font-size:12.5px}
 button.est-mini[data-qc="error"]{box-shadow:0 0 0 3px var(--danger)}
 button.est-mini[data-qc="aviso"]{box-shadow:0 0 0 3px var(--warnLine)}
+/* miniaturas: duplicar / quitar en cada una y «+ Añadir» al final */
+.est-tira-it{position:relative;flex:none}
+.est-tira-acc{position:absolute;top:4px;right:4px;display:flex;gap:3px;opacity:0;transition:opacity .12s}
+.est-tira-it:hover .est-tira-acc,.est-tira-acc:focus-within{opacity:1}
+.est-tira-acc button{width:26px;height:26px;border-radius:50%;border:0;background:rgba(255,255,255,.95);box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;color:#1B3620}
+.est-tira-acc button:hover{box-shadow:0 0 0 2px var(--brand)}
+@media (hover:none){.est-tira-acc{opacity:1}}
+.est-tira-mas{flex:none;display:flex;gap:6px;align-items:flex-start}
+.est-mas{width:92px;aspect-ratio:4/5;border:1.5px dashed var(--line2);border-radius:6px;background:var(--surface);color:var(--ink2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:26px;line-height:1;font-family:inherit}
+.est-mas span{font-size:12px;font-weight:600}
+.est-mas:hover,.est-mas[aria-expanded="true"]{border-color:var(--brand);color:var(--ink)}
+.est-mas-menu{display:flex;flex-direction:column;gap:2px}
+.est-mas-menu button{border:1.5px solid var(--line2);background:var(--surface);text-align:left;font:inherit;font-size:11.5px;font-weight:600;color:var(--ink);padding:2px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.est-mas-menu button:hover{border-color:var(--brand)}

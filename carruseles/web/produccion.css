@@ -96,3 +96,12 @@
 .pr-tarjeta:hover .pr-borrar,.pr-borrar:focus-visible{opacity:1}
 .pr-borrar:hover{background:#fff;box-shadow:0 0 0 2px var(--danger)}
 @media (hover:none){.pr-borrar{opacity:1}}
+/* foto actual en el panel; la galería se abre en una ventana */
+.pr-fotoact{display:flex;gap:12px;align-items:center;margin:4px 0 12px}
+.pr-fotoact img,.pr-sinfoto{width:84px;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none}
+.pr-sinfoto{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3);background:var(--surface2)}
+.pr-fotoact p{margin:0 0 6px;font-size:13px;color:var(--ink2);line-height:1.35}
+.pr-fotomodal{width:min(880px,100%)}
+.pr-fotomodal .est-fotos{max-height:min(60vh,560px);overflow:auto}
+.pr-menu-cab .pr-menu-lista{bottom:auto;top:calc(100% + 6px)}
+.pr-menu-cab>summary{background:rgba(255,255,255,.95)}

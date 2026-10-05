@@ -28,32 +28,20 @@ tarjeta = function (c) {
   let pri = '';
   if (e === 'generar') pri = c.estado === 'generando' ? '<button class="btn pri" disabled>Generando…</button>'
     : '<button class="btn pri" data-est-generar="' + c.id + '">' + (c.estado === 'error' ? 'Reintentar' : 'Generar') + '</button>';
-  // la tarjeta entera abre el carrusel; abajo, lo que se hace sin abrirlo
-  else if (e === 'revision') pri = '<button class="btn pri" data-pr-ok="' + c.id + '">✓ Dar el OK</button>' +
-    (c.copy ? '<button class="btn" data-est-copiar="' + c.id + '">Copiar caption</button>' : '');
-  else if (e === 'listo') pri = '<button class="btn pri" data-est-descargar="' + c.id + '">⬇ Descargar</button><button class="btn" data-pr-publicar="' + c.id + '">Marcar como publicado</button>';
-  else if (e === 'publicado') pri = '<button class="btn pri" data-est-descargar="' + c.id + '">⬇ Descargar</button>';
-  const menu = c.estado === 'generando' ? '' : e === 'publicado' ? menuPuntos([
-    itemMenu('data-est-abrir="' + c.id + '"', 'Abrir'),
-    c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar caption') : '',
-    c.ig ? '<a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Ver en Instagram ↗</a>' : '',
-    c.idea && IMAP[c.idea] ? itemMenu('data-abrir="' + c.idea + '"', 'Ver su idea en la Matriz') : '',
-    itemMenu('data-pr-publicar="' + c.id + '"', 'Cambiar fecha o enlace'),
-    itemMenu('data-pr-despublicar="' + c.id + '"', 'Volver a «Listo para publicar»')]) : menuPuntos([
-    e !== 'generar' ? itemMenu('data-est-abrir="' + c.id + '"', e === 'listo' ? 'Abrir' : 'Abrir el editor') : '',
-    e === 'listo' ? itemMenu('data-pr-revision="' + c.id + '"', 'Volver a revisión') : '',
-    e !== 'revision' && c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar caption') : '',
-    itemMenu('data-pr-devolver="' + c.id + '"', 'Borrar de Producción', true)]);
+  // Proceso de Sandra: fuera solo se ve la info básica (formación, objetivo, estado, avisos) y se puede borrar.
+  // Todo lo demás (OK, descargar, publicar, caption…) se hace dentro, pinchando la tarjeta. Generar sigue fuera: sin slides no hay nada que abrir.
+  const menu = '';
+  const ideaC = c.idea && IMAP[c.idea];   // formación o rama de su idea, visible sin abrir el carrusel
   const abre = e !== 'generar' ? 'data-est-abrir="' + c.id + '"' : '';
   const borrar = e !== 'publicado' && c.estado !== 'generando' ? '<button type="button" class="pr-borrar" data-pr-devolver="' + c.id + '" aria-label="Borrar de Producción" title="Borrar de Producción">🗑</button>' : '';
   return '<article class="est-tarjeta pr-tarjeta e-' + e + (c.slides.length ? '' : ' est-previa') + (abre ? ' pr-abrible' : '') + '">' + borrar +
     mini(vista, 0, abre ? {boton: abre + ' aria-label="Abrir ' + esc(c.titulo || 'carrusel') + '"'} : null) +
     '<div class="est-tcuerpo"><h4>' + (abre ? '<button type="button" class="pr-titulo" ' + abre + '>' + esc(c.titulo || c.tema || '(sin título)') + '</button>' : esc(c.titulo || c.tema || '(sin título)')) + '</h4>' +
-    (objChip(c) ? '<div class="est-tmeta">' + objChip(c) + '</div>' : '') +
-    (e === 'publicado' ? '<p class="inv-fecha">' + (c.fecha ? 'Publicado el ' + esc(new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-ES')) : 'Sin fecha') + (c.ig ? ' · <a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Instagram ↗</a>' : '') + '</p>' : '') +
+    '<div class="est-tmeta">' + (ideaC ? chipAlcance(ideaC) : '') + objChip(c) + pillEtapa(c) + '</div>' +
+    (e === 'publicado' ? '<p class="inv-fecha">' + (c.fecha ? 'Publicado el ' + esc(new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-ES')) : 'Sin fecha') + '</p>' : '') +
     (nota ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(nota) + '</p>' : '') +
-    (e === 'revision' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
-    '<div class="est-tpie pr-pie">' + pri + menu + '</div></div></article>';
+    (e === 'revision' || e === 'listo' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
+    (pri || menu ? '<div class="est-tpie pr-pie">' + pri + menu + '</div>' : '') + '</div></article>';
 };
 // el chip de calidad ya no dice «Listo» (Listo es una etapa que da Sandra): dice «Sin avisos»
 const _chipQCpr = chipQC;
@@ -139,8 +127,7 @@ function gridFotosEditor(s) {
   const lista = (typeof fotosCatalogo === 'function' ? fotosCatalogo().filter(f => !f.oculta) : FOTOS.map(f => ({ruta: f.ruta, desc: f.desc})))
     .filter(f => (!EST.fr || f.rama === EST.fr) && (!EST.fo || f.orientacion === EST.fo) &&
       (!q || norm([f.desc, f.rama, f.personas, f.tono].concat(f.etiquetas || []).join(' ')).indexOf(q) >= 0));
-  return '<button data-est-foto="" aria-pressed="' + !s.imagen + '">Sin foto</button>' +
-    lista.map(f => '<button data-est-foto="' + esc(f.ruta) + '" aria-pressed="' + (s.imagen === f.ruta) + '" title="' + esc(f.desc) + '"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy"></button>').join('') +
+  return lista.map(f => '<button data-est-foto="' + esc(f.ruta) + '" aria-pressed="' + (s.imagen === f.ruta) + '" title="' + esc(f.desc) + '"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy"></button>').join('') +
     (lista.length ? '' : '<p class="est-pista" style="grid-column:1/-1">Ninguna foto con ese filtro.</p>');
 }
 const _pintarEditorPr = pintarEditor;
@@ -157,6 +144,13 @@ pintarEditor = function (todo) {
       : e === 'listo' ? '<button class="btn pri" data-pr-publicar="' + c.id + '">Marcar como publicado</button>'
       : e === 'publicado' ? '<span class="pr-pub">✓ Publicado' + (c.fecha ? ' el ' + esc(fCorta(c.fecha)) : '') + '</span>' : '';
     const dl = cab.querySelector('#est-descargar'); if (dl) dl.textContent = '⬇ Descargar';
+    // lo que antes estaba en el ⋯ de la tarjeta vive ahora dentro
+    const ops = [e === 'listo' ? itemMenu('data-pr-revision="' + c.id + '"', 'Volver a revisión') : '',
+      e === 'publicado' ? itemMenu('data-pr-publicar="' + c.id + '"', 'Cambiar fecha o enlace') : '',
+      e === 'publicado' && c.ig ? '<a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Ver en Instagram ↗</a>' : '',
+      e === 'publicado' ? itemMenu('data-pr-despublicar="' + c.id + '"', 'Volver a «Listo para publicar»') : '',
+      c.idea && IMAP[c.idea] ? itemMenu('data-pr-veridea="' + c.idea + '"', 'Ver su idea en la Matriz') : ''].filter(Boolean);
+    const ult = cab.lastElementChild; if (ops.length && ult) ult.insertAdjacentHTML('afterend', menuPuntos(ops).replace('pr-menu"', 'pr-menu pr-menu-cab"'));
   }
   const panel = $('#est-panel'); if (!panel || panel.querySelector('.pr-tabs')) return;
   // pestañas: todo lo de la slide / el texto del post
@@ -174,14 +168,14 @@ pintarEditor = function (todo) {
     qc.after(tabs); tabs.after(slide); slide.after(post);
     panel.dataset.tab = EST.pestana;
   }
-  // fotos con buscador y filtros
+  // foto: la actual y «Cambiar foto»; el buscador con toda la galería se abre en una ventana (pedido de Sandra)
   const fg = panel.querySelector('.est-fotos');
   if (fg) {
-    const s = c.slides[EST.sel] || {};
-    const sel = (id, vacio, lista, v) => '<select id="' + id + '" aria-label="' + vacio + '"><option value="">' + vacio + '</option>' + lista.map(x => '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>').join('') + '</select>';
-    fg.insertAdjacentHTML('beforebegin', '<div class="pr-fbusca"><input type="search" id="pr-fq" placeholder="Busca foto: portátil, estrés…" value="' + esc(EST.fq) + '" aria-label="Buscar foto">' +
-      (typeof FOTO_RAMAS !== 'undefined' ? sel('pr-fr', 'Rama', FOTO_RAMAS, EST.fr) + sel('pr-fo', 'Orientación', FOTO_ORIENT, EST.fo) : '') + '</div>');
-    fg.innerHTML = gridFotosEditor(s);
+    const s = c.slides[EST.sel] || {}, f = s.imagen && (typeof fotosCatalogo === 'function' ? fotosCatalogo() : FOTOS).find(x => x.ruta === s.imagen);
+    fg.outerHTML = '<div class="pr-fotoact">' + (s.imagen ? '<img src="' + esc(s.imagen) + '" alt="">' : '<span class="pr-sinfoto">Sin foto</span>') +
+      '<div><p>' + esc(s.imagen ? (f && f.desc || 'Foto') : 'Esta slide no lleva foto') + '</p>' +
+      '<button type="button" class="btn mini" data-pr-fotos>' + (s.imagen ? 'Cambiar foto' : 'Poner foto') + '</button>' +
+      (s.imagen ? ' <button type="button" class="btn mini" data-est-foto="">Quitar</button>' : '') + '</div></div>';
   }
 };
 // los avisos de calidad llevan a su slide (toda la línea, no solo el botón)
@@ -239,27 +233,44 @@ document.addEventListener('click', e => {
   const t = e.target; if (!t.closest) return;
   // cerrar los menús ⋯ al pulsar fuera o al elegir
   document.querySelectorAll('details.pr-menu[open]').forEach(d => { if (!d.contains(t) || t.closest('.pr-menu-lista')) d.open = false; });
-  const dp = t.closest('[data-pr-despublicar]'); if (dp) { const c = EST.lista[dp.dataset.prDespublicar]; if (c) { c.estado = 'borrador'; c.listo = true; guardarC(c); render(); toast('Vuelve a «Listo para publicar»'); } return; }
+  const dp = t.closest('[data-pr-despublicar]'); if (dp) { const c = EST.lista[dp.dataset.prDespublicar]; if (c) { c.estado = 'borrador'; c.listo = true; guardarC(c); render(); if (EST.abierto) pintarEditor(true); toast('Vuelve a «Listo para publicar»'); } return; }
   const pb = t.closest('[data-pr-publicar]'); if (pb) { e.stopImmediatePropagation(); abrirPublicar(pb.dataset.prPublicar); return; }
   const po = t.closest('[data-pr-publicar-ok]'); if (po) { publicar(po.dataset.prPublicarOk); return; }
   const dv = t.closest('[data-pr-devolver]'); if (dv) { abrirDevolver(dv.dataset.prDevolver); return; }
   const dvo = t.closest('[data-pr-devolver-ok]'); if (dvo) { borrarC(dvo.dataset.prDevolverOk); cerrarPanel(); render(); toast('Borrado de Producción'); return; }
   const ok = t.closest('[data-pr-ok]'); if (ok) { const c = EST.lista[ok.dataset.prOk]; if (c && darOK(c)) render(); return; }
-  const rv = t.closest('[data-pr-revision]'); if (rv) { const c = EST.lista[rv.dataset.prRevision]; if (c) { c.listo = false; guardarC(c); render(); toast('Vuelve a revisión'); } return; }
+  const rv = t.closest('[data-pr-revision]'); if (rv) { const c = EST.lista[rv.dataset.prRevision]; if (c) { c.listo = false; guardarC(c); render(); if (EST.abierto) pintarEditor(true); toast('Vuelve a revisión'); } return; }
   if (t.id === 'pr-ok') { const c = EST.lista[EST.abierto]; if (c && darOK(c)) pintarEditor(true); return; }
   const tab = t.closest('[data-pr-tab]'); if (tab) { EST.pestana = tab.dataset.prTab; const p = $('#est-panel'); if (p) p.dataset.tab = EST.pestana;
     document.querySelectorAll('[data-pr-tab]').forEach(b => b.setAttribute('aria-selected', String(b === tab))); return; }
   if (t.closest('#est-qc [data-est-sel]') || t.closest('#est-qc li')) { EST.pestana = 'slide';
     setTimeout(() => { const p = $('#est-panel'); if (p) p.dataset.tab = 'slide'; document.querySelectorAll('[data-pr-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.prTab === 'slide'))); }, 0); }
 }, true);
+function abrirFotos() {
+  const c = EST.lista[EST.abierto]; if (!c) return; const s = c.slides[EST.sel] || {};
+  const sel = (id, vacio, lista, v) => '<select id="' + id + '" aria-label="' + vacio + '"><option value="">' + vacio + '</option>' + lista.map(x => '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>').join('') + '</select>';
+  $('#onb').hidden = false;
+  $('#onb').innerHTML = '<div class="onbcaja pr-fotomodal" role="dialog" aria-modal="true" aria-label="Elegir foto"><header><k>Slide ' + (EST.sel + 1) + '</k><h2>Elige la foto</h2></header><div class="cuerpo">' +
+    '<div class="pr-fbusca"><input type="search" id="pr-fq" placeholder="Busca foto: portátil, estrés…" value="' + esc(EST.fq) + '" aria-label="Buscar foto">' +
+    (typeof FOTO_RAMAS !== 'undefined' ? sel('pr-fr', 'Rama', FOTO_RAMAS, EST.fr) + sel('pr-fo', 'Orientación', FOTO_ORIENT, EST.fo) : '') + '</div>' +
+    '<div class="est-fotos">' + gridFotosEditor(s) + '</div></div><footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cerrar</button></footer></div>';
+  setTimeout(() => { const i = $('#pr-fq'); if (i) i.focus(); }, 30);
+}
+const gridFotosVisible = () => document.querySelector('.pr-fotomodal .est-fotos');
+document.addEventListener('click', e => {
+  const t = e.target; if (!t.closest) return;
+  if (t.closest('[data-pr-fotos]')) { abrirFotos(); return; }
+  if (t.closest('.pr-fotomodal [data-est-foto]')) { setTimeout(cerrarPanel, 0); return; }
+  const vi = t.closest('[data-pr-veridea]'); if (vi) { const id = vi.dataset.prVeridea; cerrarEditor(); S.v = 'ideas'; render(); if (typeof abrir === 'function') abrir(id); }
+});
 document.addEventListener('input', e => {
   if (e.target.id !== 'pr-fq') return;
-  EST.fq = e.target.value; const c = EST.lista[EST.abierto], g = document.querySelector('#est-panel .est-fotos');
+  EST.fq = e.target.value; const c = EST.lista[EST.abierto], g = gridFotosVisible();
   if (c && g) g.innerHTML = gridFotosEditor(c.slides[EST.sel] || {});
 });
 document.addEventListener('change', e => {
   const t = e.target;
-  if (t.id === 'pr-fr' || t.id === 'pr-fo') { EST[t.id === 'pr-fr' ? 'fr' : 'fo'] = t.value; const c = EST.lista[EST.abierto], g = document.querySelector('#est-panel .est-fotos'); if (c && g) g.innerHTML = gridFotosEditor(c.slides[EST.sel] || {}); return; }
+  if (t.id === 'pr-fr' || t.id === 'pr-fo') { EST[t.id === 'pr-fr' ? 'fr' : 'fo'] = t.value; const c = EST.lista[EST.abierto], g = gridFotosVisible(); if (c && g) g.innerHTML = gridFotosEditor(c.slides[EST.sel] || {}); return; }
   if (t.dataset && t.dataset.inv) { INV[t.dataset.inv] = t.value; render(); }
 });
 

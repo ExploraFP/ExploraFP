@@ -1,10 +1,10 @@
 /* ===================== Mesa de trabajo (editor de un carrusel) =====================
    A · Seguridad: «Otra versión» pide confirmación y guarda la versión anterior (c.versiones, máx. 5) para volver;
        indicador «✓ Guardado» y Deshacer (botón y Ctrl/⌘+Z) con el historial de cambios de esta sesión.
-   B · Claude por slide: «Pídele un cambio a Claude» con atajos (más corto, más directo, otro ejemplo, con un dato).
+   B · «Pídele un cambio a Claude»: Sandra lo escribe; puede tocar varias slides, la foto o el caption, y dice qué ha cambiado.
    C · Editar sin buscar: pulsar un texto de la slide grande lleva a su campo; solo se ven los campos con contenido
        (el resto en «+ Añadir»).
-   D · «Carrusel completo»: todas las slides en fila.
+   D · (quitado: «Ver todo» repetía las miniaturas de abajo)
    E · Ordenar arrastrando las miniaturas.
    F · Control de calidad en una línea si está todo bien. */
 const MESA = {hist: {}, base: {}, ultPush: 0, restaurando: false, mostrar: {}, selPrev: -1, vistaTodo: false, pidiendo: false};
@@ -79,50 +79,66 @@ function versionAnterior() {
 }
 
 /* ---------- B · Claude cambia solo esta slide ---------- */
-const MESA_ATAJOS = [
-  ['Más corto', 'Hazla más corta: menos palabras, la misma idea.'],
-  ['Más directo', 'Más directa y con más fuerza: frases cortas, sin relleno, de tú a tú.'],
-  ['Otro ejemplo', 'Cambia el ejemplo o el enfoque por otro distinto, igual de concreto.'],
-  ['Con un dato', 'Apóyala en uno de los DATOS VERIFICADOS, copiando la cifra y la fuente tal cual (pon la fuente en "fuente"). Si ninguno encaja, no inventes nada: déjala igual.']];
+// el chat de la mesa: Sandra escribe lo que quiere y Claude puede tocar cualquier slide, la foto o el caption.
+// Si no dice otra cosa, se entiende que habla de la slide que tiene abierta.
 function promptSlide(c, i, peticion) {
   const base = promptCarrusel(c).split('FORMATO DE RESPUESTA')[0];
-  const resumen = c.slides.map((s, k) => (k + 1) + '. [' + s.tipo + '] ' + [s.titulo, s.subtitulo, s.texto, (s.items || []).join(' / ')].filter(Boolean).join(' · ').replace(/\*/g, '')).join('\n');
-  return base + '\nEL CARRUSEL YA ESTÁ ESCRITO. Estas son sus slides en orden:\n' + resumen + '\n\n' +
-    'CAMBIA SOLO LA SLIDE ' + (i + 1) + ', que ahora es:\n' + JSON.stringify(c.slides[i]) + '\n\n' +
+  const actual = {copy: c.copy || '', slides: c.slides};
+  return base + '\nEL CARRUSEL YA ESTÁ ESCRITO. Así está ahora (JSON):\n' + JSON.stringify(actual) + '\n\n' +
+    'Sandra está viendo la slide ' + (i + 1) + '. Si su petición no dice a qué slide se refiere, se refiere a esa.\n\n' +
     'LO QUE PIDE SANDRA: ' + peticion + '\n\n' +
-    'Responde SOLO con el JSON de esa slide (un objeto, no una lista), con los mismos campos posibles (tipo, etiqueta, antetitulo, titulo, subtitulo, numero, texto, items, cifra, fuente, cta, cinta). ' +
-    'Mantén el "tipo" salvo que la petición pida otra cosa. No toques "imagen" ni "marco". Respeta todas las reglas de arriba (titular en minúscula salvo la inicial, una palabra entre *asteriscos*, longitudes máximas, nada de «desliza», ninguna cifra que no esté en los DATOS VERIFICADOS).';
+    'Aplica EXACTAMENTE lo que pide, aunque toque varias slides, la foto ("imagen", solo rutas de FOTOS DISPONIBLES), el "marco" o el caption ("copy"). ' +
+    'Lo que no pide, déjalo idéntico. Respeta todas las reglas de arriba (titular en minúscula salvo la inicial, una palabra entre *asteriscos*, longitudes máximas, nada de «desliza», ninguna cifra que no esté en los DATOS VERIFICADOS; caption con saltos de línea y exactamente 5 hashtags al final). ' +
+    'Responde SOLO con este JSON: {"slides": [todas las slides, en orden, ya cambiadas], "copy": "el caption, cambiado o igual", "resumen": "una frase corta de lo que has cambiado"}';
+}
+function limpiarSlide(s, antes) {
+  const o = {};
+  CAMPOS_SLIDE.forEach(k => { if (s[k] != null && s[k] !== '') o[k] = k === 'items' ? [].concat(s[k]).map(String).slice(0, 4) : String(s[k]); });
+  // si Claude no menciona la foto o el marco, se quedan como estaban
+  if (antes) ['imagen', 'marco'].forEach(k => { if (s[k] === undefined && antes[k]) o[k] = antes[k]; });
+  if (!EST_TIPOS[o.tipo]) o.tipo = antes && antes.tipo || 'contenido';
+  if (o.imagen && !FOTOS.some(f => f.ruta === o.imagen)) { if (antes && antes.imagen) o.imagen = antes.imagen; else delete o.imagen; }
+  if (o.titulo && o.titulo === o.titulo.toUpperCase() && /[A-ZÁÉÍÓÚ]{4}/.test(o.titulo)) o.titulo = o.titulo.charAt(0) + o.titulo.slice(1).toLowerCase();
+  return (o.titulo || o.texto || (o.items || []).length || o.cifra) ? o : null;
 }
 async function pedirCambioSlide(peticion) {
   const c = EST.lista[EST.abierto]; if (!c) return;
   peticion = String(peticion || '').trim(); if (!peticion) { toast('Escribe qué quieres cambiar'); return; }
   if (!EST.sample) { toast('Para usar Claude abre la web en claude.ai'); return; }
   if (MESA.pidiendo) return;
-  const i = EST.sel, antes = c.slides[i]; if (!antes) return;
-  MESA.pidiendo = true; pintarCajaClaude();
+  const i = EST.sel; if (!c.slides[i]) return;
+  MESA.pidiendo = true; MESA.respuesta = ''; MESA.respC = c.id; pintarCajaClaude();
   try {
     const r = await EST.sample.json(promptSlide(c, i, peticion), {modelTier: 'default'});
-    const s = Array.isArray(r) ? r[0] : (r && r.slide) || r;
-    if (!s || typeof s !== 'object') throw {message: 'respuesta vacía'};
-    const o = {};
-    CAMPOS_SLIDE.forEach(k => { if (k === 'imagen' || k === 'marco') return; if (s[k] != null && s[k] !== '') o[k] = k === 'items' ? [].concat(s[k]).map(String).slice(0, 4) : String(s[k]); });
-    if (!EST_TIPOS[o.tipo]) o.tipo = antes.tipo;
-    if (antes.imagen) o.imagen = antes.imagen; if (antes.marco) o.marco = antes.marco;
-    if (o.titulo && o.titulo === o.titulo.toUpperCase() && /[A-ZÁÉÍÓÚ]{4}/.test(o.titulo)) o.titulo = o.titulo.charAt(0) + o.titulo.slice(1).toLowerCase();
-    if (!o.titulo && !o.texto && !(o.items || []).length && !o.cifra) throw {message: 'sin texto'};
-    c.slides[i] = o; guardarC(c);
-    MESA.pidiendo = false; $('#mesa-claude-txt') && ($('#mesa-claude-txt').value = '');
-    pintarEditor(true); toast('✨ Slide ' + (i + 1) + ' cambiada. Si no te gusta: ↶ Deshacer');
+    // acepta {slides, copy}, una lista de slides o una sola slide
+    let lista = Array.isArray(r) ? r : r && Array.isArray(r.slides) ? r.slides : null;
+    const una = !lista && r && typeof r === 'object' ? (r.slide || (r.tipo || r.titulo ? r : null)) : null;
+    const antes = JSON.stringify([c.slides, c.copy || '']);
+    let nuevas;
+    if (lista) nuevas = lista.map((s, k) => s && typeof s === 'object' ? limpiarSlide(s, c.slides[k]) : null).filter(Boolean);
+    else if (una) { nuevas = c.slides.slice(); nuevas[i] = limpiarSlide(una, c.slides[i]) || c.slides[i]; }
+    if (!nuevas || !nuevas.length) throw {message: 'sin slides'};
+    const copy = r && typeof r.copy === 'string' && r.copy.trim() ? r.copy.trim() : c.copy;
+    if (JSON.stringify([nuevas, copy || '']) === antes) {
+      MESA.pidiendo = false; MESA.respuesta = 'Claude no ha cambiado nada. Prueba a decirlo de otra forma o a nombrar la slide (p. ej. «en la slide 3…»).';
+      pintarCajaClaude(); return;
+    }
+    c.slides = nuevas; if (copy != null) c.copy = copy;
+    if (EST.sel >= c.slides.length) EST.sel = c.slides.length - 1;
+    guardarC(c);
+    MESA.pidiendo = false; MESA.respuesta = '✓ ' + (r && r.resumen ? String(r.resumen) : 'Hecho') + ' · Si no te gusta: ↶ Deshacer';
+    pintarEditor(true);
   } catch (e) {
-    MESA.pidiendo = false; pintarCajaClaude();
-    toast(e && e.code === 'rate_limited' ? 'Demasiadas peticiones a la vez. Prueba en un minuto.' : e && e.code === 'not_granted' ? 'No se dio permiso para usar Claude.' : 'No ha salido bien. Prueba otra vez o reformula la petición.');
+    MESA.pidiendo = false;
+    MESA.respuesta = e && e.code === 'rate_limited' ? 'Demasiadas peticiones a la vez. Prueba en un minuto.' : e && e.code === 'not_granted' ? 'No se dio permiso para usar Claude.' : 'No ha salido bien. Prueba otra vez o dilo de otra forma.';
+    pintarCajaClaude();
   }
 }
 function htmlCajaClaude() {
-  return '<div class="mesa-claude" id="mesa-claude"><div class="mesa-claude-t">✨ Pídele un cambio a Claude <span>solo en esta slide</span></div>' +
-    '<div class="mesa-atajos">' + MESA_ATAJOS.map((a, k) => '<button type="button" data-mesa-atajo="' + k + '"' + (MESA.pidiendo ? ' disabled' : '') + '>' + a[0] + '</button>').join('') + '</div>' +
-    '<form id="mesa-claude-f" class="mesa-claude-f"><input type="text" id="mesa-claude-txt" placeholder="O escríbelo: «cambia el titular por una pregunta»…" maxlength="240"' + (MESA.pidiendo ? ' disabled' : '') + '>' +
-    '<button type="submit" class="btn pri"' + (MESA.pidiendo ? ' disabled' : '') + '>' + (MESA.pidiendo ? 'Claude está escribiendo…' : 'Pedir') + '</button></form></div>';
+  return '<div class="mesa-claude" id="mesa-claude"><div class="mesa-claude-t">✨ Pídele un cambio a Claude <span>en esta slide, en otras o en el caption</span></div>' +
+    '<form id="mesa-claude-f" class="mesa-claude-f"><input type="text" id="mesa-claude-txt" placeholder="«Cambia el titular por una pregunta», «en la slide 3 pon otra foto»…" maxlength="300"' + (MESA.pidiendo ? ' disabled' : '') + '>' +
+    '<button type="submit" class="btn pri"' + (MESA.pidiendo ? ' disabled' : '') + '>' + (MESA.pidiendo ? 'Claude está escribiendo…' : 'Pedir') + '</button></form>' +
+    (MESA.respuesta && !MESA.pidiendo && MESA.respC === EST.abierto ? '<p class="mesa-claude-r" role="status">' + esc(MESA.respuesta) + '</p>' : '') + '</div>';
 }
 function pintarCajaClaude() { const b = document.getElementById('mesa-claude'); if (b) b.outerHTML = htmlCajaClaude(); }
 
@@ -153,8 +169,8 @@ pintarEditor = function (todo) {
     if (re) { re.id = 'mesa-otra'; re.textContent = '✨ Otra versión'; re.title = 'Pedir a Claude otra versión entera (la actual se guarda)'; }
     const extra = '<span id="mesa-guardado" class="mesa-guardado ok">✓ Guardado</span>' +
       '<button class="btn" id="mesa-deshacer" title="Deshacer (Ctrl/⌘+Z)"' + ((MESA.hist[c.id] || []).length ? '' : ' disabled') + '>↶ Deshacer</button>' +
-      ((c.versiones || []).length ? '<button class="btn" id="mesa-anterior" title="Volver a la versión de antes de «Otra versión»">↺ Anterior</button>' : '') +
-      '<button class="btn' + (MESA.vistaTodo ? ' on' : '') + '" id="mesa-todo" aria-pressed="' + MESA.vistaTodo + '" title="Ver todas las slides en fila">▦ Ver todo</button>';
+      ((c.versiones || []).length ? '<button class="btn" id="mesa-anterior" title="Volver a la versión de antes de «Otra versión»">↺ Anterior</button>' : '');
+    // sin «▦ Ver todo»: las miniaturas de abajo ya enseñan todas las slides
     const sel = cab.querySelector('#est-e-co') || cab.querySelector('#est-e-pl');
     if (sel) sel.insertAdjacentHTML('afterend', '<span class="mesa-hueco"></span>' + extra);
   }
@@ -229,7 +245,6 @@ window.addEventListener('click', e => {
   if (t.closest('#mesa-anterior')) { e.stopImmediatePropagation(); versionAnterior(); return; }
   if (t.closest('#mesa-todo')) { e.stopImmediatePropagation(); MESA.vistaTodo = !MESA.vistaTodo; pintarEditor(true); return; }
   const ir = t.closest('[data-mesa-ir]'); if (ir) { e.stopImmediatePropagation(); EST.sel = +ir.dataset.mesaIr; MESA.vistaTodo = false; pintarEditor(true); return; }
-  const at = t.closest('[data-mesa-atajo]'); if (at) { e.stopImmediatePropagation(); pedirCambioSlide(MESA_ATAJOS[+at.dataset.mesaAtajo][1]); return; }
   const mas = t.closest('[data-mesa-mas]'); if (mas) { e.stopImmediatePropagation(); const k = mas.dataset.mesaMas; MESA.mostrar[k] = true; mas.remove(); irACampo(k); return; }
   // pulsar en la slide grande
   const grande = t.closest('.est-grande');
