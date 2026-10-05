@@ -3,7 +3,7 @@
    · Pulsar un texto de la slide grande lo marca (borde lima) y el formulario de la derecha enseña SOLO ese texto
      (en una lista, solo ese punto). Se guarda mientras escribes.
    · Pulsar la foto la marca y el formulario enseña solo sus opciones (cambiar, quitar, cómo va).
-   · Sin nada seleccionado, el panel tiene el chat con Claude, el tipo de slide y «Añadir: + campo».
+   · Sin nada seleccionado, el panel tiene el chat con Claude y «Añadir: + campo» (sin «Tipo de slide»).
    · Plantilla y color: un solo sitio, el botón «Diseño» de la barra de arriba (sin desplegables repetidos).
    · Sin «Otra versión» (Sandra: se cambia a mano o con el chat).
    · Al recargar, la web vuelve a la pestaña (y al carrusel) donde estaba. */
@@ -50,7 +50,8 @@ pintarEditor = function (todo) {
     tab.dataset.sel = '1';
     const campos = tab.querySelector('.est-campos');
     if (campos) {
-      campos.querySelectorAll('label').forEach(l => { const f = l.querySelector('[data-est-campo]'); if (f && f.dataset.estCampo !== 'tipo') l.hidden = true; });
+      // ni formulario ni «Tipo de slide» (Sandra no lo cambia: el tipo lo da Claude o «+ Añadir» al crear la slide)
+      campos.querySelectorAll('label').forEach(l => { if (l.querySelector('[data-est-campo]')) l.hidden = true; });
       const pista = campos.querySelector('.est-pista'); if (pista) pista.remove();
       const s = c.slides[EST.sel] || {};
       const mas = campos.querySelector('.mesa-mas');
