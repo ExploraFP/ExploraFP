@@ -56,7 +56,7 @@ function confirmarOtraVersion() {
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="mesa-ov-t"><div class="cuerpo">' +
     '<h2 id="mesa-ov-t">¿Pedir a Claude otra versión entera?</h2>' +
-    '<p>Rehace todas las slides y el texto del post. La versión actual se guarda y podrás volver a ella con «↺ Versión anterior».</p>' +
+    '<p>Rehace todas las slides y el caption. La versión actual se guarda y podrás volver a ella con «↺ Versión anterior».</p>' +
     (EST.sample ? '' : '<p class="est-pista">Para usar Claude abre la web en claude.ai.</p>') + '</div>' +
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" id="mesa-ov-ok"' + (EST.sample ? '' : ' disabled') + '>✨ Sí, otra versión</button></footer></div>';
 }

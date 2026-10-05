@@ -73,7 +73,11 @@ const EST_AJUSTE = '<script>document.fonts.ready.then(function(){var c=document.
   'bl=bl.filter(function(b){return b.offsetParent!==null});' +
   'if(bl.length){var fo=Math.max.apply(0,bl.map(function(b){return b.getBoundingClientRect().bottom})),ar=Math.min.apply(0,bl.map(function(b){return b.getBoundingClientRect().top}));' +
   'sb=Math.max(fo-1320,30-ar,0)}' +
-  '[].forEach.call(document.querySelectorAll(".contenido *"),function(e){if(e.scrollWidth>e.clientWidth+4&&getComputedStyle(e).overflow!=="visible")sb=Math.max(sb,1)})}' +
+  /* solo cuenta el TEXTO que asoma de una caja recortada (los dibujos decorativos se recortan a propósito) */
+  '[].forEach.call(document.querySelectorAll(".contenido *"),function(e){if(e.scrollWidth>e.clientWidth+4&&getComputedStyle(e).overflow!=="visible"){' +
+  'var eb=e.getBoundingClientRect(),w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),n,r=document.createRange();' +
+  'while(n=w.nextNode()){if(!n.nodeValue.trim())continue;r.selectNodeContents(n);var tb=r.getBoundingClientRect();' +
+  'if(tb.right>eb.right+4||tb.left<eb.left-4){sb=Math.max(sb,1);break}}}})}' +
   'document.body.setAttribute("data-sobra",Math.round(sb));' +
   'document.body.setAttribute("data-listo","1")})<\/script>';
 const EST_BASE_URL = location.href.replace(/[#?].*$/, '').replace(/[^/]*$/, '');
@@ -309,7 +313,7 @@ function avisosTexto(c) {
     const textos = QC_CAMPOS.map(k => s[k]).concat(s.items || []).filter(Boolean).map(String);
     const todo = textos.join(' · ');
     QC_PROHIBIDAS.forEach(p => { if (p[0].test(todo)) add(i, 'error', 'Palabra prohibida: ' + p[1]); });
-    if (/\p{Extended_Pictographic}/u.test(todo)) add(i, 'aviso', 'Hay un emoji dentro de la slide (solo van en el texto del post)');
+    if (/\p{Extended_Pictographic}/u.test(todo)) add(i, 'aviso', 'Hay un emoji dentro de la slide (solo van en el caption)');
     const tit = String(s.titulo || '').replace(/\*/g, '');
     if (/[A-ZÁÉÍÓÚÑ]{2}[^a-záéíóúñ]*[A-ZÁÉÍÓÚÑ]{3}/.test(tit) && tit === tit.toUpperCase() && tit.replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ]/g, '').length > 5)
       add(i, 'error', 'Titular en mayúsculas: va en minúscula salvo la inicial');
@@ -326,7 +330,7 @@ function avisosTexto(c) {
   if (c.slides.length && c.slides[0].tipo !== 'portada') add(0, 'aviso', 'La primera slide no es una portada');
   if (c.slides.length > 1 && c.slides[c.slides.length - 1].tipo !== 'cierre') add(c.slides.length - 1, 'aviso', 'La última slide no es un cierre');
   if (c.slides.length > 10) add(-1, 'aviso', c.slides.length + ' slides: el ideal está entre 4 y 8');
-  if (!String(c.copy || '').trim()) add(-1, 'aviso', 'Falta el texto del post');
+  if (!String(c.copy || '').trim()) add(-1, 'aviso', 'Falta el caption');
   return out;
 }
 /* cabe o no cabe: se mide pintando cada slide fuera de pantalla */
@@ -460,7 +464,7 @@ function vProducir() {
 }
 function vHechos() {
   const lista = carruselesDe('hecho');
-  let h = '<div class="vhead"><h2>Carruseles hechos</h2><p>Los que has dado por buenos. Ábrelos para volver a descargar las slides o copiar el texto del post.</p></div>';
+  let h = '<div class="vhead"><h2>Carruseles hechos</h2><p>Los que has dado por buenos. Ábrelos para volver a descargar las slides o copiar el caption.</p></div>';
   if (lista.length) h += '<div class="est-acciones"><button class="btn pri" data-lote="hechos">Descargar todos (' + lista.length + ')</button>' +
     (EST.progreso ? '<span class="est-progreso">' + esc(EST.progreso) + '</span>' : '') + '</div>';
   if (!lista.length) return h + '<div class="vacio"><b>Todavía no hay ninguno</b>Cuando revises un carrusel y pulses «Marcar hecho», aparece aquí.</div>';
@@ -534,8 +538,8 @@ function pintarEditor(todo) {
         '<option value="' + o[0] + '"' + ((s.marco || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></label></div>';
   }
   p += '<h3>Añadir slide</h3><div class="est-fila">' + Object.keys(EST_TIPOS).map(k => '<button class="btn mini" data-est-nueva="' + k + '">+ ' + EST_TIPOS[k] + '</button>').join('') + '</div>';
-  p += '<h3>Texto del post</h3><div class="est-campos"><textarea data-est-copy rows="6">' + esc(c.copy || '') + '</textarea>' +
-    '<button class="btn mini" data-est-copiar="' + c.id + '">Copiar texto del post</button></div>';
+  p += '<h3>Caption</h3><div class="est-campos"><textarea data-est-copy rows="6">' + esc(c.copy || '') + '</textarea>' +
+    '<button class="btn mini" data-est-copiar="' + c.id + '">Copiar caption</button></div>';
   if (!campoActivo) $('#est-panel').innerHTML = p;
   pintarMinis(ed); pintarQCPanel();
 }
@@ -680,7 +684,7 @@ document.addEventListener('click', e => {
     if (!l.length) { toast('No hay nada que descargar'); return; } descargarLote(l); return; }
   const dc = t.closest('[data-est-descargar]'); if (dc) { const c = EST.lista[dc.dataset.estDescargar]; if (c) descargar(c); return; }
   const ab = t.closest('[data-est-abrir]'); if (ab) { abrirEditor(ab.dataset.estAbrir); return; }
-  const cp = t.closest('[data-est-copiar]'); if (cp) { const c = EST.lista[cp.dataset.estCopiar]; copiar(c && c.copy || '', 'Texto del post copiado'); return; }
+  const cp = t.closest('[data-est-copiar]'); if (cp) { const c = EST.lista[cp.dataset.estCopiar]; copiar(c && c.copy || '', 'Caption copiado'); return; }
   if (!EST.abierto) return;
   const c = EST.lista[EST.abierto];
   if (t.id === 'est-cerrar') { cerrarEditor(); return; }

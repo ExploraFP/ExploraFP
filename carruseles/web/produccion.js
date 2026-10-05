@@ -3,7 +3,7 @@
    · Producción es un tablero de 3 columnas; cada tarjeta tiene UN botón principal según su columna y un menú ⋯.
    · «Dar el OK» pasa de En revisión a Listo (c.listo = true); «Marcar como publicado» pide fecha y enlace de Instagram
      (c.estado = 'hecho', c.fecha, c.ig) y lo manda a Inventario.
-   · Editor: pestañas «Slide» / «Texto del post», selector de fotos con buscador y filtros, avisos que llevan a su slide.
+   · Editor: pestañas «Slide» / «Caption», selector de fotos con buscador y filtros, avisos que llevan a su slide.
    · Inventario: por meses, con buscador y filtros de objetivo y formación; un botón (Abrir) y el resto en ⋯. */
 const ETAPAS = {generar: 'Por generar', revision: 'En revisión', listo: 'Listo', publicado: 'Terminado'};
 function etapaDe(c) {
@@ -33,7 +33,7 @@ tarjeta = function (c) {
   else if (e === 'publicado') pri = '<button class="btn pri" data-est-descargar="' + c.id + '">⬇ Descargar</button>';
   const menu = c.estado === 'generando' ? '' : e === 'publicado' ? menuPuntos([
     itemMenu('data-est-abrir="' + c.id + '"', 'Abrir'),
-    c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar texto del post') : '',
+    c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar caption') : '',
     c.ig ? '<a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Ver en Instagram ↗</a>' : '',
     c.idea && IMAP[c.idea] ? itemMenu('data-abrir="' + c.idea + '"', 'Ver su idea en la Matriz') : '',
     itemMenu('data-pr-publicar="' + c.id + '"', 'Cambiar fecha o enlace'),
@@ -41,7 +41,7 @@ tarjeta = function (c) {
     e !== 'generar' ? itemMenu('data-est-abrir="' + c.id + '"', e === 'listo' ? 'Abrir' : 'Abrir el editor') : '',
     e === 'listo' ? itemMenu('data-pr-revision="' + c.id + '"', 'Volver a revisión') : '',
     e === 'revision' ? itemMenu('data-pr-ok="' + c.id + '"', 'Dar el OK sin abrirlo') : '',
-    c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar texto del post') : '',
+    c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar caption') : '',
     itemMenu('data-pr-devolver="' + c.id + '"', 'Devolver a la Matriz', true)]);
   return '<article class="est-tarjeta pr-tarjeta e-' + e + (c.slides.length ? '' : ' est-previa') + '">' + mini(vista, 0) +
     '<div class="est-tcuerpo"><h4>' + esc(c.titulo || c.tema || '(sin título)') + '</h4>' +
@@ -156,7 +156,7 @@ pintarEditor = function (todo) {
   }
   const panel = $('#est-panel'); if (!panel || panel.querySelector('.pr-tabs')) return;
   // pestañas: todo lo de la slide / el texto del post
-  const hs = [...panel.querySelectorAll('h3')], hPost = hs.find(x => /Texto del post/.test(x.textContent));
+  const hs = [...panel.querySelectorAll('h3')], hPost = hs.find(x => /Caption/.test(x.textContent));
   const qc = panel.querySelector('#est-qc');
   if (hPost && qc) {
     const slide = document.createElement('div'); slide.className = 'pr-tab pr-tab-slide';
@@ -166,7 +166,7 @@ pintarEditor = function (todo) {
     hPost.remove();
     const tabs = document.createElement('div'); tabs.className = 'pr-tabs'; tabs.setAttribute('role', 'tablist');
     tabs.innerHTML = '<button role="tab" data-pr-tab="slide" aria-selected="' + (EST.pestana === 'slide') + '">✏️ Slide ' + (EST.sel + 1) + ' de ' + c.slides.length + '</button>' +
-      '<button role="tab" data-pr-tab="post" aria-selected="' + (EST.pestana === 'post') + '">📝 Texto del post' + (c.copy ? '' : ' <i>vacío</i>') + '</button>';
+      '<button role="tab" data-pr-tab="post" aria-selected="' + (EST.pestana === 'post') + '">📝 Caption' + (c.copy ? '' : ' <i>vacío</i>') + '</button>';
     qc.after(tabs); tabs.after(slide); slide.after(post);
     panel.dataset.tab = EST.pestana;
   }
@@ -212,7 +212,7 @@ vTodoHecho = function () {
       const c = x.carrusel, it = x.idea ? IMAP[x.idea] : null, ob = objDeX(x);
       const menu = menuPuntos([
         c ? itemMenu('data-est-descargar="' + c.id + '"', '⬇ Descargar slides') : '',
-        c && c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar texto del post') : '',
+        c && c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar caption') : '',
         c && c.ig ? '<a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Ver en Instagram ↗</a>' : '',
         x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">Abrir en Drive ↗</a>' : '',
         it ? itemMenu('data-abrir="' + it.id + '"', 'Ver ficha de la idea') : itemMenu('data-enlazar="' + esc(x.clave) + '"', 'Unir a una idea'),
