@@ -337,3 +337,50 @@ window.addEventListener('resize', () => { if (SEL.pop) colocarPop(); });
 // Ctrl/⌘+Z no deshace nada en un carrusel que solo se ve
 const _deshacerSel = deshacer;
 deshacer = function () { if (document.querySelector('#est-editor.solo-ver')) return; return _deshacerSel(); };
+
+/* ---------- panel: checklist de revisión · lo seleccionado · chat · caption (pedido de Sandra) ---------- */
+// datos internos que nunca deben salir en un carrusel (CRM, herramientas, tickets del informe de customer persona)
+const SEL_INTERNOS = [
+  [/\b(hubspot|dumbo|crm|emagister|etl|scoring)\b/i, 'nombre de una herramienta interna'],
+  [/\bticket\s+(medio|mediano)\b|\b(2\.?979|3\.?479|2\.?679|3\.?379|3\.?679|2\.?929|2\.?779)\s?€/i, 'precio o ticket interno'],
+  [/\b(nuestr[oa]s?\s+(alumn[oa]s|compradores|clientes|leads?|ventas))\b[^.]{0,50}\d+([.,]\d+)?\s?%/i, 'porcentaje de vuestras ventas o alumnos'],
+  [/\d+([.,]\d+)?\s?%\s+de\s+(nuestr[oa]s|l[oa]s)\s+(alumn[oa]s|compradores|clientes|matriculad[oa]s)\b/i, 'porcentaje de vuestras ventas o alumnos'],
+  [/\bleads?\b|\bdeals?\b|\bconversi[oó]n\b/i, 'jerga interna de ventas']];
+const _avisosTextoSel = avisosTexto;
+avisosTexto = function (c) {
+  const out = _avisosTextoSel(c);
+  const revisa = (txt, i) => SEL_INTERNOS.forEach(r => { if (r[0].test(txt)) out.push({slide: i, nivel: 'error', msg: 'Dato interno: ' + r[1]}); });
+  c.slides.forEach((s, i) => revisa(QC_CAMPOS.map(k => s[k]).concat(s.items || []).filter(Boolean).join(' · '), i));
+  revisa(String(c.copy || ''), -1);
+  return out;
+};
+const SEL_CHECK = [
+  ['Diseño: todo cabe en la slide', /no cabe/],
+  ['Palabras prohibidas', /Palabra prohibida/],
+  ['Datos sensibles', /Dato interno/],
+  ['Cifras con fuente', /[Cc]ifra|fuente/],
+  ['Titulares', /[Tt]itular/],
+  ['Sin emojis en las slides', /emoji/],
+  ['Estructura: portada y cierre', /portada|cierre|slides:/],
+  ['Caption: bloques y 5 hashtags', /caption/i]];
+htmlQC = function (c) {
+  const medido = qcMedido(c); if (!medido) pedirQC(c);
+  const a = avisos(c);
+  const filas = SEL_CHECK.map(([nombre, re]) => {
+    const mios = a.filter(x => re.test(x.msg));
+    const err = mios.some(x => x.nivel === 'error'), av = mios.length && !err;
+    const espera = !medido && /cabe/.test(String(re));
+    const icono = espera ? '…' : err ? '✗' : av ? '!' : '✓', cls = espera ? 'espera' : err ? 'mal' : av ? 'aviso' : 'ok';
+    const det = mios.map(x => '<li>' + (x.slide >= 0 ? '<button class="ck-ir" data-est-sel="' + x.slide + '">Slide ' + (x.slide + 1) + '</button>' : '') + '<span>' + esc(x.msg) + '</span></li>').join('');
+    return '<li class="ck-' + cls + '"><span class="ck-i" aria-hidden="true">' + icono + '</span><span class="ck-n">' + esc(nombre) + '</span>' + (det ? '<ul class="ck-det">' + det + '</ul>' : '') + '</li>';
+  }).join('');
+  const e = a.filter(x => x.nivel === 'error').length;
+  return '<div class="ck"><div class="ck-t">Revisión' + (medido ? (e ? ' · <b class="ck-mal">' + e + (e === 1 ? ' fallo' : ' fallos') + '</b>' : a.length ? ' · avisos para mirar' : ' · todo bien') : ' · revisando…') + '</div><ul class="ck-l">' + filas + '</ul></div>';
+};
+// sin pestañas: todo seguido (lo seleccionado y el chat ya van en el bloque de la slide; el caption debajo, con su título)
+const _pintarEditorCk = pintarEditor;
+pintarEditor = function (todo) {
+  _pintarEditorCk(todo);
+  const post = document.querySelector('#est-editor .pr-tab-post');
+  if (post && !post.querySelector('.sv-h')) post.insertAdjacentHTML('afterbegin', '<h3 class="sv-h">Caption</h3>');
+};

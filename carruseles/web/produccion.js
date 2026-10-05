@@ -40,7 +40,8 @@ tarjeta = function (c) {
     '<div class="est-tmeta">' + (ideaC ? chipAlcance(ideaC) : '') + objChip(c) + pillEtapa(c) + '</div>' +
     (e === 'publicado' ? '<p class="inv-fecha">' + (c.fecha ? 'Publicado el ' + esc(new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-ES')) : 'Sin fecha') + '</p>' : '') +
     (nota ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(nota) + '</p>' : '') +
-    (e === 'revision' || e === 'listo' ? '<div class="est-tmeta" data-qc-chip="' + c.id + '">' + chipQC(c) + '</div>' : '') +
+    // sin avisos de revisión en la tarjeta: se ven al abrir el carrusel (pedido de Sandra)
+
     (pri || menu ? '<div class="est-tpie pr-pie">' + pri + menu + '</div>' : '') + '</div></article>';
 };
 // el chip de calidad ya no dice «Listo» (Listo es una etapa que da Sandra): dice «Sin avisos»
