@@ -58,14 +58,13 @@ vProducir = function () {
     '<span class="est-progreso">' + esc(EST.progreso || '') + '</span>' +
     (faltan && !EST.sample && EST.conectado ? '<span class="est-pista">Para generar, abre la web en claude.ai.</span>' : '') + '</div>';
   if (!lista.length && !carruselesDe('hecho').length) return h + '<div class="vacio"><b>No hay nada en producción</b>Elige una idea en Inicio o en la Matriz y pulsa «Producir».</div>';
-  const vacio = {generar: 'Nada pendiente de generar.', revision: 'Nada que revisar.', listo: 'Cuando des el OK a un carrusel, aparece aquí para descargarlo y publicarlo.', publicado: 'Cuando marques uno como publicado, se queda aquí.'};
-  const pista = {generar: 'Claude escribe las slides', revision: 'Revisa y da el OK', listo: 'Descarga y publica', publicado: 'Ya publicados: ábrelos o vuelve a descargarlos cuando quieras'};
+  const vacio = {generar: 'Ninguno.', revision: 'Ninguno.', listo: 'Ninguno.', publicado: 'Ninguno.'};
   // Sandra prefiere las tarjetas grandes de antes: dos bloques (En revisión · Listo para publicar), uno debajo de otro,
   // cada uno con su rejilla de tarjetas grandes. «Por generar» solo sale mientras haya algo sin generar.
   col.publicado = carruselesDe('hecho').sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
   const secciones = (col.generar.length ? ['generar'] : []).concat(['revision', 'listo', 'publicado']);
   h += secciones.map(k =>
-    '<section class="pr-sec pr-' + k + '"><header><h3>' + (k === 'publicado' ? 'Terminados' : ETAPAS[k]) + (k === 'listo' ? ' para publicar' : '') + ' <b>' + col[k].length + '</b></h3><p>' + pista[k] + '</p></header>' +
+    '<section class="pr-sec pr-' + k + '"><header><h3>' + (k === 'publicado' ? 'Terminados' : ETAPAS[k]) + (k === 'listo' ? ' para publicar' : '') + ' <b>' + col[k].length + '</b></h3></header>' +
       (col[k].length ? '<div class="est-rejilla">' + col[k].map(tarjeta).join('') + '</div>' : '<p class="pr-vacio">' + vacio[k] + '</p>') + '</section>').join('');
   return h;
 };

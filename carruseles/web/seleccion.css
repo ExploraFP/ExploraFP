@@ -1,0 +1,35 @@
+/* editar sobre la slide + diseño en la barra */
+.est-escena{position:relative}
+.sel-pop{background:var(--surface);border:2px solid var(--limaLine);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;margin:4px 0 14px}
+.pr-tab-slide.sel-con .est-campos{display:none}
+.sel-pop-t{display:flex;align-items:center;justify-content:space-between}
+.sel-sub{margin-top:4px}
+.sel-x{border:0;background:none;cursor:pointer;font-size:14px;color:var(--ink3);width:28px;height:28px;border-radius:50%}
+.sel-x:hover{background:var(--surface2);color:var(--ink)}
+.sel-pop .pr-fotoact{margin:0}
+.sel-pop-t{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.sel-pop textarea{width:100%;box-sizing:border-box;border:1.5px solid var(--line2);border-radius:10px;padding:8px 10px;font:inherit;font-size:14.5px;line-height:1.4;background:var(--surface);color:var(--ink);resize:vertical}
+.sel-pop textarea:focus{outline:none;border-color:var(--brand)}
+.sel-pop-pie{display:flex;gap:6px;align-items:center}
+.sel-pop-pie>span{flex:1;font-size:12px;color:var(--ink3)}
+.sel-pop-fila{display:flex;gap:6px;flex-wrap:wrap}
+.sel-marcos .btn[aria-pressed="true"]{border-color:var(--brand);background:var(--limaSoft)}
+.sel-pista{margin:0 0 6px;font-size:13px;color:var(--ink3)}
+.sel-diseno{position:relative}
+#sel-diseno{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+#sel-diseno:hover,#sel-diseno[aria-expanded="true"]{background:rgba(255,255,255,.2)}
+#sel-diseno i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.8);display:inline-block}
+#sel-diseno span{font-size:10px;opacity:.8}
+.sel-diseno-pop{position:absolute;left:0;top:calc(100% + 8px);z-index:50;width:min(420px,90vw);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.3);padding:14px}
+.sel-diseno-pop h4{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.sel-diseno-pop h4+div{margin-bottom:14px}
+.sel-pls{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sel-pls button{border:1.5px solid var(--line2);background:var(--surface);border-radius:10px;padding:8px 10px;text-align:left;cursor:pointer;font:inherit;color:var(--ink);display:flex;flex-direction:column;gap:2px}
+.sel-pls button b{font-size:14px}
+.sel-pls button span{font-size:12px;color:var(--ink3)}
+.sel-cos{display:flex;flex-wrap:wrap;gap:6px}
+.sel-cos button{border:1.5px solid var(--line2);background:var(--surface);border-radius:999px;padding:5px 12px 5px 6px;cursor:pointer;font:inherit;font-size:13px;color:var(--ink);display:inline-flex;align-items:center;gap:7px}
+.sel-cos i{width:20px;height:20px;border-radius:50%;border:1px solid rgba(0,0,0,.18);display:inline-block}
+.sel-pls button[aria-pressed="true"],.sel-cos button[aria-pressed="true"]{border-color:var(--brand);background:var(--limaSoft)}
+.sel-pls button:hover,.sel-cos button:hover{border-color:var(--brand)}
+.sel-diseno-pop p{margin:0;font-size:12px;color:var(--ink3)}

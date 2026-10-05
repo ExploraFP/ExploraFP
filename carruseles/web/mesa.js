@@ -245,19 +245,7 @@ window.addEventListener('click', e => {
   if (t.closest('#mesa-anterior')) { e.stopImmediatePropagation(); versionAnterior(); return; }
   if (t.closest('#mesa-todo')) { e.stopImmediatePropagation(); MESA.vistaTodo = !MESA.vistaTodo; pintarEditor(true); return; }
   const ir = t.closest('[data-mesa-ir]'); if (ir) { e.stopImmediatePropagation(); EST.sel = +ir.dataset.mesaIr; MESA.vistaTodo = false; pintarEditor(true); return; }
-  const mas = t.closest('[data-mesa-mas]'); if (mas) { e.stopImmediatePropagation(); const k = mas.dataset.mesaMas; MESA.mostrar[k] = true; mas.remove(); irACampo(k); return; }
-  // pulsar en la slide grande
-  const grande = t.closest('.est-grande');
-  if (grande && !MESA.vistaTodo) {
-    const fr = grande.querySelector('iframe'), c = EST.lista[EST.abierto]; if (!fr || !c) return;
-    try {
-      const r = fr.getBoundingClientRect(), k = r.width / 1080 || 1;
-      const doc = fr.contentDocument, el = doc && doc.elementFromPoint((e.clientX - r.left) / k, (e.clientY - r.top) / k);
-      let x = el, campo = '';
-      while (x && x !== doc.body && !campo) { campo = campoDesdeTexto(c.slides[EST.sel] || {}, x.textContent); x = x.parentElement; }
-      if (campo) irACampo(campo); else toast('Pulsa sobre un texto para editarlo');
-    } catch (err) {}
-  }
+  // «+ campo» y pulsar en la slide grande: ahora los lleva seleccion.js (editor flotante sobre la slide)
 }, true);
 document.addEventListener('submit', e => { if (e.target.id === 'mesa-claude-f') { e.preventDefault(); pedirCambioSlide($('#mesa-claude-txt').value); } });
 document.addEventListener('keydown', e => {

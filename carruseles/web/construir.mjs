@@ -113,7 +113,8 @@ ${readFileSync(join(WEB, "fotos.css"), "utf8")}
 ${readFileSync(join(WEB, "inicio.css"), "utf8")}
 ${readFileSync(join(WEB, "datos.css"), "utf8")}
 ${readFileSync(join(WEB, "produccion.css"), "utf8")}
-${readFileSync(join(WEB, "mesa.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
+${readFileSync(join(WEB, "mesa.css"), "utf8")}
+${readFileSync(join(WEB, "seleccion.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
 const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== */\n${motor}\n` +
   `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\n` +
   `const HOOKS = ${existsSync(join(WEB, 'hooks.json')) ? readFileSync(join(WEB, 'hooks.json'), 'utf8').trim() : '{}'};\n` +
@@ -121,7 +122,7 @@ const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== 
   `const PERSONA = ${readFileSync(join(WEB, 'persona.json'), 'utf8').trim()};\n` +
   `const IDEAS_FUERA = ${existsSync(join(WEB, 'ideas-fuera.json')) ? readFileSync(join(WEB, 'ideas-fuera.json'), 'utf8').trim() : '{}'};\n` +
   `const IDEAS_EXTRA = ${existsSync(join(WEB, 'ideas-extra.json')) ? readFileSync(join(WEB, 'ideas-extra.json'), 'utf8').trim() : '[]'};\n` +
-  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\n${readFileSync(join(WEB, "fotos.js"), "utf8")}\n${readFileSync(join(WEB, "inicio.js"), "utf8")}\n${readFileSync(join(WEB, "datos.js"), "utf8")}\n${readFileSync(join(WEB, "produccion.js"), "utf8")}\n${readFileSync(join(WEB, "mesa.js"), "utf8")}\nrender();\n</script>\n`;
+  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\n${readFileSync(join(WEB, "fotos.js"), "utf8")}\n${readFileSync(join(WEB, "inicio.js"), "utf8")}\n${readFileSync(join(WEB, "datos.js"), "utf8")}\n${readFileSync(join(WEB, "produccion.js"), "utf8")}\n${readFileSync(join(WEB, "mesa.js"), "utf8")}\n${readFileSync(join(WEB, "seleccion.js"), "utf8")}\nrender();\n</script>\n`;
 cambiar("</body></html>", script + "</body></html>");
 writeFileSync(join(DIST, "banco-de-carruseles.html"), h);
 
