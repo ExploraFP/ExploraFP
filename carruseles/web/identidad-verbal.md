@@ -1,4 +1,4 @@
-IDENTIDAD VERBAL (manual «Ucademy: Identidad Verbal», Notion · Ucademy Brand Guidelines)
+IDENTIDAD VERBAL DE EXPLORA (manual «Ucademy: Identidad Verbal»: solo lo común a todas las marcas y lo de Explora; Atlas y Polaris no aplican)
 Tono: SIN FILTROS & A FUEGO.
 - Sin filtros: decimos las cosas como son, las verdades incómodas, desde la empatía, como a un colega en la calle o en un grupo de WhatsApp. Voz honesta, directa, sin adornos, desde la trinchera. Valida a la vez el sueño del alumno y su cansancio. Frases cortas, verdades concretas, cero relleno. Si suena a marketing o a promesa genérica, te has pasado por un lado; si suena agresivo o maleducado, por el otro.
 - A fuego: hablamos para activar y empujar. Energía y ambición, intensa, vibrante y cercana. Verbos de acción y lenguaje de navegación que empujan al siguiente paso. Si solo inspira pero no da un paso claro, es humo; si es técnico y frío, le falta fuego.
@@ -22,4 +22,5 @@ Ejemplos de la voz:
 - «¿Leyendo código o programando el cambio? Manos al teclado. Abre brecha en los sistemas que mueven el mundo 🚩»
 - «Ya ha salido el aviso oficial. Esto significa que el reloj ya corre: tienes 20 días para apuntarte.»
 - DON'T: «Si estás buscando una forma diferente de aprender, regístrate ahora en nuestra plataforma y descubre todas las ventajas de nuestro método online.» DO: «Basta de vueltas. Entra. Elige ruta. Hackea tu futuro.»
+- «Si no te ensucia las manos, no es Explora. Pisando barro, abriendo brecha y cazando el botín. Manos al código.»
 Claim de Explora: ENTRENAMIENTO SALVAJE PARA TU PROFESIÓN. Marca: «Explora x Ucademy» (nunca «by»).

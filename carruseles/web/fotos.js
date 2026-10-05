@@ -77,28 +77,72 @@ const orientacionDe = (w, h) => w > h * 1.1 ? 'Horizontal' : h > w * 1.1 ? 'Vert
 const nombreBonito = n => (n || 'foto').replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').replace(/\s*\d{4}\s\d{2}\s\d{2}(\s\d{2}){0,3}(\sutc)?\s*$/i, '')
   .replace(/\s+/g, ' ').trim() || 'foto';
 
+/* ---------- fotos repetidas: «huella» de cómo se ve (dHash 8×8) ----------
+   Se compara cómo se ve la foto, no el archivo: al subirla se reduce a JPEG 1800 px, así que nunca es idéntica byte a byte.
+   Distancia ≤ 10 de 64 = la misma foto (también con otro tamaño o un recorte mínimo). Se queda la primera que hubiera. */
+async function huellaDe(src) {
+  const url = typeof src === 'string' ? src : URL.createObjectURL(src);
+  try {
+    const i = new Image(); i.crossOrigin = 'anonymous'; i.src = url; await i.decode();
+    const c = document.createElement('canvas'); c.width = 9; c.height = 8; const x = c.getContext('2d'); x.drawImage(i, 0, 0, 9, 8);
+    const d = x.getImageData(0, 0, 9, 8).data, g = []; for (let k = 0; k < 72; k++) g.push(d[k * 4] * .299 + d[k * 4 + 1] * .587 + d[k * 4 + 2] * .114);
+    let bits = ''; for (let y = 0; y < 8; y++) for (let k = 0; k < 8; k++) bits += g[y * 9 + k] > g[y * 9 + k + 1] ? '1' : '0';
+    return BigInt('0b' + bits).toString(16).padStart(16, '0');
+  } catch (e) { return ''; } finally { if (typeof src !== 'string') URL.revokeObjectURL(url); }
+}
+const distHuella = (a, b) => { let n = BigInt('0x' + a) ^ BigInt('0x' + b), c = 0; while (n) { c += Number(n & 1n); n >>= 1n; } return c; };
+FT.huellasSerie = null;
+async function huellasConocidas() {
+  if (!FT.huellasSerie) {
+    FT.huellasSerie = [];
+    for (const f of (typeof FOTOS_BASE !== 'undefined' ? FOTOS_BASE : [])) {
+      const h = await huellaDe(f.ruta); if (h) FT.huellasSerie.push({id: 'base-' + claveBase(f.ruta), h: h, desc: f.desc});
+    }
+  }
+  const lista = FT.huellasSerie.filter(x => !(FT.docs[x.id] && FT.docs[x.id].oculta));
+  for (const id of Object.keys(FT.docs)) {
+    const d = FT.docs[id]; if (!d || !d.asset || d.oculta) continue;
+    if (!d.huella) { d.huella = await huellaDe('/_blob/' + d.asset); if (d.huella && DB) DB.doc('fotos/' + id).update({huella: d.huella}).catch(() => {}); }
+    if (d.huella) lista.push({id: id, h: d.huella, desc: d.desc});
+  }
+  return lista;
+}
+async function yaEstaba(blob) {
+  const h = await huellaDe(blob); if (!h) return {h: ''};
+  const conocidas = await huellasConocidas();
+  const igual = conocidas.find(x => distHuella(x.h, h) <= 10);
+  return {h: h, igual: igual};
+}
+
 async function subirFotos(files) {
   if (!FT.assets) { toast('Para subir fotos abre la web en claude.ai con permiso de edición'); return; }
   const lista = [].slice.call(files || []).filter(esFoto);
   if (!lista.length) { toast('Solo fotos: JPG, PNG o WebP'); return; }
   FT.subiendo += lista.length; render();
-  let ok = 0;
+  let ok = 0; const repetidas = [];
   for (const file of lista) {
     try {
       const r = await reducirFoto(file, 1800);
+      // si ya está en el banco, no se guarda (se queda la que había)
+      const rep = await yaEstaba(r.blob);
+      if (rep.igual) { repetidas.push('«' + nombreBonito(file.name) + '»'); continue; }
       let up;
       try { up = await FT.assets.upload(r.blob, {type: 'image/jpeg'}); }
       catch (e) { if (e && e.code === 'store_unavailable') { await new Promise(res => setTimeout(res, 1500)); up = await FT.assets.upload(r.blob, {type: 'image/jpeg'}); } else throw e; }
       const doc = {asset: up.id, archivo: String(file.name || '').slice(0, 160), desc: nombreBonito(file.name), rama: 'General', personas: '', tono: 'Neutro', etiquetas: [], orientacion: orientacionDe(r.w, r.h),
-        w: r.w, h: r.h, subida: new Date().toISOString(), estado: 'catalogando'};
+        w: r.w, h: r.h, subida: new Date().toISOString(), estado: 'catalogando', huella: rep.h};
       FT.docs[up.id] = doc; await DB.doc('fotos/' + up.id).set(doc); ok++; rehacerFotos(); render();
       catalogarFoto(up.id, r.blob);
     } catch (e) {
+      console.warn('subirFotos', e);
       const c = e && e.code;
       toast(c === 'too_large' ? 'Una foto pesa demasiado' : c === 'quota_or_state' ? 'El banco de fotos está lleno: borra alguna' : c === 'rate_limited' ? 'Vas muy rápido, espera un momento' : 'No he podido subir «' + file.name + '»');
     } finally { FT.subiendo--; }
   }
-  render(); if (ok) toast(ok === 1 ? 'Foto subida: Claude la está catalogando' : ok + ' fotos subidas: Claude las está catalogando');
+  render();
+  const msg = [ok ? (ok === 1 ? 'Foto subida: Claude la está catalogando' : ok + ' fotos subidas: Claude las está catalogando') : '',
+    repetidas.length ? (repetidas.length === 1 ? repetidas[0] + ' ya estaba en el banco: no la guardo' : repetidas.length + ' fotos ya estaban en el banco: no las guardo') : ''].filter(Boolean).join(' · ');
+  if (msg) toast(msg);
 }
 
 // Claude mira la foto y rellena la ficha
@@ -123,7 +167,11 @@ async function catalogarFoto(id, blob) {
       if (!blob) { const r = await fetch('/_blob/' + doc.asset); blob = await r.blob(); }
       opts.images = (await reducirFoto(new File([blob], 'f.jpg', {type: 'image/jpeg'}), 1024)).blob;
     }
-    const r = await sample.json(pide, opts);
+    const valida = x => x && typeof x === 'object' && String(x.desc || '').trim().length > 8 && FOTO_PERSONAS.indexOf(x.personas) >= 0;
+    let r = await sample.json(pide, opts);
+    if (r && r.ficha) r = r.ficha;
+    if (!valida(r)) { r = await sample.json(pide + ' Responde SOLO ese JSON, con todos los campos y en español.', opts); if (r && r.ficha) r = r.ficha; }
+    if (!valida(r)) throw {message: 'ficha incompleta'};
     const ok = (v, l, d) => l.indexOf(v) >= 0 ? v : d;
     await fin({estado: 'lista', desc: String(r.desc || doc.desc).slice(0, 160), rama: ok(r.rama, FOTO_RAMAS, 'General'), personas: ok(r.personas, FOTO_PERSONAS, ''),
       tono: ok(r.tono, FOTO_TONOS, 'Neutro'), etiquetas: [].concat(r.etiquetas || []).map(x => String(x).toLowerCase().slice(0, 24)).slice(0, 5)});
