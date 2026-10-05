@@ -136,7 +136,7 @@ async function pedirCambioSlide(peticion) {
 }
 function htmlCajaClaude() {
   return '<div class="mesa-claude" id="mesa-claude"><div class="mesa-claude-t">✨ Pídele a Claude el cambio que quieras</div>' +
-    '<form id="mesa-claude-f" class="mesa-claude-f"><input type="text" id="mesa-claude-txt" placeholder="Ej.: cambia el titular por una pregunta" maxlength="300"' + (MESA.pidiendo ? ' disabled' : '') + '>' +
+    '<form id="mesa-claude-f" class="mesa-claude-f" autocomplete="off"><input type="text" id="mesa-claude-txt" autocomplete="off" autocorrect="off" spellcheck="true" name="peticion-claude-' + Date.now() + '" placeholder="Ej.: cambia el titular por una pregunta" maxlength="300"' + (MESA.pidiendo ? ' disabled' : '') + '>' +
     '<button type="submit" class="btn pri"' + (MESA.pidiendo ? ' disabled' : '') + '>' + (MESA.pidiendo ? 'Claude está escribiendo…' : 'Pedir') + '</button></form>' +
     (MESA.respuesta && !MESA.pidiendo && MESA.respC === EST.abierto ? '<p class="mesa-claude-r" role="status">' + esc(MESA.respuesta) + '</p>' : '') + '</div>';
 }

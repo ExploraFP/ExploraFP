@@ -251,7 +251,7 @@ function abrirFotos() {
   const sel = (id, vacio, lista, v) => '<select id="' + id + '" aria-label="' + vacio + '"><option value="">' + vacio + '</option>' + lista.map(x => '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>').join('') + '</select>';
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja pr-fotomodal" role="dialog" aria-modal="true" aria-label="Elegir foto"><header><k>Slide ' + (EST.sel + 1) + '</k><h2>Elige la foto</h2></header><div class="cuerpo">' +
-    '<div class="pr-fbusca"><input type="search" id="pr-fq" placeholder="Busca foto: portátil, estrés…" value="' + esc(EST.fq) + '" aria-label="Buscar foto">' +
+    '<div class="pr-fbusca"><input type="search" id="pr-fq" autocomplete="off" placeholder="Busca foto: portátil, estrés…" value="' + esc(EST.fq) + '" aria-label="Buscar foto">' +
     (typeof FOTO_RAMAS !== 'undefined' ? sel('pr-fr', 'Rama', FOTO_RAMAS, EST.fr) + sel('pr-fo', 'Orientación', FOTO_ORIENT, EST.fo) : '') + '</div>' +
     '<div class="est-fotos">' + gridFotosEditor(s) + '</div></div><footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cerrar</button></footer></div>';
   setTimeout(() => { const i = $('#pr-fq'); if (i) i.focus(); }, 30);
