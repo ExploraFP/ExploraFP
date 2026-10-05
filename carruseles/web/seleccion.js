@@ -59,7 +59,7 @@ pintarEditor = function (todo) {
     const izq = document.createElement('div'); izq.className = 'eb-izq';
     const tit = document.createElement('div'); tit.className = 'eb-tit';
     const meta = document.createElement('div'); meta.className = 'eb-meta';
-    [etapa, guardado].forEach(x => x && meta.appendChild(x));
+    [etapa, q('.eb-links'), guardado].forEach(x => x && meta.appendChild(x));
     if (h2) tit.appendChild(h2); tit.appendChild(meta);
     [volver, tit].forEach(x => x && izq.appendChild(x));
     const der = document.createElement('div'); der.className = 'eb-der';

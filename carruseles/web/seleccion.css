@@ -65,3 +65,6 @@
   .eb-der{margin-left:auto}
 }
 .eb-icono > span{pointer-events:none}
+.eb-links{display:inline-flex;gap:10px}
+.eb-links button,.eb-links a{border:0;background:none;padding:0;font:inherit;font-size:12px;color:#EAF3E8;text-decoration:underline;text-underline-offset:2px;cursor:pointer;opacity:.85}
+.eb-links button:hover,.eb-links a:hover{opacity:1}

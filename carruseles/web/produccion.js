@@ -144,12 +144,11 @@ pintarEditor = function (todo) {
       : e === 'publicado' ? '<span class="pr-pub">✓ Publicado' + (c.fecha ? ' el ' + esc(fCorta(c.fecha)) : '') + '</span>' : '';
     const dl = cab.querySelector('#est-descargar'); if (dl) dl.textContent = '⬇ Descargar';
     // lo que antes estaba en el ⋯ de la tarjeta vive ahora dentro
-    const ops = [e === 'listo' ? itemMenu('data-pr-revision="' + c.id + '"', 'Volver a revisión') : '',
-      e === 'publicado' ? itemMenu('data-pr-publicar="' + c.id + '"', 'Cambiar fecha o enlace') : '',
-      e === 'publicado' && c.ig ? '<a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Ver en Instagram ↗</a>' : '',
-      e === 'publicado' ? itemMenu('data-pr-despublicar="' + c.id + '"', 'Volver a «Listo para publicar»') : '',
-      c.idea && IMAP[c.idea] ? itemMenu('data-pr-veridea="' + c.idea + '"', 'Ver su idea en la Matriz') : ''].filter(Boolean);
-    const ult = cab.lastElementChild; if (ops.length && ult) ult.insertAdjacentHTML('afterend', menuPuntos(ops).replace('pr-menu"', 'pr-menu pr-menu-cab"'));
+    // sin menú ⋯ (pedido de Sandra): lo poco que hace falta va como enlace pequeño junto al estado
+    const links = [e === 'listo' ? '<button type="button" data-pr-revision="' + c.id + '">Volver a revisión</button>' : '',
+      e === 'publicado' ? '<button type="button" data-pr-publicar="' + c.id + '">Cambiar fecha o enlace</button>' : '',
+      e === 'publicado' && c.ig ? '<a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Ver en Instagram ↗</a>' : ''].filter(Boolean);
+    const pill = cab.querySelector('.pr-etapa'); if (links.length && pill) pill.insertAdjacentHTML('afterend', '<span class="eb-links">' + links.join('') + '</span>');
   }
   const panel = $('#est-panel'); if (!panel || panel.querySelector('.pr-tabs')) return;
   // pestañas: todo lo de la slide / el texto del post
