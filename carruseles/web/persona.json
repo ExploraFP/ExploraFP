@@ -18,5 +18,16 @@
   "Transporte y Logística": "Mitad hombres, mitad mujeres, 29 años, 44 % latinoamericano, trabajando (76 %); le frenan el dinero y el tiempo.",
   "Educación Infantil": "La más joven y la más vocacional: mujer (93 %), 23 años; decide en el día y paga con ayuda de alguien de casa."
  },
- "ramas": {"Sanidad": "TCAE", "Tecnología": "DAM / DAW", "Informática": "DAM / DAW", "Administración": "Gestión Administrativa", "Comercio": "Comercio Internacional", "Servicios Socioculturales": "Educación Infantil"}
+ "ramas": {
+  "Sanidad": "TCAE",
+  "Tecnología": "DAM / DAW",
+  "Informática": "DAM / DAW",
+  "Administración": "Gestión Administrativa",
+  "Comercio": "Comercio Internacional",
+  "Servicios Socioculturales": "Educación Infantil"
+ },
+ "otros": [
+  "Perfil secundario de Sanidad: gente joven (18-22) que estudia un ciclo de sanidad (TCAE, Laboratorio, Anatomía) como paso previo para entrar luego en una carrera (Medicina, Enfermería, Biomedicina). A veces lo consulta o lo paga con su familia.",
+  "Perfil secundario de Marketing y Publicidad: gente que ya tiene su propio negocio y estudia Marketing para llevarlo mejor."
+ ]
 }

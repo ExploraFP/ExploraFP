@@ -85,3 +85,14 @@
 .pr-pie>.btn:first-child{order:0}
 .pr-pie>.pr-menu{order:1}
 .pr-pie>.btn+.btn{order:2}
+/* la tarjeta entera abre el carrusel; papelera redonda arriba a la derecha */
+.pr-tarjeta{position:relative}
+.pr-abrible .est-mini{cursor:pointer}
+.pr-abrible:hover{border-color:var(--brand)}
+.pr-titulo{all:unset;cursor:pointer;display:block}
+.pr-titulo:hover{text-decoration:underline}
+.pr-titulo:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.pr-borrar{position:absolute;top:10px;right:10px;z-index:3;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
+.pr-tarjeta:hover .pr-borrar,.pr-borrar:focus-visible{opacity:1}
+.pr-borrar:hover{background:#fff;box-shadow:0 0 0 2px var(--danger)}
+@media (hover:none){.pr-borrar{opacity:1}}

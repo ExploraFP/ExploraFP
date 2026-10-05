@@ -136,7 +136,8 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Resumen en `web/persona.json` (global + una persona por formación). Entra en el prompt de cada carrusel como «A quién le habla» y en la rutina «Ideas del mes». Sustituye a los nombres viejos del catálogo (Rocío 38, Marilín 50…), que no cuadraban con los datos.
 - Comprador típico: mujer, 27 años, trabajando, quiere el título oficial que ya le piden y que le cuadre con su vida. Frenos: pagarlo, si será capaz, que el título no valga, el tiempo, estudiar sola. Objeción: «me apunto más tarde».
 - Los datos internos (porcentajes, edades, tickets) sirven para entender a la persona. Nunca se publican en un carrusel.
-- `web/ideas-fuera.json`: ideas del catálogo retiradas por no encajar con la persona (trampolín a Medicina con padres que pagan, montar tu propio negocio, perfiles muy lejos de su formación), cada una con su motivo. No se borran del banco: solo dejan de verse. Para recuperar una, quítala de ese archivo.
+- `web/ideas-fuera.json`: ideas del catálogo retiradas por no encajar con la persona (montar tu propio negocio fuera de Marketing, perfiles muy lejos de su formación), cada una con su motivo. No se borran del banco: solo dejan de verse. Para recuperar una, quítala de ese archivo.
+- Perfiles secundarios que también son comprador (los pidió Sandra, no se quitan): jóvenes que hacen un ciclo de sanidad para entrar después en la carrera, y gente con negocio propio que estudia Marketing.
 - Ideas P01–P19 de `web/ideas-extra.json`: escritas a partir del customer persona (frenos, objeciones y persona por formación).
 
 ## Caption

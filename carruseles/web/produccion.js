@@ -28,7 +28,9 @@ tarjeta = function (c) {
   let pri = '';
   if (e === 'generar') pri = c.estado === 'generando' ? '<button class="btn pri" disabled>Generando…</button>'
     : '<button class="btn pri" data-est-generar="' + c.id + '">' + (c.estado === 'error' ? 'Reintentar' : 'Generar') + '</button>';
-  else if (e === 'revision') pri = '<button class="btn pri" data-est-abrir="' + c.id + '">Revisar</button>';
+  // la tarjeta entera abre el carrusel; abajo, lo que se hace sin abrirlo
+  else if (e === 'revision') pri = '<button class="btn pri" data-pr-ok="' + c.id + '">✓ Dar el OK</button>' +
+    (c.copy ? '<button class="btn" data-est-copiar="' + c.id + '">Copiar caption</button>' : '');
   else if (e === 'listo') pri = '<button class="btn pri" data-est-descargar="' + c.id + '">⬇ Descargar</button><button class="btn" data-pr-publicar="' + c.id + '">Marcar como publicado</button>';
   else if (e === 'publicado') pri = '<button class="btn pri" data-est-descargar="' + c.id + '">⬇ Descargar</button>';
   const menu = c.estado === 'generando' ? '' : e === 'publicado' ? menuPuntos([
@@ -40,11 +42,13 @@ tarjeta = function (c) {
     itemMenu('data-pr-despublicar="' + c.id + '"', 'Volver a «Listo para publicar»')]) : menuPuntos([
     e !== 'generar' ? itemMenu('data-est-abrir="' + c.id + '"', e === 'listo' ? 'Abrir' : 'Abrir el editor') : '',
     e === 'listo' ? itemMenu('data-pr-revision="' + c.id + '"', 'Volver a revisión') : '',
-    e === 'revision' ? itemMenu('data-pr-ok="' + c.id + '"', 'Dar el OK sin abrirlo') : '',
-    c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar caption') : '',
-    itemMenu('data-pr-devolver="' + c.id + '"', 'Devolver a la Matriz', true)]);
-  return '<article class="est-tarjeta pr-tarjeta e-' + e + (c.slides.length ? '' : ' est-previa') + '">' + mini(vista, 0) +
-    '<div class="est-tcuerpo"><h4>' + esc(c.titulo || c.tema || '(sin título)') + '</h4>' +
+    e !== 'revision' && c.copy ? itemMenu('data-est-copiar="' + c.id + '"', 'Copiar caption') : '',
+    itemMenu('data-pr-devolver="' + c.id + '"', 'Borrar de Producción', true)]);
+  const abre = e !== 'generar' ? 'data-est-abrir="' + c.id + '"' : '';
+  const borrar = e !== 'publicado' && c.estado !== 'generando' ? '<button type="button" class="pr-borrar" data-pr-devolver="' + c.id + '" aria-label="Borrar de Producción" title="Borrar de Producción">🗑</button>' : '';
+  return '<article class="est-tarjeta pr-tarjeta e-' + e + (c.slides.length ? '' : ' est-previa') + (abre ? ' pr-abrible' : '') + '">' + borrar +
+    mini(vista, 0, abre ? {boton: abre + ' aria-label="Abrir ' + esc(c.titulo || 'carrusel') + '"'} : null) +
+    '<div class="est-tcuerpo"><h4>' + (abre ? '<button type="button" class="pr-titulo" ' + abre + '>' + esc(c.titulo || c.tema || '(sin título)') + '</button>' : esc(c.titulo || c.tema || '(sin título)')) + '</h4>' +
     (objChip(c) ? '<div class="est-tmeta">' + objChip(c) + '</div>' : '') +
     (e === 'publicado' ? '<p class="inv-fecha">' + (c.fecha ? 'Publicado el ' + esc(new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-ES')) : 'Sin fecha') + (c.ig ? ' · <a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Instagram ↗</a>' : '') + '</p>' : '') +
     (nota ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(nota) + '</p>' : '') +
@@ -123,9 +127,9 @@ function abrirDevolver(id) {
   const c = EST.lista[id]; if (!c) return;
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="pr-dv-t"><div class="cuerpo">' +
-    '<h2 id="pr-dv-t">¿Devolver «' + esc(c.titulo || c.tema || 'este carrusel') + '» a la Matriz?</h2>' +
-    '<p>' + (c.slides.length ? 'Se borra este borrador con sus slides. La idea vuelve a estar «por hacer» en la Matriz.' : 'Sale de Producción y la idea vuelve a estar «por hacer».') + '</p></div>' +
-    '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" data-pr-devolver-ok="' + esc(id) + '">Devolver</button></footer></div>';
+    '<h2 id="pr-dv-t">¿Borrar «' + esc(String(c.titulo || c.tema || 'este carrusel').replace(/\*/g, '')) + '» de Producción?</h2>' +
+    '<p>' + (c.slides.length ? 'Se borran sus slides y no se pueden recuperar. ' : '') + (c.idea && IMAP[c.idea] ? 'La idea no se borra: vuelve a estar «por hacer» en la Matriz.' : '') + '</p></div>' +
+    '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" data-pr-devolver-ok="' + esc(id) + '">Sí, borrar</button></footer></div>';
 }
 
 /* ---------- editor: cabecera con la etapa, pestañas y fotos con buscador ---------- */
@@ -239,7 +243,7 @@ document.addEventListener('click', e => {
   const pb = t.closest('[data-pr-publicar]'); if (pb) { e.stopImmediatePropagation(); abrirPublicar(pb.dataset.prPublicar); return; }
   const po = t.closest('[data-pr-publicar-ok]'); if (po) { publicar(po.dataset.prPublicarOk); return; }
   const dv = t.closest('[data-pr-devolver]'); if (dv) { abrirDevolver(dv.dataset.prDevolver); return; }
-  const dvo = t.closest('[data-pr-devolver-ok]'); if (dvo) { borrarC(dvo.dataset.prDevolverOk); cerrarPanel(); render(); toast('Devuelto a la Matriz'); return; }
+  const dvo = t.closest('[data-pr-devolver-ok]'); if (dvo) { borrarC(dvo.dataset.prDevolverOk); cerrarPanel(); render(); toast('Borrado de Producción'); return; }
   const ok = t.closest('[data-pr-ok]'); if (ok) { const c = EST.lista[ok.dataset.prOk]; if (c && darOK(c)) render(); return; }
   const rv = t.closest('[data-pr-revision]'); if (rv) { const c = EST.lista[rv.dataset.prRevision]; if (c) { c.listo = false; guardarC(c); render(); toast('Vuelve a revisión'); } return; }
   if (t.id === 'pr-ok') { const c = EST.lista[EST.abierto]; if (c && darOK(c)) pintarEditor(true); return; }

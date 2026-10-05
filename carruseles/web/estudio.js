@@ -2,7 +2,8 @@
 function personaDe(it) {
   const P = typeof PERSONA !== 'undefined' ? PERSONA : null; if (!P) return it && it.buyer || '';
   const f = it && (it.formacion || it.alcTxt) || '', k = P.formaciones[f] ? f : P.ramas[f] || P.ramas[it && it.ramaColor] || '';
-  return (k && P.formaciones[k] ? k + ': ' + P.formaciones[k] + ' · En general: ' : '') + P.global;
+  const extra = (P.otros || []).filter(o => (/sanidad/i.test(o) && /^(TCAE|Laboratorio|Anatom|Sanidad)/.test(f)) || (/Marketing/.test(o) && /^Marketing/.test(f)));
+  return (k && P.formaciones[k] ? k + ': ' + P.formaciones[k] + ' · ' : '') + (extra.length ? extra.join(' ') + ' · ' : '') + 'En general: ' + P.global;
 }
 if (typeof IDEAS_FUERA !== 'undefined') for (let i = IDEAS.length - 1; i >= 0; i--) if (IDEAS_FUERA[IDEAS[i].id]) IDEAS.splice(i, 1);
 /* ===================== ESTUDIO: producir carruseles en masa =====================
