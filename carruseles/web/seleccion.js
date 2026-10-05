@@ -2,6 +2,7 @@
    Pedido de Sandra (oct-2026):
    · Pulsar un texto de la slide grande lo marca (borde lima) y el formulario de la derecha enseña SOLO ese texto
      (en una lista, solo ese punto). Se guarda mientras escribes.
+   · Pulsar la flecha a mano: «Quitar flecha» (trazo: ninguno); vuelve con «Añadir: + Flecha».
    · Pulsar la foto la marca y el formulario enseña solo sus opciones (cambiar, quitar, cómo va).
    · Sin nada seleccionado, el panel tiene el chat con Claude y «Añadir: + campo» (sin «Tipo de slide»).
    · Plantilla y color: un solo sitio, el botón «Diseño» de la barra de arriba (sin desplegables repetidos).
@@ -55,8 +56,10 @@ pintarEditor = function (todo) {
       const pista = campos.querySelector('.est-pista'); if (pista) pista.remove();
       const s = c.slides[EST.sel] || {};
       const mas = campos.querySelector('.mesa-mas');
-      if ((s.tipo === 'portada' || s.tipo === 'contenido') && !s.imagen) {
-        const b = '<button type="button" data-pr-fotos>+ Foto</button>';
+      const extras = ((s.tipo === 'portada' || s.tipo === 'contenido') && !s.imagen ? '<button type="button" data-pr-fotos>+ Foto</button>' : '') +
+        (s.trazo === 'ninguno' ? '<button type="button" id="sel-contrazo">+ Flecha</button>' : '');
+      if (extras) {
+        const b = extras;
         if (mas) mas.insertAdjacentHTML('beforeend', b); else campos.insertAdjacentHTML('beforeend', '<div class="mesa-mas"><span>Añadir:</span>' + b + '</div>');
       }
       campos.insertAdjacentHTML('afterbegin', '<p class="sel-pista">Pulsa un texto o la foto de la slide para cambiarlo.</p>');
@@ -103,6 +106,7 @@ function objetivoEn(fr, x, y) {
   let d; try { d = fr.contentDocument; } catch (e) { return null; } if (!d) return null;
   const r = fr.getBoundingClientRect(), k = r.width / 1080 || 1;
   const el = d.elementFromPoint((x - r.left) / k, (y - r.top) / k); if (!el) return null;
+  if (el.closest && el.closest('.flecha')) return {tipo: 'trazo', el: el.closest('.flecha')};
   for (let n = el; n && n !== d.body; n = n.parentElement) { const m = campoDeElemento(s, n); if (m) return {tipo: 'texto', campo: m.campo, idx: m.idx, el: n}; }
   if (s.imagen) for (let n = el; n && n !== d.body; n = n.parentElement) {
     const cl = String(n.className || '');
@@ -147,6 +151,9 @@ function pintarPop(foco) {
       '<div class="sel-pop-pie"><span>' + (/titulo|items/.test(p.campo) ? '*palabra* = resaltada en lima' : '') + '</span>' +
       ((p.campo !== 'titulo' && p.campo !== 'items') || (p.campo === 'items' && (s.items || []).length > 1) ? '<button type="button" class="btn mini" id="sel-borrar">' + (p.campo === 'items' ? 'Quitar este punto' : 'Quitar de la slide') + '</button>' : '') +
       (p.campo === 'items' && (s.items || []).length < 4 ? '<button type="button" class="btn mini" id="sel-otro">+ Otro punto</button>' : '') + '</div></div>';
+  } else if (p.tipo === 'trazo') {
+    h = '<div class="sel-pop" id="sel-pop"><div class="sel-pop-t"><span>Flecha</span><button type="button" class="sel-x" id="sel-cancelar" aria-label="Quitar la selección" title="Quitar la selección">✕</button></div>' +
+      '<div class="sel-pop-fila"><button type="button" class="btn mini" id="sel-sintrazo">Quitar flecha</button></div></div>';
   } else {
     const ops = [];
     if (s.tipo === 'portada') ops.push(['', 'Según la plantilla'], ['fondo', 'A pantalla completa']);
@@ -175,7 +182,8 @@ function marcarActivo() {
     el = cands.find(n => !cands.some(o => o !== n && n.contains(o) && norm(o.textContent).trim() === norm(n.textContent).trim())) || cands[0] || null;
     // el contenedor más grande que sigue siendo solo ese campo
     while (el && el.parentElement && el.parentElement !== d.body) { const m = campoDeElemento(s, el.parentElement); if (m && m.campo === SEL.pop.campo && m.idx === SEL.pop.idx) el = el.parentElement; else break; }
-  } else el = fotoDe(d);
+  } else if (SEL.pop.tipo === 'trazo') el = d.querySelector('.flecha');
+  else el = fotoDe(d);
   if (el) el.classList.add('sel-activo');
 }
 let SEL_GUARDA = 0;
@@ -214,6 +222,8 @@ window.addEventListener('click', e => {
     s.items = (s.items || []).concat(['Nuevo punto']); guardarC(c); pintarEditor(true); abrirPop({tipo: 'texto', campo: 'items', idx: s.items.length - 1}); return;
   }
   if (t.closest('#sel-quitafoto')) { e.stopImmediatePropagation(); const c = EST.lista[EST.abierto], s = c.slides[EST.sel]; delete s.imagen; if (s.marco === 'fondo' || s.marco === 'portatil') delete s.marco; SEL.pop = null; guardarC(c); pintarEditor(true); return; }
+  if (t.closest('#sel-sintrazo')) { e.stopImmediatePropagation(); const c = EST.lista[EST.abierto]; c.slides[EST.sel].trazo = 'ninguno'; SEL.pop = null; guardarC(c); pintarEditor(true); return; }
+  if (t.closest('#sel-contrazo')) { e.stopImmediatePropagation(); const c = EST.lista[EST.abierto]; delete c.slides[EST.sel].trazo; guardarC(c); pintarEditor(true); return; }
   const mc = t.closest('[data-sel-marco]');
   if (mc) { e.stopImmediatePropagation(); const c = EST.lista[EST.abierto], s = c.slides[EST.sel]; if (mc.dataset.selMarco) s.marco = mc.dataset.selMarco; else delete s.marco; guardarC(c); pintarEditor(true); return; }
   if (t.closest('#sel-pop')) return;

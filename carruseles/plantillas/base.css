@@ -127,3 +127,6 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .postit { top: 150px; }
 /* post-it: más pequeño y arriba, para que no roce el titular */
 .postit { top: 130px; right: 70px; width: 180px; transform: rotate(8deg); }
+
+/* trazo: ninguno → sin flechas a mano en esa slide (se quita pinchando la flecha en la web) */
+.sin-trazo .flecha { display: none !important; }

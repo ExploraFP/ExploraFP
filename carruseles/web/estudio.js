@@ -82,6 +82,8 @@ const EST_AJUSTE = '<script>document.fonts.ready.then(function(){var c=document.
   'if(bl.length){var fo=Math.max.apply(0,bl.map(function(b){return b.getBoundingClientRect().bottom})),ar=Math.min.apply(0,bl.map(function(b){return b.getBoundingClientRect().top}));' +
   'sb=Math.max(fo-1320,30-ar,0)}' +
   /* solo cuenta el TEXTO que asoma de una caja recortada (los dibujos decorativos se recortan a propósito) */
+  /* lo que se sale por los lados (flechas, botones, textos): también cuenta */
+  '[].forEach.call(document.querySelectorAll(".contenido .flecha, .contenido [class*=cta], .contenido .titulo, .contenido .texto, .contenido .subtitulo, .contenido .pildora, .contenido .pastilla, .contenido .etiqueta"),function(e){if(getComputedStyle(e).display==="none")return;var r=e.getBoundingClientRect();if(r.width&&(r.right>1084||r.left<-4))sb=Math.max(sb,1)});' +
   '[].forEach.call(document.querySelectorAll(".contenido *"),function(e){if(e.scrollWidth>e.clientWidth+4&&getComputedStyle(e).overflow!=="visible"){' +
   'var eb=e.getBoundingClientRect(),w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),n,r=document.createRange();' +
   'while(n=w.nextNode()){if(!n.nodeValue.trim())continue;r.selectNodeContents(n);var tb=r.getBoundingClientRect();' +
@@ -255,7 +257,7 @@ function promptCarrusel(c) {
   L.push(' ]}');
   return L.join('\n');
 }
-const CAMPOS_SLIDE = ['tipo', 'etiqueta', 'antetitulo', 'titulo', 'subtitulo', 'numero', 'texto', 'items', 'cifra', 'fuente', 'cta', 'cinta', 'imagen', 'marco', 'nota'];
+const CAMPOS_SLIDE = ['tipo', 'etiqueta', 'antetitulo', 'titulo', 'subtitulo', 'numero', 'texto', 'items', 'cifra', 'fuente', 'cta', 'cinta', 'imagen', 'marco', 'nota', 'trazo'];
 function limpiarRespuesta(r) {
   const rutas = FOTOS.map(f => f.ruta);
   let slides = (r && Array.isArray(r.slides) ? r.slides : []).filter(s => s && EST_TIPOS[s.tipo]).slice(0, 10).map(s => {
@@ -366,7 +368,7 @@ async function medir(c) {
 }
 function avisos(c) {
   const out = avisosTexto(c), m = EST.medidas[c.id];
-  if (m && m.firma === firmaQC(c)) m.sobras.forEach((px, i) => { if (px > 0) out.unshift({slide: i, nivel: 'error', msg: 'El texto no cabe en la slide: recórtalo'}); });
+  if (m && m.firma === firmaQC(c)) m.sobras.forEach((px, i) => { if (px > 0) out.unshift({slide: i, nivel: 'error', msg: 'Algo no cabe en la slide (texto, botón o flecha): recórtalo'}); });
   return out;
 }
 const qcMedido = c => { const m = EST.medidas[c.id]; return !!(m && m.firma === firmaQC(c)); };
