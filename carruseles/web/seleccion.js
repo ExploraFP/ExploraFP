@@ -45,6 +45,27 @@ pintarEditor = function (todo) {
   }
   // sin «Otra versión» ni «↺ Anterior»: para cambiar está la mano y el chat (pedido de Sandra)
   if (cab) cab.querySelectorAll('#mesa-otra, #est-rehacer, #mesa-anterior').forEach(b => b.remove());
+  // barra de arriba con jerarquía: ← y título (con estado y «guardado» debajo) · diseño · acciones secundarias discretas · UNA acción principal
+  if (cab && !cab.dataset.eb) {
+    cab.dataset.eb = '1';
+    const q = sel => cab.querySelector(sel);
+    const volver = q('#est-cerrar'), h2 = q('h2'), etapa = q('.pr-etapa'), guardado = q('#mesa-guardado'), diseno = q('.sel-diseno'),
+      deshacer = q('#mesa-deshacer'), descargar = q('#est-descargar'), menu = q('.pr-menu-cab'),
+      principal = q('#pr-ok') || q('[data-pr-publicar].btn') || q('.pr-pub');
+    if (volver) { volver.innerHTML = '<span aria-hidden="true">←</span>'; volver.className = 'eb-icono'; volver.setAttribute('aria-label', 'Volver a Producción'); volver.title = 'Volver a Producción'; }
+    if (deshacer) { deshacer.innerHTML = '<span aria-hidden="true">↶</span>'; deshacer.className = 'eb-icono'; deshacer.setAttribute('aria-label', 'Deshacer'); deshacer.title = 'Deshacer (Ctrl/⌘ + Z)'; }
+    if (descargar) { descargar.textContent = 'Descargar'; descargar.className = 'eb-sec'; }
+    if (principal && principal.tagName === 'BUTTON') principal.className = 'eb-pri';
+    const izq = document.createElement('div'); izq.className = 'eb-izq';
+    const tit = document.createElement('div'); tit.className = 'eb-tit';
+    const meta = document.createElement('div'); meta.className = 'eb-meta';
+    [etapa, guardado].forEach(x => x && meta.appendChild(x));
+    if (h2) tit.appendChild(h2); tit.appendChild(meta);
+    [volver, tit].forEach(x => x && izq.appendChild(x));
+    const der = document.createElement('div'); der.className = 'eb-der';
+    [deshacer, descargar, menu, principal].forEach(x => x && der.appendChild(x));
+    cab.innerHTML = ''; cab.appendChild(izq); if (diseno) cab.appendChild(diseno); cab.appendChild(der);
+  }
   // panel: sin formulario. Chat arriba, tipo de slide y «Añadir»
   const tab = ed.querySelector('.pr-tab-slide');
   if (tab && !tab.dataset.sel) {
