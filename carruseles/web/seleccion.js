@@ -54,8 +54,10 @@ pintarEditor = function (todo) {
       principal = q('#pr-ok') || q('[data-pr-publicar].btn') || q('.pr-pub');
     if (volver) { volver.innerHTML = '<span aria-hidden="true">←</span>'; volver.className = 'eb-icono'; volver.setAttribute('aria-label', 'Volver a Producción'); volver.title = 'Volver a Producción'; }
     if (deshacer) { deshacer.innerHTML = '<span aria-hidden="true">↶</span>'; deshacer.className = 'eb-icono'; deshacer.setAttribute('aria-label', 'Deshacer'); deshacer.title = 'Deshacer (Ctrl/⌘ + Z)'; }
-    if (descargar) { descargar.textContent = 'Descargar'; descargar.className = 'eb-sec'; }
-    if (principal && principal.tagName === 'BUTTON') principal.className = 'eb-pri';
+    // descargar solo cuando está aprobado: en revisión no aparece; en «Listo» es la acción principal y «Marcar como publicado» va al lado
+    const et = etapaDe(c);
+    if (descargar) { descargar.textContent = 'Descargar'; descargar.className = et === 'listo' ? 'eb-pri' : 'eb-sec'; if (et === 'revision' || et === 'generar') descargar.remove(); }
+    if (principal && principal.tagName === 'BUTTON') principal.className = et === 'listo' ? 'eb-sec' : 'eb-pri';
     const izq = document.createElement('div'); izq.className = 'eb-izq';
     const tit = document.createElement('div'); tit.className = 'eb-tit';
     const meta = document.createElement('div'); meta.className = 'eb-meta';
@@ -63,7 +65,7 @@ pintarEditor = function (todo) {
     if (h2) tit.appendChild(h2); tit.appendChild(meta);
     [volver, tit].forEach(x => x && izq.appendChild(x));
     const der = document.createElement('div'); der.className = 'eb-der';
-    [deshacer, descargar, menu, principal].forEach(x => x && der.appendChild(x));
+    (et === 'listo' ? [deshacer, principal, descargar] : [deshacer, descargar, menu, principal]).forEach(x => x && x.isConnected !== false && der.appendChild(x));
     cab.innerHTML = ''; cab.appendChild(izq); if (diseno) cab.appendChild(diseno); cab.appendChild(der);
   }
   // panel: sin formulario. Chat arriba, tipo de slide y «Añadir»
