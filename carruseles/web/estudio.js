@@ -1,3 +1,10 @@
+/* ---------- customer persona (web/persona.json) e ideas retiradas por no encajar (web/ideas-fuera.json) ---------- */
+function personaDe(it) {
+  const P = typeof PERSONA !== 'undefined' ? PERSONA : null; if (!P) return it && it.buyer || '';
+  const f = it && (it.formacion || it.alcTxt) || '', k = P.formaciones[f] ? f : P.ramas[f] || P.ramas[it && it.ramaColor] || '';
+  return (k && P.formaciones[k] ? k + ': ' + P.formaciones[k] + ' · En general: ' : '') + P.global;
+}
+if (typeof IDEAS_FUERA !== 'undefined') for (let i = IDEAS.length - 1; i >= 0; i--) if (IDEAS_FUERA[IDEAS[i].id]) IDEAS.splice(i, 1);
 /* ===================== ESTUDIO: producir carruseles en masa =====================
    Se añade al banco de carruseles. Flujo:
    1) En Ideas, «Producir» manda una idea (o todas las filtradas) a la mesa de producción.
@@ -214,7 +221,8 @@ function promptCarrusel(c) {
     if (tituloIdea(it) !== it.titular) L.push('- Titular original de la idea: ' + it.titular);
     L.push('- ' + it.ganchoLabel + ': ' + it.gancho);
     L.push('- Qué se explica dentro: ' + it.dentro);
-    if (it.buyer) L.push('- A quién le habla: ' + it.buyer + (it.situacion ? ' (' + it.situacion + ')' : ''));
+    L.push('- A quién le habla (customer persona real, sale de nuestras ventas): ' + personaDe(it));
+    if (it.situacion) L.push('- Situación concreta de la idea: ' + it.situacion);
     if (it.google) L.push('- Lo que buscaría en Google: ' + it.google);
     L.push('- Momento del embudo: ' + FN_PISTA[it.funnel]);
   } else {
@@ -236,7 +244,7 @@ function promptCarrusel(c) {
   }
   L.push('');
   L.push('FORMATO DE RESPUESTA (JSON):');
-  L.push('{"copy": "texto del post de Instagram: 3-5 líneas cortas con el mismo tono, emojis de energía permitidos, y 3-5 hashtags al final",');
+  L.push('{"copy": "caption de Instagram: frases cortas separadas por saltos de línea, con una línea en blanco entre bloques (gancho · desarrollo · llamada a la acción), mismo tono, emojis de energía permitidos, y al final, en su propia línea, EXACTAMENTE 5 hashtags",');
   L.push(' "slides": [');
   L.push('  {"tipo":"portada","etiqueta":"FP Online","titulo":"...","subtitulo":"...","imagen":"fotos/...","marco":"fondo"},');
   L.push('  {"tipo":"contenido","numero":"01","titulo":"...","texto":"..."},');
@@ -331,6 +339,11 @@ function avisosTexto(c) {
   if (c.slides.length > 1 && c.slides[c.slides.length - 1].tipo !== 'cierre') add(c.slides.length - 1, 'aviso', 'La última slide no es un cierre');
   if (c.slides.length > 10) add(-1, 'aviso', c.slides.length + ' slides: el ideal está entre 4 y 8');
   if (!String(c.copy || '').trim()) add(-1, 'aviso', 'Falta el caption');
+  else {
+    const nh = (String(c.copy).match(/#[\p{L}\p{N}_]+/gu) || []).length;
+    if (nh !== 5) add(-1, 'aviso', 'El caption lleva ' + nh + ' hashtags: van 5 exactos al final');
+    if (!/\n\s*\n/.test(c.copy)) add(-1, 'aviso', 'El caption va todo seguido: separa los bloques con una línea en blanco');
+  }
   return out;
 }
 /* cabe o no cabe: se mide pintando cada slide fuera de pantalla */

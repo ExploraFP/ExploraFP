@@ -1,0 +1,22 @@
+{
+ "global": "Mujer (65 %), 27 años de mediana, trabajando (63 %), a menudo a turnos o en oficina; un 24 % latinoamericana. Quiere el título oficial que ya le piden en el trabajo y compra tiempo: que le cuadre con la vida que ya tiene. Le mueve compatibilizar con trabajo y familia, que el título sea oficial, las prácticas y trabajar mejor. Le frena poder pagarlo (cuotas), si será capaz de volver a estudiar, que el título no valga, no tener tiempo y quedarse sola estudiando online. Objeción típica: «me apunto más tarde». Habla así: «no me da la vida», «¿se puede pagar a plazos?», «no puedo perder más tiempo», «quiero cambiar de ámbito». Decide en pocos días y a menudo lo consulta con su pareja o su madre.",
+ "formaciones": {
+  "TCAE": "La cuidadora que ya hace el trabajo y necesita el título para que se lo paguen: mujer (92 %), 33 años, trabajando, a veces en paro; le mueve el título oficial y compaginar; le frena el dinero y si será capaz.",
+  "Laboratorio Clínico y Biomédico": "La joven que quiere entrar en el hospital por la puerta del laboratorio: mujer (88 %), 27 años, trabajando; le mueve el título oficial, compaginar y las prácticas.",
+  "Anatomía Patológica y Citodiagnóstico": "La técnica sanitaria vocacional que busca la salida menos saturada: mujer (90 %), 28 años, trabajando.",
+  "Dietética": "La española de 30 que cambia de sector por vocación: 64 % mujeres; le frena si será capaz y no tener tiempo.",
+  "DAM": "El que teclea «FP DAM» en Google con su trabajo actual ya medio abandonado: hombre (76 %), 26 años, trabajando (71 %); le frena volver a estudiar.",
+  "DAW": "El programador autodidacta que quiere el papel que le falta: hombre, 28 años, trabajando (77 %).",
+  "DAM / DAW": "Hombre de 26-28 años que ya trabaja; o se aburre en su trabajo actual o ya programa por su cuenta y le falta el título oficial.",
+  "ASIR": "El de sistemas: hombre (90 %), 26 años, trabajando; lo que más pesa es que le cuadre con el trabajo.",
+  "SMR": "El más joven de tecnología: 22 años, hombre; decide rápido.",
+  "Marketing y Publicidad": "La de 24 que quiere algo creativo sin pasar por la universidad: 75 % mujeres, trabajando.",
+  "Administración y Finanzas": "La administrativa recién llegada que quiere titulación española ya: mujer (80 %), 28 años, 38 % latinoamericana; le mueve la estabilidad.",
+  "Gestión Administrativa": "Mujer (89 %), 29 años, 4 de cada 10 de origen latinoamericano; lo que más pesa es compaginar con trabajo y familia.",
+  "Asistencia a la Dirección": "Mujer, 27 años, más de la mitad latinoamericana; busca estabilidad y compatibilidad.",
+  "Comercio Internacional": "El perfil más internacional: 24 años, mitad hombres y mitad mujeres, 39 % latinoamericano, trabajando.",
+  "Transporte y Logística": "Mitad hombres, mitad mujeres, 29 años, 44 % latinoamericano, trabajando (76 %); le frenan el dinero y el tiempo.",
+  "Educación Infantil": "La más joven y la más vocacional: mujer (93 %), 23 años; decide en el día y paga con ayuda de alguien de casa."
+ },
+ "ramas": {"Sanidad": "TCAE", "Tecnología": "DAM / DAW", "Informática": "DAM / DAW", "Administración": "Gestión Administrativa", "Comercio": "Comercio Internacional", "Servicios Socioculturales": "Educación Infantil"}
+}

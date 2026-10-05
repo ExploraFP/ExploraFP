@@ -132,5 +132,16 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   seguidos con nombres ordenados (01-titulo-01.png…) y una confirmación del navegador por archivo.
 - La fuente Gravity se publica con la herramienta (privada); no hacer público el enlace (licencia de Dinamo).
 
+## Customer persona (fuente: informe «Quién compra una FP online», datos a 15/09/2026)
+- Resumen en `web/persona.json` (global + una persona por formación). Entra en el prompt de cada carrusel como «A quién le habla» y en la rutina «Ideas del mes». Sustituye a los nombres viejos del catálogo (Rocío 38, Marilín 50…), que no cuadraban con los datos.
+- Comprador típico: mujer, 27 años, trabajando, quiere el título oficial que ya le piden y que le cuadre con su vida. Frenos: pagarlo, si será capaz, que el título no valga, el tiempo, estudiar sola. Objeción: «me apunto más tarde».
+- Los datos internos (porcentajes, edades, tickets) sirven para entender a la persona. Nunca se publican en un carrusel.
+- `web/ideas-fuera.json`: ideas del catálogo retiradas por no encajar con la persona (trampolín a Medicina con padres que pagan, montar tu propio negocio, perfiles muy lejos de su formación), cada una con su motivo. No se borran del banco: solo dejan de verse. Para recuperar una, quítala de ese archivo.
+- Ideas P01–P19 de `web/ideas-extra.json`: escritas a partir del customer persona (frenos, objeciones y persona por formación).
+
+## Caption
+- Frases cortas con saltos de línea y una línea en blanco entre bloques (gancho · desarrollo · llamada a la acción).
+- Al final, en su propia línea, exactamente 5 hashtags. El revisor avisa si no son 5 o si va todo seguido.
+
 ## Pendientes (anotados por Sandra)
 - **Verificar contenido**: distinguir en la Matriz lo que propone Claude (ideas, hooks, objetivos, datos) de lo que Sandra ha revisado y dado el OK. Algo tendremos que hacer: estado «Propuesta de Claude» / «Revisada ✓» por idea, y que solo lo revisado se pueda producir o salga primero. Incluye las 42 ideas de ideas-extra, la clasificación automática de objetivos, las ideas del mes y el dato D13 (becas).
