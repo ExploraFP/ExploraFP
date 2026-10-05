@@ -88,7 +88,7 @@ function promptSlide(c, i, peticion) {
     'Sandra está viendo la slide ' + (i + 1) + '. Si su petición no dice a qué slide se refiere, se refiere a esa.\n\n' +
     'LO QUE PIDE SANDRA: ' + peticion + '\n\n' +
     'Aplica EXACTAMENTE lo que pide, aunque toque varias slides, la foto ("imagen", solo rutas de FOTOS DISPONIBLES), el "marco" o el caption ("copy"). ' +
-    'Lo que no pide, déjalo idéntico. Respeta todas las reglas de arriba (titular en minúscula salvo la inicial, una palabra entre *asteriscos*, longitudes máximas, nada de «desliza», ninguna cifra que no esté en los DATOS VERIFICADOS; caption con saltos de línea y exactamente 5 hashtags al final). ' +
+    'Para quitar la flecha a mano de una slide pon "trazo": "ninguno"; para volver a ponerla, quita "trazo". Lo que no pide, déjalo idéntico. Respeta todas las reglas de arriba (titular en minúscula salvo la inicial, una palabra entre *asteriscos*, longitudes máximas, nada de «desliza», ninguna cifra que no esté en los DATOS VERIFICADOS; caption con saltos de línea y exactamente 5 hashtags al final). ' +
     'Responde SOLO con este JSON: {"slides": [todas las slides, en orden, ya cambiadas], "copy": "el caption, cambiado o igual", "resumen": "una frase corta de lo que has cambiado"}';
 }
 function limpiarSlide(s, antes) {

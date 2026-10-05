@@ -251,6 +251,26 @@ function colocarPop() { marcarActivo(); }
 /* ---------- eventos ---------- */
 window.addEventListener('click', e => {
   const t = e.target; if (!EST.abierto || !t.closest) return;
+  // miniaturas: ⧉ duplica al momento; 🗑 pide confirmación
+  const dupB = t.closest('[data-est-dup]'), quiB = t.closest('[data-est-quita]');
+  if (dupB || quiB) {
+    e.stopImmediatePropagation(); e.preventDefault();
+    const c = EST.lista[EST.abierto]; if (!c) return;
+    if (dupB) { const i = +dupB.dataset.estDup; c.slides.splice(i + 1, 0, JSON.parse(JSON.stringify(c.slides[i]))); EST.sel = i + 1; SEL.pop = null; guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' duplicada'); return; }
+    const i = +quiB.dataset.estQuita; if (c.slides.length < 2) return;
+    $('#onb').hidden = false;
+    $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="sel-q-t"><div class="cuerpo">' +
+      '<h2 id="sel-q-t">¿Quitar la slide ' + (i + 1) + '?</h2><p>Se borra del carrusel. Si te equivocas, puedes recuperarla con ↶ Deshacer.</p></div>' +
+      '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" data-sel-quita-ok="' + i + '">Sí, quitar</button></footer></div>';
+    return;
+  }
+  const qok = t.closest('[data-sel-quita-ok]');
+  if (qok) {
+    e.stopImmediatePropagation(); const c = EST.lista[EST.abierto], i = +qok.dataset.selQuitaOk; cerrarPanel();
+    if (!c || c.slides.length < 2) return;
+    c.slides.splice(i, 1); if (EST.sel >= c.slides.length || EST.sel > i) EST.sel = Math.max(0, EST.sel - 1); SEL.pop = null;
+    guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' quitada'); return;
+  }
   // diseño
   if (t.closest('#sel-diseno')) { e.stopImmediatePropagation(); SEL.diseno = !SEL.diseno; pintarEditor(true); return; }
   const pl = t.closest('[data-sel-pl]'), co = t.closest('[data-sel-co]');

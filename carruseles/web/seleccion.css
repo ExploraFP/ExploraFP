@@ -74,3 +74,8 @@
 .sv-h{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
 .sv-caption{white-space:pre-wrap;font-size:14px;line-height:1.5;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;max-height:52vh;overflow:auto}
 .eb-centro{display:flex;align-items:center;gap:6px;flex:none}
+/* las miniaturas no se quedan los clics (en Safari el iframe se comía los de ⧉ y 🗑) */
+.est-tira .est-mini iframe, .est-grande iframe { pointer-events: none; }
+.est-tira-acc { z-index: 5; }
+/* sin «Pulsa un texto…» ni «Añadir: + campo» (pedido de Sandra): se añade pidiéndoselo al chat */
+#est-editor .pr-tab-slide .est-campos { display: none; }
