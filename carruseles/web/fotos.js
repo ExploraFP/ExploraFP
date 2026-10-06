@@ -140,44 +140,62 @@ async function subirFotos(files) {
     } finally { FT.subiendo--; }
   }
   render();
-  const msg = [ok ? (ok === 1 ? 'Foto subida: Claude la está catalogando' : ok + ' fotos subidas: Claude las está catalogando') : '',
+  const ve = ok ? await puedeVerFotos() : true;
+  const msg = [ok ? (ok === 1 ? 'Foto subida' + (ve ? ': Claude la está catalogando' : '. Desde aquí Claude no puede verla: se catalogará sola cuando abras la web donde sí pueda (o rellena la ficha con «Editar ficha»)')
+      : ok + ' fotos subidas' + (ve ? ': Claude las está catalogando' : '. Desde aquí Claude no puede verlas: se catalogarán solas cuando abras la web donde sí pueda (o rellena las fichas con «Editar ficha»)')) : '',
     repetidas.length ? (repetidas.length === 1 ? repetidas[0] + ' ya estaba en el banco: no la guardo' : repetidas.length + ' fotos ya estaban en el banco: no las guardo') : ''].filter(Boolean).join(' · ');
   if (msg) toast(msg);
 }
 
-// Claude mira la foto y rellena la ficha
-// Claude rellena la ficha. Si esta vista puede mandar imágenes, mira la foto; si no, cataloga a partir del nombre del archivo
-// (los de stock suelen describir la foto en inglés). Si no puede, la deja «sin catalogar» y en el visor sale el botón para reintentarlo.
+// Claude mira la foto y rellena la ficha. SOLO si puede verla: nada de adivinar por el nombre del archivo
+// (oct-2026: 80 fotos subidas desde una vista sin imágenes salieron con fichas inventadas, p. ej. «pexels-kampus-…» → «aula de informática»).
+// Si esta vista no puede mandar imágenes, la foto queda «Sin catalogar» y se cataloga sola al abrir la web donde Claude sí pueda verla (autoCatalogar).
+async function puedeVerFotos() {
+  if (!EST.sample) return false;
+  const lim = await EST.sample.limits().catch(() => null);
+  return !!(lim && lim.images);
+}
 async function catalogarFoto(id, blob) {
   const doc = FT.docs[id] || {};
   const fin = datos => DB.doc('fotos/' + id).update(datos).catch(() => {});
   const sample = EST.sample;
-  if (!sample) { await fin({estado: 'sin-catalogar'}); return false; }
-  const lim = await sample.limits().catch(() => null);
-  const conImagen = !!(lim && lim.images);
+  if (!(await puedeVerFotos())) { await fin({estado: 'sin-catalogar'}); return false; }
   const pide = 'Eres el catalogador del banco de fotos de Explora FP (centro de Formación Profesional online). ' +
-    (conImagen ? 'Mira la foto adjunta' : 'Solo tienes el nombre del archivo de una foto de stock: «' + (doc.archivo || doc.desc || '') + '». Deduce qué se ve a partir de él') +
-    ' y devuelve SOLO un JSON: {"desc": descripción en español de 8-16 palabras de lo que se ve y para qué tema de un carrusel de FP serviría, entre paréntesis 2-4 temas, ' +
-    '"rama": una de ' + JSON.stringify(FOTO_RAMAS) + ' (General si no es de un sector concreto), "personas": una de ' + JSON.stringify(FOTO_PERSONAS) +
-    ', "tono": una de ' + JSON.stringify(FOTO_TONOS) + ' (Problema = estrés, agobio, duda), "etiquetas": 3-5 palabras sueltas en minúscula, en español}. ' +
-    'Ejemplo de desc: "chica con bata tomando la tensión a un paciente (TCAE, prácticas, sanidad)".';
+    'Mira la foto adjunta y describe SOLO lo que se ve (no te fíes del nombre del archivo). Devuelve SOLO un JSON: ' +
+    '{"desc": descripción en español, en minúscula salvo nombres propios y siglas, de 8-16 palabras concretas (quién: mujer/hombre/chica/chico y edad aproximada; qué hace; dónde; objetos clave; ' +
+    'nada genérico tipo «profesional trabajando en entorno moderno») y entre paréntesis 2-4 temas de carrusel de FP para los que serviría, ' +
+    '"rama": una de ' + JSON.stringify(FOTO_RAMAS) + ' (Sanidad = TCAE, laboratorio clínico o de ciencias, anatomía patológica, dietética, hospital; Tecnología = informática, programación, sistemas; ' +
+    'Comercio = marketing, comercio internacional, logística, almacén, transporte, ventas; Administración = oficina, contabilidad, gestoría, finanzas; Educación = educación infantil, niños pequeños; ' +
+    'General si no hay pista clara de un sector, también gimnasio o deporte), "personas": una de ' + JSON.stringify(FOTO_PERSONAS) +
+    ', "tono": una de ' + JSON.stringify(FOTO_TONOS) + ' (Problema = estrés, agobio, cansancio, duda), "etiquetas": 3-5 palabras sueltas en minúscula, en español}. ' +
+    'No uses: profesor, lección, unidad, aula. Ejemplo de desc: "mujer con chaleco reflectante sujetando cajas en la calle (logística, reparto, transporte)".';
   try {
-    let opts = {modelTier: 'quick'};
-    if (conImagen) {
-      if (!blob) { const r = await fetch('/_blob/' + doc.asset); blob = await r.blob(); }
-      opts.images = (await reducirFoto(new File([blob], 'f.jpg', {type: 'image/jpeg'}), 1024)).blob;
-    }
+    if (!blob) { const r = await fetch('/_blob/' + doc.asset); blob = await r.blob(); }
+    const opts = {modelTier: 'quick', images: (await reducirFoto(new File([blob], 'f.jpg', {type: 'image/jpeg'}), 1024)).blob};
     const valida = x => x && typeof x === 'object' && String(x.desc || '').trim().length > 8 && FOTO_PERSONAS.indexOf(x.personas) >= 0;
     let r = await sample.json(pide, opts);
     if (r && r.ficha) r = r.ficha;
     if (!valida(r)) { r = await sample.json(pide + ' Responde SOLO ese JSON, con todos los campos y en español.', opts); if (r && r.ficha) r = r.ficha; }
     if (!valida(r)) throw {message: 'ficha incompleta'};
     const ok = (v, l, d) => l.indexOf(v) >= 0 ? v : d;
-    await fin({estado: 'lista', desc: String(r.desc || doc.desc).slice(0, 160), rama: ok(r.rama, FOTO_RAMAS, 'General'), personas: ok(r.personas, FOTO_PERSONAS, ''),
+    const desc = String(r.desc || doc.desc).trim().slice(0, 160);
+    await fin({estado: 'lista', desc: desc.charAt(0).toLowerCase() + desc.slice(1), rama: ok(r.rama, FOTO_RAMAS, 'General'), personas: ok(r.personas, FOTO_PERSONAS, ''),
       tono: ok(r.tono, FOTO_TONOS, 'Neutro'), etiquetas: [].concat(r.etiquetas || []).map(x => String(x).toLowerCase().slice(0, 24)).slice(0, 5)});
     return true;
   } catch (e) { await fin({estado: 'sin-catalogar'}); return false; }
 }
+// Al abrir la web donde Claude puede ver fotos, cataloga de una en una las que quedaron sin ficha (o colgadas «catalogando» > 10 min).
+FT.autoHecho = false;
+async function autoCatalogar() {
+  if (FT.autoHecho || !DB || !EST.sample || !Object.keys(FT.docs).length) return;
+  FT.autoHecho = true;
+  if (!(await puedeVerFotos())) return;
+  const viejo = Date.now() - 10 * 60 * 1000;
+  const pend = Object.keys(FT.docs).filter(id => { const d = FT.docs[id]; return d && d.asset && !d.oculta &&
+    (d.estado === 'sin-catalogar' || (d.estado === 'catalogando' && Date.parse(d.subida || 0) < viejo)); });
+  for (const id of pend.slice(0, 40)) { await DB.doc('fotos/' + id).update({estado: 'catalogando'}).catch(() => {}); await catalogarFoto(id); }
+}
+setInterval(() => { if (!FT.autoHecho) autoCatalogar(); }, 5000);
 async function recatalogar(id, btn) {
   if (!EST.sample) { toast('Catalogar con Claude solo funciona abriendo la web en claude.ai'); return; }
   if (btn) { btn.disabled = true; btn.textContent = '✨ Catalogando…'; }
