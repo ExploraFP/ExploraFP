@@ -141,8 +141,8 @@ async function subirFotos(files) {
   }
   render();
   const ve = ok ? await puedeVerFotos() : true;
-  const msg = [ok ? (ok === 1 ? 'Foto subida' + (ve ? ': Claude la está catalogando' : '. Desde aquí Claude no puede verla: se catalogará sola cuando abras la web donde sí pueda (o rellena la ficha con «Editar ficha»)')
-      : ok + ' fotos subidas' + (ve ? ': Claude las está catalogando' : '. Desde aquí Claude no puede verlas: se catalogarán solas cuando abras la web donde sí pueda (o rellena las fichas con «Editar ficha»)')) : '',
+  const msg = [ok ? (ok === 1 ? 'Foto subida' + (ve ? ': Claude la está catalogando' : '. Claude le hará la ficha en menos de una hora')
+      : ok + ' fotos subidas' + (ve ? ': Claude las está catalogando' : '. Claude les hará la ficha en menos de una hora')) : '',
     repetidas.length ? (repetidas.length === 1 ? repetidas[0] + ' ya estaba en el banco: no la guardo' : repetidas.length + ' fotos ya estaban en el banco: no las guardo') : ''].filter(Boolean).join(' · ');
   if (msg) toast(msg);
 }
@@ -200,7 +200,7 @@ async function recatalogar(id, btn) {
   if (!EST.sample) { toast('Catalogar con Claude solo funciona abriendo la web en claude.ai'); return; }
   if (btn) { btn.disabled = true; btn.textContent = '✨ Catalogando…'; }
   await DB.doc('fotos/' + id).update({estado: 'catalogando'}).catch(() => {});
-  toast(await catalogarFoto(id) ? 'Ficha rellenada' : 'Claude no ha podido catalogarla. Rellénala con «Editar ficha»');
+  toast(await catalogarFoto(id) ? 'Ficha rellenada' : 'Claude le hará la ficha en menos de una hora');
 }
 
 async function borrarFoto(id) {
@@ -268,7 +268,7 @@ function pintarVisor() {
         ps.map(x => '<button data-ft-par="' + esc(x.id) + '" title="' + esc(tituloFoto(x)) + '" aria-label="Ver ' + esc(tituloFoto(x)) + '"><img src="' + esc(x.ruta) + '" alt="" loading="lazy"></button>').join('') + '</div></div>' : ''; })() +
     '</div>' +
     '<aside class="ft-v-panel"><span class="ft-v-n">' + (i + 1) + ' / ' + l.length + '</span>' + metaFoto(f) +
-    '<div class="ft-v-acc">' + (!f.base && (f.estado === 'sin-catalogar' || !(f.etiquetas || []).length) ? '<button class="btn" data-ft-recat="' + esc(f.id) + '">✨ Catalogar con Claude</button>' : '') +
+    '<div class="ft-v-acc">' + (!f.base && f.estado !== 'sin-catalogar' && !(f.etiquetas || []).length ? '<button class="btn" data-ft-recat="' + esc(f.id) + '">✨ Catalogar con Claude</button>' : '') +
       ('<button class="btn ft-v-bajar" data-ft-bajar="' + esc(f.id) + '">⬇ Descargar</button>' +
       (f.oculta ? '<button class="btn" data-ft-mostrar="' + esc(f.id) + '">Recuperar</button>' :
       '<button class="btn" data-ft-editar="' + esc(f.id) + '">✏️ Editar ficha</button><button class="btn ft-borra" data-ft-borrar="' + esc(f.id) + '">🗑 Borrar</button>')) + '</div></aside></div>';
@@ -353,7 +353,7 @@ function tarjetaFoto(f) {
   return '<figure class="ft-card' + (f.oculta ? ' oculta' : '') + '' + '">' +
     '<div class="ft-img" data-ft-ver="' + esc(f.id) + '" role="button" tabindex="0" aria-label="Ver grande: ' + esc(t) + '"><img src="' + esc(f.ruta) + '" alt="' + esc(f.desc) + '" loading="lazy"></div>' +
     '<div class="ft-tit" title="' + esc(t) + '">' + esc(t) + '</div>' + (() => { const n = usosDe(f).length;
-      return '<div class="ft-usos' + (n ? '' : ' cero') + '">' + (n ? 'En ' + n + (n === 1 ? ' carrusel' : ' carruseles') : 'Sin usar todavía') + '</div>'; })() + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : f.estado === 'sin-catalogar' ? '<span class="ft-cat ft-sincat">Sin catalogar</span>' : '') + capa + '</figure>';
+      return '<div class="ft-usos' + (n ? '' : ' cero') + '">' + (n ? 'En ' + n + (n === 1 ? ' carrusel' : ' carruseles') : 'Sin usar todavía') + '</div>'; })() + (cat ? '<span class="ft-cat">✨ Catalogando…</span>' : f.estado === 'sin-catalogar' ? '<span class="ft-cat ft-sincat">Claude la cataloga en breve</span>' : '') + capa + '</figure>';
 }
 function vFotos() {
   const todas = fotosCatalogo(), vis = todas.filter(pasaFoto), ocultas = todas.filter(f => f.oculta).length;
