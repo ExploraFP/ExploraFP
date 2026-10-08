@@ -54,7 +54,8 @@ select:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-
 .band { background: var(--band); color: var(--band-ink); }
 .band-in { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 0; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
 .brand { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; }
-.brand .logo { height: 1.3em; width: auto; display: inline-block; vertical-align: -0.14em; margin-left: .18em; }
+.brand h1 { display: flex; align-items: center; gap: .3em; }
+.brand .logo { height: auto; width: 6em; display: block; }
 .brand .divider { width: 1.5px; align-self: stretch; background: var(--band-ink); opacity: .3; }
 .brand .bt { display: flex; flex-direction: column; gap: 2px; }
 .brand small { font: 500 .7rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
@@ -407,7 +408,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 <div class="band">
   <div class="band-in">
     <div class="brand">
-      <h1 id="brandTitle">Newsletter <img class="logo" src="__LOGO__" alt="Explora"></h1>
+      <h1 id="brandTitle"><span id="nlText">Newsletter</span><img class="logo" id="nlLogo" src="__LOGO__" alt="Explora"></h1>
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="semana">Producción</button>
@@ -1268,6 +1269,11 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
       <div class="never"><h4>Nunca</h4>${esc(n.nunca)}</div>
     </div>
   </article>`; }).join("");
+
+/* ---------- Logo igual de ancho que "Newsletter" ---------- */
+function sizeLogo() { const w = $("nlText").getBoundingClientRect().width; if (w) $("nlLogo").style.width = w + "px"; }
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(sizeLogo);
+window.addEventListener("resize", sizeLogo); sizeLogo();
 
 /* ---------- Pestañas ---------- */
 function showTab(t) {
