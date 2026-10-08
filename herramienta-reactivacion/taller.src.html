@@ -195,6 +195,8 @@ textarea { min-height: 64px; resize: vertical; }
 
 .st-atrasado { background: #FFDCDC; color: #9B1C17; }
 /* Enviados */
+.sent-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sent-filters select { width: auto; padding: 6px 10px; font-size: .85rem; border-radius: 999px; }
 .sent-head { margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: flex-end; justify-content: space-between; }
 .sent { display: grid; gap: 6px; }
 .srow { display: grid; grid-template-columns: 96px 210px minmax(0, 1fr) minmax(0, .8fr) auto; gap: 14px; padding: 12px 16px; align-items: center; border: 0; border-radius: 10px; font-size: .86rem; text-align: left; width: 100%; background: color-mix(in srgb, var(--c) 14%, var(--paper)); color: var(--ink); font-family: var(--font-body); cursor: pointer; }
@@ -511,7 +513,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 
   <section id="view-enviados" hidden>
 
-    <div class="sent-head"><div><p class="eyebrow">Historial</p><h2>Enviados</h2></div><div class="chips" id="sentChips"></div></div>
+    <div class="sent-head"><div><p class="eyebrow">Historial</p><h2>Enviados</h2></div><div class="sent-filters"><select id="sentMonth" aria-label="Mes"></select><div class="chips" id="sentChips"></div></div></div>
     <div class="sent" id="sentList"></div>
     <p class="note" id="noDb" hidden>Abre la página desde claude.ai con tu cuenta para ver y guardar el calendario.</p>
   </section>
@@ -919,9 +921,18 @@ function renderSentChips() {
     `<button type="button" aria-pressed="${v === (state.sentSeg || "")}" data-ss="${v}">${esc(t)}</button>`).join("");
   $("sentChips").querySelectorAll("button").forEach((b) => b.onclick = () => { state.sentSeg = b.dataset.ss; renderSentChips(); renderSent(); });
 }
+function renderSentMonths(all) {
+  const months = [...new Set(all.map((c) => c.fecha.slice(0, 7)))].sort().reverse();
+  if (state.sentMonth && !months.includes(state.sentMonth)) state.sentMonth = "";
+  $("sentMonth").innerHTML = `<option value="">Todos los meses</option>` + months.map((m) => { const d = parse(m + "-01"); const t = d.toLocaleDateString("es-ES", { month: "long", year: "numeric" }).replace(" de ", " "); return `<option value="${m}">${esc(t[0].toUpperCase() + t.slice(1))}</option>`; }).join("");
+  $("sentMonth").value = state.sentMonth || "";
+}
+$("sentMonth").onchange = () => { state.sentMonth = $("sentMonth").value; renderSent(); };
 function renderSent() {
   const todayIso = iso(new Date());
-  const rows = state.cal.filter((c) => normEstado(c.estado) === "enviado" && (!state.sentSeg || c.segmento === state.sentSeg)).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const sentAll = state.cal.filter((c) => normEstado(c.estado) === "enviado");
+  renderSentMonths(sentAll);
+  const rows = sentAll.filter((c) => (!state.sentSeg || c.segmento === state.sentSeg) && (!state.sentMonth || c.fecha.slice(0, 7) === state.sentMonth)).sort((a, b) => b.fecha.localeCompare(a.fecha));
   $("sentList").innerHTML = rows.length ? rows.map((c) => { const s = SEG[c.segmento] || SEG.nocontactado; const hs = safeUrl(c.hubspot); return `
     <button type="button" class="srow" data-id="${esc(c.id)}" style="--c:${s.color}">
       <span class="d">${esc(fmtDay(parse(c.fecha)))}</span>
