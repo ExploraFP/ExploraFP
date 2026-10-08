@@ -162,6 +162,22 @@ export function crearMotor(R) {
     `<div class="bloque-foto">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}</div>`;
   const logo = (color) => R.logo(color);
 
+  // Retoques de diseño de UNA slide (campo `estilo`, CSS que escribe Claude desde el chat de la web; pedido de Sandra, oct-2026).
+  // Se aplica solo a esa slide: cada selector se prefija con #estilo (la <section> de esa slide), que gana a las reglas de la plantilla.
+  // Se quitan @-reglas, @import, url() externas y cualquier intento de cerrar el <style>.
+  function estiloSlide(css) {
+    let t = String(css || "").replace(/<\/?\s*style[^>]*>/gi, "").replace(/<[^>]*>/g, "")
+      .replace(/\/\*[\s\S]*?\*\//g, "").replace(/@import[^;]*;?/gi, "")
+      .replace(/url\s*\(\s*['"]?(?!data:)[^)]*\)/gi, "none").replace(/expression\s*\(/gi, "(");
+    for (let k = 0; k < 5 && /@[a-z-]+[^{;]*\{[^{}]*(\{[^{}]*\}[^{}]*)*\}/i.test(t); k++) t = t.replace(/@[a-z-]+[^{;]*\{[^{}]*(\{[^{}]*\}[^{}]*)*\}/gi, "");
+    // solo salen las reglas «selector { declaraciones }»; cualquier otro texto se tira
+    return [...t.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([m, sel, dec]) => {
+      const sels = sel.split(",").map(x => x.trim()).filter(Boolean).map(x =>
+        /^(\.slide|section|&|:scope)(?![\w-])/.test(x) ? x.replace(/^(\.slide|section|&|:scope)/, "#estilo") : "#estilo " + x);
+      return sels.length ? sels.join(", ") + " {" + dec.replace(/[<>]/g, "") + "}\n" : "";
+    }).join("").slice(0, 6000);
+  }
+
   function html(plantilla, color, s, i, total, etiquetaCinta) {
     s._color = color;
     const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
@@ -172,8 +188,8 @@ export function crearMotor(R) {
     const pag = `${si(etiquetaCinta, `${esc(etiquetaCinta)} · `)}${dos(i + 1)}`;
     const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
-  ${R.cabeza(plantilla)}
-  </head><body><section class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
+  ${R.cabeza(plantilla)}${s.estilo ? `<style>${estiloSlide(s.estilo)}</style>` : ""}
+  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
   <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : LOGO_FONDO[color])}</div>
   <div class="contenido">${fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>

@@ -88,14 +88,30 @@ function promptSlide(c, i, peticion) {
     'Sandra está viendo la slide ' + (i + 1) + '. Si su petición no dice a qué slide se refiere, se refiere a esa.\n\n' +
     'LO QUE PIDE SANDRA: ' + peticion + '\n\n' +
     'Aplica EXACTAMENTE lo que pide, aunque toque varias slides, la foto ("imagen", solo rutas de FOTOS DISPONIBLES), el "marco" o el caption ("copy"). ' +
-    'Para quitar la flecha a mano de una slide pon "trazo": "ninguno"; para volver a ponerla, quita "trazo". Lo que no pide, déjalo idéntico. Respeta todas las reglas de arriba (titular en minúscula salvo la inicial, una palabra entre *asteriscos*, longitudes máximas, nada de «desliza», ninguna cifra que no esté en los DATOS VERIFICADOS; caption con saltos de línea y exactamente 5 hashtags al final). ' +
+    'Para quitar la flecha a mano de una slide pon "trazo": "ninguno"; para volver a ponerla, quita "trazo". ' +
+    'CAMBIOS DE DISEÑO (mover algo, separarlo, hacerlo más grande o más pequeño, alinearlo, cambiar márgenes o un color de un elemento): SÍ puedes hacerlos, con el campo "estilo" de ESA slide: CSS que solo afecta a esa slide. ' +
+    'La slide mide 1080×1350 px. Usa los selectores de las clases del HTML de abajo, SIN prefijos (no pongas #id ni .l-plantilla delante: ya se aplica solo a esa slide; para la slide entera usa ".slide"). ' +
+    'Muchos elementos van con position:absolute: para moverlos cambia top/left/right/bottom; para separar cosas, márgenes o top. Usa !important si una regla no se aplica. Nada de @import, url(), @media ni animaciones. ' +
+    'Si la slide ya tiene "estilo", MANTÉN lo que había y añade o cambia solo lo que pide ahora. Nunca dejes nada fuera de la slide ni tapes el texto; colores solo de la paleta (#366B40, #4CCD4B, #D8FF6E, #FAFFFA, #000000, #FFE45E, #1B3620). ' +
+    'Si pide que el cambio sea para todo el carrusel, pon ese "estilo" en cada slide donde tenga sentido. Para quitar los retoques de diseño de una slide, pon "estilo": "". ' +
+    'HTML de la slide ' + (i + 1) + ' tal como se ve ahora (para saber las clases):\n' + htmlParaClaude(c, i) + '\n' +
+    'Lo que no pide, déjalo idéntico. Respeta todas las reglas de arriba (titular en minúscula salvo la inicial, una palabra entre *asteriscos*, longitudes máximas, nada de «desliza», ninguna cifra que no esté en los DATOS VERIFICADOS; caption con saltos de línea y exactamente 5 hashtags al final). ' +
     'Responde SOLO con este JSON: {"slides": [todas las slides, en orden, ya cambiadas], "copy": "el caption, cambiado o igual", "resumen": "una frase corta de lo que has cambiado"}';
+}
+// el HTML de una slide sin la cabeza ni imágenes incrustadas: solo la estructura y las clases, para que Claude sepa qué tocar
+function htmlParaClaude(c, i) {
+  try {
+    const s = c.slides[i]; const pl = s.plantilla || c.plantilla, co = s.color || c.color;
+    let h = MOTOR.html(pl, co, Object.assign({}, s), i, c.slides.length, c.cinta);
+    h = h.slice(h.indexOf('<section')).replace(/src="[^"]*"/g, 'src="…"').replace(/style="[^"]*"/g, '').replace(/\s+/g, ' ');
+    return h.slice(0, 5000);
+  } catch (e) { return '(no disponible)'; }
 }
 function limpiarSlide(s, antes) {
   const o = {};
   CAMPOS_SLIDE.forEach(k => { if (s[k] != null && s[k] !== '') o[k] = k === 'items' ? [].concat(s[k]).map(String).slice(0, 4) : String(s[k]); });
   // si Claude no menciona la foto o el marco, se quedan como estaban
-  if (antes) ['imagen', 'marco'].forEach(k => { if (s[k] === undefined && antes[k]) o[k] = antes[k]; });
+  if (antes) ['imagen', 'marco', 'estilo'].forEach(k => { if (s[k] === undefined && antes[k]) o[k] = antes[k]; });
   if (!EST_TIPOS[o.tipo]) o.tipo = antes && antes.tipo || 'contenido';
   if (o.imagen && !FOTOS.some(f => f.ruta === o.imagen)) { if (antes && antes.imagen) o.imagen = antes.imagen; else delete o.imagen; }
   if (o.titulo && o.titulo === o.titulo.toUpperCase() && /[A-ZÁÉÍÓÚ]{4}/.test(o.titulo)) o.titulo = o.titulo.charAt(0) + o.titulo.slice(1).toLowerCase();

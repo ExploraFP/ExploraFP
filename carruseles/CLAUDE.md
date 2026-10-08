@@ -21,7 +21,7 @@ No borrar nunca plantillas ni colores existentes: se añaden, no se sustituyen.
 **Amarillo solo como detalle pequeño (pastilla de arriba, post-it), nunca como resaltado de titulares; pero no quitarlo del todo.**
 **Ninguna plantilla lleva pie ni banda abajo ("footer de web"): el logo va arriba a la derecha** (en la portada de capas, dentro de la caja).
 **Titulares siempre en minúscula salvo la inicial** (nunca en mayúsculas), también en el YAML.
-Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.
+Portada foto a sangre: la pastilla amarilla va a top 176 px (72 px por debajo del logo; antes 130 y quedaba pegada, lo dijo Sandra). Portadas: el feed actual es mayoritariamente foto a sangre → `marco: fondo` en la portada cuando haya foto.
 
 | plantilla | estilo | referencia |
 |---|---|---|
@@ -48,7 +48,7 @@ Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slid
 - `cierre`: etiqueta, titulo, texto, cta, cinta (texto final, p. ej. "Enlace en el perfil").
 
 Campos del carrusel: `plantilla`, `color`, `cinta` (etiqueta de página: "Lo malo · 02"), `copy`.
-Extra por slide: `decoracion: postit | notas | isotipo | ninguna`; `trazo: ninguno` quita las flechas a mano de esa slide en cualquier plantilla (en la web: pinchar la flecha → «Quitar flecha»; vuelve con «+ Flecha»).
+Extra por slide: `estilo` = retoques de diseño solo de esa slide (CSS; `estiloSlide` en motor.js lo limpia —sin @-reglas, @import ni url() externas— y prefija cada selector con `#estilo`, la <section> de esa slide, para que gane a la plantilla). Lo escribe Claude desde el chat de la web cuando Sandra pide mover, separar, agrandar o alinear algo (pedido de Sandra, 8/10/2026): el prompt lleva el HTML de la slide para que sepa las clases; si Claude no lo menciona, se conserva; `"estilo": ""` lo quita; Ctrl+Z lo deshace. Si un retoque le gusta para todos, se pasa a la plantilla. `decoracion: postit | notas | isotipo | ninguna`; `trazo: ninguno` quita las flechas a mano de esa slide en cualquier plantilla (en la web: pinchar la flecha → «Quitar flecha»; vuelve con «+ Flecha»).
 Ojo: la textura `assets/trazos/notas.png` lleva frases en gallego/portugués («vou morrer aquí outra vez»); a tamaño grande se leen.
 `*palabra*` resalta en titulares y subraya en textos. Máximo 20 slides; ideal 4-8.
 Si un YAML falla, el render sigue con los demás y lo lista al final.

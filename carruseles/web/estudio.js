@@ -255,7 +255,7 @@ function promptCarrusel(c) {
   L.push(' ]}');
   return L.join('\n');
 }
-const CAMPOS_SLIDE = ['tipo', 'etiqueta', 'antetitulo', 'titulo', 'subtitulo', 'numero', 'texto', 'items', 'cifra', 'fuente', 'cta', 'cinta', 'imagen', 'marco', 'nota', 'trazo'];
+const CAMPOS_SLIDE = ['tipo', 'etiqueta', 'antetitulo', 'titulo', 'subtitulo', 'numero', 'texto', 'items', 'cifra', 'fuente', 'cta', 'cinta', 'imagen', 'marco', 'nota', 'trazo', 'estilo'];
 function limpiarRespuesta(r) {
   const rutas = FOTOS.map(f => f.ruta);
   let slides = (r && Array.isArray(r.slides) ? r.slides : []).filter(s => s && EST_TIPOS[s.tipo]).slice(0, 10).map(s => {
