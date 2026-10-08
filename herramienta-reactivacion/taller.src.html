@@ -167,6 +167,20 @@ textarea { min-height: 64px; resize: vertical; }
 .claim .hl { background: var(--lime); color: #102016; padding: 2px 6px; }
 .ribbon .logo { height: 34px; width: auto; display: block; }
 
+/* Chat del editor */
+.chat { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.chat-log { display: flex; flex-direction: column; gap: 8px; max-height: 56vh; overflow-y: auto; padding: 4px 2px; }
+.msg { max-width: 92%; padding: 10px 12px; border-radius: 14px; font-size: .9rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg.user { align-self: flex-end; background: var(--ink); color: var(--bg); border-bottom-right-radius: 4px; }
+.msg.bot { align-self: flex-start; background: var(--paper); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.msg.bot.thinking { color: var(--muted); font-style: italic; }
+.chat-quick { display: flex; flex-wrap: wrap; gap: 6px; }
+.chat-quick button { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 500 .8rem var(--font-body); cursor: pointer; }
+.chat-quick button:hover { border-color: var(--ink); }
+.chat-input { display: grid; gap: 8px; }
+.chat-input textarea { min-height: 64px; }
+@media (max-width: 900px) { .chat-log { max-height: none; } }
+
 /* Barra del editor de email */
 .writer-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .writer-bar #slotLabel { font: 400 1.6rem/1 var(--font-head); text-transform: uppercase; }
@@ -403,37 +417,19 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
       <span id="slotLabel"></span>
     </div>
     <div class="write">
-      <form class="brief" id="form" autocomplete="off">
-        <div class="narrators" id="narrators" hidden></div>
-        <div class="step"><span class="n">1</span><div class="c">
-          <label class="l" for="angulo">Ángulo
-            <select id="angulo"></select>
-          </label>
-        </div></div>
-        <div class="step"><span class="n">2</span><div class="c">
-          <p class="eyebrow">A quién le escribes</p>
-          <label class="l" for="formacion">Formación
-            <select id="formacion"></select>
-          </label>
-          <label class="l" for="buyer">Buyer
-            <select id="buyer"></select>
-          </label>
-          <div class="buyer-mini" id="buyerMini" hidden></div>
-        </div></div>
-        <div class="step"><span class="n">3</span><div class="c">
-          <p class="eyebrow">Detalles</p>
-          <label class="l" for="notas">Indicaciones extra (opcional)
-            <textarea id="notas" placeholder="Ej.: la convocatoria cierra el 30 de octubre"></textarea>
-          </label>
-          <label class="chk"><input type="checkbox" id="puente"> Incluir "antes Ucademy, ahora Explora"</label>
+      <div class="chat" id="chat">
+        <div class="chat-log" id="chatLog" aria-live="polite"></div>
+        <div class="chat-quick" id="chatQuick"></div>
+        <form class="chat-input" id="chatForm" autocomplete="off">
+          <textarea id="chatText" rows="2" placeholder="Escribe a Claude…" aria-label="Mensaje para Claude"></textarea>
           <div class="go-row">
-            <button type="submit" class="btn btn-go" id="goBtn">Escribir email</button>
+            <button type="submit" class="btn btn-go" id="goBtn">Enviar</button>
             <button type="button" class="btn btn-line" id="stopBtn" hidden>Parar</button>
           </div>
-          <p class="status" id="status" role="status"></p>
-          <p class="note" id="noSample" hidden>Esta vista no puede pedirle emails a Claude. Ábrela desde claude.ai con tu cuenta.</p>
-        </div></div>
-      </form>
+        </form>
+        <p class="status" id="status" role="status"></p>
+        <p class="note" id="noSample" hidden>Esta vista no puede pedirle emails a Claude. Ábrela desde claude.ai con tu cuenta.</p>
+      </div>
 
       <div class="preview">
         <div class="pv-bar">
@@ -658,7 +654,7 @@ const FORMATO = `Responde SOLO con un objeto JSON:
 Exactamente dos bloques "boton".`;
 
 
-const state = { slot: null, seg: "nocontactado", angulo: "", formacion: "", buyer: "", current: null, cal: [], weekOffset: 0, editing: null, bSector: "", bOpen: "" };
+const state = { chat: [], slot: null, seg: "nocontactado", angulo: "", formacion: "", buyer: "", current: null, cal: [], weekOffset: 0, editing: null, bSector: "", bOpen: "" };
 let sample = null, db = null, ctl = null;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -692,46 +688,6 @@ function nextSlot(seg) {
 }
 
 /* ---------- Brief ---------- */
-function renderNarrators() {
-  $("narrators").innerHTML = Object.entries(SEG).map(([k, s]) => `
-    <button type="button" class="narr" aria-pressed="${k === state.seg}" data-seg="${k}">
-      <span class="av" style="background:${s.color}">${s.firma.ini}</span>
-      <strong>${esc(s.nombre)}</strong><span class="d">Firma ${esc(s.firma.nombre)} · ${esc(s.desc)}</span>
-    </button>`).join("");
-  $("narrators").querySelectorAll("button").forEach((b) => b.onclick = () => { state.seg = b.dataset.seg; renderNarrators(); renderSeq(); });
-}
-function renderSeq() {
-  const s = SEG[state.seg];
-  if (!s.pasos.includes(state.angulo)) state.angulo = "";
-  $("angulo").innerHTML = [["", "Que lo elija Claude"], ...s.pasos.map((a) => [a, a])].map(([v, t]) =>
-    `<option value="${esc(v)}">${esc(t)}</option>`).join("");
-  $("angulo").value = state.angulo;
-}
-function renderFormSelect() {
-  $("formacion").innerHTML = `<option value="">Transversal</option>` + SECTORS.map((sec) =>
-    `<optgroup label="${esc(sec)}">${DATA.FORMS.filter((f) => f.sector === sec).map((f) => `<option value="${f.id}">${esc(f.name)}</option>`).join("")}</optgroup>`).join("");
-  $("formacion").value = state.formacion;
-  renderBuyerSelect();
-}
-function renderBuyerSelect() {
-  const list = DATA.P.filter((p) => p.f === state.formacion);
-  $("buyer").disabled = !list.length;
-  $("buyer").innerHTML = `<option value="">${list.length ? "Cualquiera de esta formación" : "—"}</option>` +
-    list.map((p) => `<option value="${p.id}">${esc(p.emoji)} ${esc(p.pn)} · ${esc(p.role)}</option>`).join("");
-  $("buyer").value = list.some((p) => p.id === state.buyer) ? state.buyer : "";
-  state.buyer = $("buyer").value;
-  renderBuyerMini();
-}
-function renderBuyerMini() {
-  const p = DATA.P.find((x) => x.id === state.buyer);
-  $("buyerMini").hidden = !p;
-  if (!p) return;
-  $("buyerMini").innerHTML = `<div class="who"><span>${esc(p.emoji)}</span>${esc(p.pn)} — ${esc(p.role)}</div>
-    <dl><dt>Dolor</dt><dd>${esc(p.pain)}</dd><dt>Objeción</dt><dd>${esc(p.obj)}</dd><dt>Ángulo</dt><dd>${esc(p.ang)}</dd></dl>`;
-}
-$("angulo").onchange = () => { state.angulo = $("angulo").value; };
-$("formacion").onchange = () => { state.formacion = $("formacion").value; state.buyer = ""; renderBuyerSelect(); };
-$("buyer").onchange = () => { state.buyer = $("buyer").value; renderBuyerMini(); };
 
 /* ---------- Vista previa ---------- */
 function renderPreview() {
@@ -785,63 +741,94 @@ document.querySelectorAll("[data-copy]").forEach((b) => b.onclick = () => {
   try { navigator.clipboard.writeText(txt).then(ok, fb); } catch { fb(); }
 });
 
-/* ---------- Generar ---------- */
-function buildPrompt() {
-  const s = SEG[state.seg], f = FORM_BY_ID[state.formacion], p = DATA.P.find((x) => x.id === state.buyer);
-  const sent = state.cal.filter((c) => c.segmento === state.seg).slice(-10);
+/* ---------- Chat con Claude ---------- */
+const BUYERS_INDEX = DATA.P.map((p) => `${p.id}: ${p.pn} · ${FORM_BY_ID[p.f]?.name || p.f} · ${p.role}`).join("\n");
+function buyerFull(p) {
+  return `${p.pn} (${FORM_BY_ID[p.f]?.name || p.f}) — ${p.role}. ${p.bio} Perfil: ${p.perfil}. Formación previa: ${p.previa}. Quería: ${p.goal}. Le dolía: ${p.pain}. Disparador: ${p.disp}. Objeciones: ${p.obj}. Cómo decidió: ${p.decides}. Ángulo que funciona: ${p.ang}. Cita del CRM: ${p.cita}`;
+}
+function findBuyers(q) {
+  const t = String(q || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const words = t.split(/\s+/).filter((w) => w.length > 2);
+  return DATA.P.map((p) => { const h = (JSON.stringify(p) + " " + (FORM_BY_ID[p.f]?.name || "")).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return [p, words.reduce((n, w) => n + (h.includes(w) ? 1 : 0), 0) + (p.id === t ? 99 : 0)]; })
+    .filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p);
+}
+function instructions(withBuyers) {
+  const s = SEG[state.seg], sent = state.cal.filter((c) => c.segmento === state.seg && c.id !== state.slot?.id).slice(-10);
+  const d = parse(state.slot?.fecha || iso(new Date()));
   const out = [
-    "Eres el redactor de la campaña de reactivación de leads perdidos de Explora FP (escuela de FP oficial online; antes se llamaba Ucademy). Escribe UN email en español de España.",
-    "", REGLAS, "", "NARRADOR:", VOCES[s.firma.nombre], "",
-    `SEGMENTO: ${s.nombre} (${s.desc}).`,
-    "Cada email es único (no es una secuencia): tiene que funcionar solo, aunque el lead no haya leído ninguno anterior.",
-    state.angulo ? `ÁNGULO: ${state.angulo}.` : `ÁNGULO: elige tú el que mejor encaje con el destinatario, distinto de los ya enviados. Opciones habituales: ${s.pasos.join(" / ")}.`,
-    f ? `FORMACIÓN: ${f.name} (${f.sector}). ${f.desc}` : "FORMACIÓN: transversal. El email va a leads de todas las formaciones: no menciones ninguna FP ni rama concreta; escribe para que cualquiera se reconozca.",
+    "Eres el redactor de la campaña de reactivación de leads perdidos de Explora FP (escuela de FP oficial online; antes se llamaba Ucademy). Trabajas en un chat con el equipo de marketing: escribes UN email en español de España y lo vas cambiando según te pidan.",
+    "", REGLAS, "", "NARRADOR (fijo, no lo cambies aunque te lo pidan):", VOCES[s.firma.nombre], "",
+    `SEGMENTO: ${s.nombre} (${s.desc}). Fecha de envío: ${d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}.`,
+    "Cada email es único (no es una secuencia): tiene que funcionar solo.",
+    `Ángulos habituales para este segmento (si no te piden uno, elige el que no se haya usado): ${s.pasos.join(" / ")}.`,
+    "Por defecto el email es TRANSVERSAL (para leads de todas las formaciones): no menciones una FP concreta salvo que te lo pidan o uses la historia de un alumno.",
+    "No menciones Ucademy salvo que te lo pidan.",
+    "ALUMNOS: los buyers de la biblioteca son alumnos reales con permiso. Si usas uno, cuenta su historia con su nombre, sin añadir hechos, plazos ni resultados que no estén en su ficha.",
   ];
-  if (p) {
-    out.push(`ALUMNO REAL (alumna/o real con permiso; puedes contar su historia con su nombre, sin añadir hechos que no estén aquí, sin inventar plazos ni resultados): ${p.pn}. ${p.bio} Perfil: ${p.perfil}. Quería: ${p.goal}. Le dolía: ${p.pain}. Objeciones que tuvo: ${p.obj}. Ángulo que funciona: ${p.ang}. Cita del CRM (úsala para el tono): ${p.cita}`);
-  } else if (f) {
-    const ps = DATA.P.filter((x) => x.f === f.id);
-    out.push("PERFILES HABITUALES DE ESTA FORMACIÓN (ficticios; escribe para que varios se reconozcan, sin nombres): " + ps.map((x) => `${x.role} (${x.share} %): ${x.pain}`).join(" | "));
-  }
-  out.push($("puente").checked ? "Incluye de forma natural, una sola vez, que antes éramos Ucademy y ahora somos Explora, el mismo equipo." : "No menciones Ucademy.");
-  if ($("notas").value.trim()) out.push(`INDICACIONES DEL EQUIPO: ${$("notas").value.trim()}`);
+  if (withBuyers) out.push("BIBLIOTECA DE BUYERS (id: nombre · formación · perfil). Usa la herramienta buscar_buyer para leer la ficha completa antes de contar una historia:\n" + BUYERS_INDEX);
   if (sent.length) out.push("YA PLANIFICADOS O ENVIADOS A ESTE SEGMENTO (no repitas ángulo, gancho ni asunto):\n" + sent.map((c) => `- ${c.fecha}: "${c.asunto || ""}"${c.angulo ? " · " + c.angulo : ""}${c.gancho ? " · gancho: " + c.gancho : ""}`).join("\n"));
-  out.push("", FORMATO);
-  return out.filter((l) => l !== "").join("\n");
+  if (state.current) out.push("BORRADOR ACTUAL (cámbialo según lo que te pidan; si no te piden cambiar algo, mantenlo igual):\n" + JSON.stringify({ ...state.current, segmento: undefined, formacion: undefined }));
+  out.push("", "FORMATO DE CADA RESPUESTA: un objeto JSON con dos campos: \"mensaje\" (1-2 frases para el equipo explicando qué has hecho o preguntando algo) y \"email\" (el email completo con esta forma):", FORMATO);
+  return out.join("\n");
 }
 const ERR = {
   not_granted: "No se ha dado permiso para usar Claude desde esta página.",
   sampling_disabled: "Claude no está disponible para esta cuenta.",
   rate_limited: "Demasiadas peticiones seguidas. Espera un minuto.",
   session_expired: "Tu sesión ha caducado. Vuelve a entrar en claude.ai.",
-  invalid_json: "La respuesta llegó con un formato raro. Pulsa de nuevo \"Escribir email\".",
-  refused: "Claude no ha querido escribir con estas indicaciones. Cambia las indicaciones extra.",
+  invalid_json: "La respuesta llegó con un formato raro. Vuelve a enviar el mensaje.",
+  refused: "Claude no ha querido hacerlo así. Pídeselo de otra forma.",
 };
-$("form").onsubmit = async (ev) => {
-  ev.preventDefault();
-  if (!sample) return;
+const QUICK_NEW = ["Escríbelo", "Cuenta la historia de un alumno", "Pregunta directa y corta"];
+const QUICK_EDIT = ["Más corto", "Otro asunto", "Más humor", "Cambia el gancho"];
+function renderChat() {
+  const log = state.chat || [];
+  $("chatLog").innerHTML = log.map((m) => `<div class="msg ${m.role === "user" ? "user" : "bot"}${m.thinking ? " thinking" : ""}">${esc(m.text)}</div>`).join("");
+  $("chatLog").scrollTop = $("chatLog").scrollHeight;
+  $("chatQuick").innerHTML = (state.current ? QUICK_EDIT : QUICK_NEW).map((q) => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("");
+  $("chatQuick").querySelectorAll("button").forEach((b) => b.onclick = () => sendChat(b.dataset.q));
+}
+async function sendChat(text) {
+  text = String(text || "").trim() || "Escríbelo";
+  if (!sample || ctl) return;
+  state.chat.push({ role: "user", text });
+  state.chat.push({ role: "bot", text: "Pensando…", thinking: true });
+  $("chatText").value = ""; renderChat();
   ctl = new AbortController();
-  $("goBtn").disabled = true; $("stopBtn").hidden = false;
-  $("status").className = "status"; $("status").textContent = "Pensando…";
+  $("goBtn").disabled = true; $("stopBtn").hidden = false; $("status").className = "status"; $("status").textContent = "";
+  let useTools = false;
+  try { useTools = !!(await sample.limits()).tools; } catch {}
+  const hist = state.chat.filter((m) => !m.thinking).slice(-12);
+  const turns = [{ role: "user", content: instructions(useTools) }];
+  hist.forEach((m) => turns.push({ role: m.role === "user" ? "user" : "assistant", content: m.text }));
+  const opts = { signal: ctl.signal, cache: false, onText: () => { const t = state.chat[state.chat.length - 1]; if (t.thinking) { t.text = "Escribiendo…"; renderChat(); } } };
+  if (useTools) opts.tools = [{ name: "buscar_buyer", description: "Busca alumnos (buyers) en la biblioteca por id, nombre, formación o situación (p. ej. 'Rosa', 'hostelería', 'tcae-0'). Devuelve hasta 3 fichas completas.",
+    inputSchema: { type: "object", properties: { consulta: { type: "string" } }, required: ["consulta"] },
+    execute: ({ consulta }) => { const r = findBuyers(consulta); return r.length ? r.map(buyerFull).join("\n\n") : "Sin resultados."; } }];
+  else { const r = findBuyers(text); if (r.length) turns[0].content += "\n\nFICHAS DE ALUMNOS QUE PUEDEN SER RELEVANTES:\n" + r.map(buyerFull).join("\n\n"); }
   try {
-    const d = await sample.json(buildPrompt(), { signal: ctl.signal, cache: false,
-      onText: ({ text }) => { $("status").textContent = `Escribiendo… ${Math.min(99, Math.round(text.length / 25))} %`; } });
-    if (!d || typeof d.asunto_a !== "string" || !Array.isArray(d.bloques) || d.bloques.length < 3) throw { code: "invalid_json" };
-    const s = SEG[state.seg], p = DATA.P.find((x) => x.id === state.buyer);
-    state.current = { ...d, segmento: state.seg, formacion: state.formacion, buyer: p ? p.pn : "",
-      asunto_b: d.asunto_b || d.asunto_a, despedida: d.despedida || s.firma.despedida, firma: d.firma || "— " + s.firma.nombre };
+    const d = await sample.json(turns, opts);
+    const em = d && (d.email || d);
+    if (!em || typeof em.asunto_a !== "string" || !Array.isArray(em.bloques) || em.bloques.length < 3) throw { code: "invalid_json" };
+    const s = SEG[state.seg];
+    state.current = { ...em, segmento: state.seg, asunto_b: em.asunto_b || em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
+    state.chat[state.chat.length - 1] = { role: "bot", text: (d.mensaje || "Listo.").trim() };
     renderPreview();
-    if (db) $("planBtn").click();
-    $("status").textContent = "Listo.";
+    if (db) showPlan(false);
+    $("chatText").focus();
   } catch (e) {
-    if (e && e.code === "cancelled") $("status").textContent = "Parado.";
-    else { $("status").className = "status err"; $("status").textContent = ERR[e && e.code] || "No se pudo escribir el email. Vuelve a intentarlo."; }
-  } finally { $("goBtn").disabled = false; $("stopBtn").hidden = true; }
-};
+    state.chat.pop();
+    if (!(e && e.code === "cancelled")) { $("status").className = "status err"; $("status").textContent = ERR[e && e.code] || "No se pudo escribir el email. Vuelve a intentarlo."; }
+  } finally { ctl = null; $("goBtn").disabled = false; $("stopBtn").hidden = true; renderChat(); }
+}
+$("chatForm").onsubmit = (ev) => { ev.preventDefault(); sendChat($("chatText").value); };
+$("chatText").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat($("chatText").value); } });
 $("stopBtn").onclick = () => ctl?.abort();
 
 /* ---------- Añadir al calendario ---------- */
-$("planBtn").onclick = () => { $("pFecha").value = state.slot?.fecha || nextSlot(state.current.segmento); $("pEstado").value = "en_redaccion"; $("pHs").value = ""; $("planForm").hidden = false; $("pFecha").focus(); };
+function showPlan(focus) { $("pFecha").value = state.slot?.fecha || nextSlot(state.current.segmento); $("pEstado").value = "en_redaccion"; $("pHs").value = ""; $("planForm").hidden = false; if (focus) $("pFecha").focus(); };
+$("planBtn").onclick = () => showPlan(true);
 $("planCancel").onclick = () => { $("planForm").hidden = true; };
 $("planForm").onsubmit = async (ev) => {
   ev.preventDefault();
@@ -863,10 +850,10 @@ $("planForm").onsubmit = async (ev) => {
 /* ---------- Abrir el editor desde un hueco del calendario ---------- */
 function openWriter(seg, fecha, id) {
   const vis = ["semana", "calendario", "enviados"].find((t) => !$("view-" + t).hidden); if (vis) state.returnTab = vis;
-  state.seg = seg; state.slot = { fecha, id: id || null }; state.angulo = "";
+  state.seg = seg; state.slot = { fecha, id: id || null }; state.chat = [];
   const prev = id && state.cal.find((c) => c.id === id);
   state.current = prev && prev.email ? { ...prev.email, segmento: seg } : null;
-  renderNarrators(); renderSeq(); renderPreview(); $("status").textContent = "";
+  renderChat(); renderPreview(); $("status").textContent = "";
   const s = SEG[seg], d = parse(fecha);
   $("slotLabel").innerHTML = `Email de ${esc(s.firma.nombre)} para el ${esc(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }))}<small>${esc(s.nombre)}</small>`;
   $("editor").hidden = true;
@@ -1157,7 +1144,7 @@ function showTab(t) {
 document.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
 
 /* ---------- Arranque ---------- */
-renderNarrators(); renderSeq(); renderFormSelect(); renderPreview(); renderSentChips(); renderCal(); renderBuyers();
+renderPreview(); renderSentChips(); renderCal(); renderBuyers();
 (async () => {
   if (!window.claude?.use) { $("noSample").hidden = false; $("goBtn").disabled = true; $("noDb").hidden = false; return; }
   sample = await window.claude.use("sample");
@@ -1165,7 +1152,7 @@ renderNarrators(); renderSeq(); renderFormSelect(); renderPreview(); renderSentC
   db = await window.claude.use("db");
   if (!db) { $("noDb").hidden = false; return; }
   db.collection("calendario").orderBy("fecha", "asc").onSnapshot((snap) => {
-    state.cal = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderCal(); renderSeq();
+    state.cal = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderCal();
   });
 
   renderPreview(); renderCal(); renderBuyers();
