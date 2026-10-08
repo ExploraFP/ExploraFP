@@ -533,3 +533,35 @@ pintarEditor = function (todo) {
   if (SEL.inline) terminarInline(false);
   _pintarEditorIn(todo);
 };
+
+/* ---------- pasar de slide con flechas (pedido de Sandra, oct-2026) ----------
+   Botones ‹ › a los lados de la slide grande y teclas ← → (salvo mientras escribes en un cuadro o sobre la slide). */
+function irSlide(paso) {
+  const c = EST.lista[EST.abierto]; if (!c) return;
+  const n = Math.max(0, Math.min(c.slides.length - 1, EST.sel + paso)); if (n === EST.sel) return;
+  terminarInline(false); SEL.pop = null; EST.sel = n; pintarEditor(true);
+}
+const _pintarEditorFl = pintarEditor;
+pintarEditor = function (todo) {
+  _pintarEditorFl(todo);
+  const g = document.querySelector('#est-editor .est-grande'), c = EST.lista[EST.abierto]; if (!g || !c) return;
+  let esc = g.parentElement.classList.contains('sel-escenario') ? g.parentElement : null;
+  if (!esc) {
+    esc = document.createElement('div'); esc.className = 'sel-escenario'; g.parentElement.insertBefore(esc, g);
+    const b = (cls, txt, lab) => { const x = document.createElement('button'); x.type = 'button'; x.className = 'sel-paso ' + cls; x.textContent = txt; x.setAttribute('aria-label', lab); x.title = lab + ' (tecla ' + (cls === 'ant' ? '←' : '→') + ')'; return x; };
+    esc.appendChild(b('ant', '‹', 'Slide anterior')); esc.appendChild(g); esc.appendChild(b('sig', '›', 'Slide siguiente'));
+  }
+  esc.querySelector('.ant').disabled = EST.sel <= 0;
+  esc.querySelector('.sig').disabled = EST.sel >= c.slides.length - 1;
+};
+window.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('.sel-paso'); if (!b || !EST.abierto) return;
+  e.stopImmediatePropagation(); irSlide(b.classList.contains('ant') ? -1 : 1);
+}, true);
+window.addEventListener('keydown', e => {
+  if (!EST.abierto || e.metaKey || e.ctrlKey || e.altKey || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+  const t = e.target;
+  if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+  if (SEL.inline || SEL.diseno || !$('#onb').hidden) return;
+  e.preventDefault(); irSlide(e.key === 'ArrowLeft' ? -1 : 1);
+});

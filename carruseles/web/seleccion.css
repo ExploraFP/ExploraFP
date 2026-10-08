@@ -107,3 +107,13 @@
 .sel-inline-pista { margin: 6px 0 2px; font-size: 13px; color: var(--ink3); }
 
 .eb-cod{font-family:var(--f-mono);font-size:11.5px;font-weight:700;color:#12200F;background:#D8FF6E;border-radius:5px;padding:1px 6px}
+/* flechas a los lados de la slide grande */
+.sel-escenario { display: flex; align-items: center; justify-content: center; gap: 14px; width: 100%; }
+.sel-escenario .est-grande { flex: none; }
+.sel-paso { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--brand2);
+  font-size: 30px; line-height: 1; display: grid; place-items: center; padding: 0 0 4px; cursor: pointer; box-shadow: var(--sh1); transition: background .12s, transform .12s; }
+.sel-paso:hover:not(:disabled) { background: #D8FF6E; color: #12200F; transform: scale(1.06); }
+.sel-paso:disabled { opacity: .25; cursor: default; box-shadow: none; }
+@media (max-width: 900px) { .sel-escenario { gap: 6px; } .sel-paso { width: 34px; height: 34px; font-size: 24px; } }
+.sel-escenario .est-grande { max-width: calc(100% - 116px); }
+@media (max-width: 900px) { .sel-escenario .est-grande { max-width: calc(100% - 80px); } }
