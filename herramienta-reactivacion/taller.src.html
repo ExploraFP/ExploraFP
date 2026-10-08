@@ -56,7 +56,7 @@ select:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-
 .brand { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; }
 .brand h1 { display: flex; align-items: center; gap: .3em; }
 #nlText { display: inline-block; }
-.brand .logo { height: auto; width: 6em; display: block; }
+.brand .logo { height: 1.05em; width: auto; display: block; transform: translateY(.06em); }
 .brand .divider { width: 1.5px; align-self: stretch; background: var(--band-ink); opacity: .3; }
 .brand .bt { display: flex; flex-direction: column; gap: 2px; }
 .brand small { font: 500 .7rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
@@ -1291,12 +1291,6 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
       <div class="never"><h4>Nunca</h4>${esc(n.nunca)}</div>
     </div>
   </article>`; }).join("");
-
-/* ---------- Logo igual de ancho que "Newsletter" ---------- */
-function sizeLogo() { const w = $("nlText").getBoundingClientRect().width; if (w) $("nlLogo").style.width = Math.round(w) + "px"; }
-try { new ResizeObserver(sizeLogo).observe($("nlText")); } catch { window.addEventListener("resize", sizeLogo); }
-try { document.fonts.load('400 40px "Gravity Condensed"').then(sizeLogo, sizeLogo); } catch {}
-sizeLogo();
 
 /* ---------- Pestañas ---------- */
 function showTab(t) {
