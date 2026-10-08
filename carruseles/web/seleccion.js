@@ -381,3 +381,44 @@ pintarEditor = function (todo) {
   const post = document.querySelector('#est-editor .pr-tab-post');
   if (post && !post.querySelector('.sv-h')) post.insertAdjacentHTML('afterbegin', '<h3 class="sv-h">Caption</h3>');
 };
+
+/* ---------- Ctrl/⌘ + Z = deshacer el último cambio (pedido de Sandra, oct-2026) ----------
+   Dentro del carrusel deshace SIEMPRE el último cambio del carrusel, también con el cursor en el texto seleccionado
+   o en el caption (antes, con el cursor en un cuadro de texto no hacía nada). Solo se respeta el deshacer normal
+   del navegador en el chat con Claude mientras tiene algo escrito, y en las ventanas (buscador de fotos…).
+   Fuera, en Producción, deshace el último movimiento de etapa (arrastrar, aprobar o marcar como publicado). */
+const PR_DESHACER = [];
+const fotoEtapa = c => ({estado: c.estado, listo: !!c.listo, fecha: c.fecha, ig: c.ig});
+function apuntarEtapa(c, antes) {
+  const ahora = fotoEtapa(c);
+  if (JSON.stringify(antes) !== JSON.stringify(ahora)) { PR_DESHACER.push({id: c.id, antes: antes}); if (PR_DESHACER.length > 30) PR_DESHACER.shift(); }
+}
+const _moverEtapaZ = moverEtapa;
+moverEtapa = function (c, a) { const antes = fotoEtapa(c); _moverEtapaZ(c, a); apuntarEtapa(c, antes); };
+const _publicarZ = publicar;
+publicar = function (id) { const c = EST.lista[id], antes = c && fotoEtapa(c); _publicarZ(id); if (c && !EST.abierto) apuntarEtapa(c, antes); };
+function deshacerEtapa() {
+  const u = PR_DESHACER.pop(), c = u && EST.lista[u.id];
+  if (!c) { toast('No hay nada que deshacer'); return; }
+  c.estado = u.antes.estado; c.listo = u.antes.listo;
+  if (u.antes.fecha) c.fecha = u.antes.fecha; else delete c.fecha;
+  if (u.antes.ig) c.ig = u.antes.ig; else delete c.ig;
+  guardarC(c); render();
+  toast('↶ Deshecho: vuelve a «' + ({revision: 'En revisión', listo: 'Listo para publicar', publicado: 'Terminados'}[etapaDe(c)] || ETAPAS[etapaDe(c)]) + '»');
+}
+window.addEventListener('keydown', e => {
+  if (!(e.metaKey || e.ctrlKey) || e.shiftKey || e.altKey || (e.key || '').toLowerCase() !== 'z') return;
+  const t = e.target, campo = t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName);
+  if (t && t.closest && t.closest('#onb') && !$('#onb').hidden) return;          // ventanas: deshacer normal
+  if (EST.abierto) {
+    if (document.querySelector('#est-editor.solo-ver')) return;
+    if (t && t.id === 'mesa-claude-txt' && t.value.trim()) return;                 // escribiendo a Claude: deshace lo escrito
+    e.preventDefault(); e.stopImmediatePropagation();
+    const c = EST.lista[EST.abierto];
+    if (SEL_GUARDA && c) { clearTimeout(SEL_GUARDA); SEL_GUARDA = 0; guardarC(c); }  // lo que acabas de escribir cuenta
+    deshacer();
+    if (SEL.pop && c && !c.slides[SEL.pop.slide]) cerrarPop();
+    return;
+  }
+  if (S.v === 'producir' && !campo) { e.preventDefault(); deshacerEtapa(); }
+}, true);
