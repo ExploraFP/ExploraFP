@@ -113,3 +113,13 @@
 .pr-sec.pr-destino{outline:2px dashed var(--limaLine);outline-offset:8px;border-radius:14px;transition:background .15s}
 .pr-sec.pr-encima{background:color-mix(in srgb,var(--lima) 22%,transparent);outline-color:var(--brand2)}
 .pr-sec.pr-destino .pr-vacio{min-height:80px}
+
+/* seleccionar varios para borrarlos */
+.pr-chk{position:absolute;top:10px;left:10px;z-index:4;width:30px;height:30px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--sh1);opacity:0;transition:opacity .12s;cursor:pointer}
+.pr-chk input{width:18px;height:18px;margin:0;accent-color:var(--brand2);cursor:pointer}
+.pr-tarjeta:hover .pr-chk,.pr-chk:focus-within,.pr-marcada .pr-chk,.pr-selbar.on ~ .pr-sec .pr-chk{opacity:1}
+@media (hover:none){.pr-chk{opacity:1}}
+.pr-tarjeta.pr-marcada{outline:3px solid var(--lima);outline-offset:-1px}
+.pr-chksec{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink3);cursor:pointer;margin-left:auto}
+.pr-chksec input{accent-color:var(--brand2)}
+.pr-dvv-lista{margin:8px 0 10px;padding-left:20px;font-size:14px;line-height:1.5}

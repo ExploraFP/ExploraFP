@@ -64,9 +64,22 @@ vProducir = function () {
   // cada uno con su rejilla de tarjetas grandes. «Por generar» solo sale mientras haya algo sin generar.
   col.publicado = carruselesDe('hecho').sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
   const secciones = (col.generar.length ? ['generar'] : []).concat(['revision', 'listo', 'publicado']);
-  h += secciones.map(k =>
-    '<section class="pr-sec pr-' + k + '" data-pr-etapa="' + k + '"><header><h3>' + (k === 'publicado' ? 'Terminados' : ETAPAS[k]) + (k === 'listo' ? ' para publicar' : '') + ' <b>' + col[k].length + '</b></h3></header>' +
-      (col[k].length ? '<div class="est-rejilla">' + col[k].map(c => k === 'generar' ? tarjeta(c) : tarjeta(c).replace('<article ', '<article draggable="true" data-pr-mover="' + esc(c.id) + '" ')).join('') + '</div>' : '<p class="pr-vacio">' + vacio[k] + '</p>') + '</section>').join('');
+  // selección de varios para borrarlos de golpe (pedido de Sandra): casilla en cada tarjeta y en cada sección; Terminados no se borran
+  const marcable = (c, k) => k !== 'publicado' && c.estado !== 'generando';
+  [...PR_SEL].forEach(id => { const c = EST.lista[id]; if (!c || etapaDe(c) === 'publicado' || c.estado === 'generando') PR_SEL.delete(id); });
+  h += '<div class="mz-selbar pr-selbar' + (PR_SEL.size ? ' on' : '') + '"><b>' + PR_SEL.size + (PR_SEL.size === 1 ? ' seleccionado' : ' seleccionados') + '</b>' +
+    '<button class="btn pri" id="pr-sel-borrar">🗑 Borrar ' + (PR_SEL.size === 1 ? 'el seleccionado' : 'los ' + PR_SEL.size) + '</button>' +
+    '<button class="linkbtn" id="pr-sel-quitar">Quitar la selección</button></div>';
+  const casilla = c => '<label class="pr-chk" title="Seleccionar"><input type="checkbox" data-pr-sel="' + esc(c.id) + '"' + (PR_SEL.has(c.id) ? ' checked' : '') + ' aria-label="Seleccionar ' + esc(String(c.titulo || 'carrusel').replace(/\*/g, '')) + '"></label>';
+  h += secciones.map(k => {
+    const marcables = col[k].filter(c => marcable(c, k));
+    const todos = marcables.length && marcables.every(c => PR_SEL.has(c.id));
+    return '<section class="pr-sec pr-' + k + '" data-pr-etapa="' + k + '"><header><h3>' + (k === 'publicado' ? 'Terminados' : ETAPAS[k]) + (k === 'listo' ? ' para publicar' : '') + ' <b>' + col[k].length + '</b></h3>' +
+      (marcables.length ? '<label class="pr-chksec"><input type="checkbox" data-pr-sel-sec="' + k + '"' + (todos ? ' checked' : '') + '> Seleccionar todos</label>' : '') + '</header>' +
+      (col[k].length ? '<div class="est-rejilla">' + col[k].map(c => { let t = tarjeta(c);
+        if (marcable(c, k)) t = t.replace(/^<article class="/, '<article class="' + (PR_SEL.has(c.id) ? 'pr-marcada ' : '')).replace(/(<article [^>]*>)/, '$1' + casilla(c));
+        return k === 'generar' ? t : t.replace('<article ', '<article draggable="true" data-pr-mover="' + esc(c.id) + '" '); }).join('') + '</div>'
+        : '<p class="pr-vacio">' + vacio[k] + '</p>') + '</section>'; }).join('');
   return h;
 };
 
@@ -328,4 +341,35 @@ document.addEventListener('drop', e => {
   PR_MOVER_ID = null;
   document.querySelectorAll('.pr-arrastrando, .pr-destino, .pr-encima').forEach(x => x.classList.remove('pr-arrastrando', 'pr-destino', 'pr-encima'));
   if (c) moverEtapa(c, a);
+});
+
+/* ---------- borrar varios a la vez (pedido de Sandra, oct-2026) ---------- */
+var PR_SEL = new Set();
+function abrirBorrarVarios() {
+  const cs = [...PR_SEL].map(id => EST.lista[id]).filter(Boolean); if (!cs.length) return;
+  const tit = c => '«' + esc(String(c.titulo || c.tema || 'Sin título').replace(/\*/g, '')) + '»';
+  $('#onb').hidden = false;
+  $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="pr-dvv-t"><div class="cuerpo">' +
+    '<h2 id="pr-dvv-t">¿Borrar ' + (cs.length === 1 ? 'este carrusel' : 'estos ' + cs.length + ' carruseles') + ' de Producción?</h2>' +
+    '<ul class="pr-dvv-lista">' + cs.slice(0, 6).map(c => '<li>' + tit(c) + '</li>').join('') + (cs.length > 6 ? '<li>y ' + (cs.length - 6) + ' más</li>' : '') + '</ul>' +
+    '<p>Se borran sus slides y no se pueden recuperar. Las ideas no se borran: vuelven a estar «por hacer» en la Matriz.</p></div>' +
+    '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="pr-sel-borrar-ok">Sí, borrar' + (cs.length === 1 ? '' : ' los ' + cs.length) + '</button></footer></div>';
+}
+document.addEventListener('change', e => {
+  const t = e.target; if (!t.dataset) return;
+  if (t.dataset.prSel) { if (t.checked) PR_SEL.add(t.dataset.prSel); else PR_SEL.delete(t.dataset.prSel); render(); return; }
+  if (t.dataset.prSelSec) {
+    const k = t.dataset.prSelSec;
+    carruselesDe('pendientes').filter(c => etapaDe(c) === k && c.estado !== 'generando').forEach(c => { if (t.checked) PR_SEL.add(c.id); else PR_SEL.delete(c.id); });
+    render();
+  }
+});
+document.addEventListener('click', e => {
+  const t = e.target; if (!t.closest) return;
+  if (t.closest('#pr-sel-quitar')) { PR_SEL.clear(); render(); return; }
+  if (t.closest('#pr-sel-borrar')) { abrirBorrarVarios(); return; }
+  if (t.closest('#pr-sel-borrar-ok')) {
+    const n = PR_SEL.size; [...PR_SEL].forEach(id => borrarC(id)); PR_SEL.clear();
+    cerrarPanel(); render(); toast(n === 1 ? 'Borrado de Producción' : n + ' carruseles borrados de Producción');
+  }
 });
