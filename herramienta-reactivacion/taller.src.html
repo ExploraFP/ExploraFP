@@ -140,7 +140,11 @@ textarea { min-height: 64px; resize: vertical; }
 .email .body p { margin: 0 0 1.35em; }
 .email .body ul { margin: 0 0 1.35em; padding-left: 1.3em; display: grid; gap: .45em; }
 .email .body li::marker { color: #4CC94B; }
-.email .body p[contenteditable]:hover { background: #F5FAF3; }
+.email .body[contenteditable="true"] { outline: none; cursor: text; }
+.email .body[contenteditable="true"] > p:hover, .email .body[contenteditable="true"] > ul:hover { background: #F5FAF3; border-radius: 4px; }
+.email .body[contenteditable="true"]:focus-within { box-shadow: inset 0 0 0 2px #CFE8C9; }
+.mail-row [contenteditable="plaintext-only"] { outline: none; border-radius: 3px; cursor: text; }
+.mail-row [contenteditable="plaintext-only"]:hover, .mail-row [contenteditable="plaintext-only"]:focus { background: #F1F5F1; box-shadow: 0 0 0 2px #F1F5F1; }
 .email .cta { text-align: center; margin: 1.5em 0; }
 .email .cta a { display: inline-block; background: #4CC94B; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 14px 30px; border-radius: 8px; }
 .email .ftr { padding: 8px 32px 28px; }
@@ -477,10 +481,6 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <label class="l" for="pHs">Enlace de HubSpot<input type="url" id="pHs" placeholder="https://app.hubspot.com/…"></label>
           <span class="saved" id="savedAt" role="status"></span>
         </div>
-        <div class="checks" id="checks" hidden>
-          <p class="eyebrow">Revisa antes de enviar</p>
-          <ul id="checkList"></ul>
-        </div>
       </div>
     </div>
   </section>
@@ -673,7 +673,7 @@ ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 Prohibiciones (marca y legal):
 - Nunca prometas empleo. Nunca superlativos no demostrables ("la mayor bolsa de empleo", "lo hace todo por ti").
 - Los buyers son alumnos reales que han dado permiso: puedes contar su historia con su nombre, pero sin añadir hechos, plazos ni resultados que no estén en su ficha.
-- Nunca inventes cifras, sueldos, porcentajes, fechas ni precios. Si ayudarían: [DATO A VERIFICAR: …] y avísalo en "revisar".
+- Nunca inventes cifras, sueldos, porcentajes, fechas ni precios. Si ayudarían: [DATO A VERIFICAR: …].
 - "Título oficial de FP", mismo valor en toda España. Nunca "papelito" ni "sello".
 - Explora en primera persona del plural. Vocabulario prohibido: descubre, matricúlate, apúntate, tu futuro empieza hoy, fácilmente, profesor (usa guía), aula, lección.
 
@@ -714,7 +714,7 @@ Ejemplo 2 · qué NO hacer. Gancho de la pizza quemada que conecta así: "Aprend
 const FORMATO = `Responde SOLO con un objeto JSON:
 {"angulo":"una frase","asunto_a":"...","asunto_b":"...","preheader":"...",
  "bloques":[{"tipo":"texto","contenido":"párrafo de 1-3 frases (puede llevar {{nombre}} y **negrita**)"},{"tipo":"lista","contenido":["punto corto","punto corto"]},{"tipo":"boton","contenido":"Texto del botón"}],
- "despedida":"...","firma":"— ...","pd":"P.D.: ...","revisar":["qué comprobar antes de enviar"]}
+ "despedida":"...","firma":"— ...","pd":"P.D.: ..."}
 Exactamente dos bloques "boton". Bloque "lista" opcional, como mucho uno.`;
 
 
@@ -757,11 +757,12 @@ function nextSlot(seg) {
 function renderPreview() {
   const e = state.current, has = !!e;
   document.querySelectorAll("[data-copy]").forEach((b) => { b.hidden = !has; });
-  $("checks").hidden = true;
+
   if (!has) {
     const s = SEG[state.seg];
     $("ibFrom").textContent = $("ibFrom2").textContent = `${s.firma.nombre} · Explora FP`;
     $("ibA").textContent = $("ibB").textContent = ""; $("ibPre").textContent = $("ibPre2").textContent = "";
+    $("emailBody").contentEditable = "false"; ["ibA", "ibB", "ibPre"].forEach((id) => { $(id).contentEditable = "false"; });
     $("emailBody").innerHTML = '<div class="skel"><i></i><i></i><i style="width:70%"></i><i></i><i style="width:45%"></i></div>';
     $("saveBar").hidden = true;
     return;
@@ -770,16 +771,16 @@ function renderPreview() {
   $("ibFrom").textContent = $("ibFrom2").textContent = `${s.firma.nombre} · Explora FP`;
   $("ibA").textContent = e.asunto_a; $("ibB").textContent = e.asunto_b;
   $("ibPre").textContent = $("ibPre2").textContent = e.preheader;
+  ["ibA", "ibB", "ibPre"].forEach((id) => { $(id).contentEditable = "plaintext-only"; $(id).spellcheck = true; });
   const parts = e.bloques.map((b) => b.tipo === "boton"
-    ? `<div class="cta"><a href="#" onclick="return false" contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
+    ? `<div class="cta" contenteditable="false"><a href="#" onclick="return false" contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
     : b.tipo === "lista"
-      ? `<ul contenteditable="true">${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>`
-      : `<p contenteditable="true">${rich(b.contenido)}</p>`);
-  if (e.pd) parts.push(`<p contenteditable="true">${rich(e.pd)}</p>`);
-  parts.push(`<p contenteditable="true">${rich(e.despedida)}<br>${rich(e.firma)}</p>`);
+      ? `<ul>${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>`
+      : `<p>${rich(b.contenido)}</p>`);
+  if (e.pd) parts.push(`<p data-role="pd">${rich(e.pd)}</p>`);
+  parts.push(`<p data-role="firma">${rich(e.despedida)}<br>${rich(e.firma)}</p>`);
   $("emailBody").innerHTML = parts.join("");
-  $("checkList").innerHTML = (e.revisar || []).map((r) => `<li>${rich(r)}</li>`).join("");
-  $("checks").hidden = !(e.revisar && e.revisar.length);
+  $("emailBody").contentEditable = "true";
   $("saveBar").hidden = !db;
 }
 function bodyText() {
@@ -801,7 +802,7 @@ document.querySelectorAll("[data-dev]").forEach((b) => b.onclick = () => {
   $("stage").classList.toggle("mobile", b.dataset.dev === "mobile");
 });
 document.querySelectorAll("[data-copy]").forEach((b) => b.onclick = () => {
-  const e = state.current, k = b.dataset.copy; if (!e) return;
+  const e = emailFromDom(), k = b.dataset.copy; if (!e) return;
   const txt = k === "a" ? e.asunto_a : k === "b" ? e.asunto_b : k === "pre" ? e.preheader : bodyText();
   const ok = () => { $("copyStatus").textContent = "Copiado."; };
   const fb = () => { const ta = document.createElement("textarea"); ta.value = txt; document.body.append(ta); ta.select(); $("copyStatus").textContent = "Texto seleccionado: pulsa Ctrl/Cmd + C."; setTimeout(() => ta.remove(), 8000); };
@@ -859,6 +860,7 @@ function renderChat() {
 async function sendChat(text) {
   text = String(text || "").trim() || "Escríbelo";
   if (!sample || ctl) return;
+  if (state.current) state.current = emailFromDom();
   state.chat.push({ role: "user", text });
   state.chat.push({ role: "bot", text: "Pensando…", thinking: true });
   $("chatText").value = ""; renderChat();
@@ -905,16 +907,17 @@ function domText(el) {
 }
 function emailFromDom() {
   const e = state.current; if (!e) return null;
-  const els = [...$("emailBody").children];
-  const bloques = e.bloques.map((b, i) => {
-    const el = els[i]; if (!el) return b;
-    if (b.tipo === "boton") return { tipo: "boton", contenido: el.innerText.trim() };
-    if (b.tipo === "lista") return { tipo: "lista", contenido: [...el.querySelectorAll("li")].map(domText).filter(Boolean) };
-    return { tipo: "texto", contenido: domText(el) };
-  });
-  const rest = els.slice(e.bloques.length);
-  const pd = e.pd && rest[0] ? domText(rest[0]) : e.pd || "";
-  return { ...e, bloques, pd };
+  const bloques = []; let pd = "", despedida = e.despedida, firma = e.firma;
+  for (const el of $("emailBody").children) {
+    if (el.classList.contains("skel")) continue;
+    if (el.classList.contains("cta")) { const t = el.innerText.trim(); if (t) bloques.push({ tipo: "boton", contenido: t }); continue; }
+    if (el.dataset.role === "pd") { pd = domText(el); continue; }
+    if (el.dataset.role === "firma") { const l = domText(el).split("\n").map((x) => x.trim()).filter(Boolean); despedida = l[0] || ""; firma = l.slice(1).join(" ") || ""; continue; }
+    if (el.tagName === "UL" || el.tagName === "OL") { const items = [...el.querySelectorAll("li")].map(domText).filter(Boolean); if (items.length) bloques.push({ tipo: "lista", contenido: items }); continue; }
+    const t = domText(el); if (t) bloques.push({ tipo: "texto", contenido: t });
+  }
+  return { ...e, bloques, pd, despedida, firma,
+    asunto_a: $("ibA").textContent.trim() || e.asunto_a, asunto_b: $("ibB").textContent.trim() || e.asunto_b, preheader: $("ibPre").textContent.trim() };
 }
 let saveTimer = null, saving = Promise.resolve();
 function scheduleSave(ms) { clearTimeout(saveTimer); saveTimer = setTimeout(() => { saving = saving.then(saveDraft); }, ms ?? 1200); }
@@ -922,7 +925,7 @@ async function saveDraft() {
   if (!db || !state.slot || !state.current) return;
   const e = emailFromDom(); state.current = e;
   const clean = (v) => JSON.parse(JSON.stringify(v ?? null));
-  const email = clean({ asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader || "", despedida: e.despedida, firma: e.firma, pd: e.pd || "", revisar: e.revisar || [], bloques: e.bloques, angulo: e.angulo || "" });
+  const email = clean({ asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader || "", despedida: e.despedida, firma: e.firma, pd: e.pd || "", bloques: e.bloques, angulo: e.angulo || "" });
   const primero = e.bloques.find((b, i) => i > 0 && b.tipo === "texto");
   const hs = $("pHs").value.trim();
   if (hs && !safeUrl(hs)) { $("savedAt").className = "saved err"; $("savedAt").textContent = "El enlace tiene que empezar por https://"; return; }
@@ -939,6 +942,9 @@ async function saveDraft() {
   }
 }
 $("emailBody").addEventListener("input", () => scheduleSave(1500));
+["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("input", () => { if (id === "ibPre") $("ibPre2").textContent = $("ibPre").textContent; scheduleSave(1500); }));
+["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); ev.target.blur(); } }));
+try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
 $("pHs").addEventListener("change", () => scheduleSave(0));
 
