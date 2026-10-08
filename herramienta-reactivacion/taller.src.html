@@ -53,11 +53,10 @@ select:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-
 /* Cinta superior */
 .band { background: var(--band); color: var(--band-ink); }
 .band-in { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 0; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
-.brand { display: flex; align-items: center; gap: 16px; padding-bottom: 14px; }
-.brand .logo { height: 40px; width: auto; display: block; }
+.brand { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; }
+.brand .logo { height: 1.3em; width: auto; display: inline-block; vertical-align: -0.14em; margin-left: .18em; }
 .brand .divider { width: 1.5px; align-self: stretch; background: var(--band-ink); opacity: .3; }
 .brand .bt { display: flex; flex-direction: column; gap: 2px; }
-@media (max-width: 480px) { .brand .logo { height: 30px; } .brand h1 { font-size: 1.4rem !important; } }
 .brand small { font: 500 .7rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
 .brand h1 { margin: 0; font: 800 1.75rem/1.1 var(--font-display); letter-spacing: -.01em; }
 .brand h1 em { font-style: italic; font-weight: 600; color: var(--lime); }
@@ -387,9 +386,10 @@ textarea { min-height: 64px; resize: vertical; }
 @font-face { font-family: "Gravity Condensed"; src: url(__GRAVITY__) format("opentype"); font-weight: 100 900; font-style: normal; font-display: swap; }
 :root { --font-head: "Gravity Condensed", "Arial Narrow", "Roboto Condensed", Impact, sans-serif; }
 .brand h1, h2, .wcard .wday b, .ncard h3, .claim, .ag-date b, .form-block h3, .ed-read dd, .day .num, .seq button { font-family: var(--font-head) !important; font-weight: 400 !important; letter-spacing: .01em; }
-.brand h1 { font-size: 2.1rem !important; line-height: 1; text-transform: uppercase; }
+.brand h1 { font-size: 2.4rem !important; line-height: 1; text-transform: uppercase; margin: 0 !important; white-space: nowrap; }
+@media (max-width: 480px) { .brand h1 { font-size: 1.45rem !important; } }
 h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
-.brand h1 { margin-top: 4px !important; }
+
 .week-head h2, .cal-head h2 { font-size: 2.6rem !important; }
 .sent-head h2, .b-head h2 { font-size: 2rem !important; }
 .wcard .wday b { font-size: 1.7rem !important; text-transform: uppercase; }
@@ -407,9 +407,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 <div class="band">
   <div class="band-in">
     <div class="brand">
-      <img class="logo" src="__LOGO__" alt="Explora">
-      <span class="divider" aria-hidden="true"></span>
-      <div class="bt"><small>Reactivación de leads perdidos</small><h1 id="brandTitle">Newsletter</h1></div>
+      <h1 id="brandTitle">Newsletter <img class="logo" src="__LOGO__" alt="Explora"></h1>
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="semana">Producción</button>
