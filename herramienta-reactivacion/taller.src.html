@@ -18,7 +18,7 @@
   --tint: #E8F3E4;
   --vera: #C2577A;
   --rai: #2F6FB3;
-  --alvaro: #366B40;
+  --noe: #B5651D;
   --s-draft-bg: #ECEFEA; --s-draft-fg: #4C5A50;
   --s-plan-bg: #FFF1B8;  --s-plan-fg: #6B5300;
   --s-sent-bg: #D4FFD0;  --s-sent-fg: #1F5F24;
@@ -31,7 +31,7 @@
   :root:not([data-theme="light"]) {
     --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
     --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
-    --vera: #F08FB0; --rai: #7FB2EC; --alvaro: #8FD18F;
+    --vera: #F08FB0; --rai: #7FB2EC; --noe: #F0A867;
     --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95;
     --err: #FF8A80; color-scheme: dark;
   }
@@ -39,7 +39,7 @@
 :root[data-theme="dark"] {
   --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
   --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
-  --vera: #F08FB0; --rai: #7FB2EC; --alvaro: #8FD18F;
+  --vera: #F08FB0; --rai: #7FB2EC; --noe: #F0A867;
   --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95;
   --err: #FF8A80; color-scheme: dark;
 }
@@ -52,7 +52,11 @@ select:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-
 /* Cinta superior */
 .band { background: var(--band); color: var(--band-ink); }
 .band-in { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 0; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
-.brand { display: flex; flex-direction: column; gap: 2px; padding-bottom: 14px; }
+.brand { display: flex; align-items: center; gap: 16px; padding-bottom: 14px; }
+.brand .logo { height: 40px; width: auto; display: block; }
+.brand .divider { width: 1.5px; align-self: stretch; background: var(--band-ink); opacity: .3; }
+.brand .bt { display: flex; flex-direction: column; gap: 2px; }
+@media (max-width: 480px) { .brand .logo { height: 30px; } .brand h1 { font-size: 1.4rem !important; } }
 .brand small { font: 500 .7rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
 .brand h1 { margin: 0; font: 800 1.75rem/1.1 var(--font-display); letter-spacing: -.01em; }
 .brand h1 em { font-style: italic; font-weight: 600; color: var(--lime); }
@@ -151,6 +155,54 @@ textarea { min-height: 64px; resize: vertical; }
 .plan .row { display: grid; grid-template-columns: 160px 150px minmax(0, 1fr); gap: 10px; }
 @media (max-width: 640px) { .plan .row { grid-template-columns: minmax(0, 1fr); } }
 
+/* Cinta de cierre */
+.ribbon { background: var(--band); color: var(--band-ink); }
+.ribbon-in { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 28px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; }
+.claim { margin: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font: 800 1.15rem/1.1 var(--font-display); text-transform: uppercase; letter-spacing: .01em; }
+.claim .hl { background: var(--lime); color: #102016; padding: 2px 6px; }
+.ribbon .logo { height: 34px; width: auto; display: block; }
+
+/* Barra del editor de email */
+.writer-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.writer-bar #slotLabel { font: 800 1.2rem var(--font-display); }
+.writer-bar #slotLabel small { font: 500 .8rem var(--font-body); color: var(--muted); margin-left: 6px; }
+
+/* Esta semana */
+.week-head { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: flex-end; justify-content: space-between; margin-bottom: 14px; }
+.week-head h2 { font-size: 2rem; }
+.week-head .sub { margin: 0; color: var(--muted); font-size: .86rem; max-width: 46ch; }
+.week { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 36px; }
+@media (max-width: 860px) { .week { grid-template-columns: minmax(0, 1fr); } }
+.wcard { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; align-content: start; position: relative; overflow: hidden; }
+.wcard::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c); }
+.wcard .wday { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.wcard .wday b { font: 800 1.35rem var(--font-display); text-transform: capitalize; }
+.wcard .wday span { font: 500 .78rem var(--font-mono); color: var(--muted); }
+.wcard .wwho { display: flex; gap: 10px; align-items: center; font-size: .86rem; }
+.wcard .wwho .av { width: 30px; height: 30px; border-radius: 50%; color: #fff; display: grid; place-items: center; font: 800 .85rem var(--font-display); flex: none; }
+.wcard .wsubj { background: var(--bg); border-radius: 10px; padding: 10px 12px; font-size: .9rem; display: grid; gap: 2px; min-height: 58px; align-content: center; }
+.wcard .wsubj b { font-weight: 600; overflow-wrap: anywhere; }
+.wcard .wsubj span { color: var(--muted); font-size: .82rem; }
+.wcard .wsubj.empty-s { color: var(--muted); border: 1.5px dashed var(--line); background: transparent; }
+.wcard .wst { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.wcard.late .wday span { color: var(--err); font-weight: 600; }
+.wcard.done { background: var(--tint); }
+.st-pendiente { background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+.st-atrasado { background: #FFDCDC; color: #9B1C17; }
+/* Enviados */
+.sent-head { margin: 36px 0 12px; }
+.sent { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); }
+.srow { display: grid; grid-template-columns: 96px 210px minmax(0, 1fr) minmax(0, .8fr) auto; gap: 14px; padding: 12px 16px; align-items: center; border-top: 1px solid var(--line); font-size: .86rem; text-align: left; width: 100%; background: transparent; border-left: 0; border-right: 0; border-bottom: 0; color: var(--ink); font-family: var(--font-body); cursor: pointer; }
+.srow:first-child { border-top: 0; }
+.srow:hover { background: var(--tint); }
+.srow .d { font: 500 .8rem var(--font-mono); color: var(--muted); }
+.srow .n { display: flex; gap: 8px; align-items: center; }
+.srow .n i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.srow .a b { font-weight: 600; }
+.srow .a span { color: var(--muted); }
+.srow .m { color: var(--muted); font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 760px) { .srow { grid-template-columns: minmax(0, 1fr) auto; } .srow .a, .srow .m { grid-column: 1 / -1; white-space: normal; } }
+
 /* Calendario: vista de mes */
 .cal-head { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; justify-content: space-between; margin-bottom: 14px; }
 .cal-head h2 { font-size: 2rem; }
@@ -161,8 +213,6 @@ textarea { min-height: 64px; resize: vertical; }
 .legend span { display: inline-flex; gap: 6px; align-items: center; }
 .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 .legend .st { margin-left: 2px; }
-.next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
-@media (max-width: 760px) { .next { grid-template-columns: minmax(0, 1fr); } }
 .nx { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 2px 12px; align-items: start; }
 .nx .av { grid-row: span 3; width: 36px; height: 36px; border-radius: 50%; color: #fff; display: grid; place-items: center; font: 800 .95rem var(--font-display); }
 .nx strong { font-size: .9rem; }
@@ -271,21 +321,25 @@ textarea { min-height: 64px; resize: vertical; }
 <div class="band">
   <div class="band-in">
     <div class="brand">
-      <small>Reactivación de leads perdidos</small>
-      <h1>Newsletter <em>Explora</em></h1>
+      <img class="logo" src="__LOGO__" alt="Explora">
+      <span class="divider" aria-hidden="true"></span>
+      <div class="bt"><small>Reactivación de leads perdidos</small><h1 id="brandTitle">Newsletter</h1></div>
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
-      <button role="tab" aria-selected="true" data-tab="escribir">Escribir</button>
-      <button role="tab" aria-selected="false" data-tab="calendario">Calendario <span class="count" id="calCount" hidden></span></button>
+      <button role="tab" aria-selected="true" data-tab="calendario">Envíos</button>
       <button role="tab" aria-selected="false" data-tab="narradores">Narradores</button>
-      <button role="tab" aria-selected="false" data-tab="buyers">Buyers <span class="count" id="bCount"></span></button>
+      <button role="tab" aria-selected="false" data-tab="buyers">Buyers</button>
     </nav>
   </div>
 </div>
 
 <div class="wrap">
   <!-- ESCRIBIR -->
-  <section id="view-escribir">
+  <section id="view-escribir" hidden>
+    <div class="writer-bar">
+      <button type="button" class="btn btn-line btn-sm" id="backBtn">← Volver a envíos</button>
+      <span id="slotLabel"></span>
+    </div>
     <div class="write">
       <form class="brief" id="form" autocomplete="off">
         <div class="step"><span class="n">1</span><div class="c">
@@ -375,7 +429,13 @@ textarea { min-height: 64px; resize: vertical; }
   </section>
 
   <!-- CALENDARIO -->
-  <section id="view-calendario" hidden>
+  <section id="view-calendario">
+    <div class="week-head">
+      <div><p class="eyebrow" id="weekRange">Esta semana</p><h2>Envíos de esta semana</h2></div>
+      <p class="sub">Uno por segmento. Martes, miércoles y jueves por la mañana: así ventas puede llamar en menos de 24 h.</p>
+    </div>
+    <div class="week" id="weekBox"></div>
+
     <div class="cal-head">
       <div><p class="eyebrow">Calendario de envíos</p><h2 id="calTitle">Octubre 2026</h2></div>
       <div class="cal-nav">
@@ -384,10 +444,12 @@ textarea { min-height: 64px; resize: vertical; }
         <button type="button" class="icon-btn" id="calNext" aria-label="Mes siguiente">›</button>
       </div>
     </div>
-    <div class="next" id="nextBox"></div>
     <div class="legend" id="legend"></div>
     <div class="month"><div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="days" id="cal"></div></div>
     <div class="agenda" id="agenda"></div>
+
+    <div class="sent-head"><p class="eyebrow">Historial</p><h2>Enviados</h2></div>
+    <div class="sent" id="sentList"></div>
     <p class="note" id="noDb" hidden>Abre la página desde claude.ai con tu cuenta para ver y guardar el calendario.</p>
     <form class="editor" id="editor" hidden autocomplete="off">
       <p class="eyebrow" id="edTitle">Envío</p>
@@ -405,6 +467,7 @@ textarea { min-height: 64px; resize: vertical; }
       <div class="go-row">
         <button type="submit" class="btn btn-ink btn-sm">Guardar</button>
         <button type="button" class="btn btn-line btn-sm" id="eVer" hidden>Ver email</button>
+        <button type="button" class="btn btn-line btn-sm" id="eWrite">Escribir el email</button>
         <button type="button" class="btn btn-line btn-sm" id="eCancel">Cerrar</button>
         <span style="flex:1"></span>
         <button type="button" class="btn btn-line btn-sm" id="eDel" hidden>Borrar</button>
@@ -432,6 +495,13 @@ textarea { min-height: 64px; resize: vertical; }
   </section>
 </div>
 
+<footer class="ribbon">
+  <div class="ribbon-in">
+    <p class="claim"><span>Entrenamiento salvaje</span><span class="hl">para tu profesión</span></p>
+    <img class="logo" src="__LOGO__" alt="Explora">
+  </div>
+</footer>
+
 <script>
 const DATA = __BUYERS__;
 DATA.P.forEach((p, i) => { p.id = p.f + "-" + DATA.P.filter((q, j) => j < i && q.f === p.f).length; });
@@ -441,21 +511,21 @@ const SECTORS = ["Sanidad", "Tech", "Negocios", "Educación"];
 const REAL_DEFAULT = ["gestion-0"];
 
 const SEG = {
-  pensarlo: { nombre: "Quería pensarlo", desc: "Conoció la propuesta y pidió tiempo", color: "var(--vera)",
+  pensarlo: { dia: 2, nombre: "Quería pensarlo", desc: "Conoció la propuesta y pidió tiempo", color: "var(--vera)",
     firma: { nombre: "Vera", ini: "V", despedida: "Me vuelvo a mis subrayadores,", rol: "Personaje · cálida, cotilla de las buenas" },
     pasos: ["Lo que le frenaba sigue teniendo solución", "Objeción tiempo: compaginarlo con trabajo y vida", "Objeción \"¿vale lo mismo?\": título oficial en toda España", "Objeción dinero: cómo se paga, sin cifras sin verificar", "Fecha real: la convocatoria o el inicio que se acerca", "La pregunta: \"¿lo dejamos aquí o te llamamos?\""] },
-  ghosting: { nombre: "Ghosting tras la propuesta", desc: "Recibió la propuesta y dejó de responder", color: "var(--rai)",
+  ghosting: { dia: 3, nombre: "Ghosting tras la propuesta", desc: "Recibió la propuesta y dejó de responder", color: "var(--rai)",
     firma: { nombre: "Rai", ini: "R", despedida: "Sin más,", rol: "Personaje · seco, directo, con guasa" },
     pasos: ["La pregunta directa: \"¿qué falló?\"", "Si fue el precio: cómo se paga", "Si fue el tiempo: estudiar sin soltar el curro", "Si fue la duda del online: el título es oficial igual", "Alguien que también se lo pensó", "La salida: \"te dejo en paz o te llamamos\""] },
-  nocontactado: { nombre: "Nunca contactado", desc: "Dejó sus datos y nunca llegamos a hablar", color: "var(--alvaro)",
-    firma: { nombre: "Álvaro", ini: "Á", despedida: "Ahí lo dejo,", rol: "Persona real · anécdota cotidiana" },
+  nocontactado: { dia: 1, nombre: "Nunca contactado", desc: "Dejó sus datos y nunca llegamos a hablar", color: "var(--noe)",
+    firma: { nombre: "Noe", ini: "N", despedida: "Prefiero los datos a los astros,", rol: "Personaje · irónica, astrología y números" },
     pasos: ["Recordar que dejó sus datos y presentarse", "Alguien que empezó desde donde está él", "Objeción tiempo: estudiar desde el móvil", "Objeción \"ya es tarde / empiezo de cero\"", "Título oficial: mismo valor que el presencial", "La pregunta: \"¿sigues buscando FP?\""] },
 };
 
 const VOCES = {
   Vera: `VERA (firma el segmento "quería pensarlo"). Personaje de Explora. Cotilla de las buenas: no es sanitaria ni profesora, pero ha escuchado tantas historias que se lo sabe todo. Cálida, de tú a tú, con chispa; como quien te trae un café. Nunca ñoña ni presiona. Manía: la papelería (post-its, subrayadores; verde = las historias que acaban bien). Abre con un cotilleo o con su libreta. Asuntos de curiosidad en su voz: "Subrayé una frase sin darme cuenta". Su papel: ayudar a decidir quitando dudas concretas; pensarlo está bien, aplazarlo sin fin tiene coste. Despedida "Me vuelvo a mis subrayadores," y firma "— Vera".`,
   Rai: `RAI (firma el segmento "ghosting tras la propuesta"). Personaje de Explora. Pasota, sin pelos en la lengua, escribe medio a desgana. Seco, vacilón; la emoción la pone la historia, no él. Manía: 40 pares de calcetines negros "para no pensar por las mañanas"; suelta datos random con desapego ("ni idea de si es exacto"). Asuntos secos de curiosidad: "Una pregunta y te dejo". Su papel: el lead conoció la propuesta y desapareció; Rai no reprocha nada, pregunta sin rodeos qué no encajó (precio, tiempo, dudas del online, no era el momento) y se lo pone fácil para decirlo. Despedida "Sin más," y firma "— Rai".`,
-  "Álvaro": `ÁLVARO (firma el segmento "nunca contactado"). PERSONA REAL del equipo de Explora, no un personaje: no le inventes biografía (familia, edad, trabajos). Estilo probado: abre con una anécdota doméstica pequeña y autoirónica (la persiana que no arregla, la pizza quemada que se comió igual), giro seco ("En fin. Cambio de tema"), y cierra conectando con la anécdota. Se presenta y recuerda que el lead dejó sus datos interesándose por una FP. Habla de Explora en primera persona del plural ("en Explora", "nuestro equipo"), nunca "su plataforma" ni "tienen". Despedida "Ahí lo dejo," y firma "— Álvaro".`,
+  Noe: `NOE (firma el segmento "nunca contactado"). Personaje de Explora. Una espabilada que se ha montado bien en el mundo de la oficina, sin contactos ni másters caros, a base de currárselo. Irónica, lista, con guasa seca; se ríe del sistema, nunca del lector. Arrima el hombro: no es pasota como Rai. Manía doble: le pone número a todo (sueldos, precios, cuánto gana la gente; curiosa, no avara) y le encantan las predicciones tontas (horóscopos laborales, "los lunes la gente renuncia más"). No se cree lo místico: lo usa de gancho y siempre aterriza en el número real. Abre cruzando una predicción absurda con un dato ("Mercurio retrógrado, dicen. Yo de planetas ni idea, pero de números sí."). REGLA PROPIA: el horóscopo es de coña, los números NUNCA; cualquier sueldo, porcentaje o cifra va como [DATO A VERIFICAR: …] salvo que venga en las indicaciones. Guiños de oficina: Excel, nóminas, el mostrador, "cambiar de casilla". Su papel: el lead nunca habló con nadie; Noe se presenta, recuerda que dejó sus datos interesándose por una FP, le explica qué es Explora y le pregunta si sigue buscando. Asuntos en su voz: "Le eché las cartas a tu nómina", "Esto dice el horóscopo del mes:". Despedida "Prefiero los datos a los astros," y firma "— Noe".`,
 };
 
 const REGLAS = `REGLAS DE LA CAMPAÑA (obligatorias)
@@ -512,7 +582,7 @@ const FORMATO = `Responde SOLO con un objeto JSON:
 Exactamente dos bloques "boton".`;
 
 const EJEMPLO = {
-  segmento: "nocontactado", ejemplo: true,
+  segmento: "nocontactado", ejemplo: true, remitente: "Álvaro · Explora FP",
   asunto_a: "Rosa se sacó una FP", asunto_b: "Rosa se sacó una FP", preheader: "Antes limpiaba casas",
   bloques: [
     { tipo: "texto", contenido: "Hola,\nsoy Álvaro." },
@@ -536,7 +606,7 @@ const EJEMPLO = {
   ],
 };
 
-const state = { seg: "nocontactado", angulo: "", formacion: "gestion", buyer: "", current: EJEMPLO, cal: [], real: new Set(REAL_DEFAULT), weekOffset: 0, editing: null, bSector: "", bOpen: "" };
+const state = { slot: null, seg: "nocontactado", angulo: "", formacion: "gestion", buyer: "", current: EJEMPLO, cal: [], real: new Set(REAL_DEFAULT), weekOffset: 0, editing: null, bSector: "", bOpen: "" };
 let sample = null, db = null, ctl = null;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -554,11 +624,16 @@ const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); r
 const fmtDay = (d) => d.toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" });
 const fmtShort = (d) => d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 function nextSlot(seg) {
-  const mine = state.cal.filter((c) => c.segmento === seg).map((c) => c.fecha).sort();
-  let base = addDays(monday(new Date()), 1); // martes de esta semana
-  if (base < new Date(new Date().toDateString())) base = addDays(base, 7);
-  if (mine.length) { const last = addDays(monday(parse(mine[mine.length - 1])), 8); if (last > base) base = last; }
-  return iso(base);
+  // Día recomendado del segmento en la primera semana (desde esta) sin envío de ese segmento
+  let w = monday(new Date());
+  for (let k = 0; k < 52; k++, w = addDays(w, 7)) {
+    const a = iso(w), b = iso(addDays(w, 6));
+    if (!state.cal.some((c) => c.segmento === seg && c.fecha >= a && c.fecha <= b)) {
+      const d = addDays(w, SEG[seg].dia);
+      return iso(d < new Date(new Date().toDateString()) ? addDays(d, 7) : d);
+    }
+  }
+  return iso(new Date());
 }
 
 /* ---------- Brief ---------- */
@@ -606,7 +681,7 @@ $("buyer").onchange = () => { state.buyer = $("buyer").value; renderBuyerMini();
 function renderPreview() {
   const e = state.current, s = SEG[e.segmento];
   $("exampleTag").hidden = !e.ejemplo;
-  $("ibFrom").textContent = $("ibFrom2").textContent = `${s.firma.nombre} · Explora FP`;
+  $("ibFrom").textContent = $("ibFrom2").textContent = e.remitente || `${s.firma.nombre} · Explora FP`;
   $("ibA").textContent = e.asunto_a; $("ibB").textContent = e.asunto_b;
   $("ibPre").textContent = $("ibPre2").textContent = e.preheader;
   const parts = e.bloques.map((b) => b.tipo === "boton"
@@ -694,7 +769,8 @@ $("form").onsubmit = async (ev) => {
     state.current = { ...d, segmento: state.seg, formacion: state.formacion, buyer: p ? p.pn : "",
       asunto_b: d.asunto_b || d.asunto_a, despedida: d.despedida || s.firma.despedida, firma: d.firma || "— " + s.firma.nombre };
     renderPreview();
-    $("status").textContent = "Listo. Haz clic en el texto para retocarlo.";
+    if (db) $("planBtn").click();
+    $("status").textContent = "Listo. Haz clic en el texto para retocarlo y guárdalo en el calendario.";
   } catch (e) {
     if (e && e.code === "cancelled") $("status").textContent = "Parado.";
     else { $("status").className = "status err"; $("status").textContent = ERR[e && e.code] || "No se pudo escribir el email. Vuelve a intentarlo."; }
@@ -703,7 +779,7 @@ $("form").onsubmit = async (ev) => {
 $("stopBtn").onclick = () => ctl?.abort();
 
 /* ---------- Añadir al calendario ---------- */
-$("planBtn").onclick = () => { $("pFecha").value = nextSlot(state.current.segmento); $("pEstado").value = "borrador"; $("pHs").value = ""; $("planForm").hidden = false; $("pFecha").focus(); };
+$("planBtn").onclick = () => { $("pFecha").value = state.slot?.fecha || nextSlot(state.current.segmento); $("pEstado").value = "borrador"; $("pHs").value = ""; $("planForm").hidden = false; $("pFecha").focus(); };
 $("planCancel").onclick = () => { $("planForm").hidden = true; };
 $("planForm").onsubmit = async (ev) => {
   ev.preventDefault();
@@ -712,13 +788,26 @@ $("planForm").onsubmit = async (ev) => {
   const email = { asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader, despedida: e.despedida, firma: e.firma, pd: e.pd || "", revisar: e.revisar || [], segmento: e.segmento,
     bloques: [...$("emailBody").children].slice(0, e.bloques.length).map((el, i) => ({ tipo: e.bloques[i].tipo, contenido: e.bloques[i].tipo === "boton" ? el.innerText.trim() : e.bloques[i].contenido })) };
   try {
-    await db.collection("calendario").add({ segmento: e.segmento, fecha: $("pFecha").value, estado: $("pEstado").value,
-      hubspot: safeUrl($("pHs").value), asunto: e.asunto_a, angulo: e.angulo || "", buyer: e.buyer || "", formacion: e.formacion || "",
-      gancho: (e.bloques[1]?.contenido || "").slice(0, 120), notas: "", email, creado: new Date().toISOString() });
+    const data = { segmento: e.segmento, fecha: $("pFecha").value, estado: $("pEstado").value,
+      hubspot: safeUrl($("pHs").value), asunto: e.asunto_a, preheader: e.preheader || "", angulo: e.angulo || "", buyer: e.buyer || "", formacion: e.formacion || "",
+      gancho: (e.bloques[1]?.contenido || "").slice(0, 120), email };
+    if (state.slot?.id) await db.collection("calendario").doc(state.slot.id).update(data);
+    else await db.collection("calendario").add({ ...data, notas: "", creado: new Date().toISOString() });
     $("planForm").hidden = true; $("planBtn").hidden = true;
-    $("copyStatus").textContent = `Guardado en el calendario para el ${fmtDay(parse($("pFecha").value))}.`;
+    state.slot = null; showTab("calendario");
   } catch { $("copyStatus").textContent = "No se pudo guardar: no tienes permiso de edición en esta página."; }
 };
+
+/* ---------- Abrir el editor desde un hueco del calendario ---------- */
+function openWriter(seg, fecha, id) {
+  state.seg = seg; state.slot = { fecha, id: id || null };
+  renderNarrators(); renderSeq();
+  const s = SEG[seg], d = parse(fecha);
+  $("slotLabel").innerHTML = `Email de ${esc(s.firma.nombre)} para el ${esc(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }))}<small>${esc(s.nombre)}</small>`;
+  $("editor").hidden = true;
+  showTab("escribir");
+}
+$("backBtn").onclick = () => { state.slot = null; showTab("calendario"); };
 
 /* ---------- Calendario ---------- */
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
@@ -726,6 +815,46 @@ function evButton(c) {
   const s = SEG[c.segmento] || SEG.nocontactado;
   return `<button type="button" class="ev st-${esc(c.estado)}-ev" data-id="${esc(c.id)}" title="${esc(s.firma.nombre)} · ${esc(c.estado)}${c.asunto ? " · " + esc(c.asunto) : ""}">
     <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(c.estado)}" aria-label="${esc(c.estado)}"></span></button>`;
+}
+function renderWeek() {
+  const w = monday(new Date()), a = iso(w), b = iso(addDays(w, 6)), todayIso = iso(new Date());
+  $("weekRange").textContent = `Semana del ${fmtShort(w)} al ${fmtShort(addDays(w, 6))}`;
+  const order = Object.entries(SEG).sort((x, y) => x[1].dia - y[1].dia);
+  $("weekBox").innerHTML = order.map(([k, s]) => {
+    const day = addDays(w, s.dia), dIso = iso(day);
+    const e = state.cal.filter((c) => c.segmento === k && c.fecha >= a && c.fecha <= b).sort((x, y) => x.fecha.localeCompare(y.fecha))[0];
+    const when = e ? parse(e.fecha) : day;
+    const st = e ? e.estado : (dIso < todayIso ? "atrasado" : "pendiente");
+    const late = !e && dIso < todayIso || (e && e.estado !== "enviado" && e.fecha < todayIso);
+    const hs = e && safeUrl(e.hubspot);
+    return `<div class="wcard${late ? " late" : ""}${e && e.estado === "enviado" ? " done" : ""}" style="--c:${s.color}">
+      <div class="wday"><b>${esc(when.toLocaleDateString("es-ES", { weekday: "long" }))}</b><span>${esc(fmtShort(when))}${late ? " · atrasado" : ""}</span></div>
+      <div class="wwho"><span class="av" style="background:${s.color}">${s.firma.ini}</span><span><b>${esc(s.firma.nombre)}</b> · ${esc(s.nombre)}</span></div>
+      ${e && e.asunto ? `<div class="wsubj"><b>${esc(e.asunto)}</b>${e.preheader ? `<span>${esc(e.preheader)}</span>` : ""}</div>` : `<div class="wsubj empty-s">${e ? "Planificado, sin asunto todavía" : "Aún no hay email para este hueco"}</div>`}
+      <div class="wst"><span class="st st-${esc(st)}">${esc(st)}</span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}</div>
+      <div class="go-row">${e ? `<button type="button" class="btn btn-line btn-sm" data-open="${esc(e.id)}">${e.estado === "enviado" ? "Ver ficha" : "Editar"}</button>` : ""}${!e || !e.asunto ? `<button type="button" class="btn btn-ink btn-sm" data-write="${k}">Escribir el de ${esc(s.firma.nombre)}</button>` : ""}</div>
+    </div>`;
+  }).join("");
+  $("weekBox").querySelectorAll("[data-open]").forEach((x) => x.onclick = () => openEditor(state.cal.find((c) => c.id === x.dataset.open)));
+  $("weekBox").querySelectorAll("[data-write]").forEach((x) => x.onclick = () => {
+    const k = x.dataset.write, a = iso(w), b = iso(addDays(w, 6));
+    const e = state.cal.find((c) => c.segmento === k && c.fecha >= a && c.fecha <= b);
+    openWriter(k, e ? e.fecha : iso(addDays(w, SEG[k].dia)), e && e.id);
+  });
+}
+function renderSent() {
+  const todayIso = iso(new Date());
+  const rows = state.cal.filter((c) => c.estado === "enviado" || c.fecha < todayIso).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  $("sentList").innerHTML = rows.length ? rows.map((c) => { const s = SEG[c.segmento] || SEG.nocontactado; const hs = safeUrl(c.hubspot); return `
+    <button type="button" class="srow" data-id="${esc(c.id)}">
+      <span class="d">${esc(fmtDay(parse(c.fecha)))}</span>
+      <span class="n"><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>
+      <span class="a"><b>${esc(c.asunto || "Sin asunto")}</b>${c.preheader ? ` <span>– ${esc(c.preheader)}</span>` : ""}</span>
+      <span class="m">${esc((c.notas || "").replace(/(Importado de )?Notion: ?\S+/g, "").trim() || (c.estado !== "enviado" ? c.estado : ""))}</span>
+      <span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">HubSpot ↗</a>` : ""}</span>
+    </button>`; }).join("")
+    : `<div class="empty" style="border:0">Todavía no hay envíos registrados.</div>`;
+  $("sentList").querySelectorAll(".srow").forEach((b) => b.onclick = () => openEditor(state.cal.find((c) => c.id === b.dataset.id)));
 }
 function renderCal() {
   const today = new Date(), base = new Date(today.getFullYear(), today.getMonth() + state.weekOffset, 1);
@@ -748,16 +877,7 @@ function renderCal() {
     : `<div class="empty">No hay envíos este mes.${db ? " Pulsa \"Hoy\" o cambia de mes, o planifica uno desde la pestaña Escribir." : ""}</div>`;
   document.querySelectorAll("#cal .ev, #agenda .ev").forEach((b) => b.onclick = () => openEditor(state.cal.find((c) => c.id === b.dataset.id)));
   $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = () => openEditor(null, state.seg, b.dataset.date));
-  // Resumen por narrador
-  $("nextBox").innerHTML = Object.entries(SEG).map(([k, s]) => {
-    const mine = state.cal.filter((c) => c.segmento === k).sort((a, b) => a.fecha.localeCompare(b.fecha));
-    const last = [...mine].reverse().find((c) => c.estado === "enviado");
-    const next = mine.find((c) => c.estado !== "enviado");
-    return `<div class="nx"><span class="av" style="background:${s.color}">${s.firma.ini}</span><strong>${esc(s.nombre)}</strong>
-      <span class="ln">Último: ${last ? `${esc(fmtShort(parse(last.fecha)))} · <b>${esc(last.asunto || "sin asunto")}</b>` : "nada enviado"}</span>
-      <span class="ln">Siguiente: ${next ? `${esc(fmtShort(parse(next.fecha)))} · ${esc(next.estado)}${next.asunto ? ` · <b>${esc(next.asunto)}</b>` : ""}` : "sin planificar"}</span></div>`;
-  }).join("");
-  const n = state.cal.length; $("calCount").hidden = !n; $("calCount").textContent = n;
+  renderWeek(); renderSent();
 }
 $("legend").innerHTML = Object.values(SEG).map((s) => `<span><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>`).join("") +
   `<span><i class="sd sd-borrador" style="border-radius:50%"></i>Borrador</span><span><i class="sd-programado" style="border-radius:50%"></i>Programado</span><span><i class="sd-enviado" style="border-radius:50%"></i>Enviado</span>`;
@@ -772,6 +892,7 @@ function openEditor(item, seg, date) {
   $("edStatus").textContent = ""; $("editor").hidden = false; $("eHsOpen").hidden = !safeUrl($("eHs").value); $("eHsOpen").href = safeUrl($("eHs").value) || "#"; $("editor").scrollIntoView({ behavior: "smooth", block: "nearest" }); $("eHs").focus();
 }
 $("eCancel").onclick = () => { $("editor").hidden = true; };
+$("eWrite").onclick = () => openWriter($("eSeg").value, $("eFecha").value || nextSlot($("eSeg").value), state.editing);
 $("editor").onsubmit = async (ev) => {
   ev.preventDefault();
   if ($("eHs").value && !safeUrl($("eHs").value)) { $("edStatus").textContent = "El enlace tiene que empezar por https://"; return; }
@@ -791,15 +912,14 @@ $("eDel").onclick = async () => {
 $("eVer").onclick = () => {
   const item = state.cal.find((c) => c.id === state.editing);
   if (!item?.email) return;
-  state.current = { ...item.email, ejemplo: false }; renderPreview(); $("planBtn").hidden = true;
-  showTab("escribir");
+  state.current = { ...item.email, segmento: item.segmento, ejemplo: false };
+  openWriter(item.segmento, item.fecha, item.id); renderPreview();
 };
 $("calPrev").onclick = () => { state.weekOffset -= 1; renderCal(); };
 $("calNext").onclick = () => { state.weekOffset += 1; renderCal(); };
 $("calToday").onclick = () => { state.weekOffset = 0; renderCal(); };
 
 /* ---------- Buyers ---------- */
-$("bCount").textContent = DATA.P.length;
 $("patterns").innerHTML = DATA.PATTERNS.map((p) => `<div class="pat"><strong>${esc(p.e)} ${esc(p.n)}</strong><span>${esc(p.d)}</span></div>`).join("");
 $("bChips").innerHTML = [["", "Todas"], ...SECTORS.map((s) => [s, s])].map(([v, t]) => `<button type="button" data-s="${esc(v)}" aria-pressed="${v === state.bSector}">${esc(t)}</button>`).join("");
 $("bChips").querySelectorAll("button").forEach((b) => b.onclick = () => { state.bSector = b.dataset.s; $("bChips").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b)); renderBuyers(); });
@@ -829,7 +949,7 @@ function renderBuyers() {
   $("bList").innerHTML = html || `<div class="empty">Ningún buyer coincide con "${esc(q)}". Prueba otra palabra.</div>`;
   $("bList").querySelectorAll(".bcard").forEach((b) => b.onclick = () => { state.bOpen = state.bOpen === b.dataset.id ? "" : b.dataset.id; renderBuyers(); });
   $("bList").querySelectorAll("[data-use]").forEach((b) => b.onclick = () => {
-    const p = DATA.P.find((x) => x.id === b.dataset.use); state.formacion = p.f; state.buyer = p.id; renderFormSelect(); showTab("escribir");
+    const p = DATA.P.find((x) => x.id === b.dataset.use); state.formacion = p.f; state.buyer = p.id; renderFormSelect(); openWriter(state.seg, nextSlot(state.seg));
   });
   $("bList").querySelectorAll("[data-real]").forEach((c) => c.onchange = async () => {
     const id = c.dataset.real;
@@ -856,14 +976,14 @@ const NARR = {
     papel: "El lead conoció la propuesta y desapareció. Rai no reprocha nada: pregunta sin rodeos qué no encajó y se lo pone fácil para decirlo.",
     asuntos: [["Una pregunta y te dejo", "No es importante. Pero sigue."], ["Un dato inútil sobre tu FP", "Ya que has abierto."]],
     nunca: "Reprochar el silencio, motivar con frases hechas, poner exclamaciones." },
-  nocontactado: { tipo: "Persona real",
-    quien: "Álvaro, del equipo de Explora. No es un personaje: no se le inventa biografía (familia, edad, trabajos).",
-    voz: ["Anécdota doméstica pequeña y autoirónica", "Giro seco: \"En fin. Cambio de tema\"", "Cierra conectando con la anécdota"],
-    mania: "Su vida cotidiana a medio arreglar: la persiana que lleva tres semanas sin arreglar, la pizza quemada que se comió igual.",
-    gancho: "Una anécdota de casa, sin moraleja inmediata.",
-    papel: "El lead nunca habló con nadie. Álvaro se presenta, recuerda que dejó sus datos interesándose por una FP y pregunta si sigue buscando.",
-    asuntos: [["Rosa se sacó una FP", "Antes limpiaba casas"], ["Lo de mi pizza congelada y tu FP", "Spoiler: ninguna acabó en la basura."]],
-    nunca: "Hablar de Explora en tercera persona (\"su plataforma\", \"tienen\"), inventarse hechos de su vida." },
+  nocontactado: { tipo: "Personaje",
+    quien: "Una espabilada que se ha montado bien en el mundo de la oficina, sin contactos ni másters caros, a base de currárselo. Se ríe del sistema, nunca del lector.",
+    voz: ["Irónica, lista, con guasa seca", "Currante: arrima el hombro, no es pasota", "Cuando saca un número, va en serio"],
+    mania: "Le pone número a todo (sueldos, precios, cuánto gana la gente) y le encantan las predicciones tontas: horóscopos laborales, \"los lunes la gente renuncia más\". No se cree lo místico.",
+    gancho: "Una predicción absurda cruzada con un dato real: \"Mercurio retrógrado, dicen. Yo de planetas ni idea, pero de números sí.\"",
+    papel: "El lead nunca habló con nadie. Noe se presenta, le recuerda que dejó sus datos, le explica qué es Explora y le pregunta si sigue buscando.",
+    asuntos: [["Esto dice el horóscopo del mes:", "Un cambio de rumbo profesional"], ["Le eché las cartas a tu nómina", "Desde mi sofá"]],
+    nunca: "Dar una cifra sin verificar (el horóscopo es de coña; los números, nunca), creerse lo místico, reírse del lector." },
 };
 $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k]; return `
   <article class="ncard">
@@ -881,11 +1001,12 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
       <div class="go-row"><button type="button" class="btn btn-ink btn-sm" data-narr="${k}">Escribir con ${esc(s.firma.nombre)}</button></div>
     </div>
   </article>`; }).join("");
-$("narrGrid").querySelectorAll("[data-narr]").forEach((b) => b.onclick = () => { state.seg = b.dataset.narr; renderNarrators(); renderSeq(); showTab("escribir"); });
+$("narrGrid").querySelectorAll("[data-narr]").forEach((b) => b.onclick = () => openWriter(b.dataset.narr, nextSlot(b.dataset.narr)));
 
 /* ---------- Pestañas ---------- */
 function showTab(t) {
-  document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === t));
+  const sel = t === "escribir" ? "calendario" : t;
+  document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === sel));
   ["escribir", "calendario", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
   window.scrollTo(0, 0);
 }

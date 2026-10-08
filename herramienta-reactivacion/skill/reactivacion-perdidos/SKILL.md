@@ -1,6 +1,6 @@
 ---
 name: reactivacion-perdidos
-description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "quería pensarlo" (firma Vera), "ghosting tras la propuesta" (firma Rai) y "nunca contactado" (firma Álvaro). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "email 3 de ghosting", "un mail de Vera/Rai/Álvaro", "el correo de no contactados", etc. Sustituye a newsletter-explora y newsletter-rai.
+description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "quería pensarlo" (firma Vera), "ghosting tras la propuesta" (firma Rai) y "nunca contactado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "email 3 de ghosting", "un mail de Vera/Rai/Noe", "el correo de no contactados", etc. Sustituye a newsletter-explora y newsletter-rai.
 ---
 
 # Reactivación de leads perdidos · Explora FP
@@ -37,20 +37,19 @@ Despedida: "Sin más, — Rai".
 5. Un caso real que también se lo pensó
 6. Último: "te dejo en paz o te llamamos"
 
-### Nunca contactado → Álvaro
-**Persona real** del equipo, no personaje: no le inventes biografía. Estilo probado (email de Rosa, 33 % de apertura): anécdota doméstica pequeña y autoirónica (la persiana sin arreglar, la pizza quemada), giro seco ("En fin. Cambio de tema"), un caso, y cierre que conecta con la anécdota. Se presenta y recuerda que el lead dejó sus datos interesándose por una FP. Habla de Explora en primera persona del plural ("en Explora", "nuestro equipo"), nunca "su plataforma" ni "tienen".
-Despedida: "Ahí lo dejo, — Álvaro".
-1. Recordar que dejó sus datos y presentarse
-2. Caso real
-3. Objeción tiempo: estudiar desde el móvil, a su ritmo
-4. "Ya es tarde / empiezo de cero"
-5. Título oficial: mismo valor que el presencial
-6. Último: "¿sigues buscando FP?"
-
+### Nunca contactado → Noe
+Personaje. Una espabilada que se ha montado bien en el mundo de la oficina, sin contactos ni másters caros, a base de currárselo. Irónica, lista, con guasa seca; se ríe del sistema, nunca del lector. Manía doble: le pone número a todo (sueldos, precios) y le encantan las predicciones tontas (horóscopos laborales). No se cree lo místico: lo usa de gancho y aterriza en el número real. **Regla propia: el horóscopo es de coña, los números nunca**; cualquier cifra va como `[DATO A VERIFICAR: …]` si no te la dan. Se presenta, recuerda que el lead dejó sus datos, explica qué es Explora y pregunta si sigue buscando.
+Despedida: "Prefiero los datos a los astros, — Noe".
+- Recordar que dejó sus datos y presentarse
+- Alguien que empezó desde donde está él
+- Objeción tiempo: estudiar desde el móvil
+- "Ya es tarde / empiezo de cero"
+- Título oficial: mismo valor que el presencial
+- La pregunta: "¿sigues buscando FP?"
 
 ## Molde
 
-1. "Hola," + presentación en una línea ("soy Álvaro.").
+1. "Hola," + presentación en una línea ("soy Noe.").
 2. Gancho propio del narrador, sin moraleja inmediata.
 3. Giro seco hacia la historia o el lector.
 4. Caso real (solo si lo hay) con detalles concretos y el dolor en una frase; si no, el razonamiento del narrador dirigido al lector.
