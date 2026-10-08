@@ -37,7 +37,7 @@ tarjeta = function (c) {
   return '<article class="est-tarjeta pr-tarjeta e-' + e + (c.slides.length ? '' : ' est-previa') + (abre ? ' pr-abrible' : '') + '">' + borrar +
     mini(vista, 0, abre ? {boton: abre + ' aria-label="Abrir ' + esc(c.titulo || 'carrusel') + '"'} : null) +
     '<div class="est-tcuerpo"><h4>' + (abre ? '<button type="button" class="pr-titulo" ' + abre + '>' + esc(c.titulo || c.tema || '(sin título)') + '</button>' : esc(c.titulo || c.tema || '(sin título)')) + '</h4>' +
-    '<div class="est-tmeta">' + (ideaC ? chipAlcance(ideaC) : '') + objChip(c) + pillEtapa(c) + '</div>' +
+    '<div class="est-tmeta">' + (codigoC(c) ? '<span class="pr-cod" title="Código del carrusel">' + codigoC(c) + '</span>' : '') + (ideaC ? chipAlcance(ideaC) : '') + objChip(c) + pillEtapa(c) + '</div>' +
     (e === 'publicado' ? '<p class="inv-fecha">' + (c.fecha ? 'Publicado el ' + esc(new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-ES')) : 'Sin fecha') + '</p>' : '') +
     (nota ? '<p class="est-pista"' + (c.estado === 'error' ? ' style="color:var(--danger)"' : '') + '>' + esc(nota) + '</p>' : '') +
     // sin avisos de revisión en la tarjeta: se ven al abrir el carrusel (pedido de Sandra)

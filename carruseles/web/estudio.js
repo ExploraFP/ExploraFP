@@ -147,8 +147,12 @@ function borrarC(id) {
   if (EST_DB) EST_DB.doc('carruseles/' + id).delete().catch(() => {});
   else { try { localStorage.setItem('explora.carruseles', JSON.stringify(EST.lista)); } catch (e) {} }
 }
+// código corto de cada carrusel (C01, C02…) para nombrarlo sin confusión (pedido de Sandra, oct-2026): no se repite ni se reutiliza
+const codigoC = c => c && c.num ? 'C' + String(c.num).padStart(2, '0') : '';
+const siguienteNum = () => Object.values(EST.lista).reduce((m, x) => Math.max(m, +x.num || 0), 0) + 1;
 function nuevoC(datos) {
   const id = 'C' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  datos = Object.assign({num: siguienteNum()}, datos);
   const c = Object.assign({id: id, plantilla: EST.plantilla, color: EST.color, portada: EST.conFoto ? 'foto' : 'sinfoto', estado: 'pendiente', slides: [], copy: '',
     creado: new Date().toISOString()}, datos);
   guardarC(c); return c;

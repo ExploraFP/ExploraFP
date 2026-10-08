@@ -64,6 +64,7 @@ pintarEditor = function (todo) {
     const izq = document.createElement('div'); izq.className = 'eb-izq';
     const tit = document.createElement('div'); tit.className = 'eb-tit';
     const meta = document.createElement('div'); meta.className = 'eb-meta';
+    if (codigoC(c)) { const cod = document.createElement('span'); cod.className = 'eb-cod'; cod.title = 'Código del carrusel'; cod.textContent = codigoC(c); meta.appendChild(cod); }
     [etapa, q('.eb-links'), guardado].forEach(x => x && meta.appendChild(x));
     if (h2) tit.appendChild(h2); tit.appendChild(meta);
     [volver, tit].forEach(x => x && izq.appendChild(x));
@@ -489,10 +490,13 @@ function empezarInline(fr, el) {
   d.addEventListener('input', ev => { if (SEL.inline && SEL.inline.el.contains(ev.target)) guardarInline(false); });
   d.addEventListener('paste', ev => { if (!SEL.inline) return; ev.preventDefault(); const t = (ev.clipboardData || window.clipboardData).getData('text/plain');
     d.execCommand('insertText', false, SEL_MULTI.indexOf(SEL.inline.campo) >= 0 ? t : t.replace(/\s*\n\s*/g, ' ')); });
+  // deshacer: por teclado (Ctrl/⌘+Z) y también por la vía de Safari (menú Edición › Deshacer / ⌘Z llega como «historyUndo»)
+  const deshacerDesdeSlide = ev => { ev.preventDefault(); ev.stopPropagation(); terminarInline(false); deshacer(); };
+  d.addEventListener('beforeinput', ev => { if (ev.inputType === 'historyUndo') deshacerDesdeSlide(ev); });
   d.addEventListener('keydown', ev => {
-    if (!SEL.inline) return;
     const k = (ev.key || '').toLowerCase();
-    if ((ev.metaKey || ev.ctrlKey) && !ev.shiftKey && k === 'z') { ev.preventDefault(); terminarInline(false); deshacer(); return; }
+    if ((ev.metaKey || ev.ctrlKey) && !ev.shiftKey && (k === 'z' || ev.code === 'KeyZ')) { deshacerDesdeSlide(ev); return; }
+    if (!SEL.inline) return;
     if (k === 'escape') { ev.preventDefault(); cerrarPop(); return; }
     if (k === 'enter') {
       ev.preventDefault();
