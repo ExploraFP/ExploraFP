@@ -22,6 +22,7 @@
   --s-draft-bg: #ECEFEA; --s-draft-fg: #4C5A50;
   --s-plan-bg: #FFF1B8;  --s-plan-fg: #6B5300;
   --s-sent-bg: #D4FFD0;  --s-sent-fg: #1F5F24;
+  --s-done-bg: #DCE9F7;  --s-done-fg: #1D4F86;
   --err: #B3261E;
   --font-display: "Besley", Georgia, serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -32,7 +33,7 @@
     --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
     --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
     --vera: #F08FB0; --rai: #7FB2EC; --noe: #F0A867;
-    --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95;
+    --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95; --s-done-bg: #17304A; --s-done-fg: #A9CBF2;
     --err: #FF8A80; color-scheme: dark;
   }
 }
@@ -40,7 +41,7 @@
   --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
   --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
   --vera: #F08FB0; --rai: #7FB2EC; --noe: #F0A867;
-  --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95;
+  --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95; --s-done-bg: #17304A; --s-done-fg: #A9CBF2;
   --err: #FF8A80; color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -188,7 +189,7 @@ textarea { min-height: 64px; resize: vertical; }
 .wcard .wst { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .wcard.late .wday span { color: var(--err); font-weight: 600; }
 .wcard.done { background: var(--tint); }
-.st-pendiente { background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+
 .st-atrasado { background: #FFDCDC; color: #9B1C17; }
 /* Enviados */
 .sent-head { margin: 36px 0 12px; }
@@ -238,9 +239,10 @@ textarea { min-height: 64px; resize: vertical; }
 .ev .tx b { font-weight: 600; }
 .ev .sd { width: 8px; height: 8px; border-radius: 50%; }
 .ev.st-enviado-ev { opacity: .78; }
-.sd-borrador { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
-.sd-programado { background: #E0A800; }
-.sd-enviado { background: var(--leaf); }
+.sd-sin_empezar { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+.sd-en_redaccion { background: #E0A800; }
+.sd-listo { background: var(--leaf); }
+.sd-enviado { background: #2F6FB3; }
 .agenda { display: none; }
 @media (max-width: 760px) {
   .month { display: none; }
@@ -253,9 +255,10 @@ textarea { min-height: 64px; resize: vertical; }
 .ag-list { display: grid; gap: 6px; }
 .ag-list .ev { font-size: .85rem; padding: 9px 10px 9px 0; }
 .st { font: 500 .68rem var(--font-mono); padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
-.st-borrador { background: var(--s-draft-bg); color: var(--s-draft-fg); }
-.st-programado { background: var(--s-plan-bg); color: var(--s-plan-fg); }
-.st-enviado { background: var(--s-sent-bg); color: var(--s-sent-fg); }
+.st-sin_empezar { background: var(--s-draft-bg); color: var(--s-draft-fg); }
+.st-en_redaccion { background: var(--s-plan-bg); color: var(--s-plan-fg); }
+.st-listo { background: var(--s-sent-bg); color: var(--s-sent-fg); }
+.st-enviado { background: var(--s-done-bg); color: var(--s-done-fg); }
 .hs { font: 600 .82rem var(--font-body); color: var(--forest); text-decoration: none; }
 .hs:hover { text-decoration: underline; }
 .editor { position: absolute; z-index: 20; width: 380px; max-width: calc(100vw - 32px); background: var(--paper); border: 1.5px solid var(--ink); border-radius: 14px; padding: 14px 16px 16px; display: grid; gap: 12px; box-shadow: 0 18px 48px rgba(16,32,22,.22); }
@@ -445,7 +448,7 @@ textarea { min-height: 64px; resize: vertical; }
           <div class="row">
             <label class="l" for="pFecha">Fecha de envío<input type="date" id="pFecha" required></label>
             <label class="l" for="pEstado">Estado
-              <select id="pEstado"><option value="borrador">Borrador</option><option value="programado">Programado</option><option value="enviado">Enviado</option></select></label>
+              <select id="pEstado"><option value="sin_empezar">Sin empezar</option><option value="en_redaccion">En redacción</option><option value="listo">Listo para enviar</option><option value="enviado">Enviado</option></select></label>
             <label class="l" for="pHs">Enlace de HubSpot (opcional)<input type="url" id="pHs" placeholder="https://app.hubspot.com/…"></label>
           </div>
           <div class="go-row"><button type="submit" class="btn btn-ink btn-sm">Guardar</button><button type="button" class="btn btn-line btn-sm" id="planCancel">Cancelar</button></div>
@@ -525,7 +528,7 @@ textarea { min-height: 64px; resize: vertical; }
         </div>
         <div class="grid2">
           <label class="l" for="eAsunto">Asunto<input type="text" id="eAsunto" placeholder="Asunto del email"></label>
-          <label class="l" for="eEstado">Estado<select id="eEstado"><option value="borrador">Borrador</option><option value="programado">Programado</option><option value="enviado">Enviado</option></select></label>
+          <label class="l" for="eEstado">Estado<select id="eEstado"><option value="sin_empezar">Sin empezar</option><option value="en_redaccion">En redacción</option><option value="listo">Listo para enviar</option><option value="enviado">Enviado</option></select></label>
         </div>
         <label class="l" for="eHs">Enlace de HubSpot<input type="url" id="eHs" placeholder="https://app.hubspot.com/email/…"></label>
         <div class="grid4">
@@ -827,7 +830,7 @@ $("form").onsubmit = async (ev) => {
 $("stopBtn").onclick = () => ctl?.abort();
 
 /* ---------- Añadir al calendario ---------- */
-$("planBtn").onclick = () => { $("pFecha").value = state.slot?.fecha || nextSlot(state.current.segmento); $("pEstado").value = "borrador"; $("pHs").value = ""; $("planForm").hidden = false; $("pFecha").focus(); };
+$("planBtn").onclick = () => { $("pFecha").value = state.slot?.fecha || nextSlot(state.current.segmento); $("pEstado").value = "en_redaccion"; $("pHs").value = ""; $("planForm").hidden = false; $("pFecha").focus(); };
 $("planCancel").onclick = () => { $("planForm").hidden = true; };
 $("planForm").onsubmit = async (ev) => {
   ev.preventDefault();
@@ -861,8 +864,8 @@ $("backBtn").onclick = () => { state.slot = null; showTab("calendario"); };
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
 function evButton(c) {
   const s = SEG[c.segmento] || SEG.nocontactado;
-  return `<button type="button" class="ev st-${esc(c.estado)}-ev" data-id="${esc(c.id)}" title="${esc(s.firma.nombre)} · ${esc(c.estado)}${c.asunto ? " · " + esc(c.asunto) : ""}">
-    <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(c.estado)}" aria-label="${esc(c.estado)}"></span></button>`;
+  return `<button type="button" class="ev st-${esc(normEstado(c.estado))}-ev" data-id="${esc(c.id)}" title="${esc(s.firma.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
+    <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
 function renderWeek() {
   const w = monday(new Date()), a = iso(w), b = iso(addDays(w, 6)), todayIso = iso(new Date());
@@ -872,16 +875,16 @@ function renderWeek() {
     const day = addDays(w, s.dia), dIso = iso(day);
     const e = state.cal.filter((c) => c.segmento === k && c.fecha >= a && c.fecha <= b).sort((x, y) => x.fecha.localeCompare(y.fecha))[0];
     const when = e ? parse(e.fecha) : day;
-    const st = e ? e.estado : (dIso < todayIso ? "atrasado" : "pendiente");
-    const late = !e && dIso < todayIso || (e && e.estado !== "enviado" && e.fecha < todayIso);
+    const st = e ? normEstado(e.estado) : (dIso < todayIso ? "atrasado" : "sin_empezar");
+    const late = !e && dIso < todayIso || (e && normEstado(e.estado) !== "enviado" && e.fecha < todayIso);
     const hs = e && safeUrl(e.hubspot);
-    return `<div class="wcard${late ? " late" : ""}${e && e.estado === "enviado" ? " done" : ""}" style="--c:${s.color}">
+    return `<div class="wcard${late ? " late" : ""}${e && normEstado(e.estado) === "enviado" ? " done" : ""}" style="--c:${s.color}">
       <div class="wday"><b>${esc(when.toLocaleDateString("es-ES", { weekday: "long" }))}</b><span>${esc(fmtShort(when))}${late ? " · atrasado" : ""}</span></div>
       <div class="wwho"><span class="av" style="background:${s.color}">${s.firma.ini}</span><span><b>${esc(s.firma.nombre)}</b> · ${esc(s.nombre)}</span></div>
       ${e && e.asunto ? `<div class="wsubj"><b>${esc(e.asunto)}</b>${e.preheader ? `<span>${esc(e.preheader)}</span>` : ""}</div>` : `<div class="wsubj empty-s">${e ? "Sin asunto" : "Sin email"}</div>`}
       ${e ? metsHtml(e) : ""}
-      <div class="wst"><span class="st st-${esc(st)}">${esc(st)}</span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}</div>
-      <div class="go-row">${e ? `<button type="button" class="btn btn-line btn-sm" data-open="${esc(e.id)}">${e.estado === "enviado" ? "Ver ficha" : "Editar"}</button>` : ""}${!e || !e.asunto ? `<button type="button" class="btn btn-ink btn-sm" data-write="${k}">Escribir el de ${esc(s.firma.nombre)}</button>` : ""}</div>
+      <div class="wst"><span class="st st-${esc(st)}">${esc(estLabel(st))}</span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}</div>
+      <div class="go-row">${e ? `<button type="button" class="btn btn-line btn-sm" data-open="${esc(e.id)}">${normEstado(e.estado) === "enviado" ? "Ver ficha" : "Editar"}</button>` : ""}${!e || !e.asunto ? `<button type="button" class="btn btn-ink btn-sm" data-write="${k}">Escribir el de ${esc(s.firma.nombre)}</button>` : ""}</div>
     </div>`;
   }).join("");
   $("weekBox").querySelectorAll("[data-open]").forEach((x) => x.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === x.dataset.open), null, null, x); });
@@ -901,13 +904,13 @@ function metsHtml(c) {
 }
 function renderSent() {
   const todayIso = iso(new Date());
-  const rows = state.cal.filter((c) => c.estado === "enviado" || c.fecha < todayIso).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const rows = state.cal.filter((c) => normEstado(c.estado) === "enviado").sort((a, b) => b.fecha.localeCompare(a.fecha));
   $("sentList").innerHTML = rows.length ? rows.map((c) => { const s = SEG[c.segmento] || SEG.nocontactado; const hs = safeUrl(c.hubspot); return `
     <button type="button" class="srow" data-id="${esc(c.id)}" style="--c:${s.color}">
       <span class="d">${esc(fmtDay(parse(c.fecha)))}</span>
       <span class="n">${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>
       <span class="a"><b>${esc(c.asunto || "Sin asunto")}</b>${c.preheader ? ` <span>– ${esc(c.preheader)}</span>` : ""}</span>
-      <span class="m">${metsHtml(c) || esc((c.notas || "").replace(/(Importado de )?Notion: ?\S+/g, "").trim() || (c.estado !== "enviado" ? c.estado : ""))}</span>
+      <span class="m">${metsHtml(c) || esc((c.notas || "").replace(/(Importado de )?Notion: ?\S+/g, "").trim() || "")}</span>
       <span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">HubSpot ↗</a>` : ""}</span>
     </button>`; }).join("")
     : `<div class="empty" style="border:0">Todavía no hay envíos registrados.</div>`;
@@ -937,15 +940,18 @@ function renderCal() {
   renderWeek(); renderSent();
 }
 $("legend").innerHTML = Object.values(SEG).map((s) => `<span><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>`).join("") +
-  `<span><i class="sd sd-borrador" style="border-radius:50%"></i>Borrador</span><span><i class="sd-programado" style="border-radius:50%"></i>Programado</span><span><i class="sd-enviado" style="border-radius:50%"></i>Enviado</span>`;
+  ["sin_empezar", "en_redaccion", "listo", "enviado"].map((k) => `<span><i class="sd sd-${k}" style="border-radius:50%"></i>${ESTADOS[k]}</span>`).join("");
 $("eSeg").innerHTML = Object.entries(SEG).map(([k, s]) => `<option value="${k}">${esc(s.nombre)} · ${esc(s.firma.nombre)}</option>`).join("");
+const ESTADOS = { sin_empezar: "Sin empezar", en_redaccion: "En redacción", listo: "Listo para enviar", enviado: "Enviado", atrasado: "Atrasado" };
+const normEstado = (e) => ({ borrador: "en_redaccion", programado: "listo", pendiente: "sin_empezar" }[e] || e || "sin_empezar");
+const estLabel = (e) => ESTADOS[normEstado(e)] || e;
 const fmtNum = (v, pct) => v === "" || v == null ? "—" : String(v).replace(".", ",") + (pct ? " %" : "");
 function renderRead(item) {
   const s = SEG[item.segmento] || SEG.nocontactado, m = item.metricas || {}, hs = safeUrl(item.hubspot);
   const notion = (item.notas || "").match(/https:\/\/app\.notion\.com\/\S+/);
   const notas = (item.notas || "").replace(/(Importado de |En redacción en )?Notion: ?\S+/g, "").trim();
   $("edRead").innerHTML = `
-    <div class="rh"><span><i style="background:${s.color}"></i> ${esc(s.firma.nombre)} · ${esc(s.nombre)}</span><span>${esc(fmtDay(parse(item.fecha)))}</span><span class="st st-${esc(item.estado)}">${esc(item.estado)}</span></div>
+    <div class="rh"><span><i style="background:${s.color}"></i> ${esc(s.firma.nombre)} · ${esc(s.nombre)}</span><span>${esc(fmtDay(parse(item.fecha)))}</span><span class="st st-${esc(normEstado(item.estado))}">${esc(estLabel(item.estado))}</span></div>
     <p class="rs">${esc(item.asunto || "Sin asunto todavía")}</p>${item.preheader ? `<p class="rp">${esc(item.preheader)}</p>` : ""}
     <dl><div><dt>Enviados</dt><dd>${esc(fmtNum(m.enviados))}</dd></div><div><dt>Apertura</dt><dd>${esc(fmtNum(m.apertura, 1))}</dd></div><div><dt>Clic</dt><dd>${esc(fmtNum(m.clic, 1))}</dd></div><div><dt>Formularios</dt><dd>${esc(fmtNum(m.formularios))}</dd></div></dl>
     <div class="go-row">${hs ? `<a class="btn btn-ink btn-sm" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}${notion ? `<a class="btn btn-line btn-sm" href="${esc(notion[0])}" target="_blank" rel="noopener">Abrir en Notion ↗</a>` : ""}</div>
@@ -973,7 +979,7 @@ function setEditMode(on) {
 function closeMenu() { $("edMenu").hidden = true; $("edMenuBtn").setAttribute("aria-expanded", "false"); $("eDel").dataset.confirm = ""; $("eDel").textContent = "Borrar"; }
 function fillFields(item, seg, date) {
   $("eSeg").value = item ? item.segmento : seg; $("eFecha").value = item ? item.fecha : date;
-  $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? item.estado : "borrador";
+  $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? normEstado(item.estado) : "sin_empezar";
   $("eHs").value = item ? item.hubspot || "" : ""; $("eNotas").value = item ? item.notas || "" : "";
   const m = (item && item.metricas) || {}, num = (v) => (v == null ? "" : String(v).replace(",", "."));
   $("mEnv").value = num(m.enviados); $("mAp").value = num(m.apertura); $("mCl").value = num(m.clic); $("mForm").value = num(m.formularios);
