@@ -92,6 +92,11 @@ async function huellaDe(src) {
 }
 const distHuella = (a, b) => { let n = BigInt('0x' + a) ^ BigInt('0x' + b), c = 0; while (n) { c += Number(n & 1n); n >>= 1n; } return c; };
 FT.huellasSerie = null;
+// huella de una foto ya subida: se baja como archivo (con <img src="/_blob/…"> + crossOrigin el lienzo salía «manchado»
+// en la vista de Sandra y la huella se quedaba vacía: por eso no se detectaban repetidas contra las fotos del 5/10)
+async function huellaBlob(asset) {
+  try { const r = await fetch('/_blob/' + asset); if (!r.ok) return ''; return await huellaDe(await r.blob()); } catch (e) { return ''; }
+}
 async function huellasConocidas() {
   if (!FT.huellasSerie) {
     FT.huellasSerie = [];
@@ -102,7 +107,7 @@ async function huellasConocidas() {
   const lista = FT.huellasSerie.filter(x => !(FT.docs[x.id] && FT.docs[x.id].oculta));
   for (const id of Object.keys(FT.docs)) {
     const d = FT.docs[id]; if (!d || !d.asset || d.oculta) continue;
-    if (!d.huella) { d.huella = await huellaDe('/_blob/' + d.asset); if (d.huella && DB) DB.doc('fotos/' + id).update({huella: d.huella}).catch(() => {}); }
+    if (!d.huella) { d.huella = await huellaBlob(d.asset); if (d.huella && DB) DB.doc('fotos/' + id).update({huella: d.huella}).catch(() => {}); }
     if (d.huella) lista.push({id: id, h: d.huella, desc: d.desc});
   }
   return lista;
@@ -164,9 +169,10 @@ async function catalogarFoto(id, blob) {
     'Mira la foto adjunta y describe SOLO lo que se ve (no te fíes del nombre del archivo). Devuelve SOLO un JSON: ' +
     '{"desc": descripción en español, en minúscula salvo nombres propios y siglas, de 8-16 palabras concretas (quién: mujer/hombre/chica/chico y edad aproximada; qué hace; dónde; objetos clave; ' +
     'nada genérico tipo «profesional trabajando en entorno moderno») y entre paréntesis 2-4 temas de carrusel de FP para los que serviría, ' +
-    '"rama": una de ' + JSON.stringify(FOTO_RAMAS) + ' (Sanidad = TCAE, laboratorio clínico o de ciencias, anatomía patológica, dietética, hospital; Tecnología = informática, programación, sistemas; ' +
-    'Comercio = marketing, comercio internacional, logística, almacén, transporte, ventas; Administración = oficina, contabilidad, gestoría, finanzas; Educación = educación infantil, niños pequeños; ' +
-    'General si no hay pista clara de un sector, también gimnasio o deporte), "personas": una de ' + JSON.stringify(FOTO_PERSONAS) +
+    '"rama": una de ' + JSON.stringify(FOTO_RAMAS) + ', decidida por lo que SE VE (no por los temas posibles): Sanidad = hospital, pijama sanitario, fonendo, paciente, laboratorio con bata y microscopio/tubos/pipeta, nutrición con bata o cinta métrica; ' +
+    'Tecnología = código en pantalla, servidores, cables de red, montar o reparar hardware, electrónica; Comercio = almacén, palés, cajas, chaleco reflectante, contenedores, reparto, tienda, marketing visible (redes, grabar vídeo para redes), ventas; ' +
+    'Administración = oficina con papeles, archivadores, facturas, calculadora o gráficos financieros, reunión de negocios con informes; Educación = niños pequeños, escuela infantil; ' +
+    'General = estudiar o teletrabajar sin pista de sector, retratos sin contexto, graduación, gimnasio o deporte, calle; si dudas entre un sector y General, General), "personas": una de ' + JSON.stringify(FOTO_PERSONAS) +
     ', "tono": una de ' + JSON.stringify(FOTO_TONOS) + ' (Problema = estrés, agobio, cansancio, duda), "etiquetas": 3-5 palabras sueltas en minúscula, en español}. ' +
     'No uses: profesor, lección, unidad, aula. Ejemplo de desc: "mujer con chaleco reflectante sujetando cajas en la calle (logística, reparto, transporte)".';
   try {
