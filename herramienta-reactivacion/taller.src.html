@@ -192,16 +192,14 @@ textarea { min-height: 64px; resize: vertical; }
 .st-atrasado { background: #FFDCDC; color: #9B1C17; }
 /* Enviados */
 .sent-head { margin: 36px 0 12px; }
-.sent { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); }
-.srow { display: grid; grid-template-columns: 96px 210px minmax(0, 1fr) minmax(0, .8fr) auto; gap: 14px; padding: 12px 16px; align-items: center; border-top: 1px solid var(--line); font-size: .86rem; text-align: left; width: 100%; background: transparent; border-left: 0; border-right: 0; border-bottom: 0; color: var(--ink); font-family: var(--font-body); cursor: pointer; }
-.srow:first-child { border-top: 0; }
-.srow:hover { background: var(--tint); }
-.srow .d { font: 500 .8rem var(--font-mono); color: var(--muted); }
-.srow .n { display: flex; gap: 8px; align-items: center; }
-.srow .n i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.sent { display: grid; gap: 6px; }
+.srow { display: grid; grid-template-columns: 96px 210px minmax(0, 1fr) minmax(0, .8fr) auto; gap: 14px; padding: 12px 16px; align-items: center; border: 0; border-radius: 10px; font-size: .86rem; text-align: left; width: 100%; background: color-mix(in srgb, var(--c) 14%, var(--paper)); color: var(--ink); font-family: var(--font-body); cursor: pointer; }
+.srow:hover { background: color-mix(in srgb, var(--c) 24%, var(--paper)); }
+.srow .d { font: 500 .8rem var(--font-mono); color: var(--ink); opacity: .75; }
+.srow .n { font-weight: 600; }
 .srow .a b { font-weight: 600; }
 .srow .a span { color: var(--muted); }
-.srow .m { color: var(--muted); font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.srow .m { color: var(--ink); opacity: .8; font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .srow .m .mets { flex-wrap: nowrap; }
 @media (max-width: 760px) { .srow { grid-template-columns: minmax(0, 1fr) auto; } .srow .a, .srow .m { grid-column: 1 / -1; white-space: normal; } }
 
@@ -905,9 +903,9 @@ function renderSent() {
   const todayIso = iso(new Date());
   const rows = state.cal.filter((c) => c.estado === "enviado" || c.fecha < todayIso).sort((a, b) => b.fecha.localeCompare(a.fecha));
   $("sentList").innerHTML = rows.length ? rows.map((c) => { const s = SEG[c.segmento] || SEG.nocontactado; const hs = safeUrl(c.hubspot); return `
-    <button type="button" class="srow" data-id="${esc(c.id)}">
+    <button type="button" class="srow" data-id="${esc(c.id)}" style="--c:${s.color}">
       <span class="d">${esc(fmtDay(parse(c.fecha)))}</span>
-      <span class="n"><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>
+      <span class="n">${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>
       <span class="a"><b>${esc(c.asunto || "Sin asunto")}</b>${c.preheader ? ` <span>– ${esc(c.preheader)}</span>` : ""}</span>
       <span class="m">${metsHtml(c) || esc((c.notas || "").replace(/(Importado de )?Notion: ?\S+/g, "").trim() || (c.estado !== "enviado" ? c.estado : ""))}</span>
       <span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">HubSpot ↗</a>` : ""}</span>
