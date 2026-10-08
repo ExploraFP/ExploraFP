@@ -1126,10 +1126,8 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
       <div><h4>Asuntos en su voz</h4><div class="subj">${n.asuntos.map(([a, p]) => `<div><b>${esc(a)}</b> <span>– ${esc(p)}</span></div>`).join("")}</div></div>
       <div><h4>Se despide</h4><div class="sign">${esc(s.firma.despedida)}<br>— ${esc(s.firma.nombre)}</div></div>
       <div class="never"><h4>Nunca</h4>${esc(n.nunca)}</div>
-      <div class="go-row"><button type="button" class="btn btn-ink btn-sm" data-narr="${k}">Escribir con ${esc(s.firma.nombre)}</button></div>
     </div>
   </article>`; }).join("");
-$("narrGrid").querySelectorAll("[data-narr]").forEach((b) => b.onclick = () => openWriter(b.dataset.narr, nextSlot(b.dataset.narr)));
 
 /* ---------- Pestañas ---------- */
 function showTab(t) {
