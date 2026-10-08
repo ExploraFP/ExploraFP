@@ -71,6 +71,14 @@ ESTRUCTURA (molde probado)
 7. Despedida del narrador.
 8. P.D.: corta, con una segunda razón, una objeción resuelta o un remate del gancho. Mucha gente lee solo la P.D.
 
+NOMBRE DEL LEAD
+- El token `{{ contact.firstname }}` va UNA vez, incrustado a mitad del email dentro de una frase ("Mira, {{ contact.firstname }}, …"). Nunca en el saludo ni en los dos primeros párrafos.
+
+ESTRUCTURA VISUAL
+- Mucho aire: cada idea en su propio párrafo de 1-3 líneas, con una línea en blanco entre párrafos. Una frase sola para los momentos importantes.
+- Si el contenido es de verdad una lista (lo que incluye la FP, los pasos, las dudas), usa viñetas: 2-4 puntos cortos, una lista como mucho.
+- Negrita solo en una o dos frases clave.
+
 LONGITUD Y RITMO
 - 150-250 palabras de cuerpo. Si pasas de 250, corta.
 - Párrafos de 1-3 líneas. Mucho blanco. Alterna frases muy cortas con alguna larga.

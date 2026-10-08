@@ -137,7 +137,9 @@ textarea { min-height: 64px; resize: vertical; }
 .email img { display: block; width: 100%; height: auto; }
 .email .body { padding: 26px 32px 8px; }
 .stage.mobile .email .body { padding: 22px 20px 8px; }
-.email .body p { margin: 0 0 1em; }
+.email .body p { margin: 0 0 1.35em; }
+.email .body ul { margin: 0 0 1.35em; padding-left: 1.3em; display: grid; gap: .45em; }
+.email .body li::marker { color: #4CC94B; }
 .email .body p[contenteditable]:hover { background: #F5FAF3; }
 .email .cta { text-align: center; margin: 1.5em 0; }
 .email .cta a { display: inline-block; background: #4CC94B; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 14px 30px; border-radius: 8px; }
@@ -622,6 +624,14 @@ ESTRUCTURA (molde probado)
 7. Despedida del narrador.
 8. P.D.: corta, con una segunda razón, una objeción resuelta o un remate del gancho. Mucha gente lee solo la P.D.
 
+NOMBRE DEL LEAD
+- Escribe el token {{nombre}} UNA sola vez, incrustado a mitad del email, dentro de una frase ("Mira, {{nombre}}, …", "Y aquí viene lo tuyo, {{nombre}}."). Nunca en el saludo ni en los dos primeros párrafos: al principio suena a email comercial.
+
+ESTRUCTURA VISUAL
+- Mucho aire: cada idea en su propio bloque de texto, de 1 a 3 líneas. Una frase sola en un bloque para los momentos importantes.
+- Si el contenido ES una lista (lo que incluye la FP, los pasos para empezar, las dudas que le frenaban), ponlo como bloque "lista" con 2-4 puntos cortos. Como mucho una lista por email, y solo si de verdad es una lista.
+- Puedes resaltar en **negrita** una o dos frases clave, no más.
+
 LONGITUD Y RITMO
 - 150-250 palabras de cuerpo. Si pasas de 250, corta.
 - Párrafos de 1-3 líneas. Mucho blanco. Alterna frases muy cortas con alguna larga.
@@ -633,7 +643,7 @@ CONCRETO SIEMPRE
 
 LO QUE DELATA UN TEXTO HECHO POR IA (prohibido)
 - "No es X, es Y" y sus variantes ("No se trata de…, sino de…").
-- Enumeraciones de tres por inercia ("rápido, fácil y flexible").
+- Enumeraciones de tres por inercia dentro de una frase ("rápido, fácil y flexible"). Si de verdad hay una lista, usa el bloque "lista".
 - Rayas (—) para incisos; usa puntos o comas.
 - Preguntas retóricas en cadena; "¿Y sabes qué?"; "Imagina…"; "Te cuento un secreto"; "Spoiler:".
 - Cierres motivacionales ("Tu futuro te espera", "Es tu momento").
@@ -704,9 +714,9 @@ Ejemplo 2 · qué NO hacer. Gancho de la pizza quemada que conecta así: "Aprend
 
 const FORMATO = `Responde SOLO con un objeto JSON:
 {"angulo":"una frase","asunto_a":"...","asunto_b":"...","preheader":"...",
- "bloques":[{"tipo":"texto","contenido":"párrafo de 1-3 frases (puede llevar {{nombre}} y **negrita**)"},{"tipo":"boton","contenido":"Texto del botón"}],
+ "bloques":[{"tipo":"texto","contenido":"párrafo de 1-3 frases (puede llevar {{nombre}} y **negrita**)"},{"tipo":"lista","contenido":["punto corto","punto corto"]},{"tipo":"boton","contenido":"Texto del botón"}],
  "despedida":"...","firma":"— ...","pd":"P.D.: ...","revisar":["qué comprobar antes de enviar"]}
-Exactamente dos bloques "boton".`;
+Exactamente dos bloques "boton". Bloque "lista" opcional, como mucho uno.`;
 
 
 const state = { chat: [], slot: null, seg: "nocontactado", angulo: "", formacion: "", buyer: "", current: null, cal: [], weekOffset: 0, editing: null, bSector: "", bOpen: "" };
@@ -763,7 +773,9 @@ function renderPreview() {
   $("ibPre").textContent = $("ibPre2").textContent = e.preheader;
   const parts = e.bloques.map((b) => b.tipo === "boton"
     ? `<div class="cta"><a href="#" onclick="return false" contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
-    : `<p contenteditable="true">${rich(b.contenido)}</p>`);
+    : b.tipo === "lista"
+      ? `<ul contenteditable="true">${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>`
+      : `<p contenteditable="true">${rich(b.contenido)}</p>`);
   if (e.pd) parts.push(`<p contenteditable="true">${rich(e.pd)}</p>`);
   parts.push(`<p contenteditable="true">${rich(e.despedida)}<br>${rich(e.firma)}</p>`);
   $("emailBody").innerHTML = parts.join("");
@@ -774,6 +786,7 @@ function renderPreview() {
 function bodyText() {
   return [...$("emailBody").children].map((el) => {
     if (el.classList.contains("cta")) return `[BOTÓN: ${el.innerText.trim()}]`;
+    if (el.tagName === "UL") return [...el.querySelectorAll("li")].map((li) => { const c = li.cloneNode(true); c.querySelectorAll(".tok").forEach((t) => t.replaceWith("{{ contact.firstname }}")); return "• " + c.textContent.trim(); }).join("\n");
     const c = el.cloneNode(true);
     c.querySelectorAll(".tok").forEach((t) => t.replaceWith("{{ contact.firstname }}"));
     c.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
