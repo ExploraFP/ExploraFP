@@ -11,9 +11,11 @@ Explora es una escuela de FP oficial online; antes se llamaba Ucademy. Se envía
 
 ## Antes de escribir
 
-Necesitas: **segmento**, **número de email (1–6)**, **rama** (o genérica) y si hay **caso real** con permiso. Si falta el segmento o el número, pregúntalo. Si no hay caso real, escribe sin testimonio: **nunca inventes alumnos, cifras, sueldos ni fechas**.
+Necesitas: **segmento**, **ángulo** (opcional), **formación o buyer** (o genérica) y si hay **caso real** con permiso. Si falta el segmento, pregúntalo. Si no hay caso real, escribe sin testimonio: **nunca inventes alumnos, cifras, sueldos ni fechas**.
 
-## Segmentos, narrador y secuencia (un email por semana)
+## Segmentos, narrador y ángulos
+
+No hay secuencia: cada email es único y tiene que funcionar solo. El seguimiento se hace en el calendario de la herramienta Newsletter Explora. Los números de abajo son ángulos habituales, no un orden. Pide la lista de lo ya enviado al segmento para no repetir ángulo, gancho ni asunto.
 
 ### Quería pensarlo → Vera
 Personaje. Cotilla de las buenas: no es sanitaria ni profesora, pero ha escuchado tantas historias de alumnos que se lo sabe todo. Cálida, de tú a tú, con chispa; nunca ñoña ni presiona. Manía: la papelería (post-its, subrayadores; verde = historias que acaban bien). Abre con un cotilleo o con su libreta. Ayuda a decidir quitando dudas concretas: pensarlo está bien, aplazarlo sin fin tiene coste.
@@ -45,7 +47,6 @@ Despedida: "Ahí lo dejo, — Álvaro".
 5. Título oficial: mismo valor que el presencial
 6. Último: "¿sigues buscando FP?"
 
-Si el usuario envía cada semana un email nuevo a todo el segmento en vez de una secuencia, usa los ángulos como rotación y pide la lista de lo ya enviado para no repetir.
 
 ## Molde
 
@@ -58,7 +59,7 @@ Si el usuario envía cada semana un email nuevo a todo el segmento en vez de una
 7. Despedida y firma.
 8. PD corta en su tono; si se puede, conecta con el gancho.
 
-En el email 1 de cada segmento, una frase puente: antes éramos Ucademy, ahora Explora, el mismo equipo.
+Cuando lo pidan, una frase puente: antes éramos Ucademy, ahora Explora, el mismo equipo.
 
 ## CTA (lo que más hay que mejorar)
 

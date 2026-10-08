@@ -56,8 +56,9 @@ select:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-
 .brand small { font: 500 .7rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
 .brand h1 { margin: 0; font: 800 1.75rem/1.1 var(--font-display); letter-spacing: -.01em; }
 .brand h1 em { font-style: italic; font-weight: 600; color: var(--lime); }
-.tabs { display: flex; gap: 2px; }
-.tabs button { background: transparent; border: 0; color: var(--band-ink); opacity: .7; font: 600 .9rem var(--font-body); padding: 12px 16px 14px; border-radius: 10px 10px 0 0; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.tabs { display: flex; gap: 2px; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { flex: none; background: transparent; border: 0; color: var(--band-ink); opacity: .7; font: 600 .9rem var(--font-body); padding: 12px 16px 14px; border-radius: 10px 10px 0 0; cursor: pointer; display: flex; gap: 8px; align-items: center; }
 .tabs button:hover { opacity: 1; }
 .tabs button[aria-selected="true"] { background: var(--bg); color: var(--ink); opacity: 1; }
 .tabs .count { font: 500 .72rem var(--font-mono); background: var(--lime); color: #102016; border-radius: 999px; padding: 1px 7px; }
@@ -80,11 +81,11 @@ h2 { font: 800 1.35rem/1.2 var(--font-display); margin: 0; text-wrap: balance; }
 .narr strong { font-size: .95rem; }
 .narr span.d { font-size: .8rem; color: var(--muted); }
 .narr[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); background: var(--tint); }
-.seq { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
-.seq button { font: 600 .9rem var(--font-mono); padding: 9px 0; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 8px; cursor: pointer; position: relative; }
-.seq button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-.seq button.done::after { content: ""; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; border-radius: 50%; background: var(--leaf); }
-.angle { margin: 0; font-size: .85rem; color: var(--muted); border-left: 3px solid var(--lime); padding-left: 10px; }
+.angles { display: flex; flex-direction: column; gap: 4px; }
+.angles button { text-align: left; font: 500 .84rem var(--font-body); padding: 8px 12px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 8px; cursor: pointer; }
+.angles button[aria-pressed="true"] { border-color: var(--ink); background: var(--tint); box-shadow: inset 3px 0 0 var(--lime); }
+.angles button:first-child { color: var(--muted); }
+.angles button:first-child[aria-pressed="true"] { color: var(--ink); }
 label.l { display: flex; flex-direction: column; gap: 5px; font-size: .78rem; font-weight: 600; color: var(--muted); }
 select, input[type=text], input[type=url], input[type=date], input[type=search], textarea { font: 400 .95rem var(--font-body); color: var(--ink); background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 10px; width: 100%; }
 textarea { min-height: 64px; resize: vertical; }
@@ -150,43 +151,88 @@ textarea { min-height: 64px; resize: vertical; }
 .plan .row { display: grid; grid-template-columns: 160px 150px minmax(0, 1fr); gap: 10px; }
 @media (max-width: 640px) { .plan .row { grid-template-columns: minmax(0, 1fr); } }
 
-/* Calendario */
-.cal-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; margin-bottom: 16px; }
+/* Calendario: vista de mes */
+.cal-head { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; justify-content: space-between; margin-bottom: 14px; }
+.cal-head h2 { font-size: 2rem; }
 .cal-nav { display: flex; gap: 6px; align-items: center; }
-.cal { display: grid; grid-template-columns: 120px repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--paper); }
-.cal > div { padding: 10px; border-top: 1px solid var(--line); min-width: 0; }
-.cal > div:not(.wk) { border-left: 1px solid var(--line); }
-.cal .ch { border-top: 0; background: var(--tint); display: flex; gap: 8px; align-items: center; font-weight: 600; font-size: .88rem; }
-.cal .ch .dot { width: 22px; height: 22px; border-radius: 50%; color: #fff; display: grid; place-items: center; font: 800 .75rem var(--font-display); flex: none; }
-.cal .wk { font: 500 .78rem var(--font-mono); color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
-.cal .wk strong { font: 600 .85rem var(--font-body); color: var(--ink); }
-.cal .wk.now strong::after { content: " · esta semana"; color: var(--forest); font-weight: 500; }
-.cell { display: flex; flex-direction: column; gap: 6px; }
-.slot { display: grid; gap: 4px; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; color: var(--ink); cursor: pointer; width: 100%; }
-.slot:hover { border-color: var(--ink); }
-.slot .top { display: flex; gap: 6px; align-items: center; justify-content: space-between; font: 500 .72rem var(--font-mono); color: var(--muted); }
-.slot .subj { font-size: .86rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.05rem; cursor: pointer; display: grid; place-items: center; }
+.icon-btn:hover { border-color: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .82rem; color: var(--muted); margin-bottom: 14px; align-items: center; }
+.legend span { display: inline-flex; gap: 6px; align-items: center; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.legend .st { margin-left: 2px; }
+.next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+@media (max-width: 760px) { .next { grid-template-columns: minmax(0, 1fr); } }
+.nx { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 2px 12px; align-items: start; }
+.nx .av { grid-row: span 3; width: 36px; height: 36px; border-radius: 50%; color: #fff; display: grid; place-items: center; font: 800 .95rem var(--font-display); }
+.nx strong { font-size: .9rem; }
+.nx .ln { font-size: .8rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nx .ln b { color: var(--ink); font-weight: 600; }
+.month { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); }
+.dow, .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.dow div { padding: 8px 10px; font: 600 .7rem var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); background: var(--tint); }
+.day { min-height: 118px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); padding: 6px; display: flex; flex-direction: column; gap: 4px; min-width: 0; position: relative; }
+.day:nth-child(7n+1) { border-left: 0; }
+.day.out { background: var(--bg); }
+.day.out .num { opacity: .45; }
+.day.weekend { background: color-mix(in srgb, var(--bg) 60%, var(--paper)); }
+.day .num { font: 600 .82rem var(--font-mono); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; }
+.day.today .num { background: var(--lime); color: #102016; }
+.day .plus { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: transparent; color: var(--muted); font-size: 1rem; cursor: pointer; opacity: 0; }
+.day:hover .plus, .day .plus:focus-visible { opacity: 1; }
+.day .plus:hover { background: var(--tint); color: var(--ink); }
+.ev { display: grid; grid-template-columns: 3px minmax(0, 1fr) auto; gap: 0 7px; align-items: center; text-align: left; border: 0; border-radius: 6px; padding: 5px 6px 5px 0; background: var(--tint); color: var(--ink); cursor: pointer; width: 100%; font: 500 .76rem/1.25 var(--font-body); }
+.ev:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+.ev .bar { align-self: stretch; border-radius: 6px 0 0 6px; }
+.ev .tx { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.ev .tx b { font-weight: 600; }
+.ev .sd { width: 8px; height: 8px; border-radius: 50%; }
+.ev.st-enviado-ev { opacity: .78; }
+.sd-borrador { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+.sd-programado { background: #E0A800; }
+.sd-enviado { background: var(--leaf); }
+.agenda { display: none; }
+@media (max-width: 760px) {
+  .month { display: none; }
+  .agenda { display: grid; gap: 14px; }
+}
+.ag-day { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; }
+.ag-date { text-align: center; font: 500 .7rem var(--font-mono); color: var(--muted); text-transform: uppercase; }
+.ag-date b { display: block; font: 800 1.4rem var(--font-display); color: var(--ink); }
+.ag-day.today .ag-date b { background: var(--lime); color: #102016; border-radius: 8px; }
+.ag-list { display: grid; gap: 6px; }
+.ag-list .ev { font-size: .85rem; padding: 9px 10px 9px 0; }
 .st { font: 500 .68rem var(--font-mono); padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
 .st-borrador { background: var(--s-draft-bg); color: var(--s-draft-fg); }
 .st-programado { background: var(--s-plan-bg); color: var(--s-plan-fg); }
 .st-enviado { background: var(--s-sent-bg); color: var(--s-sent-fg); }
-.hs { font: 600 .74rem var(--font-body); color: var(--forest); text-decoration: none; display: inline-flex; gap: 4px; align-items: center; }
+.hs { font: 600 .82rem var(--font-body); color: var(--forest); text-decoration: none; }
 .hs:hover { text-decoration: underline; }
-.add { border: 1.5px dashed var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 6px; font: 500 .78rem var(--font-body); cursor: pointer; }
-.add:hover { color: var(--ink); border-color: var(--ink); }
-.mob-seg { display: none; }
-@media (max-width: 760px) {
-  .cal { grid-template-columns: minmax(0, 1fr); }
-  .cal .ch { display: none; }
-  .cal > div:not(.wk) { border-left: 0; border-top: 0; padding-top: 0; }
-  .cal .wk { background: var(--tint); }
-  .mob-seg { display: block; font: 600 .72rem var(--font-body); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-}
 .editor { margin-top: 16px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
 .editor .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .editor .grid2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 10px; }
 @media (max-width: 640px) { .editor .grid3, .editor .grid2 { grid-template-columns: minmax(0, 1fr); } }
 .empty { color: var(--muted); font-size: .9rem; padding: 18px; border: 1.5px dashed var(--line); border-radius: 12px; }
+
+/* Narradores */
+.narr-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 980px) { .narr-grid { grid-template-columns: minmax(0, 1fr); } }
+.ncard { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.ncard .top { padding: 18px 18px 16px; display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 4px 14px; align-items: center; border-bottom: 1px solid var(--line); }
+.ncard .big { grid-row: span 3; width: 64px; height: 64px; border-radius: 50%; color: #fff; display: grid; place-items: center; font: 800 1.8rem var(--font-display); }
+.ncard h3 { margin: 0; font: 800 1.5rem/1 var(--font-display); }
+.ncard .kind { font: 600 .68rem var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ncard .segm { font-size: .85rem; }
+.ncard .segm b { font-weight: 600; }
+.ncard .bd { padding: 16px 18px 18px; display: grid; gap: 14px; font-size: .88rem; }
+.ncard .who { font-family: var(--font-display); font-size: 1rem; line-height: 1.5; margin: 0; }
+.ncard h4 { margin: 0 0 4px; font: 600 .68rem var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ncard ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.ncard .subj { display: grid; gap: 6px; }
+.ncard .subj div { background: #FFFFFF; color: #202124; border: 1px solid #DADCE0; border-radius: 8px; padding: 7px 10px; font: .82rem Roboto, Arial, sans-serif; }
+.ncard .subj div span { color: #5F6368; }
+.ncard .sign { font-family: Helvetica, Arial, sans-serif; color: var(--ink); border-left: 3px solid var(--lime); padding-left: 10px; }
+.ncard .never { background: var(--tint); border-radius: 10px; padding: 10px 12px; }
 
 /* Buyers */
 .b-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -231,6 +277,7 @@ textarea { min-height: 64px; resize: vertical; }
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="escribir">Escribir</button>
       <button role="tab" aria-selected="false" data-tab="calendario">Calendario <span class="count" id="calCount" hidden></span></button>
+      <button role="tab" aria-selected="false" data-tab="narradores">Narradores</button>
       <button role="tab" aria-selected="false" data-tab="buyers">Buyers <span class="count" id="bCount"></span></button>
     </nav>
   </div>
@@ -246,9 +293,8 @@ textarea { min-height: 64px; resize: vertical; }
           <div class="narrators" id="narrators"></div>
         </div></div>
         <div class="step"><span class="n">2</span><div class="c">
-          <p class="eyebrow">Email de la secuencia</p>
-          <div class="seq" id="seq"></div>
-          <p class="angle" id="angle"></p>
+          <p class="eyebrow">Ángulo (opcional)</p>
+          <div class="angles" id="seq"></div>
         </div></div>
         <div class="step"><span class="n">3</span><div class="c">
           <p class="eyebrow">A quién le escribes</p>
@@ -331,27 +377,30 @@ textarea { min-height: 64px; resize: vertical; }
   <!-- CALENDARIO -->
   <section id="view-calendario" hidden>
     <div class="cal-head">
-      <div><p class="eyebrow">Un email por semana y segmento</p><h2 id="calTitle">Calendario de envíos</h2></div>
+      <div><p class="eyebrow">Calendario de envíos</p><h2 id="calTitle">Octubre 2026</h2></div>
       <div class="cal-nav">
-        <button type="button" class="btn btn-line btn-sm" id="calPrev" aria-label="Semanas anteriores">← Anteriores</button>
+        <button type="button" class="icon-btn" id="calPrev" aria-label="Mes anterior">‹</button>
         <button type="button" class="btn btn-line btn-sm" id="calToday">Hoy</button>
-        <button type="button" class="btn btn-line btn-sm" id="calNext" aria-label="Semanas siguientes">Siguientes →</button>
+        <button type="button" class="icon-btn" id="calNext" aria-label="Mes siguiente">›</button>
       </div>
     </div>
-    <div class="cal" id="cal"></div>
+    <div class="next" id="nextBox"></div>
+    <div class="legend" id="legend"></div>
+    <div class="month"><div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="days" id="cal"></div></div>
+    <div class="agenda" id="agenda"></div>
     <p class="note" id="noDb" hidden>Abre la página desde claude.ai con tu cuenta para ver y guardar el calendario.</p>
     <form class="editor" id="editor" hidden autocomplete="off">
       <p class="eyebrow" id="edTitle">Envío</p>
-      <div class="grid3">
+      <div class="grid2">
         <label class="l" for="eSeg">Segmento<select id="eSeg"></select></label>
         <label class="l" for="eFecha">Fecha<input type="date" id="eFecha" required></label>
-        <label class="l" for="ePaso">Email nº<select id="ePaso"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
       </div>
       <div class="grid2">
         <label class="l" for="eAsunto">Asunto<input type="text" id="eAsunto" placeholder="Asunto del email"></label>
         <label class="l" for="eEstado">Estado<select id="eEstado"><option value="borrador">Borrador</option><option value="programado">Programado</option><option value="enviado">Enviado</option></select></label>
       </div>
       <label class="l" for="eHs">Enlace de HubSpot<input type="url" id="eHs" placeholder="https://app.hubspot.com/email/…"></label>
+      <a class="hs" id="eHsOpen" href="#" target="_blank" rel="noopener" hidden>Abrir en HubSpot ↗</a>
       <label class="l" for="eNotas">Notas (resultados, aperturas, clics…)<textarea id="eNotas"></textarea></label>
       <div class="go-row">
         <button type="submit" class="btn btn-ink btn-sm">Guardar</button>
@@ -362,6 +411,12 @@ textarea { min-height: 64px; resize: vertical; }
       </div>
       <p class="status" id="edStatus" role="status"></p>
     </form>
+  </section>
+
+  <!-- NARRADORES -->
+  <section id="view-narradores" hidden>
+    <div class="b-head"><div><p class="eyebrow">Quién firma cada segmento</p><h2>Los tres narradores</h2></div></div>
+    <div class="narr-grid" id="narrGrid"></div>
   </section>
 
   <!-- BUYERS -->
@@ -388,13 +443,13 @@ const REAL_DEFAULT = ["gestion-0"];
 const SEG = {
   pensarlo: { nombre: "Quería pensarlo", desc: "Conoció la propuesta y pidió tiempo", color: "var(--vera)",
     firma: { nombre: "Vera", ini: "V", despedida: "Me vuelvo a mis subrayadores,", rol: "Personaje · cálida, cotilla de las buenas" },
-    pasos: ["Recordar sin presión: lo que le frenaba sigue teniendo solución", "Objeción tiempo: compaginarlo con trabajo y vida", "Objeción \"¿vale lo mismo?\": título oficial en toda España", "Objeción dinero: cómo se paga, sin cifras sin verificar", "Fecha real: la convocatoria o el inicio que se acerca", "Último: \"¿lo dejamos aquí o te llamamos?\""] },
+    pasos: ["Lo que le frenaba sigue teniendo solución", "Objeción tiempo: compaginarlo con trabajo y vida", "Objeción \"¿vale lo mismo?\": título oficial en toda España", "Objeción dinero: cómo se paga, sin cifras sin verificar", "Fecha real: la convocatoria o el inicio que se acerca", "La pregunta: \"¿lo dejamos aquí o te llamamos?\""] },
   ghosting: { nombre: "Ghosting tras la propuesta", desc: "Recibió la propuesta y dejó de responder", color: "var(--rai)",
     firma: { nombre: "Rai", ini: "R", despedida: "Sin más,", rol: "Personaje · seco, directo, con guasa" },
-    pasos: ["La pregunta directa: \"¿qué falló?\"", "Si fue el precio: cómo se paga", "Si fue el tiempo: estudiar sin soltar el curro", "Si fue la duda del online: el título es oficial igual", "Alguien que también se lo pensó", "Último: \"te dejo en paz o te llamamos\""] },
+    pasos: ["La pregunta directa: \"¿qué falló?\"", "Si fue el precio: cómo se paga", "Si fue el tiempo: estudiar sin soltar el curro", "Si fue la duda del online: el título es oficial igual", "Alguien que también se lo pensó", "La salida: \"te dejo en paz o te llamamos\""] },
   nocontactado: { nombre: "Nunca contactado", desc: "Dejó sus datos y nunca llegamos a hablar", color: "var(--alvaro)",
     firma: { nombre: "Álvaro", ini: "Á", despedida: "Ahí lo dejo,", rol: "Persona real · anécdota cotidiana" },
-    pasos: ["Recordar que dejó sus datos y presentarse", "Alguien que empezó desde donde está él", "Objeción tiempo: estudiar desde el móvil", "Objeción \"ya es tarde / empiezo de cero\"", "Título oficial: mismo valor que el presencial", "Último: \"¿sigues buscando FP?\""] },
+    pasos: ["Recordar que dejó sus datos y presentarse", "Alguien que empezó desde donde está él", "Objeción tiempo: estudiar desde el móvil", "Objeción \"ya es tarde / empiezo de cero\"", "Título oficial: mismo valor que el presencial", "La pregunta: \"¿sigues buscando FP?\""] },
 };
 
 const VOCES = {
@@ -457,7 +512,7 @@ const FORMATO = `Responde SOLO con un objeto JSON:
 Exactamente dos bloques "boton".`;
 
 const EJEMPLO = {
-  segmento: "nocontactado", paso: 1, ejemplo: true,
+  segmento: "nocontactado", ejemplo: true,
   asunto_a: "Rosa se sacó una FP", asunto_b: "Rosa se sacó una FP", preheader: "Antes limpiaba casas",
   bloques: [
     { tipo: "texto", contenido: "Hola,\nsoy Álvaro." },
@@ -481,7 +536,7 @@ const EJEMPLO = {
   ],
 };
 
-const state = { seg: "nocontactado", paso: 1, formacion: "gestion", buyer: "", current: EJEMPLO, cal: [], real: new Set(REAL_DEFAULT), weekOffset: 0, editing: null, bSector: "", bOpen: "" };
+const state = { seg: "nocontactado", angulo: "", formacion: "gestion", buyer: "", current: EJEMPLO, cal: [], real: new Set(REAL_DEFAULT), weekOffset: 0, editing: null, bSector: "", bOpen: "" };
 let sample = null, db = null, ctl = null;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -517,11 +572,10 @@ function renderNarrators() {
 }
 function renderSeq() {
   const s = SEG[state.seg];
-  const used = new Set(state.cal.filter((c) => c.segmento === state.seg).map((c) => +c.paso));
-  $("seq").innerHTML = s.pasos.map((_, i) => `<button type="button" class="${used.has(i + 1) ? "done" : ""}" aria-pressed="${i + 1 === state.paso}" data-p="${i + 1}" aria-label="Email ${i + 1}${used.has(i + 1) ? " (ya en el calendario)" : ""}">${i + 1}</button>`).join("");
-  $("seq").querySelectorAll("button").forEach((b) => b.onclick = () => { state.paso = +b.dataset.p; renderSeq(); });
-  $("angle").textContent = s.pasos[state.paso - 1];
-  $("puente").checked = state.paso === 1;
+  if (!s.pasos.includes(state.angulo)) state.angulo = "";
+  $("seq").innerHTML = [["", "Que lo elija Claude (no repite lo del calendario)"], ...s.pasos.map((a) => [a, a])].map(([v, t]) =>
+    `<button type="button" aria-pressed="${v === state.angulo}" data-a="${esc(v)}">${esc(t)}</button>`).join("");
+  $("seq").querySelectorAll("button").forEach((b) => b.onclick = () => { state.angulo = b.dataset.a; renderSeq(); });
 }
 function renderFormSelect() {
   $("formacion").innerHTML = `<option value="">Cualquier formación</option>` + SECTORS.map((sec) =>
@@ -599,8 +653,8 @@ function buildPrompt() {
     "Eres el redactor de la campaña de reactivación de leads perdidos de Explora FP (escuela de FP oficial online; antes se llamaba Ucademy). Escribe UN email en español de España.",
     "", REGLAS, "", "NARRADOR:", VOCES[s.firma.nombre], "",
     `SEGMENTO: ${s.nombre} (${s.desc}).`,
-    `EMAIL ${state.paso} DE 6. Ángulo: ${s.pasos[state.paso - 1]}.`,
-    state.paso === 6 ? "Es el último: ofrece explícitamente la salida (no le volveremos a escribir sobre esto si no quiere)." : "",
+    "Cada email es único (no es una secuencia): tiene que funcionar solo, aunque el lead no haya leído ninguno anterior.",
+    state.angulo ? `ÁNGULO: ${state.angulo}.` : `ÁNGULO: elige tú el que mejor encaje con el destinatario, distinto de los ya enviados. Opciones habituales: ${s.pasos.join(" / ")}.`,
     f ? `FORMACIÓN: ${f.name} (${f.sector}). ${f.desc}` : "FORMACIÓN: cualquiera; escribe genérico, que sirva para cualquier FP.",
   ];
   if (p) {
@@ -614,7 +668,7 @@ function buildPrompt() {
   }
   out.push($("puente").checked ? "Incluye de forma natural, una sola vez, que antes éramos Ucademy y ahora somos Explora, el mismo equipo." : "No menciones Ucademy.");
   if ($("notas").value.trim()) out.push(`INDICACIONES DEL EQUIPO: ${$("notas").value.trim()}`);
-  if (sent.length) out.push("YA PLANIFICADOS O ENVIADOS A ESTE SEGMENTO (no repitas ángulo, gancho ni asunto):\n" + sent.map((c) => `- Email ${c.paso}: "${c.asunto || ""}"${c.angulo ? " · " + c.angulo : ""}${c.gancho ? " · gancho: " + c.gancho : ""}`).join("\n"));
+  if (sent.length) out.push("YA PLANIFICADOS O ENVIADOS A ESTE SEGMENTO (no repitas ángulo, gancho ni asunto):\n" + sent.map((c) => `- ${c.fecha}: "${c.asunto || ""}"${c.angulo ? " · " + c.angulo : ""}${c.gancho ? " · gancho: " + c.gancho : ""}`).join("\n"));
   out.push("", FORMATO);
   return out.filter((l) => l !== "").join("\n");
 }
@@ -637,7 +691,7 @@ $("form").onsubmit = async (ev) => {
       onText: ({ text }) => { $("status").textContent = `Escribiendo… ${Math.min(99, Math.round(text.length / 25))} %`; } });
     if (!d || typeof d.asunto_a !== "string" || !Array.isArray(d.bloques) || d.bloques.length < 3) throw { code: "invalid_json" };
     const s = SEG[state.seg], p = DATA.P.find((x) => x.id === state.buyer);
-    state.current = { ...d, segmento: state.seg, paso: state.paso, formacion: state.formacion, buyer: p ? p.pn : "",
+    state.current = { ...d, segmento: state.seg, formacion: state.formacion, buyer: p ? p.pn : "",
       asunto_b: d.asunto_b || d.asunto_a, despedida: d.despedida || s.firma.despedida, firma: d.firma || "— " + s.firma.nombre };
     renderPreview();
     $("status").textContent = "Listo. Haz clic en el texto para retocarlo.";
@@ -655,10 +709,10 @@ $("planForm").onsubmit = async (ev) => {
   ev.preventDefault();
   const e = state.current;
   if ($("pHs").value && !safeUrl($("pHs").value)) { $("copyStatus").textContent = "El enlace de HubSpot tiene que empezar por https://"; return; }
-  const email = { asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader, despedida: e.despedida, firma: e.firma, pd: e.pd || "", revisar: e.revisar || [], segmento: e.segmento, paso: e.paso,
+  const email = { asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader, despedida: e.despedida, firma: e.firma, pd: e.pd || "", revisar: e.revisar || [], segmento: e.segmento,
     bloques: [...$("emailBody").children].slice(0, e.bloques.length).map((el, i) => ({ tipo: e.bloques[i].tipo, contenido: e.bloques[i].tipo === "boton" ? el.innerText.trim() : e.bloques[i].contenido })) };
   try {
-    await db.collection("calendario").add({ segmento: e.segmento, paso: e.paso, fecha: $("pFecha").value, estado: $("pEstado").value,
+    await db.collection("calendario").add({ segmento: e.segmento, fecha: $("pFecha").value, estado: $("pEstado").value,
       hubspot: safeUrl($("pHs").value), asunto: e.asunto_a, angulo: e.angulo || "", buyer: e.buyer || "", formacion: e.formacion || "",
       gancho: (e.bloques[1]?.contenido || "").slice(0, 120), notas: "", email, creado: new Date().toISOString() });
     $("planForm").hidden = true; $("planBtn").hidden = true;
@@ -667,46 +721,61 @@ $("planForm").onsubmit = async (ev) => {
 };
 
 /* ---------- Calendario ---------- */
+const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
+function evButton(c) {
+  const s = SEG[c.segmento] || SEG.nocontactado;
+  return `<button type="button" class="ev st-${esc(c.estado)}-ev" data-id="${esc(c.id)}" title="${esc(s.firma.nombre)} · ${esc(c.estado)}${c.asunto ? " · " + esc(c.asunto) : ""}">
+    <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(c.estado)}" aria-label="${esc(c.estado)}"></span></button>`;
+}
 function renderCal() {
-  const start = addDays(monday(new Date()), (state.weekOffset - 1) * 7);
-  const weeks = Array.from({ length: 8 }, (_, i) => addDays(start, i * 7));
-  const thisMon = iso(monday(new Date()));
-  $("calTitle").textContent = `${fmtShort(weeks[0])} – ${fmtShort(addDays(weeks[7], 6))}`;
-  let h = `<div class="ch" style="border-left:0">Semana</div>` + Object.values(SEG).map((s) => `<div class="ch"><span class="dot" style="background:${s.color}">${s.firma.ini}</span>${esc(s.nombre)}</div>`).join("");
-  for (const w of weeks) {
-    const wIso = iso(w), wEnd = iso(addDays(w, 6));
-    h += `<div class="wk${wIso === thisMon ? " now" : ""}"><strong>${fmtShort(w)}</strong>al ${fmtShort(addDays(w, 6))}</div>`;
-    for (const [k, s] of Object.entries(SEG)) {
-      const items = state.cal.filter((c) => c.segmento === k && c.fecha >= wIso && c.fecha <= wEnd).sort((a, b) => a.fecha.localeCompare(b.fecha));
-      h += `<div class="cell"><span class="mob-seg">${esc(s.nombre)} · ${esc(s.firma.nombre)}</span>` + items.map((c) => `
-        <button type="button" class="slot" data-id="${esc(c.id)}">
-          <span class="top"><span>Email ${esc(c.paso)} · ${esc(fmtDay(parse(c.fecha)))}</span><span class="st st-${esc(c.estado)}">${esc(c.estado)}</span></span>
-          <span class="subj">${esc(c.asunto || "Sin asunto")}</span>
-          ${safeUrl(c.hubspot) ? `<a class="hs" href="${esc(safeUrl(c.hubspot))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Abrir en HubSpot ↗</a>` : ""}
-        </button>`).join("") + (db ? `<button type="button" class="add" data-new="${k}" data-date="${iso(addDays(w, 1))}">+ Planificar</button>` : "") + `</div>`;
-    }
+  const today = new Date(), base = new Date(today.getFullYear(), today.getMonth() + state.weekOffset, 1);
+  $("calTitle").textContent = MES(base);
+  const start = monday(base), todayIso = iso(today);
+  const byDay = {};
+  state.cal.forEach((c) => { (byDay[c.fecha] ||= []).push(c); });
+  let h = "";
+  for (let i = 0; i < 42; i++) {
+    const d = addDays(start, i), di = iso(d);
+    if (i === 35 && d.getMonth() !== base.getMonth()) break;
+    const cls = ["day", d.getMonth() !== base.getMonth() ? "out" : "", di === todayIso ? "today" : "", d.getDay() % 6 === 0 ? "weekend" : ""].join(" ");
+    h += `<div class="${cls}"><span class="num">${d.getDate()}</span>${db ? `<button type="button" class="plus" data-date="${di}" aria-label="Planificar el ${d.getDate()}">+</button>` : ""}${(byDay[di] || []).map(evButton).join("")}</div>`;
   }
   $("cal").innerHTML = h;
-  $("cal").querySelectorAll(".slot").forEach((b) => b.onclick = () => openEditor(state.cal.find((c) => c.id === b.dataset.id)));
-  $("cal").querySelectorAll(".add").forEach((b) => b.onclick = () => openEditor(null, b.dataset.new, b.dataset.date));
+  // Agenda (móvil): días del mes con envíos
+  const mStart = iso(base), mEnd = iso(new Date(base.getFullYear(), base.getMonth() + 1, 0));
+  const days = Object.keys(byDay).filter((k) => k >= mStart && k <= mEnd).sort();
+  $("agenda").innerHTML = days.length ? days.map((k) => { const d = parse(k); return `<div class="ag-day${k === todayIso ? " today" : ""}"><div class="ag-date">${d.toLocaleDateString("es-ES", { weekday: "short" })}<b>${d.getDate()}</b></div><div class="ag-list">${byDay[k].map(evButton).join("")}</div></div>`; }).join("")
+    : `<div class="empty">No hay envíos este mes.${db ? " Pulsa \"Hoy\" o cambia de mes, o planifica uno desde la pestaña Escribir." : ""}</div>`;
+  document.querySelectorAll("#cal .ev, #agenda .ev").forEach((b) => b.onclick = () => openEditor(state.cal.find((c) => c.id === b.dataset.id)));
+  $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = () => openEditor(null, state.seg, b.dataset.date));
+  // Resumen por narrador
+  $("nextBox").innerHTML = Object.entries(SEG).map(([k, s]) => {
+    const mine = state.cal.filter((c) => c.segmento === k).sort((a, b) => a.fecha.localeCompare(b.fecha));
+    const last = [...mine].reverse().find((c) => c.estado === "enviado");
+    const next = mine.find((c) => c.estado !== "enviado");
+    return `<div class="nx"><span class="av" style="background:${s.color}">${s.firma.ini}</span><strong>${esc(s.nombre)}</strong>
+      <span class="ln">Último: ${last ? `${esc(fmtShort(parse(last.fecha)))} · <b>${esc(last.asunto || "sin asunto")}</b>` : "nada enviado"}</span>
+      <span class="ln">Siguiente: ${next ? `${esc(fmtShort(parse(next.fecha)))} · ${esc(next.estado)}${next.asunto ? ` · <b>${esc(next.asunto)}</b>` : ""}` : "sin planificar"}</span></div>`;
+  }).join("");
   const n = state.cal.length; $("calCount").hidden = !n; $("calCount").textContent = n;
 }
+$("legend").innerHTML = Object.values(SEG).map((s) => `<span><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>`).join("") +
+  `<span><i class="sd sd-borrador" style="border-radius:50%"></i>Borrador</span><span><i class="sd-programado" style="border-radius:50%"></i>Programado</span><span><i class="sd-enviado" style="border-radius:50%"></i>Enviado</span>`;
 $("eSeg").innerHTML = Object.entries(SEG).map(([k, s]) => `<option value="${k}">${esc(s.nombre)} · ${esc(s.firma.nombre)}</option>`).join("");
 function openEditor(item, seg, date) {
   state.editing = item ? item.id : null;
   $("edTitle").textContent = item ? "Editar envío" : "Planificar envío";
   $("eSeg").value = item ? item.segmento : seg; $("eFecha").value = item ? item.fecha : date;
-  $("ePaso").value = item ? String(item.paso) : String(Math.min(6, state.cal.filter((c) => c.segmento === seg).length + 1));
   $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? item.estado : "borrador";
   $("eHs").value = item ? item.hubspot || "" : ""; $("eNotas").value = item ? item.notas || "" : "";
   $("eDel").hidden = !item; $("eVer").hidden = !(item && item.email);
-  $("edStatus").textContent = ""; $("editor").hidden = false; $("eHs").focus();
+  $("edStatus").textContent = ""; $("editor").hidden = false; $("eHsOpen").hidden = !safeUrl($("eHs").value); $("eHsOpen").href = safeUrl($("eHs").value) || "#"; $("editor").scrollIntoView({ behavior: "smooth", block: "nearest" }); $("eHs").focus();
 }
 $("eCancel").onclick = () => { $("editor").hidden = true; };
 $("editor").onsubmit = async (ev) => {
   ev.preventDefault();
   if ($("eHs").value && !safeUrl($("eHs").value)) { $("edStatus").textContent = "El enlace tiene que empezar por https://"; return; }
-  const data = { segmento: $("eSeg").value, fecha: $("eFecha").value, paso: +$("ePaso").value, asunto: $("eAsunto").value.trim(), estado: $("eEstado").value, hubspot: safeUrl($("eHs").value), notas: $("eNotas").value.trim() };
+  const data = { segmento: $("eSeg").value, fecha: $("eFecha").value, asunto: $("eAsunto").value.trim(), estado: $("eEstado").value, hubspot: safeUrl($("eHs").value), notas: $("eNotas").value.trim() };
   try {
     if (state.editing) await db.collection("calendario").doc(state.editing).update(data);
     else await db.collection("calendario").add({ ...data, angulo: "", gancho: "", buyer: "", formacion: "", creado: new Date().toISOString() });
@@ -725,8 +794,8 @@ $("eVer").onclick = () => {
   state.current = { ...item.email, ejemplo: false }; renderPreview(); $("planBtn").hidden = true;
   showTab("escribir");
 };
-$("calPrev").onclick = () => { state.weekOffset -= 4; renderCal(); };
-$("calNext").onclick = () => { state.weekOffset += 4; renderCal(); };
+$("calPrev").onclick = () => { state.weekOffset -= 1; renderCal(); };
+$("calNext").onclick = () => { state.weekOffset += 1; renderCal(); };
 $("calToday").onclick = () => { state.weekOffset = 0; renderCal(); };
 
 /* ---------- Buyers ---------- */
@@ -769,10 +838,55 @@ function renderBuyers() {
   });
 }
 
+/* ---------- Narradores ---------- */
+const NARR = {
+  pensarlo: { tipo: "Personaje",
+    quien: "Una cotilla de las buenas. No es sanitaria ni profesora, pero ha escuchado tantas historias de alumnos que se lo sabe todo. Te cuenta las cosas como quien te trae un café.",
+    voz: ["Cálida, de tú a tú, con chispa", "Deja estar la emoción, sin esconderla", "Nunca ñoña ni presiona"],
+    mania: "La papelería: post-its, subrayadores y libretas. Apunta lo que le cuentan con su código de colores (verde = las historias que acaban bien).",
+    gancho: "Un cotilleo o algo de su libreta: \"Subrayé tres frases sin darme cuenta\".",
+    papel: "Ayudar a decidir quitando dudas concretas. Pensarlo está bien; aplazarlo sin fin tiene coste.",
+    asuntos: [["Subrayé una frase sin darme cuenta", "Ven que te cuento."], ["Llevo días con esto en la cabeza", "Esto lo apunté en verde."]],
+    nunca: "Meter prisa, cotilleo frívolo de prensa rosa, sonar a vendedora." },
+  ghosting: { tipo: "Personaje",
+    quien: "Un tío pasota, sin pelos en la lengua, que escribe medio a desgana. No motiva ni vende: cuenta las cosas como son.",
+    voz: ["Directo, seco, vacilón", "La emoción la pone la historia, no él", "Se quita importancia"],
+    mania: "Tiene 40 pares de calcetines negros \"para no pensar por las mañanas\". Suelta datos random que leyó, con desapego: \"ni idea de si es exacto\".",
+    gancho: "Un dato random que no tiene nada que ver con la FP, y un giro seco: \"En fin.\"",
+    papel: "El lead conoció la propuesta y desapareció. Rai no reprocha nada: pregunta sin rodeos qué no encajó y se lo pone fácil para decirlo.",
+    asuntos: [["Una pregunta y te dejo", "No es importante. Pero sigue."], ["Un dato inútil sobre tu FP", "Ya que has abierto."]],
+    nunca: "Reprochar el silencio, motivar con frases hechas, poner exclamaciones." },
+  nocontactado: { tipo: "Persona real",
+    quien: "Álvaro, del equipo de Explora. No es un personaje: no se le inventa biografía (familia, edad, trabajos).",
+    voz: ["Anécdota doméstica pequeña y autoirónica", "Giro seco: \"En fin. Cambio de tema\"", "Cierra conectando con la anécdota"],
+    mania: "Su vida cotidiana a medio arreglar: la persiana que lleva tres semanas sin arreglar, la pizza quemada que se comió igual.",
+    gancho: "Una anécdota de casa, sin moraleja inmediata.",
+    papel: "El lead nunca habló con nadie. Álvaro se presenta, recuerda que dejó sus datos interesándose por una FP y pregunta si sigue buscando.",
+    asuntos: [["Rosa se sacó una FP", "Antes limpiaba casas"], ["Lo de mi pizza congelada y tu FP", "Spoiler: ninguna acabó en la basura."]],
+    nunca: "Hablar de Explora en tercera persona (\"su plataforma\", \"tienen\"), inventarse hechos de su vida." },
+};
+$("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k]; return `
+  <article class="ncard">
+    <div class="top"><span class="big" style="background:${s.color}">${s.firma.ini}</span>
+      <span class="kind">${esc(n.tipo)}</span><h3>${esc(s.firma.nombre)}</h3><span class="segm">Firma <b>${esc(s.nombre)}</b></span></div>
+    <div class="bd">
+      <p class="who">${esc(n.quien)}</p>
+      <div><h4>Cómo habla</h4><ul>${n.voz.map((v) => `<li>${esc(v)}</li>`).join("")}</ul></div>
+      <div><h4>Su manía</h4>${esc(n.mania)}</div>
+      <div><h4>Cómo abre</h4>${esc(n.gancho)}</div>
+      <div><h4>Su papel en el segmento</h4>${esc(n.papel)}</div>
+      <div><h4>Asuntos en su voz</h4><div class="subj">${n.asuntos.map(([a, p]) => `<div><b>${esc(a)}</b> <span>– ${esc(p)}</span></div>`).join("")}</div></div>
+      <div><h4>Se despide</h4><div class="sign">${esc(s.firma.despedida)}<br>— ${esc(s.firma.nombre)}</div></div>
+      <div class="never"><h4>Nunca</h4>${esc(n.nunca)}</div>
+      <div class="go-row"><button type="button" class="btn btn-ink btn-sm" data-narr="${k}">Escribir con ${esc(s.firma.nombre)}</button></div>
+    </div>
+  </article>`; }).join("");
+$("narrGrid").querySelectorAll("[data-narr]").forEach((b) => b.onclick = () => { state.seg = b.dataset.narr; renderNarrators(); renderSeq(); showTab("escribir"); });
+
 /* ---------- Pestañas ---------- */
 function showTab(t) {
   document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === t));
-  ["escribir", "calendario", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
+  ["escribir", "calendario", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
   window.scrollTo(0, 0);
 }
 document.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
