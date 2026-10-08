@@ -101,3 +101,7 @@
 .ck-det li { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
 .ck-ir { border: 1px solid var(--line2); background: var(--surface); border-radius: 999px; font: inherit; font-size: 11.5px; padding: 0 8px; cursor: pointer; color: var(--ink); }
 .ck-ir:hover { border-color: var(--brand); }
+
+/* editar encima de la slide: mientras se escribe, la slide grande recibe los clics (para mover el cursor) */
+#est-editor .est-grande.editando iframe { pointer-events: auto; }
+.sel-inline-pista { margin: 6px 0 2px; font-size: 13px; color: var(--ink3); }

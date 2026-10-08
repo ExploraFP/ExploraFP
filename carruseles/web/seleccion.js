@@ -198,7 +198,7 @@ function pintarPop(foco) {
     const corto = SEL_CORTOS.indexOf(p.campo) >= 0;
     h = '<div class="sel-pop" id="sel-pop"><div class="sel-pop-t"><span>' + esc(SEL_NOMBRES[p.campo] || p.campo) + (p.campo === 'items' ? ' ' + (p.idx + 1) : '') + '</span>' +
       '<button type="button" class="sel-x" id="sel-cancelar" aria-label="Quitar la selección" title="Quitar la selección">✕</button></div>' +
-      '<textarea id="sel-txt" rows="' + (corto ? 2 : 5) + '">' + esc(valorPop()) + '</textarea>' +
+      '<p class="sel-inline-pista">Escribe directamente sobre la slide. ' + (SEL_MULTI.indexOf(p.campo) >= 0 ? 'Intro = otra línea · Esc = terminar.' : 'Intro o Esc = terminar.') + '</p>' +
       '<div class="sel-pop-pie"><span>' + (/titulo|items/.test(p.campo) ? '*palabra* = resaltada en lima' : '') + '</span>' +
       ((p.campo !== 'titulo' && p.campo !== 'items') || (p.campo === 'items' && (s.items || []).length > 1) ? '<button type="button" class="btn mini" id="sel-borrar">' + (p.campo === 'items' ? 'Quitar este punto' : 'Quitar de la slide') + '</button>' : '') +
       (p.campo === 'items' && (s.items || []).length < 4 ? '<button type="button" class="btn mini" id="sel-otro">+ Otro punto</button>' : '') + '</div></div>';
@@ -422,3 +422,110 @@ window.addEventListener('keydown', e => {
   }
   if (S.v === 'producir' && !campo) { e.preventDefault(); deshacerEtapa(); }
 }, true);
+
+/* ---------- editar el texto ENCIMA de la slide (pedido de Sandra, oct-2026) ----------
+   Al pulsar un texto de la slide grande se vuelve editable ahí mismo (contenteditable dentro del iframe), con el cursor
+   donde has pinchado. Se guarda mientras escribes (como antes). El panel lateral ya no lleva cuadro de texto: solo el
+   nombre del campo y sus botones (Quitar / + Otro punto). Antes, con el cuadro lateral, cada guardado volvía del db,
+   el editor se repintaba y el cuadro perdía el foco o lo escrito: por eso «no dejaba» cambiar el subtítulo.
+   *palabra* = resaltado: en la slide se ve resaltado y al guardar se convierte otra vez en *palabra*. */
+const SEL_MULTI = ['texto'];
+SEL.inline = null; SEL.clic = null;
+let SEL_GUARDA_IN = 0;
+window.addEventListener('pointerdown', e => { SEL.clic = {x: e.clientX, y: e.clientY}; }, true);
+function textoDeNodo(el) {
+  const out = []; let hay = false;
+  const rec = n => { for (const ch of n.childNodes) {
+    if (ch.nodeType === 3) { out.push(ch.nodeValue.replace(/ /g, ' ')); if (ch.nodeValue.trim()) hay = true; }
+    else if (ch.nodeType === 1) {
+      const t = ch.tagName, cl = String(ch.className || '');
+      if (t === 'BR') out.push('\n');
+      else if (t === 'I' && /ovalo|flecha/.test(cl)) continue;
+      else if (t === 'EM' || t === 'B' || t === 'STRONG' || t === 'MARK') { out.push('*'); rec(ch); out.push('*'); }
+      else if (t === 'P' || t === 'DIV') { if (hay && !/\n$/.test(out.join(''))) out.push(t === 'P' ? '\n\n' : '\n'); rec(ch); }
+      else rec(ch);
+    } } };
+  rec(el);
+  return out.join('').replace(/\*\s*\*/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ').trim();
+}
+function guardarInline(ahora) {
+  const I = SEL.inline; if (!I) return;
+  const c = EST.lista[EST.abierto]; if (!c) return; const s = c.slides[I.slide]; if (!s) return;
+  const v = textoDeNodo(I.el);
+  if (I.campo === 'items') { s.items = (s.items || []).slice(); s.items[I.idx] = v; }
+  else if (v) s[I.campo] = v; else delete s[I.campo];
+  // solo las miniaturas de abajo: si se repinta la slide grande se recarga y se pierde lo que estás escribiendo
+  const tira = document.querySelector('#est-editor .est-tira'); if (tira) pintarMinis(tira);
+  clearTimeout(SEL_GUARDA_IN);
+  if (ahora) { SEL_GUARDA_IN = 0; guardarC(c); } else SEL_GUARDA_IN = setTimeout(() => { SEL_GUARDA_IN = 0; const cc = EST.lista[EST.abierto]; if (cc) guardarC(cc); }, 700);
+}
+function terminarInline(repintar) {
+  const I = SEL.inline; if (!I) return;
+  if (SEL_GUARDA_IN) guardarInline(true);
+  try { I.el.removeAttribute('contenteditable'); I.el.classList.remove('sel-editando'); I.doc.getSelection().removeAllRanges(); } catch (e) {}
+  SEL.inline = null;
+  const g = document.querySelector('#est-editor .est-grande'); if (g) g.classList.remove('editando');
+  if (repintar) setTimeout(() => { if (EST.abierto && !SEL.inline) pintarEditor(true); }, 0);
+}
+function empezarInline(fr, el) {
+  const d = fr.contentDocument, p = SEL.pop; if (!d || !p) return;
+  if (!d.getElementById('sel-css-in')) { const st = d.createElement('style'); st.id = 'sel-css-in';
+    st.textContent = '.sel-editando{outline:5px solid #D8FF6E!important;outline-offset:8px;border-radius:4px;cursor:text;caret-color:#E8458B}.sel-editando:focus{outline:5px solid #D8FF6E!important}'; d.head.appendChild(st); }
+  el.setAttribute('contenteditable', 'true'); el.spellcheck = false; el.classList.add('sel-editando');
+  SEL.inline = {el: el, doc: d, campo: p.campo, idx: p.idx, slide: p.slide};
+  const g = fr.closest('.est-grande'); if (g) g.classList.add('editando');
+  el.focus();
+  // cursor donde se ha pinchado (o al final); «Escribe aquí» sale seleccionado para escribir encima
+  const sel = d.getSelection(); let rg = null;
+  if (/^escribe aquí$|^nuevo punto$/i.test(el.textContent.trim())) { rg = d.createRange(); rg.selectNodeContents(el); }
+  else if (SEL.clic && d.caretRangeFromPoint) {
+    const r = fr.getBoundingClientRect(), k = r.width / 1080 || 1;
+    const x = d.caretRangeFromPoint((SEL.clic.x - r.left) / k, (SEL.clic.y - r.top) / k);
+    if (x && el.contains(x.startContainer)) rg = x;
+  }
+  if (!rg) { rg = d.createRange(); rg.selectNodeContents(el); rg.collapse(false); }
+  sel.removeAllRanges(); sel.addRange(rg);
+  if (d.__selInline) return; d.__selInline = true;
+  d.addEventListener('input', ev => { if (SEL.inline && SEL.inline.el.contains(ev.target)) guardarInline(false); });
+  d.addEventListener('paste', ev => { if (!SEL.inline) return; ev.preventDefault(); const t = (ev.clipboardData || window.clipboardData).getData('text/plain');
+    d.execCommand('insertText', false, SEL_MULTI.indexOf(SEL.inline.campo) >= 0 ? t : t.replace(/\s*\n\s*/g, ' ')); });
+  d.addEventListener('keydown', ev => {
+    if (!SEL.inline) return;
+    const k = (ev.key || '').toLowerCase();
+    if ((ev.metaKey || ev.ctrlKey) && !ev.shiftKey && k === 'z') { ev.preventDefault(); terminarInline(false); deshacer(); return; }
+    if (k === 'escape') { ev.preventDefault(); cerrarPop(); return; }
+    if (k === 'enter') {
+      ev.preventDefault();
+      if (SEL_MULTI.indexOf(SEL.inline.campo) >= 0 || ev.shiftKey) d.execCommand('insertLineBreak');
+      else cerrarPop();
+    }
+  });
+  // pinchar en otra cosa de la slide mientras escribes: termina y selecciona eso
+  d.addEventListener('mousedown', ev => {
+    if (!SEL.inline || SEL.inline.el.contains(ev.target)) return;
+    ev.preventDefault();
+    const fr2 = document.querySelector('#est-editor .est-grande iframe'); if (!fr2) return;
+    const r = fr2.getBoundingClientRect(), k = r.width / 1080 || 1, X = r.left + ev.clientX * k, Y = r.top + ev.clientY * k;
+    terminarInline(false); SEL.clic = {x: X, y: Y};
+    const o = objetivoEn(fr2, X, Y); if (o) abrirPop(o); else cerrarPop();
+  });
+}
+const _abrirPopIn = abrirPop;
+abrirPop = function (o) {
+  terminarInline(false);
+  _abrirPopIn(o);
+  if (o.tipo === 'texto' && SEL.pop && !document.querySelector('#est-editor.solo-ver')) {
+    const fr = document.querySelector('#est-editor .est-grande iframe'); let d; try { d = fr && fr.contentDocument; } catch (e) {}
+    const el = d && d.querySelector('.sel-activo');
+    if (el) empezarInline(fr, el);
+  }
+};
+const _cerrarPopIn = cerrarPop;
+cerrarPop = function () { const habia = !!SEL.inline; terminarInline(false); _cerrarPopIn(); if (habia) pintarEditor(true); };
+// mientras escribes encima, los avisos del db (el eco de cada guardado) no repintan el editor: te quitaban lo escrito
+const _pintarEditorIn = pintarEditor;
+pintarEditor = function (todo) {
+  if (SEL.inline && !todo) return;
+  if (SEL.inline) terminarInline(false);
+  _pintarEditorIn(todo);
+};
