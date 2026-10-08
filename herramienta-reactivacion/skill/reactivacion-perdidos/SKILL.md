@@ -1,6 +1,6 @@
 ---
 name: reactivacion-perdidos
-description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "quería pensarlo" (firma Vera), "ghosting tras la propuesta" (firma Rai) y "nunca contactado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "email 3 de ghosting", "un mail de Vera/Rai/Noe", "el correo de no contactados", etc. Sustituye a newsletter-explora y newsletter-rai.
+description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "Más tiempo" (firma Vera), "No contesta" (firma Rai) y "No hemos hablado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "un email de No contesta", "un mail de Vera/Rai/Noe", "el correo de No hemos hablado", etc. Sustituye a newsletter-explora y newsletter-rai.
 ---
 
 # Reactivación de leads perdidos · Explora FP
@@ -17,7 +17,7 @@ Necesitas: **segmento**, **ángulo** (opcional), **formación o buyer** (o gené
 
 No hay secuencia: cada email es único y tiene que funcionar solo. El seguimiento se hace en el calendario de la herramienta Newsletter Explora. Los números de abajo son ángulos habituales, no un orden. Pide la lista de lo ya enviado al segmento para no repetir ángulo, gancho ni asunto.
 
-### Quería pensarlo → Vera
+### Más tiempo → Vera
 Personaje. Cotilla de las buenas: no es sanitaria ni profesora, pero ha escuchado tantas historias de alumnos que se lo sabe todo. Cálida, de tú a tú, con chispa; nunca ñoña ni presiona. Manía: la papelería (post-its, subrayadores; verde = historias que acaban bien). Abre con un cotilleo o con su libreta. Ayuda a decidir quitando dudas concretas: pensarlo está bien, aplazarlo sin fin tiene coste.
 Despedida: "Me vuelvo a mis subrayadores, — Vera".
 1. Recordar sin presión: lo que le frenaba sigue teniendo solución
@@ -27,7 +27,7 @@ Despedida: "Me vuelvo a mis subrayadores, — Vera".
 5. Fecha real: convocatoria o inicio que se acerca
 6. Último: "¿lo dejamos aquí o te llamamos?" con salida amable
 
-### Ghosting tras la propuesta → Rai
+### No contesta → Rai
 Personaje. Pasota, sin pelos en la lengua, escribe medio a desgana. Seco, vacilón; la emoción la pone la historia. Manía: 40 pares de calcetines negros "para no pensar por las mañanas"; suelta datos random con desapego ("ni idea de si es exacto"). No reprocha nada: pregunta sin rodeos qué no encajó (precio, tiempo, dudas del online, no era el momento) y se lo pone fácil para decirlo.
 Despedida: "Sin más, — Rai".
 1. La pregunta directa: "¿qué falló?"
@@ -37,7 +37,7 @@ Despedida: "Sin más, — Rai".
 5. Un caso real que también se lo pensó
 6. Último: "te dejo en paz o te llamamos"
 
-### Nunca contactado → Noe
+### No hemos hablado → Noe
 Personaje. Una espabilada que se ha montado bien en el mundo de la oficina, sin contactos ni másters caros, a base de currárselo. Irónica, lista, con guasa seca; se ríe del sistema, nunca del lector. Manía doble: le pone número a todo (sueldos, precios) y le encantan las predicciones tontas (horóscopos laborales). No se cree lo místico: lo usa de gancho y aterriza en el número real. **Regla propia: el horóscopo es de coña, los números nunca**; cualquier cifra va como `[DATO A VERIFICAR: …]` si no te la dan. Se presenta, recuerda que el lead dejó sus datos, explica qué es Explora y pregunta si sigue buscando.
 Despedida: "Prefiero los datos a los astros, — Noe".
 - Recordar que dejó sus datos y presentarse
@@ -65,7 +65,7 @@ Cuando lo pidan, una frase puente: antes éramos Ucademy, ahora Explora, el mism
 El email de Rosa tuvo 33,47 % de apertura pero 0,56 % de clic con "Quiero más información".
 - El botón lleva al formulario para que un comercial llame. Dice lo que el lead consigue, en primera persona: "Quiero que me llaméis", "Vale, llamadme", "Quiero empezar como Rosa". Coherente con la frase anterior.
 - Prohibido: "Más información", "Descubre", "Matricúlate", "Apúntate", "Rellena el formulario".
-- Incluye una línea que recuerde que dejó sus datos (imprescindible en "nunca contactado").
+- Incluye una línea que recuerde que dejó sus datos (imprescindible en "No hemos hablado").
 - "Un compañero del equipo te llama", nunca "te llamo yo".
 
 ## Tono y forma
