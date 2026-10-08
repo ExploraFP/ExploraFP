@@ -1,0 +1,633 @@
+<title>Taller de Reactivación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: cuaderno de campo — panel de mando anclado a la izquierda (el lomo), vista previa del email a la derecha */
+:root {
+  --bg: #F4F8F2;
+  --panel: #FAFFFA;
+  --ink: #12261A;
+  --muted: #5A6B5F;
+  --line: #D5E2D3;
+  --forest: #366B40;
+  --lime: #D8FF6E;
+  --leaf: #4CCD4B;
+  --chip: #E6F2E2;
+  --warn-bg: #FFF8CF;
+  --warn-fg: #6B5300;
+  --err: #B3261E;
+  --font-display: "Besley", Georgia, serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1611; --panel: #15211A; --ink: #E6F0E4; --muted: #9DB0A2; --line: #2A3B30;
+    --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --chip: #1F3226;
+    --warn-bg: #3A3210; --warn-fg: #FFE45E; --err: #FF8A80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1611; --panel: #15211A; --ink: #E6F0E4; --muted: #9DB0A2; --line: #2A3B30;
+  --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --chip: #1F3226;
+  --warn-bg: #3A3210; --warn-fg: #FFE45E; --err: #FF8A80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; }
+header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
+h1 { font-family: var(--font-display); font-size: 1.9rem; line-height: 1.2; margin: 0 0 4px; text-wrap: balance; }
+h1 .hl { background: var(--lime); color: #12261A; padding: 0 .2em; }
+.sub { color: var(--muted); margin: 0; font-size: .9rem; }
+nav.tabs { display: flex; gap: 4px; margin-block: 16px; flex-wrap: wrap; }
+nav.tabs button { font: 600 .85rem var(--font-body); letter-spacing: .04em; text-transform: uppercase; padding: 8px 14px; border: 1.5px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; cursor: pointer; }
+nav.tabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+select, input[type=text], textarea { font: inherit; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; }
+textarea { min-height: 70px; resize: vertical; }
+select:focus, input:focus, textarea:focus, button:focus-visible, [contenteditable]:focus { outline: 2px solid var(--leaf); outline-offset: 1px; }
+.seg { display: grid; gap: 6px; }
+.seg label { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: start; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer; }
+.seg input { margin-top: 4px; accent-color: var(--forest); }
+.seg strong { font-size: .95rem; }
+.seg small { grid-column: 2; color: var(--muted); font-size: .8rem; }
+.seg label:has(input:checked) { border-color: var(--forest); background: var(--chip); }
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+.steps button { font: 600 .9rem var(--font-mono); padding: 8px 0; border: 1.5px solid var(--line); background: transparent; color: var(--ink); border-radius: 6px; cursor: pointer; }
+.steps button[aria-pressed="true"] { background: var(--forest); border-color: var(--forest); color: var(--panel); }
+.angle { font-size: .82rem; color: var(--muted); margin: 0; min-height: 2.4em; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.toggle { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; }
+.toggle button { font: 500 .8rem var(--font-body); padding: 6px 12px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.btn { font: 600 .95rem var(--font-body); padding: 11px 16px; border-radius: 8px; border: 0; cursor: pointer; }
+.btn-go { background: var(--lime); color: #12261A; box-shadow: 0 0 0 2px #12261A inset; }
+.btn-go:disabled { opacity: .55; cursor: wait; }
+.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.btn-sm { font-size: .8rem; padding: 6px 10px; }
+.status { font-size: .85rem; color: var(--muted); min-height: 1.3em; margin: 0; }
+.status.err { color: var(--err); }
+.signer { display: flex; gap: 10px; align-items: center; padding: 10px 12px; background: var(--chip); border-radius: 8px; font-size: .85rem; }
+.signer .av { width: 34px; height: 34px; border-radius: 50%; background: var(--forest); color: var(--panel); display: grid; place-items: center; font-weight: 600; flex: none; }
+
+/* Preview column */
+.preview { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+.tag { font: 500 .75rem var(--font-mono); background: var(--warn-bg); color: var(--warn-fg); padding: 3px 8px; border-radius: 4px; }
+.inbox { background: #FFFFFF; color: #202124; border: 1px solid #DADCE0; border-radius: 10px; overflow: hidden; font-family: Roboto, Arial, sans-serif; }
+.inbox .cap { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: #5F6368; padding: 8px 14px; background: #F6F8FC; border-bottom: 1px solid #E5E7EB; }
+.mail-row { display: grid; grid-template-columns: 170px minmax(0, 1fr) auto; gap: 12px; padding: 12px 14px; align-items: baseline; font-size: .9rem; }
+.mail-row + .mail-row { border-top: 1px solid #F1F3F4; }
+.mail-row .from { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mail-row .line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.mail-row .line b { color: #202124; }
+.mail-row .line span { color: #5F6368; }
+.mail-row .time { font-size: .78rem; color: #5F6368; font-weight: 700; }
+.mail-row .ab { font: 600 .7rem var(--font-mono); color: #1A73E8; margin-right: 6px; }
+@media (max-width: 560px) {
+  .mail-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .mail-row .line { grid-column: 1 / -1; white-space: normal; }
+}
+.stage { background: #E9EEF3; border-radius: 10px; padding: 20px 12px; overflow-x: auto; }
+.email { background: #FFFFFF; color: #23496D; margin: 0 auto; max-width: 600px; font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.75; transition: max-width .2s; }
+.stage.mobile .email { max-width: 375px; font-size: 15px; }
+.email .hdr { background: #F2FBF6; padding: 18px 18px 22px; }
+.email .hdr img, .email .ftr img { display: block; width: 100%; height: auto; }
+.email .body { padding: 26px 32px 8px; }
+.stage.mobile .email .body { padding: 22px 20px 8px; }
+.email .body p { margin: 0 0 1em; }
+.email .body p[contenteditable] { border-radius: 4px; }
+.email .body p[contenteditable]:hover { background: #F5FAF3; }
+.email .cta { text-align: center; margin: 1.6em 0; }
+.email .cta a { display: inline-block; background: #4CC94B; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 14px 30px; border-radius: 8px; font-size: 1.05em; }
+.email.plain .cta { text-align: left; margin: 1em 0; }
+.email.plain .cta a { background: none; color: #1A5DAB; padding: 0; text-decoration: underline; font-weight: 600; }
+.email .ftr { padding: 8px 32px 28px; }
+.stage.mobile .email .ftr { padding: 8px 20px 24px; }
+.email.plain .hdr, .email.plain .ftr { display: none; }
+.email.plain { font-family: Arial, sans-serif; color: #222222; }
+.tok { display: inline-flex; align-items: center; gap: 4px; border: 1px solid #C9D3DD; border-radius: 4px; padding: 0 6px; font-size: .92em; background: #FFFFFF; color: #23496D; white-space: nowrap; }
+.tok::before { content: "👤"; font-size: .8em; }
+.ph { background: #FFF1B8; color: #6B5300; border-radius: 3px; padding: 0 3px; }
+.checks { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.checks h3 { font: 600 .72rem var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.checks ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: .88rem; }
+.copyrow { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Tablas de casos e historial */
+.list { display: grid; gap: 10px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; min-width: 0; }
+.card h4 { margin: 0; font-family: var(--font-display); font-size: 1.1rem; }
+.card dl { margin: 0; display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 2px 12px; font-size: .88rem; }
+.card dt { color: var(--muted); }
+.card dd { margin: 0; }
+.meta { font: 500 .78rem var(--font-mono); color: var(--muted); }
+.empty { color: var(--muted); font-size: .9rem; padding: 16px; border: 1.5px dashed var(--line); border-radius: 10px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 360px); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: .85rem; }
+.check input { margin-top: 3px; accent-color: var(--forest); }
+.offline { background: var(--warn-bg); color: var(--warn-fg); padding: 10px 14px; border-radius: 8px; font-size: .88rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Taller de <span class="hl">Reactivación</span></h1>
+      <p class="sub">Emails para que los leads perdidos vuelvan a la rueda · Explora FP</p>
+    </div>
+    <p class="sub">Remitente: <span id="fromAddr">marketing@explorafp.com</span></p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-escribir" aria-selected="true" data-tab="escribir">Escribir</button>
+    <button role="tab" id="tab-casos" aria-selected="false" data-tab="casos">Casos reales <span id="nCasos"></span></button>
+    <button role="tab" id="tab-historial" aria-selected="false" data-tab="historial">Historial <span id="nHist"></span></button>
+  </nav>
+
+  <!-- ESCRIBIR -->
+  <section id="view-escribir">
+    <div class="grid">
+      <form class="panel" id="form" autocomplete="off">
+        <div class="field">
+          <span class="label">Motivo de pérdida</span>
+          <div class="seg" id="segBox"></div>
+        </div>
+        <div class="signer" id="signerBox"></div>
+        <div class="field">
+          <span class="label">Email de la secuencia</span>
+          <div class="steps" id="steps"></div>
+          <p class="angle" id="angleTxt"></p>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label class="label" for="rama">Rama</label>
+            <select id="rama">
+              <option value="">Genérica</option>
+              <option>Tecnología</option>
+              <option>Sanidad</option>
+              <option>Comercio y Marketing</option>
+              <option>Administración y Gestión</option>
+              <option>Educación Infantil</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="caso">Caso real</label>
+            <select id="caso"><option value="">Sin caso</option></select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="notas">Indicaciones extra (opcional)</label>
+          <textarea id="notas" placeholder="Ej.: menciona que la convocatoria cierra el 30 de octubre"></textarea>
+        </div>
+        <label class="check"><input type="checkbox" id="puente"> Incluir la frase "antes Ucademy, ahora Explora"</label>
+        <div class="row2">
+          <button type="submit" class="btn btn-go" id="goBtn">Escribir email</button>
+          <button type="button" class="btn btn-ghost" id="stopBtn" hidden>Parar</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+        <p class="offline" id="noSample" hidden>Esta vista no puede pedirle emails a Claude. Ábrela desde claude.ai con tu cuenta para generar; la vista previa y los casos siguen funcionando.</p>
+      </form>
+
+      <div class="preview">
+        <div class="bar">
+          <span class="tag" id="exampleTag">Ejemplo · email que ya enviaste (apertura 33,47 % · clic 0,56 %)</span>
+          <div class="toggle" role="group" aria-label="Plantilla">
+            <button type="button" aria-pressed="true" data-tpl="hubspot">Con diseño</button>
+            <button type="button" aria-pressed="false" data-tpl="plain">Texto sencillo</button>
+          </div>
+          <div class="toggle" role="group" aria-label="Pantalla">
+            <button type="button" aria-pressed="true" data-dev="desktop">Ordenador</button>
+            <button type="button" aria-pressed="false" data-dev="mobile">Móvil</button>
+          </div>
+        </div>
+
+        <div class="inbox" aria-label="Vista en la bandeja de entrada">
+          <div class="cap">Así lo ve en la bandeja de entrada</div>
+          <div class="mail-row"><span class="from" id="ibFrom"></span><span class="line"><span class="ab">A</span><b id="ibSubjA"></b> <span>– <span id="ibPre"></span></span></span><span class="time">9:41</span></div>
+          <div class="mail-row"><span class="from" id="ibFrom2"></span><span class="line"><span class="ab">B</span><b id="ibSubjB"></b> <span>– <span id="ibPre2"></span></span></span><span class="time">9:41</span></div>
+        </div>
+
+        <div class="stage" id="stage">
+          <article class="email" id="email">
+            <div class="hdr"><img alt="Cabecera Explora × Ucademy · Formación Profesional" src="__HEADER__"></div>
+            <div class="body" id="emailBody"></div>
+            <div class="ftr"><img alt="Entrenamiento salvaje para tu profesión" src="__FOOTER__"></div>
+          </article>
+        </div>
+
+        <div class="copyrow">
+          <button type="button" class="btn btn-ghost btn-sm" data-copy="subjA">Copiar asunto A</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-copy="subjB">Copiar asunto B</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-copy="pre">Copiar preheader</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-copy="body">Copiar cuerpo</button>
+          <button type="button" class="btn btn-go btn-sm" id="saveBtn" hidden>Guardar en historial</button>
+        </div>
+        <p class="status" id="copyStatus" role="status"></p>
+
+        <div class="checks" id="checks" hidden>
+          <h3>Revisa antes de enviar</h3>
+          <ul id="checkList"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASOS -->
+  <section id="view-casos" hidden>
+    <div class="two">
+      <div>
+        <p class="sub" style="margin-bottom:12px">Solo alumnos reales que han dado permiso. La herramienta nunca inventa un testimonio: si no eliges caso, escribe el email sin testimonio.</p>
+        <div class="list" id="casosList"><div class="empty">Cargando casos…</div></div>
+      </div>
+      <form class="panel" id="casoForm" autocomplete="off">
+        <span class="label">Añadir caso real</span>
+        <div class="field"><label class="label" for="cNombre">Nombre</label><input type="text" id="cNombre" required></div>
+        <div class="field"><label class="label" for="cRama">Rama</label>
+          <select id="cRama"><option value="">Cualquiera</option><option>Tecnología</option><option>Sanidad</option><option>Comercio y Marketing</option><option>Administración y Gestión</option><option>Educación Infantil</option></select></div>
+        <div class="field"><label class="label" for="cAntes">Situación de partida</label><textarea id="cAntes" required placeholder="A qué se dedicaba, qué le pesaba"></textarea></div>
+        <div class="field"><label class="label" for="cObj">Objeción que superó</label><input type="text" id="cObj" placeholder="Ej.: no tengo tiempo"></div>
+        <div class="field"><label class="label" for="cDesp">Resultado</label><textarea id="cDesp" required placeholder="Qué título sacó y qué cambió"></textarea></div>
+        <div class="field"><label class="label" for="cTiempo">Tiempo que tardó</label><input type="text" id="cTiempo" placeholder="Ej.: 2 años, convalidando parte"></div>
+        <label class="check"><input type="checkbox" id="cPermiso" required> Tenemos su permiso para contar su historia</label>
+        <button type="submit" class="btn btn-go">Guardar caso</button>
+        <p class="status" id="casoStatus" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- HISTORIAL -->
+  <section id="view-historial" hidden>
+    <p class="sub" style="margin-bottom:12px">Lo que guardes aquí se le pasa a Claude al escribir el siguiente email del mismo segmento, para que no repita ángulo, caso ni asunto.</p>
+    <div class="list" id="histList"><div class="empty">Cargando historial…</div></div>
+  </section>
+</div>
+
+<script>
+const SEGMENTOS = {
+  pensarlo: {
+    nombre: "Quería pensarlo", desc: "Conoció la propuesta y pidió tiempo",
+    firma: { nombre: "Vera", inicial: "V", despedida: "Me vuelvo a mis subrayadores,", rol: "Personaje · cálida, cotilla de las buenas" },
+    pasos: [
+      "Recordar sin presión: lo que le frenaba entonces sigue teniendo solución",
+      "Objeción tiempo: compaginarlo con trabajo y vida",
+      "Objeción \"¿vale lo mismo?\": título oficial, mismo valor en toda España",
+      "Objeción dinero: cómo se paga, sin dar cifras sin verificar",
+      "Fecha real: la convocatoria o el inicio que se acerca",
+      "Último: \"¿lo dejamos aquí o te llamamos?\" y salida amable",
+    ],
+  },
+  ghosting: {
+    nombre: "Ghosting tras la propuesta", desc: "Recibió la propuesta y dejó de responder",
+    firma: { nombre: "Rai", inicial: "R", despedida: "Sin más,", rol: "Personaje · seco, directo, con guasa" },
+    pasos: [
+      "La pregunta directa: \"¿qué falló?\" con opciones de un clic",
+      "Si fue el precio: cómo se paga y qué cuesta no hacerlo",
+      "Si fue el tiempo: estudiar sin soltar el curro",
+      "Si fue la duda del online: el título es oficial igual",
+      "Un caso real que también se lo pensó",
+      "Último: \"te dejo en paz o te llamamos\"",
+    ],
+  },
+  nocontactado: {
+    nombre: "Nunca contactado", desc: "Dejó sus datos y nunca llegamos a hablar",
+    firma: { nombre: "Álvaro", inicial: "Á", despedida: "Ahí lo dejo,", rol: "Persona real · su estilo de anécdota cotidiana" },
+    pasos: [
+      "Recordar que dejó sus datos y presentarse",
+      "Caso real: alguien que empezó desde donde está él",
+      "Objeción tiempo: estudiar desde el móvil, a su ritmo",
+      "Objeción \"ya es tarde / empiezo de cero\"",
+      "Título oficial: mismo valor que el presencial",
+      "Último: \"¿sigues buscando FP?\"",
+    ],
+  },
+};
+
+const VOCES = {
+  Vera: `VERA (firma emails del segmento "quería pensarlo"). Personaje de Explora. Cotilla de las buenas: no es sanitaria ni profesora, pero ha escuchado tantas historias de alumnos que se lo sabe todo. Cálida, cercana, de tú a tú, con chispa; como quien te trae un café y te cuenta algo. Nunca ñoña ni presiona. Manía: la papelería (post-its, subrayadores; verde = las historias que acaban bien). Abre con un cotilleo o con su libreta. Asuntos en su voz, de curiosidad: "Subrayé una frase sin darme cuenta", "Llevo días con esto en la cabeza". Su papel en este segmento: ayudar a decidir quitando dudas concretas, sin prisa, dejando claro que pensarlo está bien pero aplazarlo sin fin tiene coste. Despedida: "Me vuelvo a mis subrayadores," y firma "— Vera".`,
+  Rai: `RAI (firma emails del segmento "ghosting tras la propuesta"). Personaje de Explora. Pasota, sin pelos en la lengua, escribe medio a desgana. Directo, seco, vacilón; la emoción la pone la historia, no él. Manía: 40 pares de calcetines negros "para no pensar por las mañanas"; suelta datos random que leyó, con desapego ("ni idea de si es exacto"). Asuntos secos de curiosidad: "Una pregunta y te dejo", "Esto no es otro email de venta". Su papel en este segmento: el lead ya conoció la propuesta y desapareció; Rai no le reprocha nada, pregunta sin rodeos qué no encajó (precio, tiempo, dudas del online, no era el momento) y se lo pone fácil para decirlo. Honestidad brutal pero amable. Despedida: "Sin más," y firma "— Rai".`,
+  "Álvaro": `ÁLVARO (firma emails del segmento "nunca contactado"). Es una PERSONA REAL del equipo de Explora, no un personaje: no le inventes datos biográficos (familia, edad, trabajos previos). Estilo probado: abre con una anécdota doméstica pequeña y autoirónica (la persiana que lleva tres semanas sin arreglar, la pizza quemada que se comió igual), cambia de tema con un giro seco ("En fin. Cambio de tema"), cuenta un caso y cierra conectando con la anécdota. Las anécdotas deben ser cotidianas, inofensivas e inverificables-pero-creíbles, nunca grandes hechos de su vida. Su papel en este segmento: el lead nunca habló con nadie; Álvaro se presenta, recuerda que dejó sus datos interesándose por una FP y le pregunta si sigue buscando. Habla de Explora en primera persona del plural ("en Explora", "nuestro equipo"), nunca "su plataforma" ni "tienen". Despedida: "Ahí lo dejo," y firma "— Álvaro".`,
+};
+
+const REGLAS = `REGLAS DE LA CAMPAÑA (obligatorias)
+Objetivo: reactivar leads perdidos para que rellenen el formulario y un comercial vuelva a llamarles. No se vende matrícula en el email: se consigue que levanten la mano.
+
+Molde (probado, el email de Rosa es el mejor resultado de la campaña):
+1. "Hola," + presentación del narrador en una línea ("soy Álvaro.").
+2. Gancho propio del narrador (anécdota, cotilleo, dato random). El gancho NO tiene moraleja inmediata.
+3. Giro seco hacia la historia o hacia el lector.
+4. Caso real (SOLO si se proporciona uno) con detalles concretos, o, si no hay caso, el razonamiento del narrador dirigido al lector. Si hay caso, el dolor en una frase y el muro que lo frenaba.
+5. La solución sin folleto: la FP oficial aparece como lo que resolvió el problema.
+6. Razón para pulsar + BOTÓN 1. Línea corta + BOTÓN 2 (mismo destino, con guasa distinta en cada email). Cada botón va DESPUÉS de la razón para pulsarlo.
+7. Despedida y firma del narrador.
+8. PD: una, corta, en su tono; cuando se pueda conecta con el gancho.
+
+CTA (lo que mejor puede mejorar la campaña: el email de Rosa tuvo 33 % de apertura pero solo 0,56 % de clic con "Quiero más información"):
+- El botón lleva a un formulario para que un comercial le llame. El texto del botón dice lo que el lead consigue, en primera persona: "Quiero que me llaméis", "Que me llame alguien", "Vale, llamadme", "Quiero empezar como Rosa". Coherente con la frase anterior.
+- Prohibido: "Más información", "Descubre", "Matricúlate", "Apúntate", "Rellena el formulario".
+- Incluye en algún punto una línea que le recuerde que en su día dejó sus datos interesándose por una FP (imprescindible en "nunca contactado"; útil en los demás).
+- Nunca prometas quién llamará: "un compañero del equipo te llama", nunca "te llamo yo".
+
+Tono y forma:
+- Frases cortas. Puntos, no comas. Líneas que respiran. Cabe en una pantalla de móvil y algo más (120-220 palabras de cuerpo).
+- El token de nombre va INCRUSTADO en mitad de una frase, nunca en el saludo: escríbelo literalmente como {{nombre}} (ej.: "Mira, {{nombre}}, ..."). Una sola vez. Que la frase se lea bien también si el nombre queda vacío no es necesario: HubSpot pone un valor por defecto.
+- Un solo cierre emocional. No repitas el mismo dolor.
+- Puedes marcar en negrita UNA frase corta envolviéndola en **dobles asteriscos**.
+- Emojis: como mucho uno, y nunca en el botón.
+
+Prohibiciones (marca y legal):
+- Nunca prometas empleo ni trabajo garantizado. Nunca superlativos no demostrables ("la mayor bolsa de empleo", "lo hace todo por ti").
+- Nunca inventes testimonios, alumnos, cifras, sueldos ni porcentajes. Si un dato ayudaría, escribe un hueco entre corchetes: [DATO A VERIFICAR: sueldo medio de un administrativo] y avísalo en "revisar".
+- El título es "título oficial de FP", con el mismo valor en toda España. Nunca lo banalices ("papelito", "sello").
+- Fechas, precios y plazos reales: solo si vienen en las indicaciones; si no, hueco entre corchetes.
+- Explora siempre en primera persona del plural ("en Explora", "nuestro equipo"); nunca "su plataforma".
+- Vocabulario prohibido: descubre, matricúlate, apúntate, tu futuro empieza hoy, fácilmente, profesor (usa guía), aula, lección.
+
+Asunto y preheader:
+- El asunto es el narrador hablando, por curiosidad, nunca un titular que vende. Sin exclamaciones ni urgencia falsa. Máx. ~45 caracteres.
+- Da DOS asuntos para test A/B con enfoques distintos (p. ej. uno de curiosidad en voz del narrador, otro con nombre propio + resultado como "Rosa se sacó una FP" si hay caso).
+- Preheader: completa o contrasta el asunto, sin vender. Máx. ~60 caracteres.`;
+
+const FORMATO = `Responde SOLO con un objeto JSON con esta forma exacta:
+{
+  "angulo": "una frase: qué trabaja este email",
+  "asunto_a": "...",
+  "asunto_b": "...",
+  "preheader": "...",
+  "bloques": [
+    {"tipo": "texto", "contenido": "un párrafo o línea corta (puede llevar {{nombre}} y **negrita**)"},
+    {"tipo": "boton", "contenido": "Texto del botón"}
+  ],
+  "despedida": "Ahí lo dejo,",
+  "firma": "— Álvaro",
+  "pd": "P.D.: ...",
+  "revisar": ["cosas concretas que el equipo debe comprobar antes de enviar (huecos, datos, fechas)"]
+}
+Cada línea del molde es su propio bloque de texto (párrafos de 1-3 frases). Exactamente dos bloques "boton".`;
+
+// Ejemplo inicial: el email real de Rosa que el usuario ya envió
+const EJEMPLO = {
+  segmento: "nocontactado", paso: 2, ejemplo: true,
+  asunto_a: "Rosa se sacó una FP", asunto_b: "Rosa se sacó una FP", preheader: "Antes limpiaba casas",
+  angulo: "Email real enviado a 2.507 leads no contactados",
+  bloques: [
+    { tipo: "texto", contenido: "Hola,\nsoy Álvaro." },
+    { tipo: "texto", contenido: "Llevo tres semanas diciendo que voy a arreglar la persiana de mi habitación." },
+    { tipo: "texto", contenido: "Se queda a medio bajar. Cada noche igual.\nCada noche pienso: \"mañana la arreglo.\"\nLlevo así tres semanas." },
+    { tipo: "texto", contenido: "En fin.\nCambio de tema, que esto no tiene arreglo (literal)." },
+    { tipo: "texto", contenido: "Conozco a una chica, Rosa. Limpiaba casas y hacía turnos en un súper. Dos trabajos, un cuerpo reventado, y un sueño guardado en un cajón: un trabajo de oficina, tranquilo, sin cargar nada más pesado que un teclado." },
+    { tipo: "texto", contenido: "Nunca había hecho un curso de nada parecido. Empezó de cero.\nNo dejó ninguno de los dos trabajos. Estudió por las noches, desde el móvil, cuando podía." },
+    { tipo: "texto", contenido: "Un año y medio después tenía un título oficial de FP. El mismo que se saca cualquiera en un centro presencial, con el mismo valor en toda España." },
+    { tipo: "texto", contenido: "Con el título, llegó una entrevista. Con la entrevista, el primer día sentada en una silla de oficina. Nada de milagro. Solo un título y una plataforma que se adaptó a su horario, no al revés." },
+    { tipo: "texto", contenido: "Yo con la persiana sigo igual. Pero hay cosas que si las aplazas, solo pierdes comodidad.\n**Y hay otras que si las aplazas, pierdes tiempo de verdad.**" },
+    { tipo: "boton", contenido: "🗺️ Quiero más información" },
+  ],
+  despedida: "Ahí lo dejo,", firma: "— Álvaro",
+  pd: "PD: Si alguien sabe arreglar persianas, que me escriba a mí, no a Rosa.",
+  revisar: [
+    "CTA \"Quiero más información\": sustitúyelo por la acción que buscas (\"Quiero que me llaméis\").",
+    "Falta una línea que le recuerde que dejó sus datos.",
+    "Confirmar que \"un año y medio\" es posible en vuestra oferta (¿convalidó parte?).",
+  ],
+};
+
+const state = { seg: "nocontactado", paso: 1, tpl: "hubspot", dev: "desktop", current: EJEMPLO, casos: [], hist: [] };
+let sample = null, db = null, ctl = null;
+const $ = (id) => document.getElementById(id);
+
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function richText(s) {
+  return esc(s)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\{\{\s*(nombre|contact\.firstname)\s*\}\}/g, '<span class="tok" contenteditable="false">Nombre</span>')
+    .replace(/\[([^\]]{3,})\]/g, '<span class="ph">[$1]</span>')
+    .replace(/\n/g, "<br>");
+}
+
+/* ---------- Formulario ---------- */
+function renderSegments() {
+  $("segBox").innerHTML = Object.entries(SEGMENTOS).map(([k, s]) =>
+    `<label><input type="radio" name="seg" value="${k}" ${k === state.seg ? "checked" : ""}><strong>${esc(s.nombre)}</strong><small>${esc(s.desc)}</small></label>`).join("");
+  $("segBox").querySelectorAll("input").forEach((i) => i.addEventListener("change", () => { state.seg = i.value; renderSide(); }));
+}
+function renderSide() {
+  const s = SEGMENTOS[state.seg];
+  $("signerBox").innerHTML = `<span class="av">${s.firma.inicial}</span><span><strong>Firma ${esc(s.firma.nombre)}</strong><br><span style="color:var(--muted)">${esc(s.firma.rol)}</span></span>`;
+  $("steps").innerHTML = s.pasos.map((_, i) => `<button type="button" aria-pressed="${i + 1 === state.paso}" data-paso="${i + 1}" aria-label="Email ${i + 1}">${i + 1}</button>`).join("");
+  $("steps").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { state.paso = +b.dataset.paso; renderSide(); }));
+  $("angleTxt").textContent = s.pasos[state.paso - 1];
+  $("puente").checked = state.paso === 1;
+  renderCasoSelect();
+}
+function renderCasoSelect() {
+  const sel = $("caso"), prev = sel.value;
+  sel.innerHTML = `<option value="">Sin caso</option>` + state.casos.map((c) => `<option value="${esc(c.id)}">${esc(c.nombre)}${c.rama ? " · " + esc(c.rama) : ""}</option>`).join("");
+  if ([...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+/* ---------- Vista previa ---------- */
+function senderName(seg) { return `${SEGMENTOS[seg].firma.nombre} · Explora FP`; }
+function renderPreview() {
+  const e = state.current;
+  $("exampleTag").hidden = !e.ejemplo;
+  $("ibFrom").textContent = $("ibFrom2").textContent = senderName(e.segmento);
+  $("ibSubjA").textContent = e.asunto_a; $("ibSubjB").textContent = e.asunto_b;
+  $("ibPre").textContent = $("ibPre2").textContent = e.preheader;
+  const parts = e.bloques.map((b) => b.tipo === "boton"
+    ? `<div class="cta"><a href="#" onclick="return false" contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
+    : `<p contenteditable="true">${richText(b.contenido)}</p>`);
+  if (e.pd) parts.push(`<p contenteditable="true">${richText(e.pd)}</p>`);
+  parts.push(`<p contenteditable="true">${richText(e.despedida)}<br>${richText(e.firma)}</p>`);
+  $("emailBody").innerHTML = parts.join("");
+  $("checkList").innerHTML = (e.revisar || []).map((r) => `<li>${richText(r)}</li>`).join("");
+  $("checks").hidden = !(e.revisar && e.revisar.length);
+  $("saveBtn").hidden = !!e.ejemplo || !db;
+}
+function bodyAsText() {
+  return [...$("emailBody").children].map((el) => {
+    if (el.classList.contains("cta")) return `[BOTÓN: ${el.innerText.trim()}]`;
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll(".tok").forEach((t) => t.replaceWith("{{ contact.firstname }}"));
+    clone.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
+    return clone.textContent.trim();
+  }).join("\n\n");
+}
+document.querySelectorAll("[data-tpl]").forEach((b) => b.addEventListener("click", () => {
+  state.tpl = b.dataset.tpl;
+  document.querySelectorAll("[data-tpl]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  $("email").classList.toggle("plain", state.tpl === "plain");
+}));
+document.querySelectorAll("[data-dev]").forEach((b) => b.addEventListener("click", () => {
+  state.dev = b.dataset.dev;
+  document.querySelectorAll("[data-dev]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  $("stage").classList.toggle("mobile", state.dev === "mobile");
+}));
+document.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", () => {
+  const k = b.dataset.copy, e = state.current;
+  const txt = k === "subjA" ? e.asunto_a : k === "subjB" ? e.asunto_b : k === "pre" ? e.preheader : bodyAsText();
+  const done = () => { $("copyStatus").textContent = "Copiado. El nombre va como {{ contact.firstname }} y los botones como [BOTÓN: …]."; };
+  try {
+    navigator.clipboard.writeText(txt).then(done, () => fallbackCopy(txt, done));
+  } catch { fallbackCopy(txt, done); }
+}));
+function fallbackCopy(txt, done) {
+  const ta = document.createElement("textarea");
+  ta.value = txt; document.body.append(ta); ta.select();
+  $("copyStatus").textContent = "Tu navegador no deja copiar solo: el texto está seleccionado, pulsa Ctrl/Cmd + C.";
+  setTimeout(() => ta.remove(), 8000);
+}
+
+/* ---------- Generar con Claude ---------- */
+function buildPrompt() {
+  const s = SEGMENTOS[state.seg];
+  const caso = state.casos.find((c) => c.id === $("caso").value);
+  const hist = state.hist.filter((h) => h.segmento === state.seg).slice(0, 10);
+  const lines = [
+    "Eres el redactor de la campaña de reactivación de leads perdidos de Explora FP (escuela de FP oficial online; antes se llamaba Ucademy). Escribe UN email en español de España.",
+    "",
+    REGLAS,
+    "",
+    "NARRADOR DE ESTE EMAIL:",
+    VOCES[s.firma.nombre],
+    "",
+    `SEGMENTO: ${s.nombre} (${s.desc}).`,
+    `EMAIL ${state.paso} DE 6 DE LA SECUENCIA. Ángulo de este email: ${s.pasos[state.paso - 1]}.`,
+    state.paso === 6 ? "Es el último de la secuencia: ofrece explícitamente la salida (no le volveremos a escribir sobre esto si no quiere)." : "",
+    `RAMA DEL LEAD: ${$("rama").value || "desconocida: escribe genérico, que sirva para cualquier FP"}.`,
+    caso
+      ? `CASO REAL (con permiso, úsalo tal cual, sin añadir hechos que no estén aquí): ${caso.nombre}. Antes: ${caso.antes}. Objeción que superó: ${caso.objecion || "—"}. Resultado: ${caso.despues}. Tiempo: ${caso.tiempo || "no indicado (no lo menciones)"}.`
+      : "SIN CASO REAL: no menciones a ningún alumno concreto ni inventes ninguno. Apóyate en el gancho del narrador y en el lector.",
+    $("puente").checked ? "Incluye de forma natural, una sola vez, que antes éramos Ucademy y ahora somos Explora, el mismo equipo." : "No menciones Ucademy.",
+    $("notas").value.trim() ? `INDICACIONES DEL EQUIPO: ${$("notas").value.trim()}` : "",
+    hist.length
+      ? "YA ENVIADOS A ESTE SEGMENTO (no repitas ángulo, gancho, caso ni asunto):\n" + hist.map((h) => `- Email ${h.paso}: "${h.asunto_a}" · ángulo: ${h.angulo}${h.caso ? " · caso: " + h.caso : ""}${h.gancho ? " · gancho: " + h.gancho : ""}`).join("\n")
+      : "",
+    "",
+    FORMATO,
+  ];
+  return lines.filter((l) => l !== "").join("\n");
+}
+function validEmail(d) {
+  return d && typeof d === "object" && typeof d.asunto_a === "string" && Array.isArray(d.bloques) && d.bloques.length > 2;
+}
+const ERRORES = {
+  not_granted: "No se ha dado permiso para usar Claude desde esta página.",
+  sampling_disabled: "Claude no está disponible para esta cuenta.",
+  rate_limited: "Demasiadas peticiones seguidas. Espera un minuto y vuelve a probar.",
+  session_expired: "Tu sesión ha caducado. Vuelve a entrar en claude.ai.",
+  invalid_json: "La respuesta llegó con un formato raro. Pulsa de nuevo \"Escribir email\".",
+  refused: "Claude no ha querido escribir con estas indicaciones. Cambia las indicaciones extra.",
+};
+$("form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  if (!sample) return;
+  ctl = new AbortController();
+  $("goBtn").disabled = true; $("stopBtn").hidden = false;
+  $("status").className = "status"; $("status").textContent = "Pensando… (suele tardar entre 20 y 60 segundos)";
+  try {
+    const data = await sample.json(buildPrompt(), {
+      signal: ctl.signal, cache: false,
+      onText: ({ text }) => { $("status").textContent = `Escribiendo… ${Math.min(99, Math.round(text.length / 25))} %`; },
+    });
+    if (!validEmail(data)) throw { code: "invalid_json" };
+    const caso = state.casos.find((c) => c.id === $("caso").value);
+    state.current = {
+      ...data, segmento: state.seg, paso: state.paso, rama: $("rama").value, caso: caso ? caso.nombre : "",
+      asunto_b: data.asunto_b || data.asunto_a, despedida: data.despedida || SEGMENTOS[state.seg].firma.despedida,
+      firma: data.firma || "— " + SEGMENTOS[state.seg].firma.nombre,
+    };
+    renderPreview();
+    $("status").textContent = "Listo. Puedes retocar el texto haciendo clic sobre él.";
+  } catch (e) {
+    if (e && e.code === "cancelled") { $("status").textContent = "Parado."; }
+    else {
+      $("status").className = "status err";
+      $("status").textContent = ERRORES[e && e.code] || "No se pudo escribir el email. Vuelve a intentarlo en un momento.";
+      if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) { $("goBtn").hidden = true; }
+    }
+  } finally {
+    $("goBtn").disabled = false; $("stopBtn").hidden = true;
+  }
+});
+$("stopBtn").addEventListener("click", () => ctl?.abort());
+
+/* ---------- Pestañas ---------- */
+document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x === b));
+  ["escribir", "casos", "historial"].forEach((t) => { $("view-" + t).hidden = t !== b.dataset.tab; });
+}));
+
+/* ---------- Casos e historial (db compartida) ---------- */
+function renderCasos() {
+  $("nCasos").textContent = state.casos.length ? `(${state.casos.length})` : "";
+  $("casosList").innerHTML = state.casos.length ? state.casos.map((c) => `
+    <div class="card"><h4>${esc(c.nombre)}</h4>
+      <dl><dt>Rama</dt><dd>${esc(c.rama || "Cualquiera")}</dd><dt>Antes</dt><dd>${esc(c.antes)}</dd>
+      <dt>Objeción</dt><dd>${esc(c.objecion || "—")}</dd><dt>Resultado</dt><dd>${esc(c.despues)}</dd>
+      <dt>Tiempo</dt><dd>${esc(c.tiempo || "—")}</dd></dl></div>`).join("")
+    : `<div class="empty">Aún no hay casos. Añade el primero con el formulario: nombre, de dónde partía y qué consiguió.</div>`;
+  renderCasoSelect();
+}
+function renderHist() {
+  $("nHist").textContent = state.hist.length ? `(${state.hist.length})` : "";
+  $("histList").innerHTML = state.hist.length ? state.hist.map((h) => `
+    <div class="card"><span class="meta">${esc(SEGMENTOS[h.segmento]?.nombre || h.segmento)} · email ${esc(h.paso)} · ${esc(h.fecha || "")}</span>
+      <h4>${esc(h.asunto_a)}</h4>
+      <dl><dt>Asunto B</dt><dd>${esc(h.asunto_b || "—")}</dd><dt>Preheader</dt><dd>${esc(h.preheader)}</dd>
+      <dt>Ángulo</dt><dd>${esc(h.angulo)}</dd><dt>Caso</dt><dd>${esc(h.caso || "—")}</dd>
+      ${h.resultado ? `<dt>Resultado</dt><dd>${esc(h.resultado)}</dd>` : ""}</dl></div>`).join("")
+    : `<div class="empty">Aún no has guardado ningún email. Cuando uno te guste, pulsa "Guardar en historial" bajo la vista previa.</div>`;
+}
+$("casoForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  if (!db) { $("casoStatus").textContent = "Esta vista no puede guardar casos."; return; }
+  if (!$("cPermiso").checked) { $("casoStatus").textContent = "Solo se guardan casos con permiso del alumno."; return; }
+  try {
+    await db.collection("casos").add({
+      nombre: $("cNombre").value.trim(), rama: $("cRama").value, antes: $("cAntes").value.trim(),
+      objecion: $("cObj").value.trim(), despues: $("cDesp").value.trim(), tiempo: $("cTiempo").value.trim(),
+      permiso: true, creado: new Date().toISOString(),
+    });
+    $("casoForm").reset(); $("casoStatus").textContent = "Caso guardado.";
+  } catch (e) { $("casoStatus").textContent = "No se pudo guardar: no tienes permiso de edición en esta página."; }
+});
+$("saveBtn").addEventListener("click", async () => {
+  const e = state.current;
+  try {
+    await db.collection("historial").add({
+      segmento: e.segmento, paso: e.paso, rama: e.rama || "", caso: e.caso || "",
+      asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader, angulo: e.angulo || "",
+      gancho: (e.bloques[1]?.contenido || "").slice(0, 120), cuerpo: bodyAsText(),
+      fecha: new Date().toLocaleDateString("es-ES"), creado: new Date().toISOString(),
+    });
+    $("copyStatus").textContent = "Guardado en el historial. El próximo email de este segmento no repetirá este ángulo.";
+    $("saveBtn").hidden = true;
+  } catch { $("copyStatus").textContent = "No se pudo guardar: no tienes permiso de edición en esta página."; }
+});
+
+/* ---------- Arranque ---------- */
+renderSegments(); renderSide(); renderPreview(); renderCasos(); renderHist();
+(async () => {
+  if (!window.claude?.use) { $("noSample").hidden = false; $("goBtn").disabled = true; return; }
+  sample = await window.claude.use("sample");
+  if (!sample) { $("noSample").hidden = false; $("goBtn").disabled = true; }
+  db = await window.claude.use("db");
+  if (db) {
+    db.collection("casos").orderBy("creado", "asc").onSnapshot((snap) => {
+      state.casos = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderCasos();
+    });
+    db.collection("historial").orderBy("creado", "desc").onSnapshot((snap) => {
+      state.hist = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderHist();
+    });
+    renderPreview();
+  } else {
+    $("casosList").innerHTML = $("histList").innerHTML = `<div class="empty">Abre la página desde claude.ai con tu cuenta para ver y guardar casos e historial.</div>`;
+  }
+})();
+</script>
