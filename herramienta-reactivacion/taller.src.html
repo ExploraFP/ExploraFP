@@ -158,6 +158,10 @@ textarea { min-height: 64px; resize: vertical; }
 .actions .sp { flex: 1; }
 .checks { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
 .checks ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: .88rem; }
+.savebar { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; gap: 10px; align-items: end; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.savebar .saved { font: 500 .78rem var(--font-mono); color: var(--muted); padding-bottom: 10px; white-space: nowrap; }
+.savebar .saved.err { color: var(--err); white-space: normal; }
+@media (max-width: 640px) { .savebar { grid-template-columns: minmax(0, 1fr); } }
 .plan { background: var(--paper); border: 1.5px solid var(--ink); border-radius: 12px; padding: 14px 16px; display: grid; gap: 10px; }
 .plan .row { display: grid; grid-template-columns: 160px 150px minmax(0, 1fr); gap: 10px; }
 @media (max-width: 640px) { .plan .row { grid-template-columns: minmax(0, 1fr); } }
@@ -465,19 +469,14 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <button type="button" class="btn btn-line btn-sm" data-copy="pre">Copiar preheader</button>
           <button type="button" class="btn btn-line btn-sm" data-copy="body">Copiar cuerpo</button>
           <span class="sp"></span>
-          <button type="button" class="btn btn-ink btn-sm" id="planBtn" hidden>Añadir al calendario</button>
         </div>
         <p class="status" id="copyStatus" role="status"></p>
-        <form class="plan" id="planForm" hidden>
-          <p class="eyebrow">Añadir al calendario</p>
-          <div class="row">
-            <label class="l" for="pFecha">Fecha de envío<input type="date" id="pFecha" required></label>
-            <label class="l" for="pEstado">Estado
-              <select id="pEstado"><option value="sin_empezar">Sin empezar</option><option value="en_redaccion">En redacción</option><option value="listo">Listo para enviar</option><option value="enviado">Enviado</option></select></label>
-            <label class="l" for="pHs">Enlace de HubSpot (opcional)<input type="url" id="pHs" placeholder="https://app.hubspot.com/…"></label>
-          </div>
-          <div class="go-row"><button type="submit" class="btn btn-ink btn-sm">Guardar</button><button type="button" class="btn btn-line btn-sm" id="planCancel">Cancelar</button></div>
-        </form>
+        <div class="savebar" id="saveBar" hidden>
+          <label class="l" for="pEstado">Estado
+            <select id="pEstado"><option value="en_redaccion">En redacción</option><option value="listo">Listo para enviar</option><option value="enviado">Enviado</option></select></label>
+          <label class="l" for="pHs">Enlace de HubSpot<input type="url" id="pHs" placeholder="https://app.hubspot.com/…"></label>
+          <span class="saved" id="savedAt" role="status"></span>
+        </div>
         <div class="checks" id="checks" hidden>
           <p class="eyebrow">Revisa antes de enviar</p>
           <ul id="checkList"></ul>
@@ -758,13 +757,13 @@ function nextSlot(seg) {
 function renderPreview() {
   const e = state.current, has = !!e;
   document.querySelectorAll("[data-copy]").forEach((b) => { b.hidden = !has; });
-  $("checks").hidden = true; $("planForm").hidden = true;
+  $("checks").hidden = true;
   if (!has) {
     const s = SEG[state.seg];
     $("ibFrom").textContent = $("ibFrom2").textContent = `${s.firma.nombre} · Explora FP`;
     $("ibA").textContent = $("ibB").textContent = ""; $("ibPre").textContent = $("ibPre2").textContent = "";
     $("emailBody").innerHTML = '<div class="skel"><i></i><i></i><i style="width:70%"></i><i></i><i style="width:45%"></i></div>';
-    $("planBtn").hidden = true;
+    $("saveBar").hidden = true;
     return;
   }
   const s = SEG[e.segmento];
@@ -781,7 +780,7 @@ function renderPreview() {
   $("emailBody").innerHTML = parts.join("");
   $("checkList").innerHTML = (e.revisar || []).map((r) => `<li>${rich(r)}</li>`).join("");
   $("checks").hidden = !(e.revisar && e.revisar.length);
-  $("planBtn").hidden = !db;
+  $("saveBar").hidden = !db;
 }
 function bodyText() {
   return [...$("emailBody").children].map((el) => {
@@ -884,7 +883,7 @@ async function sendChat(text) {
     state.current = { ...em, segmento: state.seg, asunto_b: em.asunto_b || em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
     state.chat[state.chat.length - 1] = { role: "bot", text: (d.mensaje || "Listo.").trim() };
     renderPreview();
-    if (db) showPlan(false);
+    scheduleSave(0);
     $("chatText").focus();
   } catch (e) {
     state.chat.pop();
@@ -896,25 +895,52 @@ $("chatText").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.s
 $("stopBtn").onclick = () => ctl?.abort();
 
 /* ---------- Añadir al calendario ---------- */
-function showPlan(focus) { $("pFecha").value = state.slot?.fecha || nextSlot(state.current.segmento); $("pEstado").value = "en_redaccion"; $("pHs").value = ""; $("planForm").hidden = false; if (focus) $("pFecha").focus(); };
-$("planBtn").onclick = () => showPlan(true);
-$("planCancel").onclick = () => { $("planForm").hidden = true; };
-$("planForm").onsubmit = async (ev) => {
-  ev.preventDefault();
-  const e = state.current;
-  if ($("pHs").value && !safeUrl($("pHs").value)) { $("copyStatus").textContent = "El enlace de HubSpot tiene que empezar por https://"; return; }
-  const email = { asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader, despedida: e.despedida, firma: e.firma, pd: e.pd || "", revisar: e.revisar || [], segmento: e.segmento,
-    bloques: [...$("emailBody").children].slice(0, e.bloques.length).map((el, i) => ({ tipo: e.bloques[i].tipo, contenido: e.bloques[i].tipo === "boton" ? el.innerText.trim() : e.bloques[i].contenido })) };
+/* ---------- Guardado automático del borrador ---------- */
+function domText(el) {
+  const c = el.cloneNode(true);
+  c.querySelectorAll(".tok").forEach((t) => t.replaceWith("{{nombre}}"));
+  c.querySelectorAll("strong, b").forEach((b) => b.replaceWith("**" + b.textContent + "**"));
+  c.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
+  return c.textContent.replace(/\n{3,}/g, "\n\n").trim();
+}
+function emailFromDom() {
+  const e = state.current; if (!e) return null;
+  const els = [...$("emailBody").children];
+  const bloques = e.bloques.map((b, i) => {
+    const el = els[i]; if (!el) return b;
+    if (b.tipo === "boton") return { tipo: "boton", contenido: el.innerText.trim() };
+    if (b.tipo === "lista") return { tipo: "lista", contenido: [...el.querySelectorAll("li")].map(domText).filter(Boolean) };
+    return { tipo: "texto", contenido: domText(el) };
+  });
+  const rest = els.slice(e.bloques.length);
+  const pd = e.pd && rest[0] ? domText(rest[0]) : e.pd || "";
+  return { ...e, bloques, pd };
+}
+let saveTimer = null, saving = Promise.resolve();
+function scheduleSave(ms) { clearTimeout(saveTimer); saveTimer = setTimeout(() => { saving = saving.then(saveDraft); }, ms ?? 1200); }
+async function saveDraft() {
+  if (!db || !state.slot || !state.current) return;
+  const e = emailFromDom(); state.current = e;
+  const clean = (v) => JSON.parse(JSON.stringify(v ?? null));
+  const email = clean({ asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader || "", despedida: e.despedida, firma: e.firma, pd: e.pd || "", revisar: e.revisar || [], bloques: e.bloques, angulo: e.angulo || "" });
+  const primero = e.bloques.find((b, i) => i > 0 && b.tipo === "texto");
+  const hs = $("pHs").value.trim();
+  if (hs && !safeUrl(hs)) { $("savedAt").className = "saved err"; $("savedAt").textContent = "El enlace tiene que empezar por https://"; return; }
+  const data = { segmento: state.seg, fecha: state.slot.fecha, estado: $("pEstado").value, hubspot: safeUrl(hs), asunto: e.asunto_a || "", preheader: e.preheader || "",
+    angulo: e.angulo || "", gancho: primero ? String(primero.contenido).slice(0, 120) : "", email, chat: clean((state.chat || []).filter((m) => !m.thinking).slice(-20)) };
+  $("savedAt").className = "saved"; $("savedAt").textContent = "Guardando…";
   try {
-    const data = { segmento: e.segmento, fecha: $("pFecha").value, estado: $("pEstado").value,
-      hubspot: safeUrl($("pHs").value), asunto: e.asunto_a, preheader: e.preheader || "", angulo: e.angulo || "", buyer: e.buyer || "", formacion: e.formacion || "",
-      gancho: (e.bloques[1]?.contenido || "").slice(0, 120), email };
-    if (state.slot?.id) await db.collection("calendario").doc(state.slot.id).update(data);
-    else await db.collection("calendario").add({ ...data, notas: "", creado: new Date().toISOString() });
-    $("planForm").hidden = true; $("planBtn").hidden = true;
-    state.slot = null; showTab(state.returnTab || "semana");
-  } catch { $("copyStatus").textContent = "No se pudo guardar: no tienes permiso de edición en esta página."; }
-};
+    if (state.slot.id) await db.collection("calendario").doc(state.slot.id).update(data);
+    else { const ref = await db.collection("calendario").add({ ...data, notas: "", metricas: {}, creado: new Date().toISOString() }); state.slot.id = ref.id; }
+    $("savedAt").textContent = "Guardado " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+  } catch (err) {
+    $("savedAt").className = "saved err";
+    $("savedAt").textContent = "No se ha guardado" + (err && err.code ? ` (${err.code})` : "") + ". Vuelve a intentarlo.";
+  }
+}
+$("emailBody").addEventListener("input", () => scheduleSave(1500));
+$("pEstado").onchange = () => scheduleSave(0);
+$("pHs").addEventListener("change", () => scheduleSave(0));
 
 /* ---------- Abrir el editor desde un hueco del calendario ---------- */
 function openWriter(seg, fecha, id) {
@@ -922,13 +948,16 @@ function openWriter(seg, fecha, id) {
   state.seg = seg; state.slot = { fecha, id: id || null }; state.chat = [];
   const prev = id && state.cal.find((c) => c.id === id);
   state.current = prev && prev.email ? { ...prev.email, segmento: seg } : null;
+  state.chat = prev && Array.isArray(prev.chat) ? prev.chat.map((m) => ({ role: m.role, text: m.text })) : [];
+  $("pEstado").value = prev ? (normEstado(prev.estado) === "sin_empezar" ? "en_redaccion" : normEstado(prev.estado)) : "en_redaccion";
+  $("pHs").value = prev ? prev.hubspot || "" : ""; $("savedAt").className = "saved"; $("savedAt").textContent = prev && prev.email ? "Guardado" : "";
   renderChat(); renderPreview(); $("status").textContent = "";
   const s = SEG[seg], d = parse(fecha);
   $("slotLabel").innerHTML = `Email de ${esc(s.firma.nombre)} para el ${esc(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }))}<small>${esc(s.nombre)}</small>`;
   $("editor").hidden = true;
   showTab("escribir");
 }
-$("backBtn").onclick = () => { state.slot = null; showTab(state.returnTab || "semana"); };
+$("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); } await saving; state.slot = null; showTab(state.returnTab || "semana"); };
 
 /* ---------- Calendario ---------- */
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
