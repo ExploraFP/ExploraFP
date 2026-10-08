@@ -708,7 +708,7 @@ function renderSeq() {
   $("angulo").value = state.angulo;
 }
 function renderFormSelect() {
-  $("formacion").innerHTML = `<option value="">Cualquier formación</option>` + SECTORS.map((sec) =>
+  $("formacion").innerHTML = `<option value="">Transversal</option>` + SECTORS.map((sec) =>
     `<optgroup label="${esc(sec)}">${DATA.FORMS.filter((f) => f.sector === sec).map((f) => `<option value="${f.id}">${esc(f.name)}</option>`).join("")}</optgroup>`).join("");
   $("formacion").value = state.formacion;
   renderBuyerSelect();
@@ -716,7 +716,7 @@ function renderFormSelect() {
 function renderBuyerSelect() {
   const list = DATA.P.filter((p) => p.f === state.formacion);
   $("buyer").disabled = !list.length;
-  $("buyer").innerHTML = `<option value="">${list.length ? "Cualquiera de esta formación" : "Elige antes una formación"}</option>` +
+  $("buyer").innerHTML = `<option value="">${list.length ? "Cualquiera de esta formación" : "—"}</option>` +
     list.map((p) => `<option value="${p.id}">${esc(p.emoji)} ${esc(p.pn)} · ${esc(p.role)}</option>`).join("");
   $("buyer").value = list.some((p) => p.id === state.buyer) ? state.buyer : "";
   state.buyer = $("buyer").value;
@@ -795,7 +795,7 @@ function buildPrompt() {
     `SEGMENTO: ${s.nombre} (${s.desc}).`,
     "Cada email es único (no es una secuencia): tiene que funcionar solo, aunque el lead no haya leído ninguno anterior.",
     state.angulo ? `ÁNGULO: ${state.angulo}.` : `ÁNGULO: elige tú el que mejor encaje con el destinatario, distinto de los ya enviados. Opciones habituales: ${s.pasos.join(" / ")}.`,
-    f ? `FORMACIÓN: ${f.name} (${f.sector}). ${f.desc}` : "FORMACIÓN: cualquiera; escribe genérico, que sirva para cualquier FP.",
+    f ? `FORMACIÓN: ${f.name} (${f.sector}). ${f.desc}` : "FORMACIÓN: transversal. El email va a leads de todas las formaciones: no menciones ninguna FP ni rama concreta; escribe para que cualquiera se reconozca.",
   ];
   if (p) {
     out.push(`ALUMNO REAL (alumna/o real con permiso; puedes contar su historia con su nombre, sin añadir hechos que no estén aquí, sin inventar plazos ni resultados): ${p.pn}. ${p.bio} Perfil: ${p.perfil}. Quería: ${p.goal}. Le dolía: ${p.pain}. Objeciones que tuvo: ${p.obj}. Ángulo que funciona: ${p.ang}. Cita del CRM (úsala para el tono): ${p.cita}`);
