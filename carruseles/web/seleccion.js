@@ -466,6 +466,8 @@ function terminarInline(repintar) {
   try { I.el.removeAttribute('contenteditable'); I.el.classList.remove('sel-editando'); I.doc.getSelection().removeAllRanges(); } catch (e) {}
   SEL.inline = null;
   const g = document.querySelector('#est-editor .est-grande'); if (g) g.classList.remove('editando');
+  // el foco vuelve a la web (si se queda en la slide, o se va fuera al recargarla, Ctrl+Z y las flechas no llegan)
+  try { I.el.blur(); window.focus(); const ed = $('#est-editor'); if (ed) { if (!ed.hasAttribute('tabindex')) ed.setAttribute('tabindex', '-1'); ed.focus({preventScroll: true}); } } catch (e) {}
   if (repintar) setTimeout(() => { if (EST.abierto && !SEL.inline) pintarEditor(true); }, 0);
 }
 function empezarInline(fr, el) {
@@ -475,7 +477,9 @@ function empezarInline(fr, el) {
   el.setAttribute('contenteditable', 'true'); el.spellcheck = false; el.classList.add('sel-editando');
   SEL.inline = {el: el, doc: d, campo: p.campo, idx: p.idx, slide: p.slide};
   const g = fr.closest('.est-grande'); if (g) g.classList.add('editando');
-  el.focus();
+  // Safari no deja escribir en un documento de otro marco si no se le da el foco primero al marco
+  try { fr.focus(); fr.contentWindow.focus(); } catch (e) {}
+  el.focus({preventScroll: true});
   // cursor donde se ha pinchado (o al final); «Escribe aquí» sale seleccionado para escribir encima
   const sel = d.getSelection(); let rg = null;
   if (/^escribe aquí$|^nuevo punto$/i.test(el.textContent.trim())) { rg = d.createRange(); rg.selectNodeContents(el); }
@@ -486,6 +490,7 @@ function empezarInline(fr, el) {
   }
   if (!rg) { rg = d.createRange(); rg.selectNodeContents(el); rg.collapse(false); }
   sel.removeAllRanges(); sel.addRange(rg);
+  setTimeout(() => { if (SEL.inline && SEL.inline.el === el && d.activeElement !== el) { try { fr.contentWindow.focus(); el.focus({preventScroll: true}); const s2 = d.getSelection(); s2.removeAllRanges(); s2.addRange(rg); } catch (e) {} } }, 60);
   if (d.__selInline) return; d.__selInline = true;
   d.addEventListener('input', ev => { if (SEL.inline && SEL.inline.el.contains(ev.target)) guardarInline(false); });
   d.addEventListener('paste', ev => { if (!SEL.inline) return; ev.preventDefault(); const t = (ev.clipboardData || window.clipboardData).getData('text/plain');
@@ -565,3 +570,11 @@ window.addEventListener('keydown', e => {
   if (SEL.inline || SEL.diseno || !$('#onb').hidden) return;
   e.preventDefault(); irSlide(e.key === 'ArrowLeft' ? -1 : 1);
 });
+
+// nada recarga la slide grande mientras escribes encima (p. ej. pintarMinis al cambiar el tamaño de la ventana)
+const _pintarMinisIn = pintarMinis;
+pintarMinis = function (raiz) {
+  if (SEL.inline) { const fr = document.querySelector('#est-editor .est-grande iframe'), c = EST.lista[EST.abierto];
+    if (fr && c) { try { fr._doc = docSlide(c, +fr.dataset.i); } catch (e) {} } }
+  return _pintarMinisIn(raiz);
+};

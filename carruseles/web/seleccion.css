@@ -117,3 +117,4 @@
 @media (max-width: 900px) { .sel-escenario { gap: 6px; } .sel-paso { width: 34px; height: 34px; font-size: 24px; } }
 .sel-escenario .est-grande { max-width: calc(100% - 116px); }
 @media (max-width: 900px) { .sel-escenario .est-grande { max-width: calc(100% - 80px); } }
+#est-editor:focus { outline: none; }
