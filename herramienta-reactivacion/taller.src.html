@@ -201,6 +201,7 @@ textarea { min-height: 64px; resize: vertical; }
 .srow .a b { font-weight: 600; }
 .srow .a span { color: var(--muted); }
 .srow .m { color: var(--muted); font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.srow .m .mets { flex-wrap: nowrap; }
 @media (max-width: 760px) { .srow { grid-template-columns: minmax(0, 1fr) auto; } .srow .a, .srow .m { grid-column: 1 / -1; white-space: normal; } }
 
 /* Calendario: vista de mes */
@@ -261,7 +262,10 @@ textarea { min-height: 64px; resize: vertical; }
 .editor { margin-top: 16px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
 .editor .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .editor .grid2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 10px; }
-@media (max-width: 640px) { .editor .grid3, .editor .grid2 { grid-template-columns: minmax(0, 1fr); } }
+.editor .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 640px) { .editor .grid3, .editor .grid2 { grid-template-columns: minmax(0, 1fr); } .editor .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.mets { display: flex; flex-wrap: wrap; gap: 4px 12px; font: 500 .78rem var(--font-mono); color: var(--muted); }
+.mets b { color: var(--ink); font-weight: 600; }
 .empty { color: var(--muted); font-size: .9rem; padding: 18px; border: 1.5px dashed var(--line); border-radius: 12px; }
 
 /* Narradores */
@@ -463,7 +467,13 @@ textarea { min-height: 64px; resize: vertical; }
       </div>
       <label class="l" for="eHs">Enlace de HubSpot<input type="url" id="eHs" placeholder="https://app.hubspot.com/email/…"></label>
       <a class="hs" id="eHsOpen" href="#" target="_blank" rel="noopener" hidden>Abrir en HubSpot ↗</a>
-      <label class="l" for="eNotas">Notas (resultados, aperturas, clics…)<textarea id="eNotas"></textarea></label>
+      <div class="grid4">
+        <label class="l" for="mEnv">Enviados<input type="text" inputmode="numeric" id="mEnv" placeholder="2507"></label>
+        <label class="l" for="mAp">Apertura %<input type="text" inputmode="decimal" id="mAp" placeholder="33,47"></label>
+        <label class="l" for="mCl">Clic %<input type="text" inputmode="decimal" id="mCl" placeholder="0,56"></label>
+        <label class="l" for="mForm">Formularios<input type="text" inputmode="numeric" id="mForm" placeholder="3"></label>
+      </div>
+      <label class="l" for="eNotas">Notas<textarea id="eNotas"></textarea></label>
       <div class="go-row">
         <button type="submit" class="btn btn-ink btn-sm">Guardar</button>
         <button type="button" class="btn btn-line btn-sm" id="eVer" hidden>Ver email</button>
@@ -831,6 +841,7 @@ function renderWeek() {
       <div class="wday"><b>${esc(when.toLocaleDateString("es-ES", { weekday: "long" }))}</b><span>${esc(fmtShort(when))}${late ? " · atrasado" : ""}</span></div>
       <div class="wwho"><span class="av" style="background:${s.color}">${s.firma.ini}</span><span><b>${esc(s.firma.nombre)}</b> · ${esc(s.nombre)}</span></div>
       ${e && e.asunto ? `<div class="wsubj"><b>${esc(e.asunto)}</b>${e.preheader ? `<span>${esc(e.preheader)}</span>` : ""}</div>` : `<div class="wsubj empty-s">${e ? "Planificado, sin asunto todavía" : "Aún no hay email para este hueco"}</div>`}
+      ${e ? metsHtml(e) : ""}
       <div class="wst"><span class="st st-${esc(st)}">${esc(st)}</span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}</div>
       <div class="go-row">${e ? `<button type="button" class="btn btn-line btn-sm" data-open="${esc(e.id)}">${e.estado === "enviado" ? "Ver ficha" : "Editar"}</button>` : ""}${!e || !e.asunto ? `<button type="button" class="btn btn-ink btn-sm" data-write="${k}">Escribir el de ${esc(s.firma.nombre)}</button>` : ""}</div>
     </div>`;
@@ -842,6 +853,14 @@ function renderWeek() {
     openWriter(k, e ? e.fecha : iso(addDays(w, SEG[k].dia)), e && e.id);
   });
 }
+function metsHtml(c) {
+  const m = c.metricas || {}, parts = [];
+  if (m.enviados) parts.push(`<b>${esc(m.enviados)}</b> env.`);
+  if (m.apertura) parts.push(`<b>${esc(m.apertura)} %</b> ap.`);
+  if (m.clic) parts.push(`<b>${esc(m.clic)} %</b> clic`);
+  if (m.formularios) parts.push(`<b>${esc(m.formularios)}</b> form.`);
+  return parts.length ? `<span class="mets">${parts.join("")}</span>` : "";
+}
 function renderSent() {
   const todayIso = iso(new Date());
   const rows = state.cal.filter((c) => c.estado === "enviado" || c.fecha < todayIso).sort((a, b) => b.fecha.localeCompare(a.fecha));
@@ -850,7 +869,7 @@ function renderSent() {
       <span class="d">${esc(fmtDay(parse(c.fecha)))}</span>
       <span class="n"><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>
       <span class="a"><b>${esc(c.asunto || "Sin asunto")}</b>${c.preheader ? ` <span>– ${esc(c.preheader)}</span>` : ""}</span>
-      <span class="m">${esc((c.notas || "").replace(/(Importado de )?Notion: ?\S+/g, "").trim() || (c.estado !== "enviado" ? c.estado : ""))}</span>
+      <span class="m">${metsHtml(c) || esc((c.notas || "").replace(/(Importado de )?Notion: ?\S+/g, "").trim() || (c.estado !== "enviado" ? c.estado : ""))}</span>
       <span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">HubSpot ↗</a>` : ""}</span>
     </button>`; }).join("")
     : `<div class="empty" style="border:0">Todavía no hay envíos registrados.</div>`;
@@ -888,6 +907,8 @@ function openEditor(item, seg, date) {
   $("eSeg").value = item ? item.segmento : seg; $("eFecha").value = item ? item.fecha : date;
   $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? item.estado : "borrador";
   $("eHs").value = item ? item.hubspot || "" : ""; $("eNotas").value = item ? item.notas || "" : "";
+  const m = (item && item.metricas) || {};
+  $("mEnv").value = m.enviados ?? ""; $("mAp").value = m.apertura ?? ""; $("mCl").value = m.clic ?? ""; $("mForm").value = m.formularios ?? "";
   $("eDel").hidden = !item; $("eVer").hidden = !(item && item.email);
   $("edStatus").textContent = ""; $("editor").hidden = false; $("eHsOpen").hidden = !safeUrl($("eHs").value); $("eHsOpen").href = safeUrl($("eHs").value) || "#"; $("editor").scrollIntoView({ behavior: "smooth", block: "nearest" }); $("eHs").focus();
 }
@@ -896,7 +917,8 @@ $("eWrite").onclick = () => openWriter($("eSeg").value, $("eFecha").value || nex
 $("editor").onsubmit = async (ev) => {
   ev.preventDefault();
   if ($("eHs").value && !safeUrl($("eHs").value)) { $("edStatus").textContent = "El enlace tiene que empezar por https://"; return; }
-  const data = { segmento: $("eSeg").value, fecha: $("eFecha").value, asunto: $("eAsunto").value.trim(), estado: $("eEstado").value, hubspot: safeUrl($("eHs").value), notas: $("eNotas").value.trim() };
+  const data = { segmento: $("eSeg").value, fecha: $("eFecha").value, asunto: $("eAsunto").value.trim(), estado: $("eEstado").value, hubspot: safeUrl($("eHs").value), notas: $("eNotas").value.trim(),
+    metricas: { enviados: $("mEnv").value.trim(), apertura: $("mAp").value.trim(), clic: $("mCl").value.trim(), formularios: $("mForm").value.trim() } };
   try {
     if (state.editing) await db.collection("calendario").doc(state.editing).update(data);
     else await db.collection("calendario").add({ ...data, angulo: "", gancho: "", buyer: "", formacion: "", creado: new Date().toISOString() });
