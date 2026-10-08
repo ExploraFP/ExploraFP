@@ -162,6 +162,8 @@ textarea { min-height: 64px; resize: vertical; }
 .actions .sp { flex: 1; }
 .checks { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
 .checks ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: .88rem; }
+.undo { display: flex; gap: 6px; }
+.undo .icon-btn:disabled { opacity: .35; cursor: default; }
 .savebar { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; gap: 10px; align-items: end; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
 .savebar .saved { font: 500 .78rem var(--font-mono); color: var(--muted); padding-bottom: 10px; white-space: nowrap; }
 .savebar .saved.err { color: var(--err); white-space: normal; }
@@ -443,7 +445,10 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 
       <div class="preview">
         <div class="pv-bar">
-          <span></span>
+          <div class="undo" id="undoBox" hidden>
+            <button type="button" class="icon-btn" id="undoBtn" aria-label="Deshacer (Ctrl/Cmd + Z)" title="Deshacer (Ctrl/Cmd + Z)">↶</button>
+            <button type="button" class="icon-btn" id="redoBtn" aria-label="Rehacer (Ctrl/Cmd + Mayús + Z)" title="Rehacer (Ctrl/Cmd + Mayús + Z)">↷</button>
+          </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <div class="seg2" role="group" aria-label="Plantilla">
               <button type="button" aria-pressed="true" data-tpl="hubspot">Con diseño</button>
@@ -764,7 +769,7 @@ function renderPreview() {
     $("ibA").textContent = $("ibB").textContent = ""; $("ibPre").textContent = $("ibPre2").textContent = "";
     $("emailBody").contentEditable = "false"; ["ibA", "ibB", "ibPre"].forEach((id) => { $(id).contentEditable = "false"; });
     $("emailBody").innerHTML = '<div class="skel"><i></i><i></i><i style="width:70%"></i><i></i><i style="width:45%"></i></div>';
-    $("saveBar").hidden = true;
+    $("saveBar").hidden = true; $("undoBox").hidden = true;
     return;
   }
   const s = SEG[e.segmento];
@@ -882,9 +887,10 @@ async function sendChat(text) {
     const em = d && (d.email || d);
     if (!em || typeof em.asunto_a !== "string" || !Array.isArray(em.bloques) || em.bloques.length < 3) throw { code: "invalid_json" };
     const s = SEG[state.seg];
+    if (state.current) snapNow();
     state.current = { ...em, segmento: state.seg, asunto_b: em.asunto_b || em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
     state.chat[state.chat.length - 1] = { role: "bot", text: (d.mensaje || "Listo.").trim() };
-    renderPreview();
+    renderPreview(); snapNow();
     scheduleSave(0);
     $("chatText").focus();
   } catch (e) {
@@ -897,6 +903,30 @@ $("chatText").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.s
 $("stopBtn").onclick = () => ctl?.abort();
 
 /* ---------- Añadir al calendario ---------- */
+/* ---------- Deshacer / rehacer ---------- */
+const hist = { past: [], fut: [], t: null };
+function snapNow() {
+  clearTimeout(hist.t); hist.t = null;
+  const e = state.current && emailFromDom(); if (!e) return;
+  const j = JSON.stringify(e);
+  if (hist.past[hist.past.length - 1] !== j) { hist.past.push(j); if (hist.past.length > 60) hist.past.shift(); hist.fut = []; }
+  undoUi();
+}
+function snapSoon() { clearTimeout(hist.t); hist.t = setTimeout(snapNow, 600); }
+function restoreVersion(j) { state.current = JSON.parse(j); renderPreview(); undoUi(); scheduleSave(0); }
+function undo() { if (hist.t) snapNow(); if (hist.past.length < 2) return; hist.fut.push(hist.past.pop()); restoreVersion(hist.past[hist.past.length - 1]); }
+function redo() { if (hist.t) snapNow(); if (!hist.fut.length) return; const j = hist.fut.pop(); hist.past.push(j); restoreVersion(j); }
+function resetHistory() { hist.past = []; hist.fut = []; clearTimeout(hist.t); hist.t = null; if (state.current) snapNow(); undoUi(); }
+function undoUi() { $("undoBox").hidden = !state.current; $("undoBtn").disabled = hist.past.length < 2 && !hist.t; $("redoBtn").disabled = !hist.fut.length; }
+$("undoBtn").onclick = undo; $("redoBtn").onclick = redo;
+document.addEventListener("keydown", (ev) => {
+  if ($("view-escribir").hidden || !(ev.ctrlKey || ev.metaKey)) return;
+  if (ev.target.closest && ev.target.closest("#chatText, #pHs, #pEstado, input, select")) return;
+  const k = ev.key.toLowerCase();
+  if (k === "z" && !ev.shiftKey) { ev.preventDefault(); undo(); }
+  else if ((k === "z" && ev.shiftKey) || k === "y") { ev.preventDefault(); redo(); }
+});
+
 /* ---------- Guardado automático del borrador ---------- */
 function domText(el) {
   const c = el.cloneNode(true);
@@ -941,8 +971,8 @@ async function saveDraft() {
     $("savedAt").textContent = "No se ha guardado" + (err && err.code ? ` (${err.code})` : "") + ". Vuelve a intentarlo.";
   }
 }
-$("emailBody").addEventListener("input", () => scheduleSave(1500));
-["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("input", () => { if (id === "ibPre") $("ibPre2").textContent = $("ibPre").textContent; scheduleSave(1500); }));
+$("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleSave(1500); });
+["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("input", () => { if (id === "ibPre") $("ibPre2").textContent = $("ibPre").textContent; snapSoon(); undoUi(); scheduleSave(1500); }));
 ["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); ev.target.blur(); } }));
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
@@ -957,7 +987,7 @@ function openWriter(seg, fecha, id) {
   state.chat = prev && Array.isArray(prev.chat) ? prev.chat.map((m) => ({ role: m.role, text: m.text })) : [];
   $("pEstado").value = prev ? (normEstado(prev.estado) === "sin_empezar" ? "en_redaccion" : normEstado(prev.estado)) : "en_redaccion";
   $("pHs").value = prev ? prev.hubspot || "" : ""; $("savedAt").className = "saved"; $("savedAt").textContent = prev && prev.email ? "Guardado" : "";
-  renderChat(); renderPreview(); $("status").textContent = "";
+  renderChat(); renderPreview(); resetHistory(); $("status").textContent = "";
   const s = SEG[seg], d = parse(fecha);
   $("slotLabel").innerHTML = `Email de ${esc(s.firma.nombre)} para el ${esc(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }))}<small>${esc(s.nombre)}</small>`;
   $("editor").hidden = true;
