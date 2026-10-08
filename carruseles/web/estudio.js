@@ -131,6 +131,8 @@ async function conectarEstudio() {
     snap.docs.forEach(d => { const v = d.data(); if (v) m[d.id] = Object.assign({id: d.id}, v); });
     // lo que se está generando en esta vista manda sobre lo que llega
     Object.keys(EST.lista).forEach(id => { if (EST.lista[id].estado === 'generando' && m[id]) m[id].estado = 'generando'; });
+    // si llega la confirmación de un guardado ANTERIOR (el db va con retraso) no pisa lo último que has escrito en esta vista
+    Object.keys(EST.lista).forEach(id => { const loc = EST.lista[id]; if (m[id] && loc.upd && m[id].upd && m[id].upd < loc.upd) m[id] = loc; });
     EST.lista = m; EST.conectado = true; refrescarEstudio();
   }, () => { EST.conectado = true; refrescarEstudio(); });
   refrescarEstudio();
