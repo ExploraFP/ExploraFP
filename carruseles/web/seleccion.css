@@ -35,7 +35,7 @@
 .sel-diseno-pop p{margin:0;font-size:12px;color:var(--ink3)}
 /* la slide grande se encoge para que quepan la slide y la fila de miniaturas sin deslizar */
 @media (min-width: 901px) {
-  .est-grande { width: min(440px, 100%, calc((100vh - 270px) * .8)); min-width: 220px; }
+  .est-grande { width: min(760px, 100%, calc((100vh - 260px) * .8)); min-width: 220px; }
   .est-escena { padding-top: 12px; padding-bottom: 12px; gap: 10px; }
 }
 /* barra de la mesa de trabajo: jerarquía clara */
