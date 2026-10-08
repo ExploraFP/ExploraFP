@@ -905,18 +905,19 @@ $("stopBtn").onclick = () => ctl?.abort();
 /* ---------- Añadir al calendario ---------- */
 /* ---------- Deshacer / rehacer ---------- */
 const hist = { past: [], fut: [], t: null };
+const canon = (e) => JSON.stringify({ asunto_a: e.asunto_a || "", asunto_b: e.asunto_b || "", preheader: e.preheader || "", bloques: e.bloques || [], pd: e.pd || "", despedida: e.despedida || "", firma: e.firma || "", angulo: e.angulo || "" });
 function snapNow() {
   clearTimeout(hist.t); hist.t = null;
   const e = state.current && emailFromDom(); if (!e) return;
-  const j = JSON.stringify(e);
+  const j = canon(e);
   if (hist.past[hist.past.length - 1] !== j) { hist.past.push(j); if (hist.past.length > 60) hist.past.shift(); hist.fut = []; }
   undoUi();
 }
 function snapSoon() { clearTimeout(hist.t); hist.t = setTimeout(snapNow, 600); }
-function restoreVersion(j) { state.current = JSON.parse(j); renderPreview(); undoUi(); scheduleSave(0); }
+function restoreVersion(j) { state.current = { ...state.current, ...JSON.parse(j) }; renderPreview(); undoUi(); scheduleSave(0); }
 function undo() { if (hist.t) snapNow(); if (hist.past.length < 2) return; hist.fut.push(hist.past.pop()); restoreVersion(hist.past[hist.past.length - 1]); }
 function redo() { if (hist.t) snapNow(); if (!hist.fut.length) return; const j = hist.fut.pop(); hist.past.push(j); restoreVersion(j); }
-function resetHistory() { hist.past = []; hist.fut = []; clearTimeout(hist.t); hist.t = null; if (state.current) snapNow(); undoUi(); }
+function resetHistory(saved) { hist.past = Array.isArray(saved) ? saved.filter((x) => typeof x === "string").map((x) => { try { return canon(JSON.parse(x)); } catch { return null; } }).filter(Boolean).slice(-15) : []; hist.fut = []; clearTimeout(hist.t); hist.t = null; if (state.current) snapNow(); undoUi(); }
 function undoUi() { $("undoBox").hidden = !state.current; $("undoBtn").disabled = hist.past.length < 2 && !hist.t; $("redoBtn").disabled = !hist.fut.length; }
 $("undoBtn").onclick = undo; $("redoBtn").onclick = redo;
 document.addEventListener("keydown", (ev) => {
@@ -960,7 +961,8 @@ async function saveDraft() {
   const hs = $("pHs").value.trim();
   if (hs && !safeUrl(hs)) { $("savedAt").className = "saved err"; $("savedAt").textContent = "El enlace tiene que empezar por https://"; return; }
   const data = { segmento: state.seg, fecha: state.slot.fecha, estado: $("pEstado").value, hubspot: safeUrl(hs), asunto: e.asunto_a || "", preheader: e.preheader || "",
-    angulo: e.angulo || "", gancho: primero ? String(primero.contenido).slice(0, 120) : "", email, chat: clean((state.chat || []).filter((m) => !m.thinking).slice(-20)) };
+    angulo: e.angulo || "", gancho: primero ? String(primero.contenido).slice(0, 120) : "", email, chat: clean((state.chat || []).filter((m) => !m.thinking).slice(-20)),
+    versiones: hist.past.slice(-15) };
   $("savedAt").className = "saved"; $("savedAt").textContent = "Guardando…";
   try {
     if (state.slot.id) await db.collection("calendario").doc(state.slot.id).update(data);
@@ -987,7 +989,7 @@ function openWriter(seg, fecha, id) {
   state.chat = prev && Array.isArray(prev.chat) ? prev.chat.map((m) => ({ role: m.role, text: m.text })) : [];
   $("pEstado").value = prev ? (normEstado(prev.estado) === "sin_empezar" ? "en_redaccion" : normEstado(prev.estado)) : "en_redaccion";
   $("pHs").value = prev ? prev.hubspot || "" : ""; $("savedAt").className = "saved"; $("savedAt").textContent = prev && prev.email ? "Guardado" : "";
-  renderChat(); renderPreview(); resetHistory(); $("status").textContent = "";
+  renderChat(); renderPreview(); resetHistory(prev && prev.versiones); $("status").textContent = "";
   const s = SEG[seg], d = parse(fecha);
   $("slotLabel").innerHTML = `Email de ${esc(s.firma.nombre)} para el ${esc(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }))}<small>${esc(s.nombre)}</small>`;
   $("editor").hidden = true;
