@@ -65,8 +65,8 @@ vProducir = function () {
   col.publicado = carruselesDe('hecho').sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
   const secciones = (col.generar.length ? ['generar'] : []).concat(['revision', 'listo', 'publicado']);
   h += secciones.map(k =>
-    '<section class="pr-sec pr-' + k + '"><header><h3>' + (k === 'publicado' ? 'Terminados' : ETAPAS[k]) + (k === 'listo' ? ' para publicar' : '') + ' <b>' + col[k].length + '</b></h3></header>' +
-      (col[k].length ? '<div class="est-rejilla">' + col[k].map(tarjeta).join('') + '</div>' : '<p class="pr-vacio">' + vacio[k] + '</p>') + '</section>').join('');
+    '<section class="pr-sec pr-' + k + '" data-pr-etapa="' + k + '"><header><h3>' + (k === 'publicado' ? 'Terminados' : ETAPAS[k]) + (k === 'listo' ? ' para publicar' : '') + ' <b>' + col[k].length + '</b></h3></header>' +
+      (col[k].length ? '<div class="est-rejilla">' + col[k].map(c => k === 'generar' ? tarjeta(c) : tarjeta(c).replace('<article ', '<article draggable="true" data-pr-mover="' + esc(c.id) + '" ')).join('') + '</div>' : '<p class="pr-vacio">' + vacio[k] + '</p>') + '</section>').join('');
   return h;
 };
 
@@ -82,7 +82,7 @@ function abrirPublicar(id) {
   $('#onb').innerHTML = '<div class="onbcaja pr-publicar" role="dialog" aria-modal="true" aria-label="Marcar como publicado"><header><k>Marcar como publicado</k><h2>' + esc(c.titulo || 'Carrusel') + '</h2></header><div class="cuerpo">' +
     '<label class="mz-cta">Fecha de publicación<input type="date" id="pr-fecha" value="' + esc(c.fecha || fISO(hoy())) + '"></label>' +
     '<label class="mz-cta">Enlace del post en Instagram <small>(opcional)</small><input type="url" id="pr-ig" placeholder="https://www.instagram.com/p/…" value="' + esc(c.ig || '') + '"></label>' +
-    '<p class="est-pista">Pasará a Inventario. Siempre puedes volver a abrirlo desde allí.</p></div>' +
+    '<p class="est-pista">Pasará a «Terminados». Si te equivocas, arrástralo de vuelta.</p></div>' +
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" data-pr-publicar-ok="' + esc(id) + '">✓ Publicado</button></footer></div>';
   setTimeout(() => { const i = $('#pr-fecha'); if (i) i.focus(); }, 30);
 }
@@ -276,3 +276,56 @@ document.addEventListener('change', e => {
 
 const _renderSinInv = render;
 render = function () { if (S.v === 'hechos' || S.v === 'inventario') S.v = 'producir'; _renderSinInv(); };
+
+/* ---------- arrastrar tarjetas de una etapa a otra (pedido de Sandra, oct-2026) ----------
+   En revisión ⇄ Listo para publicar ⇄ Terminados. Las reglas de siempre siguen valiendo:
+   · a Listo desde revisión = aprobar: solo si no tiene nada por corregir (si tiene, hay que abrirlo);
+   · a Terminados = «Marcar como publicado»: pide fecha y enlace; desde revisión no (primero se aprueba);
+   · hacia atrás (a revisión o a Listo) se mueve al momento. «Por generar» no se arrastra. */
+const PR_MOVER = {
+  revision: {listo: 'aprobar', publicado: 'no-aprobado'},
+  listo: {revision: 'revision', publicado: 'publicar'},
+  publicado: {revision: 'revision', listo: 'listo'},
+};
+var PR_MOVER_ID = null;
+function moverEtapa(c, a) {
+  const de = etapaDe(c), que = (PR_MOVER[de] || {})[a];
+  if (!que) return;
+  if (que === 'no-aprobado') { toast('Primero tiene que estar en «Listo para publicar»'); return; }
+  if (que === 'publicar') { abrirPublicar(c.id); return; }
+  if (que === 'aprobar') {
+    if (!qcMedido(c)) { toast('Espera un segundo: estoy revisando las slides'); pedirQC(c); return; }
+    if (qcErrores(c)) { toast('Tiene ' + qcErrores(c) + (qcErrores(c) === 1 ? ' cosa' : ' cosas') + ' por corregir: ábrelo para revisarlo'); return; }
+    c.listo = true; guardarC(c); render(); toast('✓ Aprobado. Está en «Listo para publicar»'); return;
+  }
+  if (de === 'publicado') c.estado = 'borrador';
+  c.listo = a === 'listo'; guardarC(c); render();
+  toast(a === 'listo' ? 'Vuelve a «Listo para publicar»' : 'Vuelve a revisión');
+}
+document.addEventListener('dragstart', e => {
+  const t = e.target.closest && e.target.closest('[data-pr-mover]'); if (!t) return;
+  PR_MOVER_ID = t.dataset.prMover; t.classList.add('pr-arrastrando');
+  e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', PR_MOVER_ID); } catch (x) {}
+  const c = EST.lista[PR_MOVER_ID], de = c && etapaDe(c);
+  document.querySelectorAll('[data-pr-etapa]').forEach(sec => { if (sec.dataset.prEtapa !== de && (PR_MOVER[de] || {})[sec.dataset.prEtapa]) sec.classList.add('pr-destino'); });
+});
+document.addEventListener('dragend', () => {
+  PR_MOVER_ID = null;
+  document.querySelectorAll('.pr-arrastrando, .pr-destino, .pr-encima').forEach(x => x.classList.remove('pr-arrastrando', 'pr-destino', 'pr-encima'));
+});
+document.addEventListener('dragover', e => {
+  if (!PR_MOVER_ID) return;
+  const sec = e.target.closest && e.target.closest('.pr-destino');
+  document.querySelectorAll('.pr-encima').forEach(x => { if (x !== sec) x.classList.remove('pr-encima'); });
+  if (!sec) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move'; sec.classList.add('pr-encima');
+});
+document.addEventListener('drop', e => {
+  if (!PR_MOVER_ID) return;
+  const sec = e.target.closest && e.target.closest('.pr-destino'); if (!sec) return;
+  e.preventDefault();
+  const c = EST.lista[PR_MOVER_ID], a = sec.dataset.prEtapa;
+  PR_MOVER_ID = null;
+  document.querySelectorAll('.pr-arrastrando, .pr-destino, .pr-encima').forEach(x => x.classList.remove('pr-arrastrando', 'pr-destino', 'pr-encima'));
+  if (c) moverEtapa(c, a);
+});
