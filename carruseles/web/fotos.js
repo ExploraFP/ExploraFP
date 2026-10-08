@@ -79,13 +79,18 @@ const nombreBonito = n => (n || 'foto').replace(/\.[^.]+$/, '').replace(/[-_]+/g
 
 /* ---------- fotos repetidas: «huella» de cómo se ve (dHash 8×8) ----------
    Se compara cómo se ve la foto, no el archivo: al subirla se reduce a JPEG 1800 px, así que nunca es idéntica byte a byte.
-   Distancia ≤ 10 de 64 = la misma foto (también con otro tamaño o un recorte mínimo). Se queda la primera que hubiera. */
+   Distancia ≤ 6 de 64 (huella v2) = la misma foto (también con otro tamaño o un recorte mínimo). Se queda la primera que hubiera. */
 async function huellaDe(src) {
+  // v2 (oct-2026): se reduce primero a 144×128 con suavizado y se promedia por bloques de 16×16 → 9×8.
+  // La v1 dibujaba directamente a 9×8 y la misma foto daba huellas distintas (hasta 19 de 64) según el navegador:
+  // por eso se colaron 2 fotos repetidas. Se guarda en el campo `h2`.
   const url = typeof src === 'string' ? src : URL.createObjectURL(src);
   try {
-    const i = new Image(); i.crossOrigin = 'anonymous'; i.src = url; await i.decode();
-    const c = document.createElement('canvas'); c.width = 9; c.height = 8; const x = c.getContext('2d'); x.drawImage(i, 0, 0, 9, 8);
-    const d = x.getImageData(0, 0, 9, 8).data, g = []; for (let k = 0; k < 72; k++) g.push(d[k * 4] * .299 + d[k * 4 + 1] * .587 + d[k * 4 + 2] * .114);
+    const i = new Image(); i.src = url; await i.decode();
+    const W = 144, H = 128, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(i, 0, 0, W, H);
+    const d = x.getImageData(0, 0, W, H).data, g = new Array(72).fill(0);
+    for (let y = 0; y < H; y++) for (let k = 0; k < W; k++) { const o = (y * W + k) * 4; g[Math.floor(y / 16) * 9 + Math.floor(k / 16)] += d[o] * .299 + d[o + 1] * .587 + d[o + 2] * .114; }
     let bits = ''; for (let y = 0; y < 8; y++) for (let k = 0; k < 8; k++) bits += g[y * 9 + k] > g[y * 9 + k + 1] ? '1' : '0';
     return BigInt('0b' + bits).toString(16).padStart(16, '0');
   } catch (e) { return ''; } finally { if (typeof src !== 'string') URL.revokeObjectURL(url); }
@@ -107,15 +112,15 @@ async function huellasConocidas() {
   const lista = FT.huellasSerie.filter(x => !(FT.docs[x.id] && FT.docs[x.id].oculta));
   for (const id of Object.keys(FT.docs)) {
     const d = FT.docs[id]; if (!d || !d.asset || d.oculta) continue;
-    if (!d.huella) { d.huella = await huellaBlob(d.asset); if (d.huella && DB) DB.doc('fotos/' + id).update({huella: d.huella}).catch(() => {}); }
-    if (d.huella) lista.push({id: id, h: d.huella, desc: d.desc});
+    if (!d.h2) { d.h2 = await huellaBlob(d.asset); if (d.h2 && DB) DB.doc('fotos/' + id).update({h2: d.h2}).catch(() => {}); }
+    if (d.h2) lista.push({id: id, h: d.h2, desc: d.desc});
   }
   return lista;
 }
 async function yaEstaba(blob) {
   const h = await huellaDe(blob); if (!h) return {h: ''};
   const conocidas = await huellasConocidas();
-  const igual = conocidas.find(x => distHuella(x.h, h) <= 10);
+  const igual = conocidas.find(x => distHuella(x.h, h) <= 6);   // v2: la misma foto da ≤ 4; dos distintas pueden dar 8
   return {h: h, igual: igual};
 }
 
@@ -135,7 +140,7 @@ async function subirFotos(files) {
       try { up = await FT.assets.upload(r.blob, {type: 'image/jpeg'}); }
       catch (e) { if (e && e.code === 'store_unavailable') { await new Promise(res => setTimeout(res, 1500)); up = await FT.assets.upload(r.blob, {type: 'image/jpeg'}); } else throw e; }
       const doc = {asset: up.id, archivo: String(file.name || '').slice(0, 160), desc: nombreBonito(file.name), rama: 'General', personas: '', tono: 'Neutro', etiquetas: [], orientacion: orientacionDe(r.w, r.h),
-        w: r.w, h: r.h, subida: new Date().toISOString(), estado: 'catalogando', huella: rep.h};
+        w: r.w, h: r.h, subida: new Date().toISOString(), estado: 'catalogando', h2: rep.h};
       FT.docs[up.id] = doc; await DB.doc('fotos/' + up.id).set(doc); ok++; rehacerFotos(); render();
       catalogarFoto(up.id, r.blob);
     } catch (e) {
@@ -169,7 +174,7 @@ async function catalogarFoto(id, blob) {
     'Mira la foto adjunta y describe SOLO lo que se ve (no te fíes del nombre del archivo). Devuelve SOLO un JSON: ' +
     '{"desc": descripción en español, en minúscula salvo nombres propios y siglas, de 8-16 palabras concretas (quién: mujer/hombre/chica/chico y edad aproximada; qué hace; dónde; objetos clave; ' +
     'nada genérico tipo «profesional trabajando en entorno moderno») y entre paréntesis 2-4 temas de carrusel de FP para los que serviría, ' +
-    '"rama": una de ' + JSON.stringify(FOTO_RAMAS) + ', decidida por lo que SE VE (no por los temas posibles): Sanidad = hospital, pijama sanitario, fonendo, paciente, laboratorio con bata y microscopio/tubos/pipeta, nutrición con bata o cinta métrica; ' +
+    '"rama": una de ' + JSON.stringify(FOTO_RAMAS) + ', decidida por lo que SE VE (no por los temas posibles): Sanidad = hospital, pijama sanitario, fonendo, paciente, laboratorio con bata y microscopio/tubos/pipeta, nutrición y comida sana (platos equilibrados, fruta y verdura, consulta de nutrición), con o sin bata; ' +
     'Tecnología = código en pantalla, servidores, cables de red, montar o reparar hardware, electrónica; Comercio = almacén, palés, cajas, chaleco reflectante, contenedores, reparto, tienda, marketing visible (redes, grabar vídeo para redes), ventas; ' +
     'Administración = oficina con papeles, archivadores, facturas, calculadora o gráficos financieros, reunión de negocios con informes; Educación = niños pequeños, escuela infantil; ' +
     'General = estudiar o teletrabajar sin pista de sector, retratos sin contexto, graduación, gimnasio o deporte, calle; si dudas entre un sector y General, General), "personas": una de ' + JSON.stringify(FOTO_PERSONAS) +
