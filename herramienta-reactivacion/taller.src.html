@@ -16,9 +16,9 @@
   --lime: #D8FF6E;
   --leaf: #4CCD4B;
   --tint: #E8F3E4;
-  --vera: #C2577A;
-  --rai: #2F6FB3;
-  --noe: #B5651D;
+  --vera: #E8655A;
+  --rai: #7C6CF0;
+  --noe: #1FA190;
   --s-draft-bg: #ECEFEA; --s-draft-fg: #4C5A50;
   --s-plan-bg: #FFF1B8;  --s-plan-fg: #6B5300;
   --s-sent-bg: #D4FFD0;  --s-sent-fg: #1F5F24;
@@ -32,7 +32,7 @@
   :root:not([data-theme="light"]) {
     --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
     --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
-    --vera: #F08FB0; --rai: #7FB2EC; --noe: #F0A867;
+    --vera: #FF9A8F; --rai: #A99CFF; --noe: #4FD1BF;
     --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95; --s-done-bg: #17304A; --s-done-fg: #A9CBF2;
     --err: #FF8A80; color-scheme: dark;
   }
@@ -40,7 +40,7 @@
 :root[data-theme="dark"] {
   --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
   --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
-  --vera: #F08FB0; --rai: #7FB2EC; --noe: #F0A867;
+  --vera: #FF9A8F; --rai: #A99CFF; --noe: #4FD1BF;
   --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95; --s-done-bg: #17304A; --s-done-fg: #A9CBF2;
   --err: #FF8A80; color-scheme: dark;
 }
@@ -664,6 +664,9 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 const rich = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
   .replace(/\{\{\s*(nombre|contact\.firstname)\s*\}\}/g, '<span class="tok" contenteditable="false">Nombre</span>')
   .replace(/\[([^\]]{3,})\]/g, '<span class="ph">[$1]</span>').replace(/\n/g, "<br>");
+const ESTADOS = { sin_empezar: "Sin empezar", en_redaccion: "En redacción", listo: "Listo para enviar", enviado: "Enviado", atrasado: "Atrasado" };
+const normEstado = (e) => ({ borrador: "en_redaccion", programado: "listo", pendiente: "sin_empezar" }[e] || e || "sin_empezar");
+const estLabel = (e) => ESTADOS[normEstado(e)] || e;
 const safeUrl = (u) => /^https:\/\/[^\s"<>]+$/i.test(String(u || "").trim()) ? String(u).trim() : "";
 
 /* ---------- Fechas ---------- */
@@ -942,9 +945,6 @@ function renderCal() {
 $("legend").innerHTML = Object.values(SEG).map((s) => `<span><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>`).join("") +
   ["sin_empezar", "en_redaccion", "listo", "enviado"].map((k) => `<span><i class="sd sd-${k}" style="border-radius:50%"></i>${ESTADOS[k]}</span>`).join("");
 $("eSeg").innerHTML = Object.entries(SEG).map(([k, s]) => `<option value="${k}">${esc(s.nombre)} · ${esc(s.firma.nombre)}</option>`).join("");
-const ESTADOS = { sin_empezar: "Sin empezar", en_redaccion: "En redacción", listo: "Listo para enviar", enviado: "Enviado", atrasado: "Atrasado" };
-const normEstado = (e) => ({ borrador: "en_redaccion", programado: "listo", pendiente: "sin_empezar" }[e] || e || "sin_empezar");
-const estLabel = (e) => ESTADOS[normEstado(e)] || e;
 const fmtNum = (v, pct) => v === "" || v == null ? "—" : String(v).replace(".", ",") + (pct ? " %" : "");
 function renderRead(item) {
   const s = SEG[item.segmento] || SEG.nocontactado, m = item.metricas || {}, hs = safeUrl(item.hubspot);
