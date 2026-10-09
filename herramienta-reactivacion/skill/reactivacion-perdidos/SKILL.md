@@ -18,7 +18,7 @@ Necesitas: **segmento**, **ángulo** (opcional), **formación o buyer** (o gené
 No hay secuencia: cada email es único y tiene que funcionar solo. El seguimiento se hace en el calendario de la herramienta Newsletter Explora. Los números de abajo son ángulos habituales, no un orden. Pide la lista de lo ya enviado al segmento para no repetir ángulo, gancho ni asunto.
 
 ### Más tiempo → Vera
-Personaje. Cotilla de las buenas: no es sanitaria ni profesora, pero ha escuchado tantas historias de alumnos que se lo sabe todo. Cálida, de tú a tú, con chispa; nunca ñoña ni presiona. Manía: la papelería (post-its, subrayadores; verde = historias que acaban bien). Abre con un cotilleo o con su libreta. Ayuda a decidir quitando dudas concretas: pensarlo está bien, aplazarlo sin fin tiene coste.
+Personaje. Cotilla de las buenas: no es sanitaria ni profesora, pero ha escuchado tantas historias de alumnos que se lo sabe todo. Cálida, de tú a tú, con chispa; nunca ñoña ni presiona. Manía: la papelería (post-its, subrayadores; verde = historias que acaban bien). Abre con una situación universal que todo el mundo reconoce; la papelería, como mucho, un guiño. Ayuda a decidir quitando dudas concretas: pensarlo está bien, aplazarlo sin fin tiene coste.
 Despedida: "Me vuelvo a mis subrayadores, — Vera".
 1. Recordar sin presión: lo que le frenaba sigue teniendo solución
 2. Objeción tiempo: compaginarlo con trabajo y vida
@@ -63,7 +63,9 @@ NIVEL DE CONSCIENCIA (escribe desde donde está el lector)
 
 ESTRUCTURA (molde probado)
 1. Saludo + quién escribe en una línea ("Hola, soy Noe.").
-2. Gancho: empieza a mitad de escena, con algo concreto y pequeño que le pasó al narrador o que vio. La primera línea solo tiene un trabajo: que se lea la segunda.
+2. Gancho UNIVERSAL: una situación que el 80 % de los lectores ha vivido y reconoce en la primera línea, contada a mitad de escena por el narrador. El lector no conoce al narrador: el gancho no puede depender de su mundo (sus cajas, su libreta, sus fichas, su oficina, sus manías). Prueba: si un desconocido lo leyera sin saber quién es Vera, Rai o Noe, ¿diría "a mí también me pasa"? Si no, cámbialo.
+   Ideas que funcionan (no las copies, sirven de nivel): el gimnasio pagado desde enero; "ya lo miro el lunes"; dejar un WhatsApp en visto y que pase una semana; el carrito abandonado en una web; Netflix preguntando "¿sigues ahí?"; la ropa tendida tres días; el carnet de conducir que todo el mundo aplaza; la llamada de un número desconocido que no coges; rellenar un formulario a las dos de la mañana; la cuesta de enero; la vuelta de vacaciones; el domingo por la tarde; el grupo de WhatsApp del cole; la lista de propósitos de año nuevo. También valen momentos del calendario (septiembre, Navidad, el puente) si cuadran con la fecha de envío.
+   La manía del narrador es un guiño de una línea como mucho, nunca el gancho. La primera línea solo tiene un trabajo: que se lea la segunda.
 3. Giro: el puente entre el gancho y el lector tiene que ser sorprendente pero lógico. Si el puente se ve venir ("igual que la pizza, tu FP..."), reescríbelo. Nunca expliques la moraleja: déjala implícita o en una frase seca.
 4. Núcleo: la historia de un alumno real (si la hay) o la situación del lector, con detalles concretos (qué hacía, a qué hora, qué le dijo alguien). Lo concreto convence; lo abstracto se salta.
 5. El paso: una frase que diga por qué pulsar ahora, y el botón.
@@ -139,7 +141,7 @@ ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 ## Molde
 
 1. "Hola," + presentación en una línea ("soy Noe.").
-2. Gancho propio del narrador, sin moraleja inmediata.
+2. Gancho universal (situación que todo el mundo ha vivido), contado por el narrador, sin moraleja inmediata.
 3. Giro seco hacia la historia o el lector.
 4. Caso real (solo si lo hay) con detalles concretos y el dolor en una frase; si no, el razonamiento del narrador dirigido al lector.
 5. La solución sin folleto: la FP oficial aparece como lo que resolvió el problema.
