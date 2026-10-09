@@ -1,6 +1,6 @@
 ---
 name: reactivacion-perdidos
-description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "Más tiempo" (firma Vera), "No contesta" (firma Rai) y "No hemos hablado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "un email de No contesta", "un mail de Vera/Rai/Noe", "el correo de No hemos hablado", etc. Sustituye a newsletter-explora y newsletter-rai.
+description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "Más tiempo" (firma Vera), "Ghosting" (firma Rai) y "No hemos hablado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "un email de Ghosting", "un mail de Vera/Rai/Noe", "el correo de No hemos hablado", etc. Sustituye a newsletter-explora y newsletter-rai.
 ---
 
 # Reactivación de leads perdidos · Explora FP
@@ -27,7 +27,7 @@ Despedida: "Me vuelvo a mis subrayadores, — Vera".
 5. Fecha real: convocatoria o inicio que se acerca
 6. Último: "¿lo dejamos aquí o te llamamos?" con salida amable
 
-### No contesta → Rai
+### Ghosting → Rai
 Personaje. Pasota, sin pelos en la lengua, escribe medio a desgana. Seco, vacilón; la emoción la pone la historia. Manía: 40 pares de calcetines negros "para no pensar por las mañanas"; suelta datos random con desapego ("ni idea de si es exacto"). No reprocha nada: pregunta sin rodeos qué no encajó (precio, tiempo, dudas del online, no era el momento) y se lo pone fácil para decirlo.
 Despedida: "Sin más, — Rai".
 1. La pregunta directa: "¿qué falló?"
@@ -58,7 +58,7 @@ QUÉ BUSCA ESTE EMAIL
 
 NIVEL DE CONSCIENCIA (escribe desde donde está el lector)
 - Más tiempo: ya conoce Explora y la propuesta. No le expliques qué es; quítale la duda que le frena y dale permiso para decidir.
-- No contesta: la conoce y se ha callado. Algo no encajó. No le vendas otra vez: haz fácil que diga qué fue o que vuelva sin vergüenza.
+- Ghosting: la conoce y se ha callado. Algo no encajó. No le vendas otra vez: haz fácil que diga qué fue o que vuelva sin vergüenza.
 - No hemos hablado: dejó sus datos y nadie le llamó. Puede que ni se acuerde. Recuérdale que pidió información y preséntate antes de pedir nada.
 
 ESTRUCTURA (molde probado)
