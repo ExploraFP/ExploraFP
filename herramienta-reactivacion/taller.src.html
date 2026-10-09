@@ -211,6 +211,34 @@ textarea { min-height: 64px; resize: vertical; }
 .week-head h2 { font-size: 2rem; }
 .week-head .sub { margin: 0; color: var(--muted); font-size: .86rem; max-width: 46ch; }
 .week { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.todo-group + .todo-group { margin-top: 28px; }
+.todo-group h2 { font-size: 2rem; margin: 0 0 4px; }
+.todo-group .eyebrow { margin-bottom: 12px; }
+.todo { display: grid; gap: 8px; }
+.trow { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 14px 16px; background: var(--paper); border: 1px solid var(--line); border-left: 5px solid var(--c); border-radius: 14px; }
+.trow .tday { display: grid; text-align: center; line-height: 1; }
+.trow .tday b { font: 400 1.6rem var(--font-head); }
+.trow .tday span { font: 600 .7rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 4px; }
+.trow .tmain { min-width: 0; display: grid; gap: 3px; }
+.trow .twho { font-size: .82rem; color: var(--muted); }
+.trow .twho b { color: var(--ink); }
+.trow .tsubj { font-weight: 600; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trow .tsubj.none { font-weight: 500; color: var(--muted); font-style: italic; }
+.trow .tact { display: flex; gap: 10px; align-items: center; }
+.trow .tact .flag { font: 600 .72rem var(--font-body); color: var(--muted); white-space: nowrap; }
+.trow .tact .flag.late { color: var(--err); }
+.trow .tact .flag.hoy { background: var(--lime); color: #102016; border-radius: 999px; padding: 3px 9px; text-transform: uppercase; letter-spacing: .06em; }
+.trow.done { background: transparent; border-color: var(--line); border-left-color: var(--c); }
+.trow.done .tsubj { color: var(--muted); font-weight: 500; }
+.trow .ok { font: 600 .8rem var(--font-body); color: var(--muted); white-space: nowrap; }
+.trow .ok a { color: var(--forest, var(--ink)); }
+.trow.later { opacity: .8; }
+@media (max-width: 600px) {
+  .trow { grid-template-columns: 48px minmax(0, 1fr); gap: 10px 12px; padding: 12px; }
+  .trow .tact { grid-column: 1 / -1; justify-content: flex-end; }
+  .trow .tact .flag, .trow .tact .ok { margin-right: auto; }
+  .trow .tsubj { white-space: normal; }
+}
 @media (max-width: 860px) { .week { grid-template-columns: minmax(0, 1fr); } }
 .wcard { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; align-content: start; position: relative; overflow: hidden; }
 .wcard::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c); }
@@ -498,10 +526,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 
   <!-- CALENDARIO -->
   <section id="view-semana">
-    <div class="week-head">
-      <div><p class="eyebrow" id="weekRange">Esta semana</p><h2>Envíos de esta semana</h2></div>
-    </div>
-    <div class="week" id="weekBox"></div>
+    <div id="weekBox"></div>
   </section>
 
   <section id="view-calendario" hidden>
@@ -1067,33 +1092,37 @@ function evButton(c) {
     <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
 function renderWeek() {
-  const w = monday(new Date()), a = iso(w), b = iso(addDays(w, 6)), todayIso = iso(new Date());
-  $("weekRange").textContent = `Semana del ${fmtShort(w)} al ${fmtShort(addDays(w, 6))}`;
+  const todayIso = iso(new Date()), w0 = monday(new Date());
   const order = Object.entries(SEG).sort((x, y) => x[1].dia - y[1].dia);
-  $("weekBox").innerHTML = order.map(([k, s]) => {
-    const day = addDays(w, s.dia), dIso = iso(day);
+  const row = (k, s, w, later) => {
+    const a = iso(w), b = iso(addDays(w, 6));
     const e = state.cal.filter((c) => c.segmento === k && c.fecha >= a && c.fecha <= b).sort((x, y) => x.fecha.localeCompare(y.fecha))[0];
-    const when = e ? parse(e.fecha) : day;
-    const st = e ? normEstado(e.estado) : (dIso < todayIso ? "atrasado" : "sin_empezar");
-    const late = !e && dIso < todayIso || (e && normEstado(e.estado) !== "enviado" && e.fecha < todayIso);
-    const hs = e && safeUrl(e.hubspot);
-    const isToday = iso(when) === todayIso;
-    return `<div class="wcard${late ? " late" : ""}${isToday ? " today" : ""}${e && normEstado(e.estado) === "enviado" ? " done" : ""}" style="--c:${s.color}">
-      <div class="wday"><b>${esc(when.toLocaleDateString("es-ES", { weekday: "long" }))}</b><span>${isToday ? '<span class="hoy">Hoy</span>' : ""}${esc(fmtShort(when))}</span></div>
-      <div class="wwho"><span class="av" style="background:${s.color}">${s.firma.ini}</span><span><b>${esc(s.firma.nombre)}</b> · ${esc(s.nombre)}</span></div>
-      ${e && e.asunto ? `<div class="wsubj"><b>${esc(e.asunto)}</b>${e.preheader ? `<span>${esc(e.preheader)}</span>` : ""}</div>` : `<div class="wsubj empty-s">${e ? "Sin asunto" : "Sin email"}</div>`}
-      ${e ? metsHtml(e) : ""}
-      <div class="wst"><span class="st st-${esc(st)}">${esc(estLabel(st))}</span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}</div>
-      <div class="go-row">${e && normEstado(e.estado) === "enviado" ? `<button type="button" class="btn btn-line btn-sm" data-open="${esc(e.id)}">Ver ficha</button>` : `<button type="button" class="btn btn-ink btn-sm" data-write="${k}">${e && e.email ? "Seguir escribiendo" : `Escribir el de ${esc(s.firma.nombre)}`}</button>${e && e.email && normEstado(e.estado) === "en_redaccion" ? `<button type="button" class="btn btn-line btn-sm" data-next="${esc(e.id)}" data-to="listo">Marcar listo</button>` : ""}${e && normEstado(e.estado) === "listo" ? `<button type="button" class="btn btn-line btn-sm" data-next="${esc(e.id)}" data-to="enviado">Marcar enviado</button>` : ""}${e ? `<button type="button" class="btn btn-line btn-sm" data-open="${esc(e.id)}">Ficha</button>` : ""}`}</div>
-    </div>`;
-  }).join("");
+    const when = e ? parse(e.fecha) : addDays(w, s.dia), dIso = iso(when);
+    const st = e ? normEstado(e.estado) : "sin_empezar";
+    const done = st === "enviado", hs = e && safeUrl(e.hubspot);
+    const subj = e && e.asunto;
+    let flag = "";
+    if (!done && dIso < todayIso) flag = `<span class="flag late">Atrasado</span>`;
+    else if (!done && dIso === todayIso) flag = `<span class="flag hoy">Hoy</span>`;
+    else if (st === "listo") flag = `<span class="flag">Listo para enviar</span>`;
+    let act;
+    if (done) act = `<span class="ok">✓ Enviado${hs ? ` · <a href="${esc(hs)}" target="_blank" rel="noopener">HubSpot ↗</a>` : ""}</span>`;
+    else if (st === "listo") act = `${flag}<button type="button" class="btn btn-line btn-sm" data-write="${k}" data-w="${a}">Abrir</button><button type="button" class="btn btn-ink btn-sm" data-next="${esc(e.id)}" data-to="enviado">Ya está enviado</button>`;
+    else act = `${flag}<button type="button" class="btn ${later ? "btn-line" : "btn-ink"} btn-sm" data-write="${k}" data-w="${a}">${e && e.email ? "Seguir" : "Escribir"}</button>`;
+    return `<div class="trow${done ? " done" : ""}${later ? " later" : ""}" style="--c:${s.color}">
+      <div class="tday"><b>${when.getDate()}</b><span>${esc(when.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", ""))}</span></div>
+      <div class="tmain"><span class="twho"><b>${esc(s.firma.nombre)}</b> · ${esc(s.nombre)}</span><span class="tsubj${subj ? "" : " none"}">${subj ? esc(subj) : (e && e.email ? "Sin asunto" : "Sin escribir")}</span></div>
+      <div class="tact">${act}</div></div>`;
+  };
+  const w1 = addDays(w0, 7);
+  const group = (title, w, later) => `<section class="todo-group"><h2>${title}</h2><p class="eyebrow">${esc(fmtShort(w))} – ${esc(fmtShort(addDays(w, 6)))}</p><div class="todo">${order.map(([k, s]) => row(k, s, w, later)).join("")}</div></section>`;
+  $("weekBox").innerHTML = group("Esta semana", w0, false) + group("La semana que viene", w1, true);
   $("weekBox").querySelectorAll("[data-next]").forEach((x) => x.onclick = async () => {
     x.disabled = true;
     try { await db.collection("calendario").doc(x.dataset.next).update({ estado: x.dataset.to }); } catch { x.disabled = false; x.textContent = "No se pudo"; }
   });
-  $("weekBox").querySelectorAll("[data-open]").forEach((x) => x.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === x.dataset.open), null, null, x); });
   $("weekBox").querySelectorAll("[data-write]").forEach((x) => x.onclick = () => {
-    const k = x.dataset.write, a = iso(w), b = iso(addDays(w, 6));
+    const k = x.dataset.write, w = parse(x.dataset.w), a = iso(w), b = iso(addDays(w, 6));
     const e = state.cal.find((c) => c.segmento === k && c.fecha >= a && c.fecha <= b);
     openWriter(k, e ? e.fecha : iso(addDays(w, SEG[k].dia)), e && e.id);
     if (!state.current && sample) sendChat("Escríbelo");
