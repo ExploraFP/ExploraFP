@@ -268,10 +268,12 @@ textarea { min-height: 64px; resize: vertical; }
 .sent-head { margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: flex-end; justify-content: space-between; }
 .sent { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
 .stable { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; font-size: .86rem; }
-.stable col.c-d { width: 92px; } .stable col.c-s { width: 150px; } .stable col.c-n { width: 92px; } .stable col.c-p { width: 100px; } .stable col.c-c { width: 76px; } .stable col.c-h { width: 48px; }
+.stable col.c-d { width: 92px; } .stable col.c-s { width: 150px; } .stable col.c-n { width: 116px; } .stable col.c-p { width: 100px; } .stable col.c-c { width: 76px; } .stable col.c-h { width: 104px; }
 .stable th { text-align: left; font: 600 .68rem var(--font-body); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 12px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--paper); }
 .stable td { padding: 12px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; height: 52px; overflow: hidden; }
 .stable tbody tr:last-child td { border-bottom: 0; }
+.stable th + th, .stable td + td { border-left: 1px solid var(--line); }
+.stable thead th { background: var(--bg); color: var(--ink); }
 .stable th.num, .stable td.num { text-align: right; }
 .stable td.num { font: 500 .84rem var(--font-mono); white-space: nowrap; }
 .stable td.d { font: 500 .8rem var(--font-mono); white-space: nowrap; }
@@ -284,7 +286,7 @@ textarea { min-height: 64px; resize: vertical; }
 .stable tr.srow { cursor: pointer; }
 .stable tr.srow:hover td { background: color-mix(in srgb, var(--c) 8%, var(--paper)); }
 .stable tr.srow.active td { background: color-mix(in srgb, var(--c) 14%, var(--paper)); }
-.stable td.h { text-align: center; }
+.stable td.h { text-align: right; white-space: nowrap; }
 .stable td.h a { text-decoration: none; font-weight: 600; }
 
 /* Calendario: vista de mes */
@@ -1168,14 +1170,14 @@ function renderSent() {
   renderSentMonths(sentAll);
   const rows = sentAll.filter((c) => (!state.sentSeg || c.segmento === state.sentSeg) && (!state.sentMonth || c.fecha.slice(0, 7) === state.sentMonth)).sort((a, b) => b.fecha.localeCompare(a.fecha));
   const num = (v, suf) => (v !== undefined && v !== null && String(v).trim() !== "") ? `<td class="num">${esc(v)}${suf}</td>` : `<td class="num nd"></td>`;
-  $("sentList").innerHTML = rows.length ? `<table class="stable"><colgroup><col class="c-d"><col class="c-s"><col><col class="c-n"><col class="c-p"><col class="c-c"><col class="c-n"><col class="c-h"></colgroup><thead><tr><th>Fecha</th><th>Segmento</th><th>Asunto</th><th class="num">Enviados</th><th class="num">Apertura</th><th class="num">Clic</th><th class="num" title="Formularios">Formul.</th><th></th></tr></thead><tbody>${rows.map((c) => {
+  $("sentList").innerHTML = rows.length ? `<table class="stable"><colgroup><col class="c-d"><col class="c-s"><col><col class="c-n"><col class="c-p"><col class="c-c"><col class="c-n"><col class="c-h"></colgroup><thead><tr><th>Fecha</th><th>Segmento</th><th>Asunto</th><th class="num">Enviados</th><th class="num">Apertura</th><th class="num">Clic</th><th class="num">Formularios</th><th></th></tr></thead><tbody>${rows.map((c) => {
     const s = SEG[c.segmento] || SEG.nocontactado, hs = safeUrl(c.hubspot), m = c.metricas || {};
     return `<tr class="srow" data-id="${esc(c.id)}" style="--c:${s.color}" tabindex="0">
       <td class="d">${esc(fmtShort(parse(c.fecha)))}</td>
       <td class="n"><span class="segp" title="${esc(s.firma.nombre)}"><i>${esc(s.firma.ini)}</i>${esc(s.nombre)}</span></td>
       <td class="a">${c.asunto ? `<b title="${esc(c.asunto)}">${esc(c.asunto)}</b>` : ""}${c.preheader ? `<span title="${esc(c.preheader)}">${esc(c.preheader)}</span>` : ""}</td>
       ${num(m.enviados, "")}${num(m.apertura, " %")}${num(m.clic, " %")}${num(m.formularios, "")}
-      <td class="h">${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" title="Abrir en HubSpot" aria-label="Abrir en HubSpot" onclick="event.stopPropagation()">↗</a>` : ""}</td>
+      <td class="h">${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">HubSpot ↗</a>` : ""}</td>
     </tr>`; }).join("")}</tbody></table>`
     : `<div class="empty" style="border:0">Todavía no hay envíos registrados.</div>`;
   $("sentList").querySelectorAll(".srow").forEach((b) => { b.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === b.dataset.id), null, null, b); }; b.onkeydown = (ev) => { if (ev.key === "Enter") b.click(); }; });
