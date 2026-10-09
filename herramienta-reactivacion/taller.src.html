@@ -54,7 +54,9 @@ select:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-
 .band { background: var(--band); color: var(--band-ink); }
 .band-in { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 0; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
 .brand { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; }
-.brand h1 { display: flex; align-items: center; gap: .3em; }
+.brand h1 { display: flex; align-items: center; }
+.brand h1 .home { display: flex; align-items: center; gap: .3em; color: inherit; text-decoration: none; }
+.brand h1 .home:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; border-radius: 4px; }
 #nlText { display: inline-block; }
 .brand .logo { height: 1.05em; width: auto; display: block; transform: translateY(-.07em); }
 .brand .divider { width: 1.5px; align-self: stretch; background: var(--band-ink); opacity: .3; }
@@ -448,7 +450,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 <div class="band">
   <div class="band-in">
     <div class="brand">
-      <h1 id="brandTitle"><span id="nlText">Newsletter</span><img class="logo" id="nlLogo" src="__LOGO__" alt="Explora"></h1>
+      <h1 id="brandTitle"><a href="#" id="homeLink" class="home" aria-label="Ir a Producción"><span id="nlText">Newsletter</span><img class="logo" id="nlLogo" src="__LOGO__" alt="Explora"></a></h1>
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="semana">Producción</button>
@@ -1371,6 +1373,7 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
   </article>`; }).join("");
 
 /* ---------- Pestañas ---------- */
+$("homeLink").onclick = (ev) => { ev.preventDefault(); if (!$("view-escribir").hidden) $("backBtn").onclick().then(() => showTab("semana")); else showTab("semana"); };
 function showTab(t) {
   const sel = t === "escribir" ? (state.returnTab || "semana") : t;
   document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === sel));
