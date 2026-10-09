@@ -131,12 +131,13 @@ textarea { min-height: 64px; resize: vertical; }
 .mail-row .line:has(#ibA:empty) > span, .mail-row .line:has(#ibB:empty) > span { visibility: hidden; }
 .mail-row .time { font-size: .78rem; color: #5F6368; font-weight: 700; }
 @media (max-width: 600px) { .mail-row { grid-template-columns: 22px minmax(0, 1fr) auto; } .mail-row .line { grid-column: 2 / -1; white-space: normal; } }
-.alts { display: grid; gap: 4px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-.alt { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px; align-items: center; padding: 6px 6px 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
-.alt .t { font-size: .88rem; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
-.alt .t small { display: block; font-size: .7rem; color: var(--muted); letter-spacing: .02em; }
-.alt button { font: 600 .72rem var(--font-body); min-width: 36px; padding: 6px 8px; border: 1.5px solid var(--line); border-radius: 8px; background: transparent; color: var(--ink); cursor: pointer; }
-.alt button:hover { border-color: currentColor; }
+.alts summary { cursor: pointer; font: 600 .8rem var(--font-body); color: var(--muted); padding: 2px 0; width: max-content; }
+.alts summary:hover { color: var(--ink); }
+.alt-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.alt { display: inline-flex; align-items: center; gap: 2px; padding: 3px 3px 3px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); font-size: .85rem; color: var(--ink); max-width: 100%; }
+.alt .t { min-width: 0; overflow-wrap: anywhere; margin-right: 4px; }
+.alt button { font: 600 .7rem var(--font-body); width: 28px; height: 28px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; }
+.alt button:hover { background: var(--line); color: var(--ink); }
 .stage { background: #E7ECF1; border-radius: 12px; padding: 22px 12px; overflow-x: auto; }
 .email { background: #FFFFFF; color: #23496D; margin: 0 auto; max-width: 600px; font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.75; transition: max-width .2s; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .stage.mobile .email { max-width: 375px; font-size: 15px; }
@@ -469,7 +470,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <div class="mail-row"><span class="ab">A</span><span class="from" id="ibFrom"></span><span class="line"><b id="ibA"></b> <span>– <span id="ibPre"></span></span></span><span class="time">9:41</span></div>
           <div class="mail-row"><span class="ab">B</span><span class="from" id="ibFrom2"></span><span class="line"><b id="ibB"></b> <span>– <span id="ibPre2"></span></span></span><span class="time">9:41</span></div>
         </div>
-        <div class="alts" id="alts" hidden></div>
+        <details class="alts" id="alts" hidden><summary>Más asuntos</summary><div class="alt-list" id="altList"></div></details>
         <div class="stage" id="stage">
           <article class="email" id="email">
             <div class="hdr"><img alt="Cabecera Explora × Ucademy · Formación Profesional" src="__HEADER__"></div>
@@ -820,13 +821,13 @@ const extras = (e) => (Array.isArray(e && e.asuntos_extra) ? e.asuntos_extra : [
 function renderAlts() {
   const list = extras(state.current);
   $("alts").hidden = !list.length;
-  $("alts").innerHTML = list.map((x, i) => `<div class="alt"><span class="t">${esc(x.asunto)}${x.mecanismo ? `<small>${esc(x.mecanismo)}</small>` : ""}</span><button type="button" data-alt="${i}" data-k="a" aria-label="Usar como asunto A">A</button><button type="button" data-alt="${i}" data-k="b" aria-label="Usar como asunto B">B</button></div>`).join("");
+  $("altList").innerHTML = list.map((x, i) => `<span class="alt"><span class="t">${esc(x.asunto)}</span><button type="button" data-alt="${i}" data-k="a" title="Usar como asunto A" aria-label="Usar como asunto A">A</button><button type="button" data-alt="${i}" data-k="b" title="Usar como asunto B" aria-label="Usar como asunto B">B</button></span>`).join("");
 }
 $("alts").addEventListener("click", (ev) => {
   const b = ev.target.closest("[data-alt]"); if (!b || !state.current) return;
   const e = emailFromDom(), list = extras(e), i = +b.dataset.alt, key = b.dataset.k === "a" ? "asunto_a" : "asunto_b";
   const pick = list[i]; if (!pick) return;
-  list[i] = { asunto: e[key], mecanismo: "antes " + b.dataset.k.toUpperCase() };
+  list[i] = { asunto: e[key], mecanismo: "" };
   state.current = { ...e, [key]: pick.asunto, asuntos_extra: list };
   renderPreview(); snapNow(); scheduleSave(0);
 });
