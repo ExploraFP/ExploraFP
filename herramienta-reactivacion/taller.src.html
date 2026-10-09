@@ -1170,7 +1170,7 @@ function renderSent() {
   renderSentMonths(sentAll);
   const rows = sentAll.filter((c) => (!state.sentSeg || c.segmento === state.sentSeg) && (!state.sentMonth || c.fecha.slice(0, 7) === state.sentMonth)).sort((a, b) => b.fecha.localeCompare(a.fecha));
   const num = (v, suf) => (v !== undefined && v !== null && String(v).trim() !== "") ? `<td class="num">${esc(v)}${suf}</td>` : `<td class="num nd"></td>`;
-  $("sentList").innerHTML = rows.length ? `<table class="stable"><colgroup><col class="c-d"><col class="c-s"><col><col class="c-n"><col class="c-p"><col class="c-c"><col class="c-n"><col class="c-h"></colgroup><thead><tr><th>Fecha</th><th>Segmento</th><th>Asunto</th><th class="num">Enviados</th><th class="num">Apertura</th><th class="num">Clic</th><th class="num">Formularios</th><th></th></tr></thead><tbody>${rows.map((c) => {
+  $("sentList").innerHTML = rows.length ? `<table class="stable"><colgroup><col class="c-d"><col class="c-s"><col><col class="c-n"><col class="c-p"><col class="c-c"><col class="c-n"><col class="c-h"></colgroup><thead><tr><th>Fecha</th><th>Segmento</th><th>Asunto</th><th class="num">Enviados</th><th class="num">Apertura</th><th class="num">Clic</th><th class="num">Formularios</th><th class="num">Enlace</th></tr></thead><tbody>${rows.map((c) => {
     const s = SEG[c.segmento] || SEG.nocontactado, hs = safeUrl(c.hubspot), m = c.metricas || {};
     return `<tr class="srow" data-id="${esc(c.id)}" style="--c:${s.color}" tabindex="0">
       <td class="d">${esc(fmtShort(parse(c.fecha)))}</td>
