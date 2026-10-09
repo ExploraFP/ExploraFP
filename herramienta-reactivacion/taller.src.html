@@ -1390,7 +1390,14 @@ function showTab(t) {
   document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === sel));
   ["semana", "escribir", "calendario", "enviados", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
   window.scrollTo(0, 0);
+  try { localStorage.setItem("nl_tab", JSON.stringify(t === "escribir" && state.slot ? { tab: t, ret: sel, seg: state.seg, fecha: state.slot.fecha, id: state.slot.id || null } : { tab: t })); } catch {}
 }
+let pendingWriter = null;
+try {
+  const v = JSON.parse(localStorage.getItem("nl_tab") || "null");
+  if (v && v.tab === "escribir" && SEG[v.seg] && v.fecha) { pendingWriter = v; state.returnTab = v.ret; showTab(v.ret || "semana"); }
+  else if (v && v.tab && $("view-" + v.tab) && v.tab !== "escribir") showTab(v.tab);
+} catch {}
 document.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
 
 /* ---------- Arranque ---------- */
@@ -1403,6 +1410,11 @@ renderPreview(); renderSentChips(); renderCal(); renderBuyers();
   if (!db) { $("noDb").hidden = false; return; }
   db.collection("calendario").orderBy("fecha", "asc").onSnapshot((snap) => {
     state.cal = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderCal();
+    if (pendingWriter) {
+      const v = pendingWriter; pendingWriter = null;
+      const e = v.id ? state.cal.find((c) => c.id === v.id) : state.cal.find((c) => c.segmento === v.seg && c.fecha === v.fecha);
+      if (!v.id || e) openWriter(v.seg, v.fecha, e && e.id);
+    }
   });
 
   renderPreview(); renderCal(); renderBuyers();
