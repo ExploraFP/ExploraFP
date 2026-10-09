@@ -131,6 +131,12 @@ textarea { min-height: 64px; resize: vertical; }
 .mail-row .line:has(#ibA:empty) > span, .mail-row .line:has(#ibB:empty) > span { visibility: hidden; }
 .mail-row .time { font-size: .78rem; color: #5F6368; font-weight: 700; }
 @media (max-width: 600px) { .mail-row { grid-template-columns: 22px minmax(0, 1fr) auto; } .mail-row .line { grid-column: 2 / -1; white-space: normal; } }
+.alts { display: grid; gap: 4px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.alt { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px; align-items: center; padding: 6px 6px 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.alt .t { font-size: .88rem; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+.alt .t small { display: block; font-size: .7rem; color: var(--muted); letter-spacing: .02em; }
+.alt button { font: 600 .72rem var(--font-body); min-width: 36px; padding: 6px 8px; border: 1.5px solid var(--line); border-radius: 8px; background: transparent; color: var(--ink); cursor: pointer; }
+.alt button:hover { border-color: currentColor; }
 .stage { background: #E7ECF1; border-radius: 12px; padding: 22px 12px; overflow-x: auto; }
 .email { background: #FFFFFF; color: #23496D; margin: 0 auto; max-width: 600px; font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.75; transition: max-width .2s; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .stage.mobile .email { max-width: 375px; font-size: 15px; }
@@ -463,6 +469,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <div class="mail-row"><span class="ab">A</span><span class="from" id="ibFrom"></span><span class="line"><b id="ibA"></b> <span>– <span id="ibPre"></span></span></span><span class="time">9:41</span></div>
           <div class="mail-row"><span class="ab">B</span><span class="from" id="ibFrom2"></span><span class="line"><b id="ibB"></b> <span>– <span id="ibPre2"></span></span></span><span class="time">9:41</span></div>
         </div>
+        <div class="alts" id="alts" hidden></div>
         <div class="stage" id="stage">
           <article class="email" id="email">
             <div class="hdr"><img alt="Cabecera Explora × Ucademy · Formación Profesional" src="__HEADER__"></div>
@@ -662,10 +669,21 @@ CTA
 ASUNTO Y PREHEADER
 - Vuestros leads no conocen al narrador: el asunto y el preheader, juntos, tienen que darle un ancla que reconozca (la FP que pidió, el título o su situación). Sin vender: nada de "matricúlate", "oferta" ni promesas.
 - La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Como el preheader es el mismo para A y B: si el preheader nombra la FP, ningún asunto la nombra; si no la nombra, los dos asuntos la llevan.
-- El asunto suena a mensaje de WhatsApp: 2-7 palabras, minúsculas naturales, sin emojis ni exclamaciones.
-- Dos asuntos A/B con mecanismos distintos: A = curiosidad sobre el gancho; B = claro y directo sobre lo que pasó ("¿qué pasó con la propuesta?", "rosa se sacó una fp" si el preheader no nombra la FP).
+- El asunto suena a mensaje de WhatsApp de alguien que conoces: 2-7 palabras, minúsculas naturales, sin emojis ni exclamaciones.
+- Mecanismos que funcionan (los ejemplos son del gancho del carro de la compra; adáptalos al gancho del email):
+  1. Objeto concreto y raro del gancho, con un detalle visual: "un carro lleno en mitad del súper"
+  2. Confesión en primera persona: "dejé la compra a medias"
+  3. Pregunta corta que el lector puede contestar de verdad: "¿qué te frenó?"
+  4. Número concreto: "4 cosas y te dejo en paz"
+  5. Anti-venta o contradicción: "no te voy a insistir"
+  6. Cita entre comillas de algo que dijo un alumno o el narrador: "«ya no tengo edad»"
+  7. Frase cortada que pide el final: "el carro se quedó ahí y…"
+  8. Nombre propio + hecho real de su ficha: "rosa volvió a estudiar a los 52"
+- Cómo elegirlos: escribe en silencio al menos 12 asuntos con 6 mecanismos distintos. Tacha los que no abriría alguien que no conoce al narrador y los que no se entienden junto al preheader. A y B son los dos mejores, con mecanismos distintos. Los 6 siguientes van en "asuntos_extra", cada uno con su mecanismo, y todos cumplen la regla de la FP con el mismo preheader.
+- Prohibido: "Re:" o "Fwd:" falsos; "lo de…" o "sobre…" (vagos, suenan a tarea pendiente); "¿qué pasó con…?" y otras fórmulas de comercial; titulares de blog o con mayúsculas de título; preguntas de sí o no; gratis, oferta, urgente, última oportunidad.
+- Prueba final de cada asunto: ¿te lo mandaría un amigo por WhatsApp? ¿Da ganas de saber qué hay detrás sin ser cebo? Leído con el preheader, ¿se sabe de qué va?
 - El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres. Tiene que funcionar con los dos asuntos.
-- Buenos: A "lo del carro de la compra" / B "¿qué pasó con la propuesta?" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida), "lo del carro de la compra" + "Lo dejé lleno en el pasillo de las conservas." (no dice de qué va).
+- Buenos: A "dejé la compra a medias" / B "no te voy a insistir" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida), "un carro lleno en mitad del súper" + "Lo dejé en el pasillo de las conservas." (no dice de qué va).
 
 ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 - ¿La primera línea obliga a leer la segunda?
@@ -718,9 +736,11 @@ Ejemplo 2 · qué NO hacer. Gancho de la pizza quemada que conecta así: "Aprend
 
 const FORMATO = `Responde SOLO con un objeto JSON:
 {"angulo":"una frase","asunto_a":"...","asunto_b":"...","preheader":"...",
+ "asuntos_extra":[{"asunto":"...","mecanismo":"confesión"}],
  "bloques":[{"tipo":"texto","contenido":"párrafo de 1-3 frases (puede llevar {{nombre}} y **negrita**)"},{"tipo":"lista","contenido":["punto corto","punto corto"]},{"tipo":"boton","contenido":"Texto del botón"}],
  "despedida":"...","firma":"— ...","pd":"P.D.: ..."}
-Exactamente dos bloques "boton". Bloque "lista" opcional, como mucho uno.`;
+Exactamente dos bloques "boton". Bloque "lista" opcional, como mucho uno.
+"asuntos_extra": exactamente 6, distintos de A y B. Si no te piden cambiar los asuntos, devuelve los mismos.`;
 
 
 const state = { chat: [], slot: null, seg: "nocontactado", angulo: "", formacion: "", buyer: "", current: null, cal: [], weekOffset: 0, editing: null, bSector: "", bOpen: "" };
@@ -769,7 +789,7 @@ function renderPreview() {
     $("ibA").textContent = $("ibB").textContent = ""; $("ibPre").textContent = $("ibPre2").textContent = "";
     $("emailBody").contentEditable = "false"; ["ibA", "ibB", "ibPre"].forEach((id) => { $(id).contentEditable = "false"; });
     $("emailBody").innerHTML = '<div class="skel"><i></i><i></i><i style="width:70%"></i><i></i><i style="width:45%"></i></div>';
-    $("saveBar").hidden = true; $("undoBox").hidden = true;
+    $("saveBar").hidden = true; $("undoBox").hidden = true; $("alts").hidden = true;
     return;
   }
   const s = SEG[e.segmento];
@@ -787,7 +807,24 @@ function renderPreview() {
   $("emailBody").innerHTML = parts.join("");
   $("emailBody").contentEditable = "true";
   $("saveBar").hidden = !db;
+  renderAlts();
 }
+const extras = (e) => (Array.isArray(e && e.asuntos_extra) ? e.asuntos_extra : [])
+  .map((x) => (typeof x === "string" ? { asunto: x, mecanismo: "" } : { asunto: String(x && x.asunto || "").trim(), mecanismo: String(x && x.mecanismo || "").trim() }))
+  .filter((x) => x.asunto).slice(0, 8);
+function renderAlts() {
+  const list = extras(state.current);
+  $("alts").hidden = !list.length;
+  $("alts").innerHTML = list.map((x, i) => `<div class="alt"><span class="t">${esc(x.asunto)}${x.mecanismo ? `<small>${esc(x.mecanismo)}</small>` : ""}</span><button type="button" data-alt="${i}" data-k="a" aria-label="Usar como asunto A">A</button><button type="button" data-alt="${i}" data-k="b" aria-label="Usar como asunto B">B</button></div>`).join("");
+}
+$("alts").addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-alt]"); if (!b || !state.current) return;
+  const e = emailFromDom(), list = extras(e), i = +b.dataset.alt, key = b.dataset.k === "a" ? "asunto_a" : "asunto_b";
+  const pick = list[i]; if (!pick) return;
+  list[i] = { asunto: e[key], mecanismo: "antes " + b.dataset.k.toUpperCase() };
+  state.current = { ...e, [key]: pick.asunto, asuntos_extra: list };
+  renderPreview(); snapNow(); scheduleSave(0);
+});
 function bodyHtml() {
   return [...$("emailBody").children].map((el) => {
     if (el.classList.contains("cta")) return `<p><strong>[BOTÓN: ${esc(el.innerText.trim())}]</strong></p>`;
@@ -904,7 +941,8 @@ async function sendChat(text) {
     if (!em || typeof em.asunto_a !== "string" || !Array.isArray(em.bloques) || em.bloques.length < 3) throw { code: "invalid_json" };
     const s = SEG[state.seg];
     if (state.current) snapNow();
-    state.current = { ...em, segmento: state.seg, asunto_b: em.asunto_b || em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
+    const keepAlt = extras(em).length ? extras(em) : extras(state.current);
+    state.current = { ...em, asuntos_extra: keepAlt, segmento: state.seg, asunto_b: em.asunto_b || em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
     state.chat[state.chat.length - 1] = { role: "bot", text: (d.mensaje || "Listo.").trim() };
     renderPreview(); snapNow();
     scheduleSave(0);
@@ -921,7 +959,7 @@ $("stopBtn").onclick = () => ctl?.abort();
 /* ---------- Añadir al calendario ---------- */
 /* ---------- Deshacer / rehacer ---------- */
 const hist = { past: [], fut: [], t: null };
-const canon = (e) => JSON.stringify({ asunto_a: e.asunto_a || "", asunto_b: e.asunto_b || "", preheader: e.preheader || "", bloques: e.bloques || [], pd: e.pd || "", despedida: e.despedida || "", firma: e.firma || "", angulo: e.angulo || "" });
+const canon = (e) => JSON.stringify({ asunto_a: e.asunto_a || "", asunto_b: e.asunto_b || "", preheader: e.preheader || "", asuntos_extra: extras(e), bloques: e.bloques || [], pd: e.pd || "", despedida: e.despedida || "", firma: e.firma || "", angulo: e.angulo || "" });
 function snapNow() {
   clearTimeout(hist.t); hist.t = null;
   const e = state.current && emailFromDom(); if (!e) return;
@@ -930,7 +968,7 @@ function snapNow() {
   undoUi();
 }
 function snapSoon() { clearTimeout(hist.t); hist.t = setTimeout(snapNow, 600); }
-function restoreVersion(j) { state.current = { ...state.current, ...JSON.parse(j) }; renderPreview(); undoUi(); scheduleSave(0); }
+function restoreVersion(j) { const v = JSON.parse(j); if (!extras(v).length) delete v.asuntos_extra; state.current = { ...state.current, ...v }; renderPreview(); undoUi(); scheduleSave(0); }
 function undo() { if (hist.t) snapNow(); if (hist.past.length < 2) return; hist.fut.push(hist.past.pop()); restoreVersion(hist.past[hist.past.length - 1]); }
 function redo() { if (hist.t) snapNow(); if (!hist.fut.length) return; const j = hist.fut.pop(); hist.past.push(j); restoreVersion(j); }
 function resetHistory(saved) { hist.past = Array.isArray(saved) ? saved.filter((x) => typeof x === "string").map((x) => { try { return canon(JSON.parse(x)); } catch { return null; } }).filter(Boolean).slice(-15) : []; hist.fut = []; clearTimeout(hist.t); hist.t = null; if (state.current) snapNow(); undoUi(); }
@@ -972,7 +1010,7 @@ async function saveDraft() {
   if (!db || !state.slot || !state.current) return;
   const e = emailFromDom(); state.current = e;
   const clean = (v) => JSON.parse(JSON.stringify(v ?? null));
-  const email = clean({ asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader || "", despedida: e.despedida, firma: e.firma, pd: e.pd || "", bloques: e.bloques, angulo: e.angulo || "" });
+  const email = clean({ asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader || "", asuntos_extra: extras(e), despedida: e.despedida, firma: e.firma, pd: e.pd || "", bloques: e.bloques, angulo: e.angulo || "" });
   const primero = e.bloques.find((b, i) => i > 0 && b.tipo === "texto");
   const hs = $("pHs").value.trim();
   if (hs && !safeUrl(hs)) { $("savedAt").className = "saved err"; $("savedAt").textContent = "El enlace tiene que empezar por https://"; return; }

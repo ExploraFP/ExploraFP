@@ -107,10 +107,21 @@ CTA
 ASUNTO Y PREHEADER
 - Vuestros leads no conocen al narrador: el asunto y el preheader, juntos, tienen que darle un ancla que reconozca (la FP que pidió, el título o su situación). Sin vender: nada de "matricúlate", "oferta" ni promesas.
 - La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Como el preheader es el mismo para A y B: si el preheader nombra la FP, ningún asunto la nombra; si no la nombra, los dos asuntos la llevan.
-- El asunto suena a mensaje de WhatsApp: 2-7 palabras, minúsculas naturales, sin emojis ni exclamaciones.
-- Dos asuntos A/B con mecanismos distintos: A = curiosidad sobre el gancho; B = claro y directo sobre lo que pasó ("¿qué pasó con la propuesta?", "rosa se sacó una fp" si el preheader no nombra la FP).
+- El asunto suena a mensaje de WhatsApp de alguien que conoces: 2-7 palabras, minúsculas naturales, sin emojis ni exclamaciones.
+- Mecanismos que funcionan (los ejemplos son del gancho del carro de la compra; adáptalos al gancho del email):
+  1. Objeto concreto y raro del gancho, con un detalle visual: "un carro lleno en mitad del súper"
+  2. Confesión en primera persona: "dejé la compra a medias"
+  3. Pregunta corta que el lector puede contestar de verdad: "¿qué te frenó?"
+  4. Número concreto: "4 cosas y te dejo en paz"
+  5. Anti-venta o contradicción: "no te voy a insistir"
+  6. Cita entre comillas de algo que dijo un alumno o el narrador: "«ya no tengo edad»"
+  7. Frase cortada que pide el final: "el carro se quedó ahí y…"
+  8. Nombre propio + hecho real de su ficha: "rosa volvió a estudiar a los 52"
+- Cómo elegirlos: escribe en silencio al menos 12 asuntos con 6 mecanismos distintos. Tacha los que no abriría alguien que no conoce al narrador y los que no se entienden junto al preheader. A y B son los dos mejores, con mecanismos distintos. Los 6 siguientes van en "asuntos_extra", cada uno con su mecanismo, y todos cumplen la regla de la FP con el mismo preheader.
+- Prohibido: "Re:" o "Fwd:" falsos; "lo de…" o "sobre…" (vagos, suenan a tarea pendiente); "¿qué pasó con…?" y otras fórmulas de comercial; titulares de blog o con mayúsculas de título; preguntas de sí o no; gratis, oferta, urgente, última oportunidad.
+- Prueba final de cada asunto: ¿te lo mandaría un amigo por WhatsApp? ¿Da ganas de saber qué hay detrás sin ser cebo? Leído con el preheader, ¿se sabe de qué va?
 - El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres. Tiene que funcionar con los dos asuntos.
-- Buenos: A "lo del carro de la compra" / B "¿qué pasó con la propuesta?" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida), "lo del carro de la compra" + "Lo dejé lleno en el pasillo de las conservas." (no dice de qué va).
+- Buenos: A "dejé la compra a medias" / B "no te voy a insistir" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida), "un carro lleno en mitad del súper" + "Lo dejé en el pasillo de las conservas." (no dice de qué va).
 
 ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 - ¿La primera línea obliga a leer la segunda?
