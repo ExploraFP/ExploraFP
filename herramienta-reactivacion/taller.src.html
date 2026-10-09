@@ -266,17 +266,26 @@ textarea { min-height: 64px; resize: vertical; }
 .sent-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .sent-filters select { width: auto; padding: 6px 10px; font-size: .85rem; border-radius: 999px; }
 .sent-head { margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: flex-end; justify-content: space-between; }
-.sent { display: grid; gap: 6px; }
-.srow { display: grid; grid-template-columns: 96px 210px minmax(0, 1fr) minmax(0, .8fr) auto; gap: 14px; padding: 12px 16px; align-items: center; border: 0; border-radius: 10px; font-size: .86rem; text-align: left; width: 100%; background: color-mix(in srgb, var(--c) 14%, var(--paper)); color: var(--ink); font-family: var(--font-body); cursor: pointer; }
-.srow:hover { background: color-mix(in srgb, var(--c) 24%, var(--paper)); }
-.srow .d { font: 500 .8rem var(--font-mono); color: var(--ink); opacity: .75; }
-.srow .n { font-weight: 600; }
-.srow .a b { font-weight: 600; }
-.srow .a span { color: var(--muted); }
-.srow .m { color: var(--ink); opacity: .8; font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.srow .m .mets { flex-wrap: nowrap; }
-.srow > span:empty { display: none; }
-@media (max-width: 760px) { .srow { grid-template-columns: minmax(0, 1fr) auto; } .srow .a, .srow .m { grid-column: 1 / -1; white-space: normal; } }
+.sent { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+.stable { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.stable th { text-align: left; font: 600 .68rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--paper); }
+.stable td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.stable tbody tr:last-child td { border-bottom: 0; }
+.stable th.num, .stable td.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+.stable td.num { font-size: .82rem; }
+.stable td.num.nd { color: var(--muted); opacity: .6; }
+.stable td.d { font: 500 .8rem var(--font-mono); white-space: nowrap; }
+.stable td.n { white-space: nowrap; }
+.stable .segp { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; border-radius: 999px; background: color-mix(in srgb, var(--c) 18%, var(--paper)); font-weight: 600; font-size: .8rem; }
+.stable .segp i { width: 20px; height: 20px; border-radius: 50%; background: var(--c); color: #fff; display: grid; place-items: center; font: 400 .72rem var(--font-head); font-style: normal; }
+.stable .segp small { font-weight: 500; color: var(--muted); font-size: .78rem; }
+.stable td.a { min-width: 220px; }
+.stable td.a b { font-weight: 600; display: block; }
+.stable td.a span { color: var(--muted); font-size: .8rem; }
+.stable tr.srow { cursor: pointer; }
+.stable tr.srow:hover td { background: color-mix(in srgb, var(--c) 8%, var(--paper)); }
+.stable tr.srow.active td { background: color-mix(in srgb, var(--c) 14%, var(--paper)); }
+.stable td.h { white-space: nowrap; }
 
 /* Calendario: vista de mes */
 .cal-head { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; justify-content: space-between; margin-bottom: 14px; }
@@ -1158,16 +1167,18 @@ function renderSent() {
   const sentAll = state.cal.filter((c) => normEstado(c.estado) === "enviado");
   renderSentMonths(sentAll);
   const rows = sentAll.filter((c) => (!state.sentSeg || c.segmento === state.sentSeg) && (!state.sentMonth || c.fecha.slice(0, 7) === state.sentMonth)).sort((a, b) => b.fecha.localeCompare(a.fecha));
-  $("sentList").innerHTML = rows.length ? rows.map((c) => { const s = SEG[c.segmento] || SEG.nocontactado; const hs = safeUrl(c.hubspot); return `
-    <button type="button" class="srow" data-id="${esc(c.id)}" style="--c:${s.color}">
-      <span class="d">${esc(fmtDay(parse(c.fecha)))}</span>
-      <span class="n">${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>
-      <span class="a"><b>${esc(c.asunto || "Sin asunto")}</b>${c.preheader ? ` <span>– ${esc(c.preheader)}</span>` : ""}</span>
-      <span class="m">${metsHtml(c) || esc((c.notas || "").trim())}</span>
-      <span>${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">HubSpot ↗</a>` : ""}</span>
-    </button>`; }).join("")
+  const num = (v, suf) => (v !== undefined && v !== null && String(v).trim() !== "") ? `<td class="num">${esc(v)}${suf}</td>` : `<td class="num nd"></td>`;
+  $("sentList").innerHTML = rows.length ? `<table class="stable"><thead><tr><th>Fecha</th><th>Segmento</th><th>Asunto</th><th class="num">Enviados</th><th class="num">Apertura</th><th class="num">Clic</th><th class="num">Formularios</th><th></th></tr></thead><tbody>${rows.map((c) => {
+    const s = SEG[c.segmento] || SEG.nocontactado, hs = safeUrl(c.hubspot), m = c.metricas || {};
+    return `<tr class="srow" data-id="${esc(c.id)}" style="--c:${s.color}" tabindex="0">
+      <td class="d">${esc(fmtDay(parse(c.fecha)))}</td>
+      <td class="n"><span class="segp"><i>${esc(s.firma.ini)}</i>${esc(s.nombre)} <small>${esc(s.firma.nombre)}</small></span></td>
+      <td class="a"><b>${esc(c.asunto || "Sin asunto")}</b>${c.preheader ? `<span>${esc(c.preheader)}</span>` : ""}</td>
+      ${num(m.enviados, "")}${num(m.apertura, " %")}${num(m.clic, " %")}${num(m.formularios, "")}
+      <td class="h">${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">HubSpot ↗</a>` : ""}</td>
+    </tr>`; }).join("")}</tbody></table>`
     : `<div class="empty" style="border:0">Todavía no hay envíos registrados.</div>`;
-  $("sentList").querySelectorAll(".srow").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === b.dataset.id), null, null, b); });
+  $("sentList").querySelectorAll(".srow").forEach((b) => { b.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === b.dataset.id), null, null, b); }; b.onkeydown = (ev) => { if (ev.key === "Enter") b.click(); }; });
 }
 function segForDay(di) {
   const dow = (parse(di).getDay() + 6) % 7; // 0 = lunes
