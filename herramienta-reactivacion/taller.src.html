@@ -232,6 +232,8 @@ textarea { min-height: 64px; resize: vertical; }
 .trow.done .tsubj { color: var(--muted); font-weight: 500; }
 .trow .ok { font: 600 .8rem var(--font-body); color: var(--muted); white-space: nowrap; }
 .trow .ok a { color: var(--forest, var(--ink)); }
+.trow .okb { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.trow .okb:hover { color: var(--ink); text-decoration: underline; }
 .trow.later { opacity: .8; }
 @media (max-width: 600px) {
   .trow { grid-template-columns: 48px minmax(0, 1fr); gap: 10px 12px; padding: 12px; }
@@ -512,11 +514,11 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <button type="button" class="btn btn-line btn-sm" data-copy="pre">Copiar preheader</button>
           <button type="button" class="btn btn-ink btn-sm" data-copy="body">Copiar email</button>
           <span class="sp"></span>
+          <button type="button" class="btn btn-line btn-sm" id="sentBtn" hidden>Ya está enviado</button>
         </div>
         <p class="status" id="copyStatus" role="status"></p>
         <div class="savebar" id="saveBar" hidden>
-          <label class="l" for="pEstado">Estado
-            <select id="pEstado"><option value="en_redaccion">En redacción</option><option value="listo">Listo para enviar</option><option value="enviado">Enviado</option></select></label>
+          <select id="pEstado" hidden aria-hidden="true"><option value="en_redaccion">En redacción</option><option value="enviado">Enviado</option></select>
           <label class="l" for="pHs">Enlace de HubSpot<input type="url" id="pHs" placeholder="https://app.hubspot.com/…"></label>
           <span class="saved" id="savedAt" role="status"></span>
         </div>
@@ -594,7 +596,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
         </div>
         <div class="grid2">
           <label class="l" for="eAsunto">Asunto<input type="text" id="eAsunto" placeholder="Asunto del email"></label>
-          <label class="l" for="eEstado">Estado<select id="eEstado"><option value="sin_empezar">Sin empezar</option><option value="en_redaccion">En redacción</option><option value="listo">Listo para enviar</option><option value="enviado">Enviado</option></select></label>
+          <label class="l" for="eEstado">Estado<select id="eEstado"><option value="sin_empezar">Sin empezar</option><option value="en_redaccion">En redacción</option><option value="enviado">Enviado</option></select></label>
         </div>
         <label class="l" for="eHs">Enlace de HubSpot<input type="url" id="eHs" placeholder="https://app.hubspot.com/email/…"></label>
         <div class="grid4">
@@ -783,8 +785,8 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 const rich = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
   .replace(/\{\{\s*(nombre|contact\.firstname)\s*\}\}/g, '<span class="tok" contenteditable="false">Nombre</span>')
   .replace(/\[([^\]]{3,})\]/g, '<span class="ph">[$1]</span>').replace(/\n/g, "<br>");
-const ESTADOS = { sin_empezar: "Sin empezar", en_redaccion: "En redacción", listo: "Listo para enviar", enviado: "Enviado", atrasado: "Atrasado" };
-const normEstado = (e) => ({ borrador: "en_redaccion", programado: "listo", pendiente: "sin_empezar" }[e] || e || "sin_empezar");
+const ESTADOS = { sin_empezar: "Sin empezar", en_redaccion: "En redacción", enviado: "Enviado", atrasado: "Atrasado" };
+const normEstado = (e) => ({ borrador: "en_redaccion", programado: "en_redaccion", listo: "en_redaccion", pendiente: "sin_empezar" }[e] || e || "sin_empezar");
 const estLabel = (e) => ESTADOS[normEstado(e)] || e;
 const safeUrl = (u) => /^https:\/\/[^\s"<>]+$/i.test(String(u || "").trim()) ? String(u).trim() : "";
 
@@ -815,6 +817,7 @@ function nextSlot(seg) {
 function renderPreview() {
   const e = state.current, has = !!e;
   document.querySelectorAll("[data-copy]").forEach((b) => { b.hidden = !has; });
+  $("sentBtn").hidden = !has || !db;
 
   if (!has) {
     const s = SEG[state.seg];
@@ -1065,6 +1068,8 @@ $("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleS
 ["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); ev.target.blur(); } }));
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
+function sentUi() { const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = sent ? "✓ Enviado · deshacer" : "Ya está enviado"; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
+$("sentBtn").onclick = () => { $("pEstado").value = $("pEstado").value === "enviado" ? "en_redaccion" : "enviado"; sentUi(); scheduleSave(0); };
 $("pHs").addEventListener("change", () => scheduleSave(0));
 
 /* ---------- Abrir el editor desde un hueco del calendario ---------- */
@@ -1076,7 +1081,7 @@ function openWriter(seg, fecha, id) {
   state.chat = prev && Array.isArray(prev.chat) ? prev.chat.map((m) => ({ role: m.role, text: m.text })) : [];
   $("pEstado").value = prev ? (normEstado(prev.estado) === "sin_empezar" ? "en_redaccion" : normEstado(prev.estado)) : "en_redaccion";
   $("pHs").value = prev ? prev.hubspot || "" : ""; $("savedAt").className = "saved"; $("savedAt").textContent = prev && prev.email ? "Guardado" : "";
-  renderChat(); renderPreview(); resetHistory(prev && prev.versiones); $("status").textContent = "";
+  renderChat(); renderPreview(); resetHistory(prev && prev.versiones); $("status").textContent = ""; sentUi();
   const s = SEG[seg], d = parse(fecha);
   $("slotLabel").innerHTML = `Email de ${esc(s.firma.nombre)} para el ${esc(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }))}<small>${esc(s.nombre)}</small>`;
   $("editor").hidden = true;
@@ -1104,11 +1109,9 @@ function renderWeek() {
     let flag = "";
     if (!done && dIso < todayIso) flag = `<span class="flag late">Atrasado</span>`;
     else if (!done && dIso === todayIso) flag = `<span class="flag hoy">Hoy</span>`;
-    else if (st === "listo") flag = `<span class="flag">Listo para enviar</span>`;
     let act;
-    if (done) act = `<span class="ok">✓ Enviado${hs ? ` · <a href="${esc(hs)}" target="_blank" rel="noopener">HubSpot ↗</a>` : ""}</span>`;
-    else if (st === "listo") act = `${flag}<button type="button" class="btn btn-line btn-sm" data-write="${k}" data-w="${a}">Abrir</button><button type="button" class="btn btn-ink btn-sm" data-next="${esc(e.id)}" data-to="enviado">Ya está enviado</button>`;
-    else act = `${flag}<button type="button" class="btn ${later ? "btn-line" : "btn-ink"} btn-sm" data-write="${k}" data-w="${a}">${e && e.email ? "Seguir" : "Escribir"}</button>`;
+    if (done) act = `<span class="ok"><button type="button" class="okb" data-write="${k}" data-w="${a}" title="Abrir el email">✓ Enviado</button>${hs ? ` · <a href="${esc(hs)}" target="_blank" rel="noopener">HubSpot ↗</a>` : ""}</span>`;
+    else act = `${flag}${e && e.email ? `<button type="button" class="btn btn-line btn-sm" data-next="${esc(e.id)}" data-to="enviado">Ya está enviado</button>` : ""}<button type="button" class="btn ${later ? "btn-line" : "btn-ink"} btn-sm" data-write="${k}" data-w="${a}">${e && e.email ? "Seguir" : "Escribir"}</button>`;
     return `<div class="trow${done ? " done" : ""}${later ? " later" : ""}" style="--c:${s.color}">
       <div class="tday"><b>${when.getDate()}</b><span>${esc(when.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", ""))}</span></div>
       <div class="tmain"><span class="twho"><b>${esc(s.firma.nombre)}</b> · ${esc(s.nombre)}</span><span class="tsubj${subj ? "" : " none"}">${subj ? esc(subj) : (e && e.email ? "Sin asunto" : "Sin escribir")}</span></div>
@@ -1197,7 +1200,7 @@ function renderCal() {
   renderWeek(); renderSent();
 }
 $("legend").innerHTML = Object.values(SEG).map((s) => `<span><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>`).join("") +
-  ["sin_empezar", "en_redaccion", "listo", "enviado"].map((k) => `<span><i class="sd sd-${k}" style="border-radius:50%"></i>${ESTADOS[k]}</span>`).join("");
+  ["sin_empezar", "en_redaccion", "enviado"].map((k) => `<span><i class="sd sd-${k}" style="border-radius:50%"></i>${ESTADOS[k]}</span>`).join("");
 $("eSeg").innerHTML = Object.entries(SEG).map(([k, s]) => `<option value="${k}">${esc(s.nombre)} · ${esc(s.firma.nombre)}</option>`).join("");
 const fmtNum = (v, pct) => v === "" || v == null ? "—" : String(v).replace(".", ",") + (pct ? " %" : "");
 function renderRead(item) {
