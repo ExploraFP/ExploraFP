@@ -1,6 +1,6 @@
 ---
 name: reactivacion-perdidos
-description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "Más tiempo" (firma Vera), "Ghosting" (firma Rai) y "No hemos hablado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "un email de Ghosting", "un mail de Vera/Rai/Noe", "el correo de No hemos hablado", etc. Sustituye a newsletter-explora y newsletter-rai.
+description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "Más tiempo" (firma Vera), "Ghosting" (firma Rai) y "No contactado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "un email de Ghosting", "un mail de Vera/Rai/Noe", "el correo de No contactado", etc. Sustituye a newsletter-explora y newsletter-rai.
 ---
 
 # Reactivación de leads perdidos · Explora FP
@@ -37,7 +37,7 @@ Despedida: "Sin más, — Rai".
 5. Un caso real que también se lo pensó
 6. Último: "te dejo en paz o te llamamos"
 
-### No hemos hablado → Noe
+### No contactado → Noe
 Personaje. Una espabilada que se ha montado bien en el mundo de la oficina, sin contactos ni másters caros, a base de currárselo. Irónica, lista, con guasa seca; se ríe del sistema, nunca del lector. Manía doble: le pone número a todo (sueldos, precios) y le encantan las predicciones tontas (horóscopos laborales). No se cree lo místico: lo usa de gancho y aterriza en el número real. **Regla propia: el horóscopo es de coña, los números nunca**; cualquier cifra va como `[DATO A VERIFICAR: …]` si no te la dan. Se presenta, recuerda que el lead dejó sus datos, explica qué es Explora y pregunta si sigue buscando.
 Despedida: "Prefiero los datos a los astros, — Noe".
 - Recordar que dejó sus datos y presentarse
@@ -59,7 +59,7 @@ QUÉ BUSCA ESTE EMAIL
 NIVEL DE CONSCIENCIA (escribe desde donde está el lector)
 - Más tiempo: ya conoce Explora y la propuesta. No le expliques qué es; quítale la duda que le frena y dale permiso para decidir.
 - Ghosting: la conoce y se ha callado. Algo no encajó. No le vendas otra vez: haz fácil que diga qué fue o que vuelva sin vergüenza.
-- No hemos hablado: dejó sus datos y nadie le llamó. Puede que ni se acuerde. Recuérdale que pidió información y preséntate antes de pedir nada.
+- No contactado: dejó sus datos y nadie le llamó. Puede que ni se acuerde. Recuérdale que pidió información y preséntate antes de pedir nada.
 
 ESTRUCTURA (molde probado)
 1. Saludo + quién escribe en una línea ("Hola, soy Noe.").
@@ -101,7 +101,7 @@ LO QUE DELATA UN TEXTO HECHO POR IA (prohibido)
 CTA
 - El botón dice lo que el lead consigue, en primera persona: "Quiero que me llaméis", "Vale, llamadme", "Que me llame alguien". Nunca "Más información", "Descubre", "Matricúlate", "Rellena el formulario".
 - Antes del botón, la razón para pulsarlo. Después del primer botón, una línea corta y el segundo botón con guasa distinta cada vez.
-- Recuerda que dejó sus datos interesándose por una FP (imprescindible en "No hemos hablado").
+- Recuerda que dejó sus datos interesándose por una FP (imprescindible en "No contactado").
 - "Un compañero del equipo te llama", nunca "te llamo yo".
 
 ASUNTO Y PREHEADER
@@ -154,7 +154,7 @@ Cuando lo pidan, una frase puente: antes éramos Ucademy, ahora Explora, el mism
 El email de Rosa tuvo 33,47 % de apertura pero 0,56 % de clic con "Quiero más información".
 - El botón lleva al formulario para que un comercial llame. Dice lo que el lead consigue, en primera persona: "Quiero que me llaméis", "Vale, llamadme", "Quiero empezar como Rosa". Coherente con la frase anterior.
 - Prohibido: "Más información", "Descubre", "Matricúlate", "Apúntate", "Rellena el formulario".
-- Incluye una línea que recuerde que dejó sus datos (imprescindible en "No hemos hablado").
+- Incluye una línea que recuerde que dejó sus datos (imprescindible en "No contactado").
 - "Un compañero del equipo te llama", nunca "te llamo yo".
 
 ## Tono y forma
