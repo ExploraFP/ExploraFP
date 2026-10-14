@@ -20,6 +20,8 @@
 .deco-isotipo { top: -140px; right: -220px; width: 700px; height: 606px; }
 .marco-torcido { position: absolute; left: -40px; top: 360px; width: 760px; height: 520px; border: 3px solid color-mix(in srgb, var(--acento) 35%, transparent); transform: rotate(-8deg); z-index: 0; }
 .contenido > * { position: relative; z-index: 1; }
+/* el marco torcido de la portada cruzaba el titular y parecía un error (oct-2026): se oculta, el código sigue en motor.js */
+.marco-torcido { display: none; }
 .contenido > .deco-isotipo, .contenido > .marco-torcido { position: absolute; z-index: 0; }
 
 .num-fantasma { font-family: var(--titular); font-weight: 900; font-size: 250px; line-height: .8; color: color-mix(in srgb, var(--tinta) 14%, transparent); margin-bottom: 20px; }

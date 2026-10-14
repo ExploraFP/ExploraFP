@@ -58,3 +58,8 @@
 
 /* Jerarquía: titulares de contenido y lista más grandes para llenar la slide (antes 104px). */
 .tipo-contenido .cabeza .titulo, .tipo-lista .cabeza .titulo { font-size: 124px; }
+
+/* Variedad: en las slides pares el papel y la caja se tuercen al otro lado, para que tres «contenido» seguidos
+   no sean la misma imagen repetida (oct-2026). */
+.l-capas.alterna .pila > .papel { inset: -34px 44px 34px -34px; transform: rotate(-2.2deg); }
+.l-capas.alterna .pila > .caja { transform: rotate(.8deg); }

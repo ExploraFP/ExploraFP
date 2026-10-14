@@ -107,7 +107,9 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .notas-fondo .etiqueta { position: absolute; top: 80px; left: var(--m); }
 .notas-fondo .titulo { font-size: 136px; }
 .notas-fondo .subtitulo { max-width: 800px; }
-.notas-fondo .bloque-notas { background: var(--fondo); padding: 34px 40px 40px var(--m); margin-left: calc(-1 * var(--m)); align-self: flex-start; max-width: 96%; box-shadow: 0 0 0 1px color-mix(in srgb, var(--tinta) 10%, transparent); }
+/* El bloque del titular tapa la textura con una banda del color de fondo a todo el ancho y un fundido arriba
+   (oct-2026: antes era una caja al 96 % con un filo de 1 px y en verde parecía un fallo de render). */
+.notas-fondo .bloque-notas { background: var(--fondo); padding: 34px var(--m) 40px; margin: 0 calc(-1 * var(--m)); align-self: stretch; box-shadow: 0 -70px 70px -10px var(--fondo); }
 .slide.foto-sangre .contenido .pastilla { top: 176px; }  /* aire con el logo (pedido de Sandra, oct-2026): antes 130 = pegado */
 
 /* SIN PIE EN NINGUNA PLANTILLA: nada de banda ni logo abajo (Sandra lo ve como "footer de web").
