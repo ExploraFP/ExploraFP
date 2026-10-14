@@ -116,7 +116,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Tildes: los buscadores (`buscar`, `ft-q`, `dt-q`) no reaccionan durante la composición de la tecla muerta (´+e), solo al terminarla (`BUSCADORES` en inicio.js).
 - Inicio (`web/inicio.js` + `web/inicio.css`): pantalla con la que se entra y a la que lleva el logo (`#ir-home`, cierra ficha/visor/editor). Es la primera pestaña, «Inicio». Hasta 900 px de ancho (móvil y panel estrecho de claude.ai) las seis pestañas van en un menú lateral que se abre con ☰ (junto al botón del tema). Bloques: Sugerencias de contenido (se mudaron aquí; la Matriz ya no las lleva) · En producción ahora (4 tarjetas + «Ver todo en Producción») · Lo nuevo (ideas 🆕 del mes y las anotadas por Sandra, sin repetir las de Sugerencias) · Avisos (solo si hay: errores de calidad, foto en ≥3 carruseles, fotos a medio catalogar). Sin cifras de ritmo ni objetivos por semana: Sandra aún no tiene estrategia de redes.
 - `node web/construir.mjs` → `web/dist/` (HTML + fotos, logos, trazos, fuentes). Publicar con root `web/dist`,
-  `files` = `web/dist/archivos.json`, capacidades `{db, downloads, sample}`.
+  `files` = `web/dist/archivos.json`, capacidades `{db, downloads, sample, assets, mcp}` (ver Descargar → Google Drive).
 - Datos: colección `carruseles` del db (un documento por carrusel: titulo, plantilla, color, slides, copy, estado,
   idea). Estados: pendiente → generando → borrador → hecho. La colección `ops` es la del banco (ideas hechas).
 - Fotos nuevas: añadir a `contenido/img/foto-*.jpg` y su descripción en `DESC` de `web/construir.mjs`.
@@ -134,6 +134,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   de la slide de dato, falta el texto del post. Con errores, «Marcar hecho» pide un segundo clic.
 - Descarga en lote: la plataforma NO permite .zip (solo imágenes, PDF, texto y Office). El lote baja los PNG
   seguidos con nombres ordenados (01-titulo-01.png…) y una confirmación del navegador por archivo.
+- Descargar → Google Drive (`web/drive.js` + `web/drive.css`, pedido de Sandra 14/10/2026: «no tener que dar permiso con cada slide»): el botón «Descargar» del editor abre una ventana con dos opciones: «📁 A Google Drive» (recomendada) y «💻 Al ordenador» (la de siempre, una confirmación por archivo). Drive usa la capacidad `mcp` (conector «Google Drive», herramientas `create_file` y `search_files`): busca o crea la carpeta «Explora · Carruseles» en el Drive de QUIEN MIRA la web y dentro crea una carpeta por carrusel «C16 · título» (se ordenan por código; si ya se subió, «(v2)», «(v3)»…) con `C16-titulo-01.png…` y `C16-titulo-texto.txt`. Las escrituras no se reintentan solas; cada error del conector tiene su mensaje (reconectar, añadir el conector, etc.). Se puede cerrar la ventana mientras sube: avisa con un toast. Publicar con capacidades `{db, downloads, sample, assets, mcp: {servers: [{server: "Google Drive", tools: ["create_file", "search_files"]}]}}`. El 14/10 se creó a mano «Explora · Carruseles» en el Drive de emilio@ucademy.com (el conector de la sesión de Claude); en el Drive de Sandra se crea sola la primera vez.
 - La fuente Gravity se publica con la herramienta (privada); no hacer público el enlace (licencia de Dinamo).
 
 ## Customer persona (fuente: informe «Quién compra una FP online», datos a 15/09/2026)

@@ -1,0 +1,16 @@
+/* Descargar → Google Drive o al ordenador (drive.js) */
+.drv-caja{max-width:440px}
+.drv-caja .cuerpo{display:flex;flex-direction:column;gap:10px}
+.drv-op{display:flex;flex-direction:column;gap:3px;text-align:left;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer;font:inherit}
+.drv-op b{font-size:15px;font-weight:600}
+.drv-op span{font-size:13px;color:var(--ink2)}
+.drv-op:hover:not([disabled]){border-color:var(--ink3)}
+.drv-op[data-drv="drive"]:not([disabled]){border:2px solid var(--limaLine)}
+.drv-op[disabled]{opacity:.5;cursor:not-allowed}
+.drv-caja p{margin:0}
+.drv-prog{color:var(--ink)}
+.drv-barra{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.drv-barra i{display:block;height:100%;background:var(--limaLine);transition:width .3s}
+.drv-ok{color:var(--ink);font-weight:600}
+.drv-error{color:#b3261e}
+.drv-caja a.btn{text-decoration:none}
