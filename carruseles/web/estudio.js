@@ -204,7 +204,7 @@ function promptCarrusel(c) {
       (/PALABRA|\[recurso\]/.test(c.cta) ? ' Sustituye PALABRA por una palabra clave corta en mayúsculas que encaje (p. ej. REQUISITOS) y [recurso] por el recurso concreto que se llevaría (p. ej. «el checklist de tu ciclo»).' : ''));
     L.push('- El texto del post ("copy") termina repitiendo esa misma acción.');
   } else {
-    L.push('- Cierre: un titular corto y un "cta" que sea una coordenada, nunca una venta: ' + CTAS.map(x => x.replace(/\s*\S+$/, '')).join(' · ') + '. "cinta": "Enlace en el perfil".');
+    L.push('- Cierre: un titular corto y un "cta" que sea una coordenada, nunca una venta: ' + CTAS.map(x => x.replace(/\s*\S+$/, '')).join(' · ') + '. Poca información (pedido de Sandra, 14/10/2026): titular + cta y, como mucho, un "texto" de una línea que no repita lo que dice el cta (si lo repite, sin texto). Sin "cinta": solo si el cta manda al enlace del perfil, y entonces "cinta": "Enlace en el perfil".');
   }
   if (O) {
     L.push('');
@@ -257,7 +257,7 @@ function promptCarrusel(c) {
   L.push('  {"tipo":"contenido","numero":"01","titulo":"...","texto":"..."},');
   L.push('  {"tipo":"lista","titulo":"...","items":["...","..."]},');
   L.push('  {"tipo":"dato","antetitulo":"...","cifra":"...","texto":"...","fuente":"..."},');
-  L.push('  {"tipo":"cierre","titulo":"...","texto":"...","cta":"...","cinta":"Enlace en el perfil"}');
+  L.push('  {"tipo":"cierre","titulo":"...","cta":"..."}');
   L.push(' ]}');
   return L.join('\n');
 }
