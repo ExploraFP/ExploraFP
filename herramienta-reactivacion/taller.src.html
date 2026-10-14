@@ -172,7 +172,10 @@ textarea { min-height: 64px; resize: vertical; }
 .actions .sp { flex: 1; }
 .checks { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
 .checks ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: .88rem; }
-.undo { display: flex; gap: 6px; }
+.undo { display: flex; gap: 6px; align-items: center; }
+.like-btn { height: 38px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font: 600 .82rem var(--font-body); cursor: pointer; }
+.like-btn:hover { border-color: var(--ink); }
+.like-btn[aria-pressed="true"] { background: var(--lime); border-color: var(--lime); color: #102016; }
 .undo .icon-btn:disabled { opacity: .35; cursor: default; }
 .savebar { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; gap: 10px; align-items: end; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
 .savebar .saved { font: 500 .78rem var(--font-mono); color: var(--muted); padding-bottom: 10px; white-space: nowrap; }
@@ -500,6 +503,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <div class="undo" id="undoBox" hidden>
             <button type="button" class="icon-btn" id="undoBtn" aria-label="Deshacer (Ctrl/Cmd + Z)" title="Deshacer (Ctrl/Cmd + Z)">↶</button>
             <button type="button" class="icon-btn" id="redoBtn" aria-label="Rehacer (Ctrl/Cmd + Mayús + Z)" title="Rehacer (Ctrl/Cmd + Mayús + Z)">↷</button>
+            <button type="button" class="like-btn" id="likeBtn" aria-pressed="false" hidden>♡ Me gusta</button>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <div class="seg2" role="group" aria-label="Pantalla">
@@ -831,6 +835,7 @@ function renderPreview() {
   const e = state.current, has = !!e;
   document.querySelectorAll("[data-copy]").forEach((b) => { b.hidden = !has; });
   $("sentBtn").hidden = !has || !db;
+  likeUi();
 
   if (!has) {
     const s = SEG[state.seg];
@@ -943,6 +948,13 @@ function instructions(withBuyers) {
   ];
   if (withBuyers) out.push("BIBLIOTECA DE BUYERS (id: nombre · formación · perfil). Usa la herramienta buscar_buyer para leer la ficha completa antes de contar una historia:\n" + BUYERS_INDEX);
   if (sent.length) out.push("YA PLANIFICADOS O ENVIADOS A ESTE SEGMENTO (no repitas ángulo, gancho ni asunto):\n" + sent.map((c) => `- ${c.fecha}: "${c.asunto || ""}"${c.angulo ? " · " + c.angulo : ""}${c.gancho ? " · gancho: " + c.gancho : ""}`).join("\n"));
+  const likes = (state.likes || []).filter((x) => x.id !== state.slot?.id && x.email && Array.isArray(x.email.bloques))
+    .sort((a, b) => (b.segmento === state.seg) - (a.segmento === state.seg) || String(b.fecha).localeCompare(String(a.fecha))).slice(0, 4);
+  if (likes.length) out.push("EMAILS QUE AL EQUIPO LE HAN GUSTADO (es el nivel y el estilo que buscan: imita cómo están escritos, pero NO copies sus ganchos, asuntos ni frases):\n" + likes.map((x) => {
+    const e = x.email, sg = SEG[x.segmento];
+    const body = e.bloques.map((b) => b.tipo === "boton" ? `[BOTÓN: ${b.contenido}]` : b.tipo === "lista" ? (Array.isArray(b.contenido) ? b.contenido : [b.contenido]).map((l) => "- " + l).join("\n") : b.contenido).join("\n\n");
+    return `--- ${sg ? sg.nombre + " · " + sg.firma.nombre : ""}\nAsunto A: ${e.asunto_a || ""}\nAsunto B: ${e.asunto_b || ""}\nPreheader: ${e.preheader || ""}\n\n${body}\n\n${e.pd || ""}\n${e.despedida || ""}\n${e.firma || ""}`;
+  }).join("\n\n"));
   if (state.current) out.push("BORRADOR ACTUAL (cámbialo según lo que te pidan; si no te piden cambiar algo, mantenlo igual):\n" + JSON.stringify({ ...state.current, segmento: undefined, formacion: undefined }));
   out.push("", "FORMATO DE CADA RESPUESTA: un objeto JSON con dos campos: \"mensaje\" (1-2 frases para el equipo explicando qué has hecho o preguntando algo) y \"email\" (el email completo con esta forma):", FORMATO);
   return out.join("\n");
@@ -1070,6 +1082,7 @@ async function saveDraft() {
   try {
     if (state.slot.id) await db.collection("calendario").doc(state.slot.id).update(data);
     else { const ref = await db.collection("calendario").add({ ...data, notas: "", metricas: {}, creado: new Date().toISOString() }); state.slot.id = ref.id; }
+    if ((state.likes || []).some((x) => x.id === state.slot.id)) db.collection("ejemplos").doc(state.slot.id).update({ email: JSON.parse(JSON.stringify({ asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader || "", bloques: e.bloques, pd: e.pd || "", despedida: e.despedida, firma: e.firma })) }).catch(() => {});
     $("savedAt").textContent = "Guardado " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
   } catch (err) {
     $("savedAt").className = "saved err";
@@ -1082,6 +1095,24 @@ $("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleS
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
 function sentUi() { const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = sent ? "✓ Enviado · deshacer" : "Ya está enviado"; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
+function likeUi() {
+  const on = !!(state.slot?.id && (state.likes || []).some((x) => x.id === state.slot.id));
+  $("likeBtn").hidden = !state.current || !db;
+  $("likeBtn").setAttribute("aria-pressed", String(on));
+  $("likeBtn").textContent = on ? "♥ Te gusta" : "♡ Me gusta";
+}
+$("likeBtn").onclick = async () => {
+  if (!db || !state.current) return;
+  $("likeBtn").disabled = true;
+  try {
+    if (!state.slot.id) { clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); await saving; }
+    if (!state.slot.id) return;
+    const on = (state.likes || []).some((x) => x.id === state.slot.id), ref = db.collection("ejemplos").doc(state.slot.id);
+    if (on) await ref.delete();
+    else { const e = emailFromDom(); await ref.set(JSON.parse(JSON.stringify({ segmento: state.seg, fecha: state.slot.fecha, email: { asunto_a: e.asunto_a, asunto_b: e.asunto_b, preheader: e.preheader || "", bloques: e.bloques, pd: e.pd || "", despedida: e.despedida, firma: e.firma }, marcado: new Date().toISOString() }))); }
+  } catch { $("savedAt").className = "saved err"; $("savedAt").textContent = "No se pudo guardar el «Me gusta»."; }
+  finally { $("likeBtn").disabled = false; likeUi(); }
+};
 $("sentBtn").onclick = () => { $("pEstado").value = $("pEstado").value === "enviado" ? "en_redaccion" : "enviado"; sentUi(); scheduleSave(0); };
 $("pHs").addEventListener("change", () => scheduleSave(0));
 
@@ -1410,6 +1441,7 @@ renderPreview(); renderSentChips(); renderCal(); renderBuyers();
   if (!sample) { $("noSample").hidden = false; $("goBtn").disabled = true; }
   db = await window.claude.use("db");
   if (!db) { $("noDb").hidden = false; return; }
+  db.collection("ejemplos").onSnapshot((snap) => { state.likes = snap.docs.map((d) => ({ id: d.id, ...d.data() })); likeUi(); });
   db.collection("calendario").orderBy("fecha", "asc").onSnapshot((snap) => {
     state.cal = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderCal();
     if (pendingWriter) {
