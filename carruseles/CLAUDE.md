@@ -42,6 +42,7 @@ Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slid
   - `marco: notas` → textura manuscrita de fondo a toda la slide, titular en una esquina (cualquier plantilla).
   - capas + imagen → foto torcida (en el sitio del antiguo papel) con la caja de color encima.
   - capas sin imagen → portada notas por defecto (el papel blanco suelto no tenía sentido).
+  - 14/10/2026 (Sandra: «se ve un poco mal»): en la portada notas, el titular va sobre una banda del color de fondo a todo el ancho con un fundido arriba (antes, una caja al 96 % con un filo de 1 px que en verde parecía un fallo; afectaba a C09, C13, C15, C16, que tienen `marco: fondo` sin foto y caen aquí). En cuaderno se oculta el marco torcido de la portada (cruzaba el titular). En capas, las slides en posición par (02, 04…) llevan la clase `alterna`: papel y caja se tuercen al otro lado para que varios «contenido» seguidos no sean la misma imagen.
 - `contenido`: etiqueta, titulo, antetitulo, numero, texto, imagen (portátil en capas/cuaderno; foto en poster; en feed foto arriba a sangre, o portátil con `marco: portatil`), nota.
 - `lista`: etiqueta, titulo, antetitulo, items (2-4). feed → cuadros numerados; capas → tarjetas; cuaderno → checklist; poster → píldoras.
 - `dato`: antetitulo, cifra, texto, fuente — **nunca inventar cifras; siempre con fuente real**.
