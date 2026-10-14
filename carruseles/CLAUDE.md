@@ -135,6 +135,7 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
   de la slide de dato, falta el texto del post. Con errores, «Marcar hecho» pide un segundo clic.
 - Descarga en lote: la plataforma NO permite .zip (solo imágenes, PDF, texto y Office). El lote baja los PNG
   seguidos con nombres ordenados (01-titulo-01.png…) y una confirmación del navegador por archivo.
+  14/10/2026 (pedido de Sandra): «Descargar» en el editor abre un menú pequeño debajo del botón: «Todas las slides (N + texto)» o «Solo la slide X» (la abierta; `abrirMenuDescarga` / `descargarSlide` al final de seleccion.js; Esc o clic fuera lo cierran).
   14/10/2026: se montó «Descargar → Google Drive» (todas de una vez) y Sandra lo quitó el mismo día: prefiere descargar a mano, una confirmación por slide. No volver a proponerlo (está en el historial de git, commit 4fed02e, por si lo pide).
 - La fuente Gravity se publica con la herramienta (privada); no hacer público el enlace (licencia de Dinamo).
 

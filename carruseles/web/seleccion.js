@@ -578,3 +578,48 @@ pintarMinis = function (raiz) {
     if (fr && c) { try { fr._doc = docSlide(c, +fr.dataset.i); } catch (e) {} } }
   return _pintarMinisIn(raiz);
 };
+
+/* ---------- Descargar: todas o solo la slide abierta (pedido de Sandra, 14/10/2026) ----------
+   «Descargar» abre un menú pequeño debajo del botón: «Todas las slides (N)» o «Solo la slide X». */
+function cerrarMenuDescarga() { const m = document.getElementById('dl-menu'); if (m) m.remove(); }
+function abrirMenuDescarga(b, c) {
+  cerrarMenuDescarga();
+  const r = b.getBoundingClientRect(), n = c.slides.length, i = EST.sel || 0;
+  const m = document.createElement('div'); m.id = 'dl-menu'; m.setAttribute('role', 'menu');
+  m.innerHTML = '<button role="menuitem" data-dl="todas">Todas las slides <span>' + n + (c.copy ? ' + texto' : '') + '</span></button>' +
+    '<button role="menuitem" data-dl="una">Solo la slide ' + (i + 1) + '</button>';
+  m.style.top = (r.bottom + 6) + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
+  document.body.appendChild(m); m.querySelector('button').focus();
+}
+async function descargarSlide(c, i) {
+  if (EST.descargando) return;
+  const down = DOWN || (typeof claude !== 'undefined' && claude.use ? await claude.use('downloads') : null);
+  if (!down) { toast('La descarga no está disponible en esta vista'); return; }
+  EST.descargando = true;
+  try {
+    let png;
+    try { png = await pngDe(c, i); } catch (e) { throw {code: 'png', message: e && e.message || ''}; }
+    await guardarArchivo(down, nombreBase(c) + '-' + String(i + 1).padStart(2, '0') + '.png', png);
+    toast('Slide ' + (i + 1) + ' descargada');
+  } catch (e) {
+    console.error('descarga', e);
+    toast(e && e.code === 'declined' ? 'Descarga cancelada' : e && e.code === 'png' ? 'Fallo al crear el PNG' + (e.message ? ': ' + e.message : '')
+      : 'No he podido descargarla' + (e && e.code ? ' (' + e.code + ')' : ''));
+  } finally { EST.descargando = false; }
+}
+// en window y en captura: si no, el clic de estudio.js (document, captura) descargaría todas antes
+window.addEventListener('click', e => {
+  const t = e.target; if (!t.closest) return;
+  const c = EST.lista[EST.abierto];
+  const b = t.closest('#est-descargar');
+  if (b && c && c.slides.length) {
+    e.stopPropagation(); e.preventDefault();
+    if (document.getElementById('dl-menu')) cerrarMenuDescarga(); else abrirMenuDescarga(b, c);
+    return;
+  }
+  const op = t.closest('#dl-menu [data-dl]');
+  if (op && c) { e.stopPropagation(); cerrarMenuDescarga(); if (op.dataset.dl === 'todas') descargar(c); else descargarSlide(c, EST.sel || 0); return; }
+  if (!t.closest('#dl-menu')) cerrarMenuDescarga();
+}, true);
+window.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('dl-menu')) { e.stopImmediatePropagation(); cerrarMenuDescarga(); } }, true);
+window.addEventListener('resize', cerrarMenuDescarga);
