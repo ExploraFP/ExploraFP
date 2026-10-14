@@ -113,6 +113,8 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 /* El titular va en una caja del color de fondo que tapa la textura (como al principio: 96 % de ancho, pegada a la izquierda).
    14/10/2026: sin el filo de 1 px que tenía (Sandra: le gustaba la caja pero no el borde; la banda a todo el ancho no le gustó). */
 .notas-fondo .bloque-notas { background: var(--fondo); padding: 34px 40px 40px var(--m); margin-left: calc(-1 * var(--m)); align-self: flex-start; max-width: 96%; }
+/* fundido justo encima de la caja, solo a su ancho: borra los trazos sueltos que asomaban (Sandra: «un piquito solitario») */
+.notas-fondo .bloque-notas::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 56px; background: linear-gradient(transparent, var(--fondo)); pointer-events: none; }
 .slide.foto-sangre .contenido .pastilla { top: 176px; }  /* aire con el logo (pedido de Sandra, oct-2026): antes 130 = pegado */
 
 /* SIN PIE EN NINGUNA PLANTILLA: nada de banda ni logo abajo (Sandra lo ve como "footer de web").
