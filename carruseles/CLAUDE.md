@@ -49,7 +49,7 @@ Muestrarios en `contenido/muestrario-*.yml` (una composición, un color por slid
 
 Campos del carrusel: `plantilla`, `color`, `cinta` (etiqueta de página: "Lo malo · 02"), `copy`.
 Extra por slide: `estilo` = retoques de diseño solo de esa slide (CSS; `estiloSlide` en motor.js lo limpia —sin @-reglas, @import ni url() externas— y prefija cada selector con `#estilo`, la <section> de esa slide, para que gane a la plantilla). Lo escribe Claude desde el chat de la web cuando Sandra pide mover, separar, agrandar o alinear algo (pedido de Sandra, 8/10/2026): el prompt lleva el HTML de la slide para que sepa las clases; si Claude no lo menciona, se conserva; `"estilo": ""` lo quita; Ctrl+Z lo deshace. Si un retoque le gusta para todos, se pasa a la plantilla. `decoracion: postit | notas | isotipo | ninguna`; `trazo: ninguno` quita las flechas a mano de esa slide en cualquier plantilla (en la web: pinchar la flecha → «Quitar flecha»; vuelve con «+ Flecha»).
-Ojo: la textura `assets/trazos/notas.png` lleva frases en gallego/portugués («vou morrer aquí outra vez»); a tamaño grande se leen.
+Ojo: la textura `assets/trazos/notas.png` lleva frases en gallego/portugués («vou morrer aquí outra vez»); a tamaño grande se leen. Sandra lo sabe y la quiere así (14/10/2026: «déjala así, da igual»): no volver a proponer quitarla ni cambiarla.
 `*palabra*` resalta en titulares y subraya en textos. Máximo 20 slides; ideal 4-8.
 Si un YAML falla, el render sigue con los demás y lo lista al final.
 
