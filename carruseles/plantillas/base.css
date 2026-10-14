@@ -99,8 +99,11 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .foto-sangre .subtitulo { font-family: var(--cuerpo); font-size: 38px; color: #fff; margin-top: 30px; max-width: 800px; }
 
 /* PORTADA NOTAS (`marco: notas`): textura manuscrita de marca a toda la slide, titular en una esquina. */
-.notas-fondo .contenido { justify-content: flex-end; padding-bottom: 210px; }  /* titular más arriba (pedido de Sandra, 14/10/2026; antes 90) */
-.l-capas.notas-fondo .contenido { padding-bottom: 190px; }  /* antes 60 */
+/* Titular más arriba (pedido de Sandra, 14/10/2026): la caja llega hasta el borde de abajo y el aire va DENTRO de la caja,
+   así no asoman trazos de la textura por debajo (antes el hueco era padding del contenido: 90 / 60 en capas). */
+.notas-fondo .contenido { justify-content: flex-end; padding-bottom: 0; }
+.notas-fondo .bloque-notas { padding-bottom: 250px !important; }
+.l-capas.notas-fondo .bloque-notas { padding-bottom: 230px !important; }
 .notas-fondo .contenido > * { position: relative; z-index: 2; }
 .notas-fondo .contenido > .textura-notas { position: absolute; z-index: 0; inset: -60px -160px 120px -40px; transform: rotate(-5deg);
   background: var(--tinta); opacity: .3; -webkit-mask: var(--img-notas) center / cover no-repeat; mask: var(--img-notas) center / cover no-repeat; }
