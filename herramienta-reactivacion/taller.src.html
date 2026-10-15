@@ -524,9 +524,9 @@ button.wb-date:disabled { cursor: default; }
 .stable td.h a { text-decoration: none; font-weight: 600; }
 
 /* Calendario: vista de mes */
-.cal-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: end; gap: 12px 24px; margin-bottom: 16px; }
+.cal-head { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 12px 24px; margin-bottom: 16px; }
 .cal-head > .vsw { justify-self: center; margin-bottom: 5px; }
-.cal-right { display: flex; align-items: center; gap: 12px; margin-bottom: 5px; }
+.cal-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 9px; }
 .cal-right .legend { margin: 0; gap: 6px; flex-wrap: nowrap; }
 .cal-right .cal-nav { padding-left: 12px; border-left: 0; position: relative; }
 .cal-right::before { content: none; }
@@ -535,11 +535,16 @@ button.wb-date:disabled { cursor: default; }
 .cal-nav .icon-btn { width: 25px; padding: 0 !important; font-size: 1rem; }
 .cal-nav button:hover { background: var(--bg) !important; }
 .cal-nav[hidden] { display: none !important; }
+.cal-right .legend .lg { padding: 3px 10px 3px 9px; font-size: .74rem; gap: 6px; }
+.cal-right .legend .lg i { width: 8px; height: 8px; }
+.cal-right .legend { gap: 5px; }
+.cal-right .cal-nav button { height: 18px; min-width: 18px; font-size: .74rem; }
+.cal-right .cal-nav .icon-btn { width: 20px; font-size: .9rem; }
 #calView { padding: 3px; margin-bottom: 1px !important; }
 #calView button { padding: 7px 18px !important; font-size: .95rem; gap: 8px; }
 #calView svg { width: 16px; height: 16px; }
 .cal-right .cal-nav { padding: 2px !important; }
-@media (max-width: 1180px) { .cal-head { grid-template-columns: auto 1fr; } .cal-head > .vsw { grid-row: 1; grid-column: 2; justify-self: start; margin: 0 0 6px; } .cal-right { grid-row: 2; grid-column: 1 / -1; justify-content: flex-end; margin: 0; } }
+@media (max-width: 1220px) { .cal-head { grid-template-columns: auto 1fr; } .cal-head > .vsw { grid-row: 1; grid-column: 2; justify-self: start; margin: 0 0 6px; } .cal-right { grid-row: 2; grid-column: 1 / -1; justify-content: flex-end; margin: 0; } }
 @media (max-width: 760px) { .cal-head { grid-template-columns: 1fr; } .cal-head > .vsw { grid-row: auto; grid-column: 1; margin: 0; } .cal-right { grid-row: auto; grid-column: 1; flex-wrap: wrap; justify-content: flex-start; } .cal-right .legend { flex-wrap: wrap; } }
 .cal-head h2 { font-size: 2rem; }
 .cal-nav { display: flex; gap: 6px; align-items: center; }
@@ -713,8 +718,19 @@ button.wb-date:disabled { cursor: default; }
 .ctx-head { margin: 0 0 18px; }
 .rg-acts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .rg-acts select { width: auto; padding: 6px 10px; font-size: .85rem; border-radius: 999px; }
-.rg-text { display: block; width: 100%; min-height: 68vh; resize: vertical; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); color: var(--ink); padding: 18px 20px; font: 400 .9rem/1.6 var(--font-body); }
-.rg-text:focus { outline: none; border-color: var(--ink); }
+.rg-wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; align-items: start; }
+.rg-nav { position: sticky; top: 96px; display: grid; gap: 2px; max-height: calc(100vh - 120px); overflow-y: auto; }
+.rg-nav a { display: block; padding: 7px 12px; border-radius: 10px; color: var(--muted); text-decoration: none; font: 500 .8rem/1.3 var(--font-body); }
+.rg-nav a:hover { background: var(--paper); color: var(--ink); }
+.rg-nav a.on { background: var(--paper); color: var(--ink); font-weight: 600; box-shadow: inset 3px 0 0 var(--lime); }
+.rg-list { display: grid; gap: 14px; }
+.rg-card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; scroll-margin-top: 96px; transition: border-color .15s; }
+.rg-card:focus-within { border-color: var(--ink); }
+.rg-card h3 { margin: 0 0 8px; font: 400 1.15rem/1.15 var(--font-head); text-transform: uppercase; letter-spacing: .01em; }
+.rg-card h3 small { display: block; margin-top: 3px; font: 500 .78rem var(--font-body); text-transform: none; letter-spacing: 0; color: var(--muted); }
+.rg-card textarea { display: block; width: 100%; border: 0; outline: none; resize: none; overflow: hidden; background: transparent; color: var(--ink); padding: 0; font: 400 .9rem/1.65 var(--font-body); }
+.rg-card.intro { background: color-mix(in srgb, var(--lime) 14%, var(--paper)); }
+@media (max-width: 860px) { .rg-wrap { grid-template-columns: 1fr; } .rg-nav { display: none; } }
 .b-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chips button { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 500 .82rem var(--font-body); cursor: pointer; }
@@ -885,7 +901,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
   <section id="view-reglas" hidden>
     <div class="b-head"><div><p class="eyebrow">Reglas</p><h2>Cómo escribe Claude</h2></div>
       <div class="rg-acts"><span class="saved" id="rgStatus" role="status"></span><select id="rgVer" aria-label="Versiones"></select><button type="button" class="btn btn-ink btn-sm" id="rgSave" disabled>Guardar</button></div></div>
-    <textarea id="rgText" class="rg-text" spellcheck="false" aria-label="Reglas de escritura"></textarea>
+    <div class="rg-wrap"><nav class="rg-nav" id="rgNav" aria-label="Apartados"></nav><div class="rg-list" id="rgList"></div></div>
   </section>
 
   <section id="view-narradores" hidden>
@@ -1237,26 +1253,47 @@ function findBuyers(q) {
 state.reglasDoc = null;
 const reglas = () => (state.reglasDoc && String(state.reglasDoc.texto || "").trim()) || REGLAS;
 const fmtVer = (f) => new Date(f).toLocaleString("es-ES", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+const isHead = (l) => { const h = l.replace(/\s*\(.*\)\s*$/, "").trim(); return l.length < 90 && h.length > 2 && !/^[-·*\d\[]/.test(l) && h === h.toUpperCase() && /[A-ZÁÉÍÓÚÑ]{3}/.test(h); };
+function parseReglas(t) {
+  const out = { intro: "", secs: [] }; let cur = null, intro = [];
+  String(t || "").split("\n").forEach((l) => { if (isHead(l.trim())) { cur = { t: l.trim(), b: [] }; out.secs.push(cur); } else (cur ? cur.b : intro).push(l); });
+  const clean = (a) => a.join("\n").replace(/^\s*\n|\s+$/g, "");
+  out.intro = clean(intro); out.secs.forEach((x) => { x.b = clean(x.b); });
+  return out;
+}
+const rgFromDom = () => [...$("rgList").querySelectorAll(".rg-card")].map((c) => (c.dataset.t ? c.dataset.t + "\n" : "") + c.querySelector("textarea").value.replace(/\s+$/, "")).join("\n\n");
+const rgNice = (t) => { if (!t) return t; const x = t[0] + t.slice(1).toLowerCase(); return x.replace(/\b(cta|ia|fp|pd)\b/gi, (w) => w.toUpperCase()); };
+const rgGrow = (ta) => { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; };
+addEventListener("resize", () => { if (!$("view-reglas").hidden) $("rgList").querySelectorAll("textarea").forEach(rgGrow); });
+function rgBuild(text) {
+  const r = parseReglas(text);
+  const cards = [...(r.intro ? [{ t: "", b: r.intro }] : []), ...r.secs];
+  $("rgList").innerHTML = cards.map((c, i) => { const m = c.t.match(/^(.*?)\s*\((.*)\)$/); const tt = m ? m[1] : c.t, sub = m ? m[2] : "";
+    return `<section class="rg-card${c.t ? "" : " intro"}" id="rg-${i}" data-t="${esc(c.t)}">${c.t ? `<h3>${esc(rgNice(tt))}${sub ? `<small>${esc(sub)}</small>` : ""}</h3>` : ""}<textarea spellcheck="false" aria-label="${esc(tt || "Introducción")}">${esc(c.b)}</textarea></section>`; }).join("");
+  $("rgNav").innerHTML = cards.map((c, i) => { const tt = c.t.replace(/\s*\(.*\)$/, ""); return `<a href="#rg-${i}" data-i="${i}">${esc(tt ? rgNice(tt) : "Introducción")}</a>`; }).join("");
+  $("rgNav").querySelectorAll("a").forEach((a) => a.onclick = (ev) => { ev.preventDefault(); $("rg-" + a.dataset.i).scrollIntoView({ behavior: "smooth", block: "start" }); $("rgNav").querySelectorAll("a").forEach((x) => x.classList.toggle("on", x === a)); });
+  requestAnimationFrame(() => $("rgList").querySelectorAll("textarea").forEach(rgGrow));
+}
 function renderReglas(force) {
-  const t = $("rgText"), cur = reglas();
-  if (force || !t.dataset.dirty) { t.value = cur; t.dataset.dirty = ""; }
+  const cur = reglas();
+  if (force || !$("rgList").dataset.dirty) { rgBuild(cur); $("rgList").dataset.dirty = ""; }
   const h = (state.reglasDoc && state.reglasDoc.historial) || [];
   $("rgVer").innerHTML = `<option value="">Versión actual${state.reglasDoc && state.reglasDoc.actualizado ? " · " + esc(fmtVer(state.reglasDoc.actualizado)) : ""}</option>` + h.slice().reverse().map((v, i) => `<option value="${h.length - 1 - i}">${esc(fmtVer(v.fecha))}</option>`).join("") + `<option value="orig">Original</option>`;
-  $("rgSave").disabled = !t.dataset.dirty || !db;
+  $("rgSave").disabled = !$("rgList").dataset.dirty || !db;
 }
-$("rgText").addEventListener("input", () => { $("rgText").dataset.dirty = "1"; $("rgSave").disabled = !db; $("rgStatus").textContent = ""; });
+$("rgList").addEventListener("input", (ev) => { if (ev.target.tagName === "TEXTAREA") rgGrow(ev.target); $("rgList").dataset.dirty = "1"; $("rgSave").disabled = !db; $("rgStatus").textContent = ""; });
 $("rgVer").onchange = () => {
   const v = $("rgVer").value, h = (state.reglasDoc && state.reglasDoc.historial) || [];
-  $("rgText").value = v === "" ? reglas() : v === "orig" ? REGLAS : (h[+v] || {}).texto || "";
-  $("rgText").dataset.dirty = v === "" ? "" : "1"; $("rgSave").disabled = v === "" || !db;
+  rgBuild(v === "" ? reglas() : v === "orig" ? REGLAS : (h[+v] || {}).texto || "");
+  $("rgList").dataset.dirty = v === "" ? "" : "1"; $("rgSave").disabled = v === "" || !db;
 };
 $("rgSave").onclick = async () => {
   if (!db) return;
-  const texto = $("rgText").value.trim(); if (!texto) return;
+  const texto = rgFromDom().trim(); if (!texto) return;
   const prev = state.reglasDoc && state.reglasDoc.texto ? [{ texto: state.reglasDoc.texto, fecha: state.reglasDoc.actualizado || new Date().toISOString() }] : [];
   const historial = [...((state.reglasDoc && state.reglasDoc.historial) || []), ...prev].slice(-20);
   $("rgSave").disabled = true; $("rgStatus").className = "saved"; $("rgStatus").textContent = "Guardando…";
-  try { await db.collection("config").doc("reglas").set({ texto, actualizado: new Date().toISOString(), historial }); $("rgText").dataset.dirty = ""; $("rgStatus").textContent = "Guardado"; }
+  try { await db.collection("config").doc("reglas").set({ texto, actualizado: new Date().toISOString(), historial }); $("rgList").dataset.dirty = ""; $("rgStatus").textContent = "Guardado"; }
   catch { $("rgStatus").className = "saved err"; $("rgStatus").textContent = "No se pudo guardar"; $("rgSave").disabled = false; }
 };
 function instructions(withBuyers) {
@@ -1294,7 +1331,7 @@ const ERR = {
   refused: "Claude no ha querido hacerlo así. Pídeselo de otra forma.",
 };
 const QUICK_NEW = ["Escríbelo", "Cuenta la historia de un alumno", "Pregunta directa y corta"];
-const QUICK_EDIT = ["Más corto", "Otro asunto", "Más humor", "Cambia el gancho"];
+const QUICK_EDIT = ["Más corto", "Otro asunto", "Más humor"];
 function botHtml(t) {
   const inl = (x) => esc(x).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
   return String(t || "").trim().split(/\n\s*\n/).map((p) => {
@@ -2113,6 +2150,7 @@ function showTab(t) {
   document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === (CTX.includes(sel) ? "contexto" : sel)));
   ["semana", "escribir", "calendario", "enviados", "reglas", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
   $("ctxHead").hidden = !CTX.includes(t);
+  if (t === "reglas") requestAnimationFrame(() => $("rgList").querySelectorAll("textarea").forEach(rgGrow));
   $("ctxSw").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ctx === t)));
   window.scrollTo(0, 0);
   try { localStorage.setItem("nl_tab", JSON.stringify(t === "escribir" && state.slot ? { tab: t, ret: sel, seg: state.seg, fecha: state.slot.fecha, id: state.slot.id || null } : { tab: t })); } catch {}
