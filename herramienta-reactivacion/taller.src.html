@@ -528,6 +528,9 @@ textarea { min-height: 64px; resize: vertical; }
 .ev .bar { align-self: stretch; border-radius: 6px 0 0 6px; }
 .ev .tx { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .ev .tx b { font-weight: 600; }
+.ev .tx .noas { color: var(--muted); }
+.ev .tx .evn { display: block; font-weight: 600; font-size: .7rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .85; }
+.ev .tx .eva { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .ev .sd { width: 8px; height: 8px; border-radius: 50%; }
 .ev .sd { display: none; }
 .ev:not(.ghost):not(.st-enviado-ev) { background: var(--paper); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 55%, transparent); }
@@ -1391,7 +1394,7 @@ const segTag = (k) => { const s = SEG[k] || SEG.nocontactado; return `<span clas
 function evButton(c) {
   const s = SEG[c.segmento] || SEG.nocontactado, late = normEstado(c.estado) !== "enviado" && c.fecha < iso(new Date());
   return `<button type="button" draggable="${normEstado(c.estado) !== "enviado"}" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
-    <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b> · ${esc(c.asunto || "sin asunto")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
+    <span class="bar" style="background:${s.color}"></span><span class="tx"><b class="evn">${esc(mailName(c.segmento, c.fecha))}</b><span class="eva${c.asunto ? "" : " noas"}">${esc(c.asunto || "Sin asunto")}</span></span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
 function peekBody(e, noSign) {
   const parts = (e.bloques || []).map((b) => b.tipo === "boton" ? `<div class="cta" contenteditable="false"><a contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
