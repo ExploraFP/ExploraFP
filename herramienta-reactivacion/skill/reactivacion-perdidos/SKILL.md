@@ -110,25 +110,25 @@ ASUNTO Y PREHEADER
 El asunto es lo más importante del email: si no se abre, lo demás no existe.
 - El lector NO conoce al narrador. Un asunto que solo cuenta algo del narrador ("dejé la compra a medias", "mi abuela y el tarot") no le importa a nadie: prohibido. El gancho raro va DENTRO del email; el asunto lo usa solo si lo convierte en algo sobre el lector.
 - Cada asunto cumple al menos una de estas tres cosas, y los mejores dos:
-  1. Habla del lector: "tú", "te", "tu", o algo que le pasa a él ("tienes algo a medias (y no es la compra)").
-  2. Abre una tensión que solo se cierra abriendo: una afirmación atrevida, una contradicción, algo que sabes de él ("sé por qué no seguiste").
+  1. Habla del lector: "Tú", "te", "tu", o algo que le pasa a él ("Tienes algo a medias (y no es la compra)").
+  2. Abre una tensión que solo se cierra abriendo: una afirmación atrevida, una contradicción, algo que sabes de él ("Sé por qué no seguiste").
   3. Tiene una imagen tan rara o concreta que choca en la bandeja ("le pregunté a las cartas por tu currículum").
 - Mecanismos que funcionan (ejemplos del gancho del carro de la compra; adáptalos al gancho del email):
-  · Acusación amable: "tú también lo dejaste a medias"
-  · Afirmación atrevida: "sé por qué no seguiste"
-  · El gancho girado hacia él: "tienes algo a medias (y no es la compra)"
-  · Lo que dice de él: "lo que tu carro abandonado dice de ti"
-  · Pregunta que escuece y se contesta sola: "¿cuántas veces lo has dejado para el lunes?"
-  · Anti-venta: "no te voy a insistir"
-  · Nombre propio + hecho real de su ficha, si se parece al lector: "rosa volvió a estudiar a los 52"
-  · Imagen absurda con él dentro: "a mitad del pasillo me acordé de ti"
+  · Acusación amable: "Tú también lo dejaste a medias"
+  · Afirmación atrevida: "Sé por qué no seguiste"
+  · El gancho girado hacia él: "Tienes algo a medias (y no es la compra)"
+  · Lo que dice de él: "Lo que tu carro abandonado dice de ti"
+  · Pregunta que escuece y se contesta sola: "¿Cuántas veces lo has dejado para el lunes?"
+  · Anti-venta: "No te voy a insistir"
+  · Nombre propio + hecho real de su ficha, si se parece al lector: "Rosa volvió a estudiar a los 52"
+  · Imagen absurda con él dentro: "A mitad del pasillo me acordé de ti"
 - Vuestros leads no conocen al narrador: el asunto y el preheader, juntos, tienen que darle un ancla que reconozca (la FP que pidió, el título o su situación). Sin vender: nada de "matricúlate", "oferta" ni promesas.
 - La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Si el preheader nombra la FP, el asunto no la nombra; si no la nombra, el asunto la lleva.
-- Tono de WhatsApp: 2-8 palabras, minúsculas naturales, sin emojis ni exclamaciones.
+- Tono de WhatsApp: 2-8 palabras, sin emojis ni exclamaciones. Empieza SIEMPRE con la primera letra en mayúscula ("Tienes algo a medias…"); el resto, en minúsculas naturales como en una frase normal (nada de Mayúsculas De Título).
 - Cómo elegirlos: escribe en silencio al menos 15 asuntos con mecanismos distintos. Puntúa cada uno del 1 al 10 imaginando que llega de un desconocido entre 40 correos de un lunes: ¿lo abrirías? Tira todo lo que no llegue a 8. El mejor es el asunto; los 6 siguientes van en "asuntos_extra". Si no llegas a 8 buenos, escribe más hasta tenerlos.
 - Prohibido: asuntos que solo hablan del narrador; "Re:" o "Fwd:" falsos; "lo de…" o "sobre…"; "¿qué pasó con…?" y fórmulas de comercial; titulares de blog o con mayúsculas de título; preguntas de sí o no tibias; gratis, oferta, urgente, última oportunidad; cebo que el email no cumple.
 - El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres.
-- Bueno: "tienes algo a medias (y no es la compra)" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "dejé la compra a medias" (solo habla del narrador, a un desconocido le da igual), "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida).
+- Bueno: "Tienes algo a medias (y no es la compra)" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "Dejé la compra a medias" (solo habla del narrador, a un desconocido le da igual), "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida).
 
 ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 - ¿La primera línea obliga a leer la segunda?
