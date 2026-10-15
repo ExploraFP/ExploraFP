@@ -302,6 +302,10 @@ textarea { min-height: 64px; resize: vertical; }
 .pk-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: -14px -16px 4px; padding: 14px 12px 12px 18px; background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: -14px; z-index: 3; }
 .pk-meta { display: grid; gap: 8px; min-width: 0; }
 .pk-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.mname { display: inline-flex; align-items: center; gap: 6px; border: 1px dashed var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 3px 10px; font: 500 .76rem var(--font-body); cursor: pointer; white-space: nowrap; line-height: 1.35; }
+.mname:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+.mname.ok { border-style: solid; border-color: var(--forest, #366B40); color: var(--forest, #366B40); }
+.writer-bar .mname { background: var(--paper); }
 .pk-dwrap { position: relative; display: inline-flex; }
 .pk-datebtn { display: inline-flex; align-items: center; gap: 8px; border: 0; background: none; color: var(--ink); border-radius: 6px; padding: 2px 6px; margin-left: -6px; font: 600 1.02rem var(--font-body); cursor: pointer; text-align: left; }
 .pk-datebtn svg { color: var(--muted); flex: none; }
@@ -1309,7 +1313,15 @@ $("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleS
 ["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); ev.target.blur(); } }));
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
-function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }); }
+const mailName = (seg, fecha) => { const s = SEG[seg] || SEG.nocontactado, [y, m, d] = String(fecha).split("-"); return `Explora - ${s.nombre} ${d}/${m}/${String(y).slice(2)}`; };
+const nameChip = (seg, fecha) => `<button type="button" class="mname" data-name="${esc(mailName(seg, fecha))}" title="Copiar nombre para HubSpot"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>${esc(mailName(seg, fecha))}</span></button>`;
+document.addEventListener("click", async (ev) => {
+  const b = ev.target.closest(".mname"); if (!b) return; ev.stopPropagation();
+  const t = b.dataset.name, sp = b.querySelector("span");
+  try { await navigator.clipboard.writeText(t); } catch { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch {} ta.remove(); }
+  sp.textContent = "Copiado"; b.classList.add("ok"); setTimeout(() => { sp.textContent = t; b.classList.remove("ok"); }, 1200);
+}, true);
+function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }) + nameChip(state.seg, state.slot.fecha); }
 function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").hidden = sent || !state.current || !db; $("sentBtn").setAttribute("aria-pressed", String(sent)); }
 function likeUi() {
   const on = !!(state.slot?.id && (state.likes || []).some((x) => x.id === state.slot.id));
@@ -1520,7 +1532,7 @@ function renderPeek() {
   const fecha = ((d) => d[0].toUpperCase() + d.slice(1))(parse(c.fecha).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
   $("peek").innerHTML = `
     <div class="pk-top">
-      <div class="pk-meta"><div class="pk-tags">${segTag(c.segmento)}${estTag(c)}</div><span class="pk-dwrap"><button type="button" class="pk-datebtn" id="pkDay" title="${locked ? "" : "Cambiar día de envío"}" ${locked ? "disabled" : ""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>${esc(fecha)}</button><input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true"></span></div>
+      <div class="pk-meta"><div class="pk-tags">${segTag(c.segmento)}${estTag(c)}${nameChip(c.segmento, c.fecha)}</div><span class="pk-dwrap"><button type="button" class="pk-datebtn" id="pkDay" title="${locked ? "" : "Cambiar día de envío"}" ${locked ? "disabled" : ""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>${esc(fecha)}</button><input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true"></span></div>
       <div class="pk-btns">
         <div class="pk-mwrap"><button type="button" class="x" id="pkMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
           <div class="pk-menu" id="pkMenu" role="menu" hidden>
