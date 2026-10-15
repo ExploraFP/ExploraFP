@@ -1764,7 +1764,7 @@ function renderCal() {
     const cls = ["day", d.getMonth() !== base.getMonth() ? "out" : "", di === todayIso ? "today" : "", d.getDay() % 6 === 0 ? "weekend" : ""].join(" ");
     const dow = (d.getDay() + 6) % 7, wA = iso(monday(d)), wB = iso(addDays(monday(d), 6));
     const ghosts = di >= todayIso ? Object.entries(SEG).filter(([k, s]) => s.dia === dow && !(state.calHide || []).includes(k) && !state.cal.some((c) => c.segmento === k && c.fecha >= wA && c.fecha <= wB))
-      .map(([k, s]) => `<button type="button" class="ev ghost" data-seg="${k}" data-date="${di}" style="--c:${s.color}"><span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b></span><span></span></button>`).join("") : "";
+      .map(([k, s]) => `<button type="button" class="ev ghost" data-seg="${k}" data-date="${di}" style="--c:${s.color}" title="${esc(s.nombre)}"><span class="bar" style="background:${s.color}"></span><span class="tx"><span class="eva noas">Sin asunto</span></span><span></span></button>`).join("") : "";
     h += `<div class="${cls}" data-date="${di}"><span class="num">${d.getDate()}</span>${db ? `<button type="button" class="plus" data-date="${di}" aria-label="Planificar el ${d.getDate()}">+</button>` : ""}${(byDay[di] || []).map(evButton).join("")}${ghosts}</div>`;
   }
   $("cal").innerHTML = h;
