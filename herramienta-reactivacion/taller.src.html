@@ -241,6 +241,30 @@ textarea { min-height: 64px; resize: vertical; }
 .cell .hoy2 { font: 600 .62rem var(--font-body); background: var(--lime); color: #102016; border-radius: 999px; padding: 1px 7px; margin-left: 6px; text-transform: uppercase; letter-spacing: .06em; }
 @media (max-width: 600px) { .cell .hoy2 { display: block; width: max-content; margin: 4px 0 0; } .board col.c-w { width: 76px; } .board td.wk { white-space: normal; font-size: .72rem; padding: 8px; } .cell .sj { display: none; } .cell { padding: 8px; min-height: 48px; } .cell .st2 { font-size: .74rem; white-space: normal; } .board th { padding: 10px 8px; } }
 .todo-group + .todo-group { margin-top: 28px; }
+.prod { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.prod.open { grid-template-columns: minmax(0, 1fr) 420px; }
+.cell.sel { box-shadow: 0 0 0 3px var(--ink); }
+.peek { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: grid; gap: 12px; padding: 14px 16px 16px; }
+.peek .ph-head { display: flex; align-items: flex-start; gap: 10px; }
+.peek .ph-head .who { flex: 1; min-width: 0; }
+.peek .ph-head b { display: block; font-size: .95rem; }
+.peek .ph-head span { font-size: .8rem; color: var(--muted); }
+.peek .x { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; font-size: 1rem; flex: none; }
+.peek .subj { display: grid; gap: 4px; font-size: .85rem; background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+.peek .subj div { overflow-wrap: anywhere; }
+.peek .subj i { font-style: normal; font: 600 .66rem var(--font-mono); color: var(--muted); margin-right: 6px; }
+.peek .subj .pre { color: var(--muted); }
+.peek .mini { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.peek .mini .email { font-size: 13.5px; line-height: 1.6; box-shadow: none; }
+.peek .mini .email .body { padding: 16px 18px 4px; }
+.peek .mini .email .cta a { padding: 10px 18px; }
+.peek .empty-m { font-size: .86rem; color: var(--muted); padding: 14px; border: 1.5px dashed var(--line); border-radius: 10px; text-align: center; }
+.peek .acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.peek .acts .sp { flex: 1; }
+@media (max-width: 1000px) {
+  .prod.open { grid-template-columns: minmax(0, 1fr); }
+  .peek { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; max-height: 82vh; z-index: 40; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+}
 .todo-group h2 { font-size: 2rem; margin: 0 0 4px; }
 .todo-group .eyebrow { margin-bottom: 12px; }
 .todo { display: grid; gap: 8px; }
@@ -568,7 +592,10 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 
   <!-- CALENDARIO -->
   <section id="view-semana">
-    <div id="weekBox"></div>
+    <div class="prod" id="prod">
+      <div id="weekBox"></div>
+      <aside class="peek" id="peek" hidden aria-label="Vista previa del email"></aside>
+    </div>
   </section>
 
   <section id="view-calendario" hidden>
@@ -1163,6 +1190,39 @@ function evButton(c) {
   return `<button type="button" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.firma.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
     <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
+function peekBody(e) {
+  const parts = (e.bloques || []).map((b) => b.tipo === "boton" ? `<div class="cta"><a>${esc(b.contenido)}</a></div>`
+    : b.tipo === "lista" ? `<ul>${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>` : `<p>${rich(b.contenido)}</p>`);
+  if (e.pd) parts.push(`<p>${rich(e.pd)}</p>`);
+  parts.push(`<p>${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
+  return parts.join("");
+}
+function renderPeek() {
+  const c = state.peek && state.cal.find((x) => x.id === state.peek);
+  document.querySelectorAll(".cell.sel").forEach((x) => x.classList.remove("sel"));
+  if (!c) { state.peek = null; $("peek").hidden = true; $("prod").classList.remove("open"); return; }
+  const cell = document.querySelector(`.cell[data-peek="${CSS.escape(c.id)}"]`); if (cell) cell.classList.add("sel");
+  const s = SEG[c.segmento] || SEG.nocontactado, e = c.email, sent = normEstado(c.estado) === "enviado", hs = safeUrl(c.hubspot);
+  $("peek").style.setProperty("--c", s.color);
+  $("peek").innerHTML = `
+    <div class="ph-head"><div class="who"><b>${esc(s.firma.nombre)} · ${esc(s.nombre)}</b><span>${esc(fmtDay(parse(c.fecha)))} · ${sent ? "Enviado" : "Escrito, sin enviar"}</span></div><button type="button" class="x" id="peekClose" aria-label="Cerrar">✕</button></div>
+    <div class="acts">
+      ${e ? `<button type="button" class="btn btn-ink btn-sm" id="peekOpen">Abrir en grande</button>` : ""}
+      <button type="button" class="btn btn-line btn-sm" id="peekSent">${sent ? "Marcar como no enviado" : "Ya está enviado"}</button>
+      <span class="sp"></span>
+      ${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">HubSpot ↗</a>` : ""}
+      <button type="button" class="btn btn-line btn-sm" id="peekFicha">Ficha</button>
+    </div>
+    ${e ? `<div class="subj"><div><i>A</i>${esc(e.asunto_a || "")}</div>${e.asunto_b && e.asunto_b !== e.asunto_a ? `<div><i>B</i>${esc(e.asunto_b)}</div>` : ""}${e.preheader ? `<div class="pre"><i>PRE</i>${esc(e.preheader)}</div>` : ""}</div>
+    <div class="mini"><article class="email"><div class="body">${peekBody(e)}</div></article></div>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}
+`;
+  $("peek").hidden = false; $("prod").classList.add("open");
+  $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
+  if ($("peekOpen")) $("peekOpen").onclick = () => { state.peek = null; renderPeek(); openWriter(c.segmento, c.fecha, c.id); };
+  $("peekSent").onclick = async () => { $("peekSent").disabled = true; try { await db.collection("calendario").doc(c.id).update({ estado: sent ? "en_redaccion" : "enviado" }); } catch { $("peekSent").disabled = false; $("peekSent").textContent = "No se pudo"; } };
+  $("peekFicha").onclick = (ev) => { ev.stopPropagation(); openEditor(c, null, null, $("peekFicha")); };
+}
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && state.peek && $("editor").hidden) { state.peek = null; renderPeek(); } });
 function wkLabel(w) {
   const f = addDays(w, 4), m = (d) => d.toLocaleDateString("es-ES", { month: "short" }).replace(".", "");
   return w.getMonth() === f.getMonth() ? `${w.getDate()}–${f.getDate()} ${m(f)}` : `${w.getDate()} ${m(w)} – ${f.getDate()} ${m(f)}`;
@@ -1185,13 +1245,14 @@ function renderWeek() {
       const late = !sent && dIso < todayIso, today = !sent && dIso === todayIso;
       const cls = sent ? "sent" : has ? "draft" : "";
       const label = sent ? "✓ Enviado" : has ? "✎ Escrito" : "○ Escribir";
-      const attrs = sent ? `data-open="${esc(e.id)}"` : `data-write="${k}" data-w="${a}"`;
+      const attrs = e && (sent || has) ? `data-peek="${esc(e.id)}"` : `data-write="${k}" data-w="${a}"`;
       return `<td><button type="button" class="cell ${cls}${late ? " late" : ""}" style="--c:${s.color}" ${attrs} title="${esc(s.firma.nombre)} · ${esc(fmtDay(parse(dIso)))}"><span class="st2">${label}${late ? " · atrasado" : ""}${today ? '<span class="hoy2">Hoy</span>' : ""}</span>${e && e.asunto ? `<span class="sj">${esc(e.asunto)}</span>` : ""}</button></td>`;
     }).join("");
     return `<tr class="${now ? "now" : ""}"><td class="wk">${esc(wkLabel(w))}${now ? "<small>Esta semana</small>" : ""}</td>${cells}</tr>`;
   }).join("");
   $("weekBox").innerHTML = `<div class="board-wrap"><table class="board"><colgroup><col class="c-w"><col><col><col></colgroup><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
-  $("weekBox").querySelectorAll("[data-open]").forEach((x) => x.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === x.dataset.open), null, null, x); });
+  $("weekBox").querySelectorAll("[data-peek]").forEach((x) => x.onclick = (ev) => { ev.stopPropagation(); state.peek = x.dataset.peek; renderPeek(); });
+  renderPeek();
   $("weekBox").querySelectorAll("[data-write]").forEach((x) => x.onclick = () => {
     const k = x.dataset.write, w = parse(x.dataset.w), a = iso(w), b = iso(addDays(w, 6));
     const e = state.cal.find((c) => c.segmento === k && c.fecha >= a && c.fecha <= b);
