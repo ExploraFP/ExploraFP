@@ -245,7 +245,9 @@ textarea { min-height: 64px; resize: vertical; }
 .prod.open { grid-template-columns: minmax(0, 1fr) 420px; }
 .cell.sel { box-shadow: 0 0 0 3px var(--ink); }
 .cell[draggable="true"] { cursor: grab; }
-.cell.dragging { opacity: .45; }
+.cell.dragging, .ev.dragging { opacity: .45; }
+.day.drop-ok { background: color-mix(in srgb, var(--lime) 40%, var(--paper)) !important; outline: 2px dashed var(--ink); outline-offset: -4px; }
+.ev[draggable="true"] { cursor: grab; }
 .board td.drop-ok { background: color-mix(in srgb, var(--lime) 40%, var(--paper)) !important; outline: 2px dashed var(--ink); outline-offset: -4px; }
 .peek .when { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); }
 .peek .when input { width: auto; padding: 4px 8px; font-size: .82rem; border-radius: 8px; }
@@ -524,6 +526,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="semana">Producción</button>
+      <button role="tab" aria-selected="false" data-tab="calendario">Calendario</button>
       <button role="tab" aria-selected="false" data-tab="enviados">Enviados</button>
       <button role="tab" aria-selected="false" data-tab="narradores">Narradores</button>
       <button role="tab" aria-selected="false" data-tab="buyers">Buyers</button>
@@ -1195,8 +1198,8 @@ $("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); s
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
 function evButton(c) {
   const s = SEG[c.segmento] || SEG.nocontactado;
-  return `<button type="button" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.firma.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
-    <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
+  return `<button type="button" draggable="true" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
+    <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b> · ${esc(c.asunto || "sin asunto")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
 function peekBody(e) {
   const parts = (e.bloques || []).map((b) => b.tipo === "boton" ? `<div class="cta"><a>${esc(b.contenido)}</a></div>`
@@ -1350,8 +1353,8 @@ function renderCal() {
     const cls = ["day", d.getMonth() !== base.getMonth() ? "out" : "", di === todayIso ? "today" : "", d.getDay() % 6 === 0 ? "weekend" : ""].join(" ");
     const dow = (d.getDay() + 6) % 7, wA = iso(monday(d)), wB = iso(addDays(monday(d), 6));
     const ghosts = di >= todayIso ? Object.entries(SEG).filter(([k, s]) => s.dia === dow && !state.cal.some((c) => c.segmento === k && c.fecha >= wA && c.fecha <= wB))
-      .map(([k, s]) => `<button type="button" class="ev ghost" data-seg="${k}" data-date="${di}" style="--c:${s.color}"><span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · por escribir</span><span></span></button>`).join("") : "";
-    h += `<div class="${cls}"><span class="num">${d.getDate()}</span>${db ? `<button type="button" class="plus" data-date="${di}" aria-label="Planificar el ${d.getDate()}">+</button>` : ""}${(byDay[di] || []).map(evButton).join("")}${ghosts}</div>`;
+      .map(([k, s]) => `<button type="button" class="ev ghost" data-seg="${k}" data-date="${di}" style="--c:${s.color}"><span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b> · por escribir</span><span></span></button>`).join("") : "";
+    h += `<div class="${cls}" data-date="${di}"><span class="num">${d.getDate()}</span>${db ? `<button type="button" class="plus" data-date="${di}" aria-label="Planificar el ${d.getDate()}">+</button>` : ""}${(byDay[di] || []).map(evButton).join("")}${ghosts}</div>`;
   }
   $("cal").innerHTML = h;
   // Agenda (móvil): días del mes con envíos
@@ -1362,9 +1365,19 @@ function renderCal() {
   document.querySelectorAll("#cal .ev, #agenda .ev").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === b.dataset.id), null, null, b); });
   $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openEditor(null, segForDay(b.dataset.date), b.dataset.date, b); });
   $("cal").querySelectorAll(".ghost").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openWriter(b.dataset.seg, b.dataset.date); });
+  $("cal").querySelectorAll(".ev[draggable]").forEach((x) => {
+    x.ondragstart = (ev) => { state.calDrag = x.dataset.id; ev.dataTransfer.effectAllowed = "move"; try { ev.dataTransfer.setData("text/plain", x.dataset.id); } catch {} x.classList.add("dragging"); };
+    x.ondragend = () => { state.calDrag = null; x.classList.remove("dragging"); $("cal").querySelectorAll(".drop-ok").forEach((t) => t.classList.remove("drop-ok")); };
+  });
+  $("cal").querySelectorAll(".day[data-date]").forEach((d) => {
+    const ok = () => { const c = state.calDrag && state.cal.find((x) => x.id === state.calDrag); return c && c.fecha !== d.dataset.date ? c : null; };
+    d.ondragover = (ev) => { if (ok()) { ev.preventDefault(); d.classList.add("drop-ok"); } };
+    d.ondragleave = (ev) => { if (!d.contains(ev.relatedTarget)) d.classList.remove("drop-ok"); };
+    d.ondrop = async (ev) => { ev.preventDefault(); d.classList.remove("drop-ok"); const c = ok(); if (!c || !db) return; try { await db.collection("calendario").doc(c.id).update({ fecha: d.dataset.date }); } catch {} };
+  });
   renderWeek(); renderSent();
 }
-$("legend").innerHTML = Object.values(SEG).map((s) => `<span><i style="background:${s.color}"></i>${esc(s.firma.nombre)} · ${esc(s.nombre)}</span>`).join("") +
+$("legend").innerHTML = Object.values(SEG).map((s) => `<span><i style="background:${s.color}"></i>${esc(s.nombre)} · ${esc(s.firma.nombre)}</span>`).join("") +
   ["sin_empezar", "en_redaccion", "enviado"].map((k) => `<span><i class="sd sd-${k}" style="border-radius:50%"></i>${ESTADOS[k]}</span>`).join("");
 $("eSeg").innerHTML = Object.entries(SEG).map(([k, s]) => `<option value="${k}">${esc(s.nombre)} · ${esc(s.firma.nombre)}</option>`).join("");
 const fmtNum = (v, pct) => v === "" || v == null ? "—" : String(v).replace(".", ",") + (pct ? " %" : "");
@@ -1547,8 +1560,8 @@ function showTab(t) {
 let pendingWriter = null;
 try {
   const v = JSON.parse(localStorage.getItem("nl_tab") || "null");
-  if (v && v.tab === "escribir" && SEG[v.seg] && v.fecha) { if (v.ret === "calendario") v.ret = "semana"; pendingWriter = v; state.returnTab = v.ret; showTab(v.ret || "semana"); }
-  else if (v && v.tab && $("view-" + v.tab) && v.tab !== "escribir" && v.tab !== "calendario") showTab(v.tab);
+  if (v && v.tab === "escribir" && SEG[v.seg] && v.fecha) { pendingWriter = v; state.returnTab = v.ret; showTab(v.ret || "semana"); }
+  else if (v && v.tab && $("view-" + v.tab) && v.tab !== "escribir") showTab(v.tab);
 } catch {}
 document.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
 
