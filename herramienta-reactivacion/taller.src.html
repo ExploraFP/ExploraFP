@@ -307,6 +307,15 @@ textarea { min-height: 64px; resize: vertical; }
 .pk-lock { margin: 0; font-size: .8rem; color: var(--muted); background: var(--bg); border-radius: 8px; padding: 8px 10px; }
 .pk-datebtn:disabled { cursor: default; text-decoration: none; }
 .pk-datebtn:disabled:hover { background: none; }
+.mv-ov { position: fixed; inset: 0; z-index: 85; background: rgba(16,32,22,.45); display: grid; place-items: start center; padding: 24px 16px; overflow: auto; }
+.mv-ov[hidden] { display: none; }
+.mv-box { width: min(760px, 100%); background: var(--paper); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.mv-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px 12px 18px; border-bottom: 1px solid var(--line); }
+.mv-top b { font-size: 1.05rem; }
+.mv-top .sp { flex: 1; }
+.mv-top .x { width: 34px; height: 34px; border: 0; background: none; border-radius: 8px; color: var(--muted); cursor: pointer; font-size: 1rem; }
+.mv-top .x:hover { background: var(--bg); color: var(--ink); }
+.mv-box .stage { border-radius: 0; }
 .hs-ask { position: fixed; inset: 0; z-index: 90; background: rgba(16,32,22,.35); display: grid; place-items: center; padding: 16px; }
 .hs-ask[hidden] { display: none; }
 .hs-card { width: min(440px, 100%); background: var(--paper); border-radius: 16px; padding: 20px; display: grid; gap: 10px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
@@ -1383,6 +1392,30 @@ async function createEmail(k, date) {
     closeEditor(); state.peek = ref.id; renderPeek(); return true;
   } catch { return false; }
 }
+function openView(c) {
+  const e = c.email; if (!e) return;
+  const s = SEG[c.segmento] || SEG.nocontactado;
+  let v = $("mailView"); if (!v) { v = document.createElement("div"); v.id = "mailView"; v.className = "mv-ov"; document.body.appendChild(v); }
+  const d = parse(c.fecha), t = ((x) => x[0].toUpperCase() + x.slice(1))(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
+  const hdr = document.querySelector("#email .hdr img")?.src || "", ftr = document.querySelector("#email .ftr img")?.src || "";
+  v.innerHTML = `<div class="mv-box" role="dialog" aria-modal="true" aria-label="Email enviado">
+    <div class="mv-top"><div class="pk-tags">${segTag(c.segmento)}${estTag(c)}</div><b>${esc(t)}</b><span class="sp"></span>
+      <div class="seg2" role="group" aria-label="Pantalla"><button type="button" aria-pressed="true" data-mvdev="desktop">Ordenador</button><button type="button" aria-pressed="false" data-mvdev="mobile">Móvil</button></div>
+      <button type="button" class="x" id="mvClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
+    <div class="stage" id="mvStage">
+      <div class="mail-meta"><div class="mrow"><span class="ml">De</span><span class="mv">${esc(s.firma.nombre)} · Explora FP</span></div>
+        <div class="mrow"><span class="ml">Asunto</span><b class="mv">${esc(e.asunto_a || "")}</b></div>
+        <div class="mrow"><span class="ml">Preheader</span><span class="mv">${esc(e.preheader || "")}</span></div></div>
+      <article class="email"><div class="hdr"><img alt="" src="${esc(hdr)}"></div><div class="body">${peekBody(e)}</div><div class="ftr"><img alt="" src="${esc(ftr)}"></div></article>
+    </div></div>`;
+  v.hidden = false;
+  v.querySelectorAll("[contenteditable]").forEach((x) => x.removeAttribute("contenteditable"));
+  const close = () => { v.hidden = true; };
+  $("mvClose").onclick = close;
+  v.onclick = (ev) => { if (ev.target === v) close(); };
+  v.querySelectorAll("[data-mvdev]").forEach((b) => b.onclick = () => { v.querySelectorAll("[data-mvdev]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); $("mvStage").classList.toggle("mobile", b.dataset.mvdev === "mobile"); });
+}
+document.addEventListener("keydown", (ev) => { const v = $("mailView"); if (ev.key === "Escape" && v && !v.hidden) v.hidden = true; });
 function askHubspot(current) {
   return new Promise((resolve) => {
     let m = $("hsAsk"); if (!m) { m = document.createElement("div"); m.id = "hsAsk"; m.className = "hs-ask"; document.body.appendChild(m); }
@@ -1424,7 +1457,7 @@ function renderPeek() {
             <button type="button" role="menuitem" class="danger" id="pkDel">Borrar email</button>
           </div>
         </div>
-        ${e && !locked ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}
+        ${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}
         <button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button>
       </div>
     </div>
@@ -1436,7 +1469,7 @@ function renderPeek() {
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
   const big = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); };
-  if ($("peekOpen")) $("peekOpen").onclick = big;
+  if ($("peekOpen")) $("peekOpen").onclick = locked ? () => openView(c) : big;
   if ($("pkAi")) $("pkAi").onclick = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); if (!state.current && sample) sendChat("Escríbelo"); };
   if ($("pkOpen2")) $("pkOpen2").onclick = big;
   const menu = $("pkMenu"), mbtn = $("pkMenuBtn");
