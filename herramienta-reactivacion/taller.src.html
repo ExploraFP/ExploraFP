@@ -244,6 +244,13 @@ textarea { min-height: 64px; resize: vertical; }
 .prod { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
 .prod.open { grid-template-columns: minmax(0, 1fr) 420px; }
 .cell.sel { box-shadow: 0 0 0 3px var(--ink); }
+.cell[draggable="true"] { cursor: grab; }
+.cell.dragging { opacity: .45; }
+.board td.drop-ok { background: color-mix(in srgb, var(--lime) 40%, var(--paper)) !important; outline: 2px dashed var(--ink); outline-offset: -4px; }
+.peek .when { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); }
+.peek .when input { width: auto; padding: 4px 8px; font-size: .82rem; border-radius: 8px; }
+.peek .del { color: var(--err); }
+.peek .del.confirm { background: var(--err); color: #fff; border-color: var(--err); }
 .peek { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: grid; gap: 12px; padding: 14px 16px 16px; }
 .peek .ph-head { display: flex; align-items: flex-start; gap: 6px; }
 .peek .x:hover { border-color: var(--ink); }
@@ -1206,12 +1213,13 @@ function renderPeek() {
   const s = SEG[c.segmento] || SEG.nocontactado, e = c.email, sent = normEstado(c.estado) === "enviado", hs = safeUrl(c.hubspot);
   $("peek").style.setProperty("--c", s.color);
   $("peek").innerHTML = `
-    <div class="ph-head"><div class="who"><b>${esc(s.firma.nombre)} · ${esc(s.nombre)}</b><span>${esc(fmtDay(parse(c.fecha)))} · ${sent ? "Enviado" : "Escrito, sin enviar"}</span></div>${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}<button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
+    <div class="ph-head"><div class="who"><b>${esc(s.nombre)} <span style="font-weight:500">· ${esc(s.firma.nombre)}</span></b><span>${sent ? "Enviado" : "Escrito, sin enviar"}</span><label class="when">Día de envío <input type="date" id="peekDate" value="${esc(c.fecha)}"></label></div>${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}<button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
     <div class="acts">
       <button type="button" class="btn btn-line btn-sm" id="peekSent">${sent ? "Marcar como no enviado" : "Ya está enviado"}</button>
       <span class="sp"></span>
       ${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">HubSpot ↗</a>` : ""}
       <button type="button" class="btn btn-line btn-sm" id="peekFicha">Ficha</button>
+      <button type="button" class="x del" id="peekDel" aria-label="Borrar email" title="Borrar email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
     </div>
     ${e ? `<div class="subj"><div><i>A</i>${esc(e.asunto_a || "")}</div>${e.asunto_b && e.asunto_b !== e.asunto_a ? `<div><i>B</i>${esc(e.asunto_b)}</div>` : ""}${e.preheader ? `<div class="pre"><i>PRE</i>${esc(e.preheader)}</div>` : ""}</div>
     <div class="mini"><article class="email"><div class="body">${peekBody(e)}</div></article></div>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}
@@ -1220,6 +1228,12 @@ function renderPeek() {
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
   if ($("peekOpen")) $("peekOpen").onclick = () => openWriter(c.segmento, c.fecha, c.id);
   $("peekSent").onclick = async () => { $("peekSent").disabled = true; try { await db.collection("calendario").doc(c.id).update({ estado: sent ? "en_redaccion" : "enviado" }); } catch { $("peekSent").disabled = false; $("peekSent").textContent = "No se pudo"; } };
+  $("peekDate").onchange = async () => { const v = $("peekDate").value; if (!v) return; try { await db.collection("calendario").doc(c.id).update({ fecha: v }); } catch {} };
+  $("peekDel").onclick = async () => {
+    const b = $("peekDel");
+    if (!b.classList.contains("confirm")) { b.classList.add("confirm"); b.title = "Pulsa otra vez para borrar"; b.setAttribute("aria-label", "Pulsa otra vez para borrar"); setTimeout(() => { if (b.isConnected) { b.classList.remove("confirm"); b.title = "Borrar email"; } }, 3000); return; }
+    try { await db.collection("calendario").doc(c.id).delete(); try { await db.collection("ejemplos").doc(c.id).delete(); } catch {} state.peek = null; renderPeek(); } catch {}
+  };
   $("peekFicha").onclick = (ev) => { ev.stopPropagation(); openEditor(c, null, null, $("peekFicha")); };
 }
 document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && state.peek && $("editor").hidden) { state.peek = null; renderPeek(); } });
@@ -1233,7 +1247,7 @@ function renderWeek() {
   const first = state.cal.reduce((m, c) => (c.fecha < m ? c.fecha : m), iso(addDays(w0, -21)));
   const weeks = [];
   for (let w = addDays(w0, 14); iso(w) >= iso(monday(parse(first))); w = addDays(w, -7)) weeks.push(w);
-  const head = `<tr><th>Semana</th>${order.map(([, s]) => `<th><span class="dot" style="background:${s.color}"></span>${esc(s.firma.nombre)}<small>${esc(s.nombre)} · ${esc(["lunes", "martes", "miércoles", "jueves", "viernes"][s.dia] || "")}</small></th>`).join("")}</tr>`;
+  const head = `<tr><th>Semana</th>${order.map(([, s]) => `<th><span class="dot" style="background:${s.color}"></span>${esc(s.nombre)}<small>${esc(["lunes", "martes", "miércoles", "jueves", "viernes"][s.dia] || "")} · firma ${esc(s.firma.nombre)}</small></th>`).join("")}</tr>`;
   const rows = weeks.map((w) => {
     const a = iso(w), b = iso(addDays(w, 6)), now = a === iso(w0);
     const cells = order.map(([k, s]) => {
@@ -1241,18 +1255,38 @@ function renderWeek() {
       const dIso = e ? e.fecha : iso(addDays(w, s.dia));
       const st = e ? normEstado(e.estado) : "sin_empezar", sent = st === "enviado", has = e && e.email;
       const past = b < iso(w0);
-      if (past && !e) return `<td><span class="cell none">—</span></td>`;
+      const tdA = `data-k="${k}" data-wk="${a}"`;
+      if (past && !e) return `<td ${tdA}><span class="cell none">—</span></td>`;
       const late = !sent && dIso < todayIso, today = !sent && dIso === todayIso;
       const cls = sent ? "sent" : has ? "draft" : "";
       const label = sent ? "✓ Enviado" : has ? "✎ Escrito" : "○ Escribir";
       const attrs = e && (sent || has) ? `data-peek="${esc(e.id)}"` : `data-write="${k}" data-w="${a}"`;
-      return `<td><button type="button" class="cell ${cls}${late ? " late" : ""}" style="--c:${s.color}" ${attrs} title="${esc(s.firma.nombre)} · ${esc(fmtDay(parse(dIso)))}"><span class="st2">${label}${late ? " · atrasado" : ""}${today ? '<span class="hoy2">Hoy</span>' : ""}</span>${e && e.asunto ? `<span class="sj">${esc(e.asunto)}</span>` : ""}</button></td>`;
+      return `<td ${tdA}><button type="button" ${e ? `draggable="true" data-id="${esc(e.id)}"` : ""} class="cell ${cls}${late ? " late" : ""}" style="--c:${s.color}" ${attrs} title="${esc(s.nombre)} · ${esc(fmtDay(parse(dIso)))}"><span class="st2">${label}${late ? " · atrasado" : ""}${today ? '<span class="hoy2">Hoy</span>' : ""}</span>${e && e.asunto ? `<span class="sj">${esc(e.asunto)}</span>` : ""}</button></td>`;
     }).join("");
     return `<tr class="${now ? "now" : ""}"><td class="wk">${esc(wkLabel(w))}${now ? "<small>Esta semana</small>" : ""}</td>${cells}</tr>`;
   }).join("");
   $("weekBox").innerHTML = `<div class="board-wrap"><table class="board"><colgroup><col class="c-w"><col><col><col></colgroup><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
   $("weekBox").querySelectorAll("[data-peek]").forEach((x) => x.onclick = (ev) => { ev.stopPropagation(); state.peek = x.dataset.peek; renderPeek(); });
   renderPeek();
+  $("weekBox").querySelectorAll(".cell[draggable]").forEach((x) => {
+    x.ondragstart = (ev) => { state.drag = x.dataset.id; ev.dataTransfer.effectAllowed = "move"; try { ev.dataTransfer.setData("text/plain", x.dataset.id); } catch {} x.classList.add("dragging"); };
+    x.ondragend = () => { state.drag = null; x.classList.remove("dragging"); $("weekBox").querySelectorAll(".drop-ok").forEach((t) => t.classList.remove("drop-ok")); };
+  });
+  $("weekBox").querySelectorAll("td[data-k]").forEach((td) => {
+    const ok = () => { const c = state.drag && state.cal.find((x) => x.id === state.drag); return c && c.segmento === td.dataset.k && iso(monday(parse(c.fecha))) !== td.dataset.wk ? c : null; };
+    td.ondragover = (ev) => { if (ok()) { ev.preventDefault(); td.classList.add("drop-ok"); } };
+    td.ondragleave = () => td.classList.remove("drop-ok");
+    td.ondrop = async (ev) => {
+      ev.preventDefault(); td.classList.remove("drop-ok");
+      const c = ok(); if (!c) return;
+      const off = (d) => (parse(d).getDay() + 6) % 7, srcW = iso(monday(parse(c.fecha))), tw = parse(td.dataset.wk);
+      const other = state.cal.find((x) => x.id !== c.id && x.segmento === c.segmento && x.fecha >= td.dataset.wk && x.fecha <= iso(addDays(tw, 6)));
+      try {
+        await db.collection("calendario").doc(c.id).update({ fecha: iso(addDays(tw, off(c.fecha))) });
+        if (other) await db.collection("calendario").doc(other.id).update({ fecha: iso(addDays(parse(srcW), off(other.fecha))) });
+      } catch {}
+    };
+  });
   $("weekBox").querySelectorAll("[data-write]").forEach((x) => x.onclick = () => {
     const k = x.dataset.write, w = parse(x.dataset.w), a = iso(w), b = iso(addDays(w, 6));
     const e = state.cal.find((c) => c.segmento === k && c.fecha >= a && c.fecha <= b);
