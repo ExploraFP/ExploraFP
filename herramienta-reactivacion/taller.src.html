@@ -16,9 +16,9 @@
   --lime: #D8FF6E;
   --leaf: #4CCD4B;
   --tint: #E8F3E4;
-  --vera: #F4A04B;
-  --rai: #7C6CF0;
-  --noe: #3AA8E4;
+  --vera: #D9A21B;
+  --rai: #5B55D6;
+  --noe: #0EA2B8;
   --s-draft-bg: #ECEFEA; --s-draft-fg: #4C5A50;
   --s-plan-bg: #FFF1B8;  --s-plan-fg: #6B5300;
   --s-sent-bg: #D4FFD0;  --s-sent-fg: #1F5F24;
@@ -32,7 +32,7 @@
   :root:not([data-theme="light"]) {
     --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
     --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
-    --vera: #FFC28A; --rai: #A99CFF; --noe: #86CEFF;
+    --vera: #F0C24F; --rai: #9C97FF; --noe: #4FD3E6;
     --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95; --s-done-bg: #17304A; --s-done-fg: #A9CBF2;
     --err: #FF8A80; color-scheme: dark;
   }
@@ -40,7 +40,7 @@
 :root[data-theme="dark"] {
   --bg: #0D1510; --paper: #142019; --ink: #E5EFE2; --muted: #9AAE9F; --line: #283A2E;
   --band: #0A120C; --band-ink: #EDFEC3; --forest: #8FD18F; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #1C2E22;
-  --vera: #FFC28A; --rai: #A99CFF; --noe: #86CEFF;
+  --vera: #F0C24F; --rai: #9C97FF; --noe: #4FD3E6;
   --s-draft-bg: #263229; --s-draft-fg: #C9D6CC; --s-plan-bg: #3A3210; --s-plan-fg: #FFE45E; --s-sent-bg: #173A1B; --s-sent-fg: #9BEF95; --s-done-bg: #17304A; --s-done-fg: #A9CBF2;
   --err: #FF8A80; color-scheme: dark;
 }
@@ -271,7 +271,7 @@ textarea { min-height: 64px; resize: vertical; }
 .peek .del { color: var(--err); }
 .peek .del.confirm { background: var(--err); color: #fff; border-color: var(--err); }
 .peek > * { flex: none; }
-.peek { position: fixed; right: 16px; top: 16px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; overscroll-behavior: contain; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 16px; }
+.peek { position: fixed; right: 16px; top: 96px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; overscroll-behavior: contain; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 16px; }
 .pk-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: -14px -16px 4px; padding: 14px 12px 12px 18px; background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: -14px; z-index: 3; }
 .pk-meta { display: grid; gap: 8px; min-width: 0; }
 .pk-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -997,7 +997,7 @@ function nextSlot(seg) {
 function renderPreview() {
   const e = state.current, has = !!e;
   document.querySelectorAll("[data-copy]").forEach((b) => { b.hidden = !has; });
-  $("sentBtn").hidden = !has || !db;
+  $("sentBtn").hidden = !has || !db || $("pEstado").value === "enviado";
   likeUi();
 
   if (!has) {
@@ -1260,7 +1260,7 @@ $("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleS
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
 function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }); }
-function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = sent ? "Volver a «En redacción»" : "Marcar como enviado"; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
+function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = "Marcar como enviado"; $("sentBtn").hidden = sent || !state.current || !db; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
 function likeUi() {
   const on = !!(state.slot?.id && (state.likes || []).some((x) => x.id === state.slot.id));
   $("likeBtn").hidden = !state.current || !db;
@@ -1281,7 +1281,7 @@ $("likeBtn").onclick = async () => {
 };
 $("sentBtn").onclick = async () => {
   $("wbMenu").hidden = true;
-  if ($("pEstado").value === "enviado") { $("pEstado").value = "en_redaccion"; sentUi(); scheduleSave(0); return; }
+  if ($("pEstado").value === "enviado") return;
   const r = await askHubspot($("pHs").value.trim()); if (!r) return;
   $("pHs").value = r.url; $("pEstado").value = "enviado"; sentUi(); scheduleSave(0);
 };
@@ -1420,7 +1420,7 @@ function renderPeek() {
         <div class="pk-mwrap"><button type="button" class="x" id="pkMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
           <div class="pk-menu" id="pkMenu" role="menu" hidden>
             ${locked && e ? `<button type="button" role="menuitem" id="pkUnlock">Editar</button>` : ""}
-            <button type="button" role="menuitem" id="pkSent">${sent ? "Volver a «En redacción»" : "Marcar como enviado"}</button>
+            ${sent ? "" : `<button type="button" role="menuitem" id="pkSent">Marcar como enviado</button>`}
             <button type="button" role="menuitem" class="danger" id="pkDel">Borrar email</button>
           </div>
         </div>
@@ -1442,9 +1442,8 @@ function renderPeek() {
   const menu = $("pkMenu"), mbtn = $("pkMenuBtn");
   const closeMenu = () => { menu.hidden = true; mbtn.setAttribute("aria-expanded", "false"); };
   mbtn.onclick = (ev) => { ev.stopPropagation(); menu.hidden = !menu.hidden; mbtn.setAttribute("aria-expanded", String(!menu.hidden)); };
-  $("pkSent").onclick = async () => {
+  if ($("pkSent")) $("pkSent").onclick = async () => {
     closeMenu(); await flushPeek();
-    if (sent) { try { await db.collection("calendario").doc(c.id).update({ estado: "en_redaccion" }); } catch {} return; }
     const r = await askHubspot(c.hubspot); if (!r) return;
     state.peekUnlock = null;
     try { await db.collection("calendario").doc(c.id).update({ estado: "enviado", hubspot: safeUrl(r.url) }); } catch {}
@@ -1651,7 +1650,7 @@ function setEditMode(on) {
 function closeMenu() { $("edMenu").hidden = true; $("edMenuBtn").setAttribute("aria-expanded", "false"); $("eDel").dataset.confirm = ""; $("eDel").textContent = "Borrar"; }
 function fillFields(item, seg, date) {
   $("eSeg").value = item ? item.segmento : seg; $("eFecha").value = item ? item.fecha : date;
-  $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? normEstado(item.estado) : "en_redaccion";
+  $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? normEstado(item.estado) : "en_redaccion"; $("eEstado").closest("label").hidden = !!item && normEstado(item.estado) === "enviado";
   $("eHs").value = item ? item.hubspot || "" : ""; $("ePre").value = item ? item.preheader || "" : "";
   const m = (item && item.metricas) || {}, num = (v) => (v == null ? "" : String(v).replace(",", "."));
   $("mEnv").value = num(m.enviados); $("mAp").value = num(m.apertura); $("mCl").value = num(m.clic); $("mForm").value = num(m.formularios);
@@ -1792,6 +1791,7 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
 $("homeLink").onclick = (ev) => { ev.preventDefault(); if (!$("view-escribir").hidden) $("backBtn").onclick().then(() => showTab("calendario")); else showTab("calendario"); };
 function showTab(t) {
   if (t === "semana") t = "calendario";
+  if (t !== "calendario" && t !== "escribir" && state.peek) { state.peek = null; renderPeek(); }
   const sel = t === "escribir" ? (state.returnTab || "calendario") : t;
   document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === sel));
   ["semana", "escribir", "calendario", "enviados", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
