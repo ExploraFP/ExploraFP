@@ -216,6 +216,30 @@ textarea { min-height: 64px; resize: vertical; }
 .week-head h2 { font-size: 2rem; }
 .week-head .sub { margin: 0; color: var(--muted); font-size: .86rem; max-width: 46ch; }
 .week { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.board-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+.board { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.board col.c-w { width: 132px; }
+.board th { font: 600 .72rem var(--font-body); text-transform: uppercase; letter-spacing: .06em; color: var(--ink); background: var(--bg); padding: 12px; text-align: left; border-bottom: 1px solid var(--line); }
+.board th small { display: block; font-weight: 500; color: var(--muted); text-transform: none; letter-spacing: 0; margin-top: 2px; }
+.board th .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.board th + th, .board td + td { border-left: 1px solid var(--line); }
+.board td { border-bottom: 1px solid var(--line); padding: 6px; vertical-align: middle; }
+.board tr:last-child td { border-bottom: 0; }
+.board td.wk { padding: 10px 12px; font: 500 .8rem var(--font-mono); color: var(--muted); white-space: nowrap; }
+.board tr.now td { background: color-mix(in srgb, var(--lime) 16%, var(--paper)); }
+.board tr.now td.wk { color: var(--ink); font-weight: 700; }
+.board tr.now td.wk small { display: block; font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--ink); margin-top: 2px; }
+.cell { width: 100%; min-height: 58px; display: grid; gap: 2px; align-content: center; text-align: left; padding: 8px 10px; border-radius: 10px; border: 1.5px dashed var(--line); background: transparent; color: var(--muted); cursor: pointer; font: inherit; }
+.cell:hover { border-color: var(--c); color: var(--ink); }
+.cell .st2 { font: 600 .8rem var(--font-body); white-space: nowrap; }
+.cell .sj { font-size: .78rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cell.none { cursor: default; border-color: transparent; justify-content: start; color: var(--line); }
+.cell.draft { border: 1.5px solid var(--c); background: var(--paper); color: var(--ink); }
+.cell.sent { border: 1.5px solid transparent; background: color-mix(in srgb, var(--c) 16%, var(--paper)); color: var(--ink); }
+.cell.late { border-color: var(--err); color: var(--err); }
+.cell.late .sj { color: var(--err); opacity: .8; }
+.cell .hoy2 { font: 600 .62rem var(--font-body); background: var(--lime); color: #102016; border-radius: 999px; padding: 1px 7px; margin-left: 6px; text-transform: uppercase; letter-spacing: .06em; }
+@media (max-width: 600px) { .cell .hoy2 { display: block; width: max-content; margin: 4px 0 0; } .board col.c-w { width: 76px; } .board td.wk { white-space: normal; font-size: .72rem; padding: 8px; } .cell .sj { display: none; } .cell { padding: 8px; min-height: 48px; } .cell .st2 { font-size: .74rem; white-space: normal; } .board th { padding: 10px 8px; } }
 .todo-group + .todo-group { margin-top: 28px; }
 .todo-group h2 { font-size: 2rem; margin: 0 0 4px; }
 .todo-group .eyebrow { margin-bottom: 12px; }
@@ -468,7 +492,6 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="semana">Producción</button>
-      <button role="tab" aria-selected="false" data-tab="calendario">Calendario</button>
       <button role="tab" aria-selected="false" data-tab="enviados">Enviados</button>
       <button role="tab" aria-selected="false" data-tab="narradores">Narradores</button>
       <button role="tab" aria-selected="false" data-tab="buyers">Buyers</button>
@@ -1140,34 +1163,35 @@ function evButton(c) {
   return `<button type="button" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.firma.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
     <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.firma.nombre)}</b> · ${esc(c.asunto || "Sin asunto todavía")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
+function wkLabel(w) {
+  const f = addDays(w, 4), m = (d) => d.toLocaleDateString("es-ES", { month: "short" }).replace(".", "");
+  return w.getMonth() === f.getMonth() ? `${w.getDate()}–${f.getDate()} ${m(f)}` : `${w.getDate()} ${m(w)} – ${f.getDate()} ${m(f)}`;
+}
 function renderWeek() {
   const todayIso = iso(new Date()), w0 = monday(new Date());
   const order = Object.entries(SEG).sort((x, y) => x[1].dia - y[1].dia);
-  const row = (k, s, w, later) => {
-    const a = iso(w), b = iso(addDays(w, 6));
-    const e = state.cal.filter((c) => c.segmento === k && c.fecha >= a && c.fecha <= b).sort((x, y) => x.fecha.localeCompare(y.fecha))[0];
-    const when = e ? parse(e.fecha) : addDays(w, s.dia), dIso = iso(when);
-    const st = e ? normEstado(e.estado) : "sin_empezar";
-    const done = st === "enviado", hs = e && safeUrl(e.hubspot);
-    const subj = e && e.asunto;
-    let flag = "";
-    if (!done && dIso < todayIso) flag = `<span class="flag late">Atrasado</span>`;
-    else if (!done && dIso === todayIso) flag = `<span class="flag hoy">Hoy</span>`;
-    let act;
-    if (done) act = `<span class="ok"><button type="button" class="okb" data-write="${k}" data-w="${a}" title="Abrir el email">✓ Enviado</button>${hs ? ` · <a href="${esc(hs)}" target="_blank" rel="noopener">HubSpot ↗</a>` : ""}</span>`;
-    else act = `${flag}${e && e.email ? `<button type="button" class="btn btn-line btn-sm" data-next="${esc(e.id)}" data-to="enviado">Ya está enviado</button>` : ""}<button type="button" class="btn ${later ? "btn-line" : "btn-ink"} btn-sm" data-write="${k}" data-w="${a}">${e && e.email ? "Seguir" : "Escribir"}</button>`;
-    return `<div class="trow${done ? " done" : ""}${later ? " later" : ""}" style="--c:${s.color}">
-      <div class="tday"><b>${when.getDate()}</b><span>${esc(when.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", ""))}</span></div>
-      <div class="tmain"><span class="twho"><b>${esc(s.firma.nombre)}</b> · ${esc(s.nombre)}</span><span class="tsubj${subj ? "" : " none"}">${subj ? esc(subj) : (e && e.email ? "Sin asunto" : "Sin escribir")}</span></div>
-      <div class="tact">${act}</div></div>`;
-  };
-  const w1 = addDays(w0, 7);
-  const group = (title, w, later) => `<section class="todo-group"><h2>${title}</h2><p class="eyebrow">${esc(fmtShort(w))} – ${esc(fmtShort(addDays(w, 6)))}</p><div class="todo">${order.map(([k, s]) => row(k, s, w, later)).join("")}</div></section>`;
-  $("weekBox").innerHTML = group("Esta semana", w0, false) + group("La semana que viene", w1, true);
-  $("weekBox").querySelectorAll("[data-next]").forEach((x) => x.onclick = async () => {
-    x.disabled = true;
-    try { await db.collection("calendario").doc(x.dataset.next).update({ estado: x.dataset.to }); } catch { x.disabled = false; x.textContent = "No se pudo"; }
-  });
+  const first = state.cal.reduce((m, c) => (c.fecha < m ? c.fecha : m), iso(addDays(w0, -21)));
+  const weeks = [];
+  for (let w = addDays(w0, 14); iso(w) >= iso(monday(parse(first))); w = addDays(w, -7)) weeks.push(w);
+  const head = `<tr><th>Semana</th>${order.map(([, s]) => `<th><span class="dot" style="background:${s.color}"></span>${esc(s.firma.nombre)}<small>${esc(s.nombre)} · ${esc(["lunes", "martes", "miércoles", "jueves", "viernes"][s.dia] || "")}</small></th>`).join("")}</tr>`;
+  const rows = weeks.map((w) => {
+    const a = iso(w), b = iso(addDays(w, 6)), now = a === iso(w0);
+    const cells = order.map(([k, s]) => {
+      const e = state.cal.filter((c) => c.segmento === k && c.fecha >= a && c.fecha <= b).sort((x, y) => x.fecha.localeCompare(y.fecha))[0];
+      const dIso = e ? e.fecha : iso(addDays(w, s.dia));
+      const st = e ? normEstado(e.estado) : "sin_empezar", sent = st === "enviado", has = e && e.email;
+      const past = b < iso(w0);
+      if (past && !e) return `<td><span class="cell none">—</span></td>`;
+      const late = !sent && dIso < todayIso, today = !sent && dIso === todayIso;
+      const cls = sent ? "sent" : has ? "draft" : "";
+      const label = sent ? "✓ Enviado" : has ? "✎ Escrito" : "○ Escribir";
+      const attrs = sent ? `data-open="${esc(e.id)}"` : `data-write="${k}" data-w="${a}"`;
+      return `<td><button type="button" class="cell ${cls}${late ? " late" : ""}" style="--c:${s.color}" ${attrs} title="${esc(s.firma.nombre)} · ${esc(fmtDay(parse(dIso)))}"><span class="st2">${label}${late ? " · atrasado" : ""}${today ? '<span class="hoy2">Hoy</span>' : ""}</span>${e && e.asunto ? `<span class="sj">${esc(e.asunto)}</span>` : ""}</button></td>`;
+    }).join("");
+    return `<tr class="${now ? "now" : ""}"><td class="wk">${esc(wkLabel(w))}${now ? "<small>Esta semana</small>" : ""}</td>${cells}</tr>`;
+  }).join("");
+  $("weekBox").innerHTML = `<div class="board-wrap"><table class="board"><colgroup><col class="c-w"><col><col><col></colgroup><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
+  $("weekBox").querySelectorAll("[data-open]").forEach((x) => x.onclick = (ev) => { ev.stopPropagation(); openEditor(state.cal.find((c) => c.id === x.dataset.open), null, null, x); });
   $("weekBox").querySelectorAll("[data-write]").forEach((x) => x.onclick = () => {
     const k = x.dataset.write, w = parse(x.dataset.w), a = iso(w), b = iso(addDays(w, 6));
     const e = state.cal.find((c) => c.segmento === k && c.fecha >= a && c.fecha <= b);
@@ -1428,8 +1452,8 @@ function showTab(t) {
 let pendingWriter = null;
 try {
   const v = JSON.parse(localStorage.getItem("nl_tab") || "null");
-  if (v && v.tab === "escribir" && SEG[v.seg] && v.fecha) { pendingWriter = v; state.returnTab = v.ret; showTab(v.ret || "semana"); }
-  else if (v && v.tab && $("view-" + v.tab) && v.tab !== "escribir") showTab(v.tab);
+  if (v && v.tab === "escribir" && SEG[v.seg] && v.fecha) { if (v.ret === "calendario") v.ret = "semana"; pendingWriter = v; state.returnTab = v.ret; showTab(v.ret || "semana"); }
+  else if (v && v.tab && $("view-" + v.tab) && v.tab !== "escribir" && v.tab !== "calendario") showTab(v.tab);
 } catch {}
 document.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
 
