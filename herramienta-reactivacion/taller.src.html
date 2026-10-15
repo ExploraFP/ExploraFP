@@ -1182,7 +1182,7 @@ function openWriter(seg, fecha, id) {
   $("editor").hidden = true;
   showTab("escribir");
 }
-$("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); } await saving; state.slot = null; showTab(state.returnTab || "semana"); };
+$("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); } await saving; const id = state.slot?.id; state.slot = null; const t = state.returnTab || "semana"; showTab(t); if (t === "semana" && id && state.cal.some((c) => c.id === id && c.email)) { state.peek = id; renderPeek(); } };
 
 /* ---------- Calendario ---------- */
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
@@ -1218,7 +1218,7 @@ function renderPeek() {
 `;
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
-  if ($("peekOpen")) $("peekOpen").onclick = () => { state.peek = null; renderPeek(); openWriter(c.segmento, c.fecha, c.id); };
+  if ($("peekOpen")) $("peekOpen").onclick = () => openWriter(c.segmento, c.fecha, c.id);
   $("peekSent").onclick = async () => { $("peekSent").disabled = true; try { await db.collection("calendario").doc(c.id).update({ estado: sent ? "en_redaccion" : "enviado" }); } catch { $("peekSent").disabled = false; $("peekSent").textContent = "No se pudo"; } };
   $("peekFicha").onclick = (ev) => { ev.stopPropagation(); openEditor(c, null, null, $("peekFicha")); };
 }
