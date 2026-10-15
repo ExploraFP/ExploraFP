@@ -678,14 +678,8 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
       <div class="wb-title"><div class="wb-tags" id="wrTags"></div><span id="slotLabel"></span></div>
       <span class="saved wb-saved" id="savedAt" role="status"></span>
       <div class="wb-acts">
-        <button type="button" class="btn btn-ink btn-sm" data-copy="body">Copiar email</button>
-        <div class="pk-mwrap"><button type="button" class="x wb-more" id="wbMoreBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
-          <div class="pk-menu" id="wbMenu" role="menu" hidden>
-            <button type="button" role="menuitem" data-copy="a">Copiar asunto</button>
-            <button type="button" role="menuitem" data-copy="pre">Copiar preheader</button>
-            <button type="button" role="menuitem" id="sentBtn" hidden>Marcar como enviado</button>
-          </div>
-        </div>
+        <button type="button" class="btn btn-ink btn-sm" id="sentBtn" hidden>Marcar como enviado</button>
+        <div class="pk-mwrap" hidden><button type="button" class="x wb-more" id="wbMoreBtn" hidden></button><div class="pk-menu" id="wbMenu" hidden></div></div>
       </div>
     </div>
     <div class="write">
@@ -732,7 +726,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           </article>
         </div>
         <p class="status" id="copyStatus" role="status"></p>
-        <div class="savebar" id="saveBar" hidden>
+        <div class="savebar" id="saveBar" hidden style="display:none">
           <select id="pEstado" hidden aria-hidden="true"><option value="en_redaccion">En redacción</option><option value="enviado">Enviado</option></select>
           <label class="l" for="pHs">Enlace de HubSpot<input type="url" id="pHs" placeholder="https://app.hubspot.com/…"></label>
         </div>
@@ -1035,7 +1029,7 @@ function renderPreview() {
   const e = state.current, has = !!e;
   document.querySelectorAll("[data-copy]").forEach((b) => { b.hidden = !has; });
   $("sentBtn").hidden = !has || !db || $("pEstado").value === "enviado";
-  $("wbMoreBtn").closest(".pk-mwrap").hidden = !has;
+
   likeUi();
 
   if (!has) {
@@ -1304,7 +1298,7 @@ $("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleS
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
 function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }); }
-function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = "Marcar como enviado"; $("sentBtn").hidden = sent || !state.current || !db; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
+function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").hidden = sent || !state.current || !db; $("sentBtn").setAttribute("aria-pressed", String(sent)); }
 function likeUi() {
   const on = !!(state.slot?.id && (state.likes || []).some((x) => x.id === state.slot.id));
   $("likeBtn").hidden = !state.current || !db;
@@ -1324,10 +1318,12 @@ $("likeBtn").onclick = async () => {
   finally { $("likeBtn").disabled = false; likeUi(); }
 };
 $("sentBtn").onclick = async () => {
-  $("wbMenu").hidden = true;
   if ($("pEstado").value === "enviado") return;
   const r = await askHubspot($("pHs").value.trim()); if (!r) return;
-  $("pHs").value = r.url; $("pEstado").value = "enviado"; sentUi(); scheduleSave(0);
+  $("pHs").value = r.url; $("pEstado").value = "enviado"; sentUi();
+  clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); await saving;
+  state.returnTab = "calendario";
+  await $("backBtn").onclick();
 };
 $("wbMoreBtn").onclick = (ev) => { ev.stopPropagation(); $("wbMenu").hidden = !$("wbMenu").hidden; $("wbMoreBtn").setAttribute("aria-expanded", String(!$("wbMenu").hidden)); };
 $("wbMenu").addEventListener("click", (ev) => { if (ev.target.closest("[data-copy]")) { $("wbMenu").hidden = true; $("wbMoreBtn").setAttribute("aria-expanded", "false"); } });
@@ -1363,11 +1359,11 @@ function evButton(c) {
   return `<button type="button" draggable="${normEstado(c.estado) !== "enviado"}" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
     <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b> · ${esc(c.asunto || "sin asunto")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
-function peekBody(e) {
+function peekBody(e, noSign) {
   const parts = (e.bloques || []).map((b) => b.tipo === "boton" ? `<div class="cta" contenteditable="false"><a contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
     : b.tipo === "lista" ? `<ul>${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>` : `<p>${rich(b.contenido)}</p>`);
   if (e.pd) parts.push(`<p data-role="pd">${rich(e.pd)}</p>`);
-  if ((e.despedida || "").trim() || (e.firma || "").trim()) parts.push(`<p data-role="firma">${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
+  if (!noSign && ((e.despedida || "").trim() || (e.firma || "").trim())) parts.push(`<p data-role="firma">${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
   return parts.join("");
 }
 function peekFromDom(c) {
@@ -1477,16 +1473,16 @@ function openView(c) {
   v.querySelectorAll("[data-mvdev]").forEach((b) => b.onclick = () => { v.querySelectorAll("[data-mvdev]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); $("mvStage").classList.toggle("mobile", b.dataset.mvdev === "mobile"); });
 }
 document.addEventListener("keydown", (ev) => { const v = $("mailView"); if (ev.key === "Escape" && v && !v.hidden) v.hidden = true; });
-function askHubspot(current) {
+function askHubspot(current, onlyLink) {
   return new Promise((resolve) => {
     let m = $("hsAsk"); if (!m) { m = document.createElement("div"); m.id = "hsAsk"; m.className = "hs-ask"; document.body.appendChild(m); }
-    m.innerHTML = `<div class="hs-card" role="dialog" aria-modal="true" aria-labelledby="hsT"><b id="hsT">Marcar como enviado</b><label class="l" for="hsIn">Enlace de HubSpot (opcional)</label>
+    m.innerHTML = `<div class="hs-card" role="dialog" aria-modal="true" aria-labelledby="hsT"><b id="hsT">${onlyLink ? "Enlace de HubSpot" : "Marcar como enviado"}</b><label class="l" for="hsIn">Enlace de HubSpot${onlyLink ? "" : " (opcional)"}</label>
       <input type="url" id="hsIn" placeholder="https://app-eu1.hubspot.com/email/…" value="${esc(current || "")}"><span class="hs-err" id="hsErr"></span>
-      <div class="hs-row"><button type="button" class="btn btn-line btn-sm" id="hsNo">Ahora no</button><button type="button" class="btn btn-ink btn-sm" id="hsOk">Marcar como enviado</button></div></div>`;
+      <div class="hs-row"><button type="button" class="btn btn-line btn-sm" id="hsNo">${onlyLink ? "Cancelar" : "Ahora no"}</button><button type="button" class="btn btn-ink btn-sm" id="hsOk">${onlyLink ? "Guardar" : "Marcar como enviado"}</button></div></div>`;
     m.hidden = false; setTimeout(() => $("hsIn").focus(), 30);
     const done = (v) => { m.hidden = true; resolve(v); };
     $("hsOk").onclick = () => { const v = $("hsIn").value.trim(); if (v && !safeUrl(v)) { $("hsErr").textContent = "Tiene que empezar por https://"; return; } done({ url: v }); };
-    $("hsNo").onclick = () => done({ url: current || "" });
+    $("hsNo").onclick = () => done(onlyLink ? null : { url: current || "" });
     m.onclick = (ev) => { if (ev.target === m) done(null); };
     $("hsIn").onkeydown = (ev) => { if (ev.key === "Enter") $("hsOk").click(); if (ev.key === "Escape") done(null); };
   });
@@ -1516,6 +1512,7 @@ function renderPeek() {
       <div class="pk-btns">
         <div class="pk-mwrap"><button type="button" class="x" id="pkMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
           <div class="pk-menu" id="pkMenu" role="menu" hidden>
+            ${sent ? `<button type="button" role="menuitem" id="pkHs">${hs ? "Cambiar enlace de HubSpot" : "Añadir enlace de HubSpot"}</button>` : ""}
             ${locked && e ? `<button type="button" role="menuitem" id="pkUnlock">Editar</button>` : ""}
             ${sent ? "" : `<button type="button" role="menuitem" id="pkSent">Marcar como enviado</button>`}
             <button type="button" role="menuitem" class="danger" id="pkDel">Borrar email</button>
@@ -1529,7 +1526,7 @@ function renderPeek() {
     ${e ? `<div class="mini"><div class="mhead">
       <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" data-ph="Escribe el asunto" contenteditable="${ce}" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
       <div class="mrow"><span class="ml">Preheader</span><div class="mval" id="pkPre" data-ph="Escribe el preheader" contenteditable="${ce}" spellcheck="true">${esc(e.preheader || "")}</div></div>
-    </div><article class="email"><div class="body" id="peekBody" contenteditable="${locked ? "false" : "true"}" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
+    </div><article class="email"><div class="body" id="peekBody" contenteditable="${locked ? "false" : "true"}" spellcheck="true">${peekBody(e, true)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => setPeek(null);
   const big = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); };
@@ -1545,6 +1542,7 @@ function renderPeek() {
     state.peekUnlock = null;
     try { await db.collection("calendario").doc(c.id).update({ estado: "enviado", hubspot: safeUrl(r.url) }); } catch {}
   };
+  if ($("pkHs")) $("pkHs").onclick = async () => { closeMenu(); const r = await askHubspot(c.hubspot, true); if (!r) return; try { await db.collection("calendario").doc(c.id).update({ hubspot: safeUrl(r.url) }); } catch {} };
   if ($("pkUnlock")) $("pkUnlock").onclick = () => { closeMenu(); state.peekUnlock = c.id; state.sentDraft = null; $("peek").dataset.id = ""; renderPeek(); };
   if ($("pkCancelSent")) $("pkCancelSent").onclick = () => { state.peekUnlock = null; state.sentDraft = null; $("peek").dataset.id = ""; renderPeek(); };
   if ($("pkSaveSent")) $("pkSaveSent").onclick = async () => {
