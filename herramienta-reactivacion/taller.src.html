@@ -392,12 +392,9 @@ textarea { min-height: 64px; resize: vertical; }
 .ev .tx { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .ev .tx b { font-weight: 600; }
 .ev .sd { width: 8px; height: 8px; border-radius: 50%; }
-.ev:not(.ghost) { background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--c); grid-template-columns: minmax(0, 1fr); padding-left: 8px; }
-.ev:not(.ghost) .bar, .ev .sd { display: none; }
-.ev.st-enviado-ev { background: var(--c); box-shadow: none; color: #fff; }
-.ev.st-enviado-ev .tx b { color: #fff; }
-.ev:not(.ghost):hover { box-shadow: inset 0 0 0 2px var(--ink); }
-.ev.st-enviado-ev:hover { box-shadow: inset 0 0 0 2px var(--ink); }
+.ev .sd { display: none; }
+.ev:not(.ghost):not(.st-enviado-ev) { background: var(--paper); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 55%, transparent); }
+.ev:not(.ghost):not(.st-enviado-ev):hover { box-shadow: inset 0 0 0 1.5px var(--c); }
 .sd-sin_empezar { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
 .sd-en_redaccion { background: #E0A800; }
 .sd-listo { background: var(--leaf); }
