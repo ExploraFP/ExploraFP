@@ -314,11 +314,9 @@ textarea { min-height: 64px; resize: vertical; }
 .np-o:hover { background: color-mix(in srgb, var(--c) 10%, var(--paper)); border-color: var(--c); }
 .np-o i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
 .pk-ai { align-self: flex-start; }
-.pk-editbar { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; background: #FFF6D6; border: 1px solid #F0D27A; border-radius: 10px; padding: 8px 10px; font: 600 .82rem var(--font-body); color: #6B5300; }
-.pk-editbar .sp { flex: 1; }
-.peek.editing-sent .mini { box-shadow: 0 0 0 2px #F0D27A; }
-.peek.editing-sent .mval, .peek.editing-sent .mini .body > p, .peek.editing-sent .mini .body > ul { background: #FFFBEA; border-radius: 4px; }
-.peek.editing-sent .mval:focus, .peek.editing-sent .mini .body:focus-within > *:focus-within { background: #FFF3C4; }
+.peek.editing-sent { background: #FFFBEF; }
+.peek.editing-sent .pk-top { background: #FFFBEF; }
+.peek.editing-sent .mhead, .peek.editing-sent .mini .email { background: #FFFDF6; }
 .pk-lock { margin: 0; font-size: .8rem; color: var(--muted); background: var(--bg); border-radius: 8px; padding: 8px 10px; }
 .pk-datebtn:disabled { cursor: default; text-decoration: none; }
 .pk-datebtn:disabled:hover { background: none; }
@@ -1386,8 +1384,33 @@ async function flushPeek() {
 }
 window.addEventListener("pagehide", () => { if (pkPending) flushPeek(); });
 document.addEventListener("visibilitychange", () => { if (document.hidden && pkPending) flushPeek(); });
+let askingSave = false;
+async function setPeek(id) {
+  const d = state.sentDraft;
+  if (d && d.id === state.peek && id !== state.peek) {
+    if (askingSave) return; askingSave = true;
+    const r = await askSaveSent(); askingSave = false;
+    if (r === null) return;
+    if (r) { try { await db.collection("calendario").doc(d.id).update({ email: d.email, asunto: d.email.asunto_a || "", preheader: d.email.preheader || "" }); if ((state.likes || []).some((x) => x.id === d.id)) db.collection("ejemplos").doc(d.id).update({ email: d.email }).catch(() => {}); const it = state.cal.find((x) => x.id === d.id); if (it) it.email = d.email; } catch {} }
+    state.sentDraft = null; state.peekUnlock = null; $("peek").dataset.id = "";
+  } else if (id !== state.peek && state.peekUnlock) { state.peekUnlock = null; $("peek").dataset.id = ""; }
+  state.peek = id; renderPeek();
+}
+function askSaveSent() {
+  return new Promise((resolve) => {
+    let m = $("hsAsk"); if (!m) { m = document.createElement("div"); m.id = "hsAsk"; m.className = "hs-ask"; document.body.appendChild(m); }
+    m.innerHTML = `<div class="hs-card" role="dialog" aria-modal="true" aria-labelledby="svT"><b id="svT">¿Guardar los cambios?</b><p>Este email ya está enviado.</p>
+      <div class="hs-row"><button type="button" class="btn btn-line btn-sm" id="svNo">Descartar</button><button type="button" class="btn btn-ink btn-sm" id="svOk">Guardar</button></div></div>`;
+    m.hidden = false; setTimeout(() => $("svOk").focus(), 30);
+    const done = (v) => { m.hidden = true; resolve(v); };
+    $("svOk").onclick = () => done(true); $("svNo").onclick = () => done(false);
+    m.onclick = (ev) => { if (ev.target === m) done(null); };
+    m.onkeydown = (ev) => { if (ev.key === "Escape") { ev.stopPropagation(); done(null); } };
+  });
+}
+window.addEventListener("beforeunload", (ev) => { if (state.sentDraft) { ev.preventDefault(); ev.returnValue = ""; } });
 function openNew(date, anchor) {
-  closeEditor(); state.peek = null; renderPeek();
+  closeEditor(); setPeek(null);
   let pop = $("newPop"); if (!pop) { pop = document.createElement("div"); pop.id = "newPop"; pop.className = "newpop"; document.body.appendChild(pop); }
   const d = parse(date), t = ((x) => x[0].toUpperCase() + x.slice(1))(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
   pop.innerHTML = `<div class="np-h"><div><span class="np-k">Nuevo email</span><b>${esc(t)}</b></div><button type="button" class="np-x" aria-label="Cerrar">✕</button></div>
@@ -1406,7 +1429,7 @@ async function createEmail(k, date) {
   try {
     const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "en_redaccion", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
     if (!state.cal.some((c) => c.id === ref.id)) state.cal.push({ id: ref.id, segmento: k, fecha: date, estado: "en_redaccion", email });
-    closeEditor(); state.peek = ref.id; renderPeek(); return true;
+    closeEditor(); await setPeek(ref.id); return true;
   } catch { return false; }
 }
 function openView(c) {
@@ -1450,7 +1473,7 @@ document.addEventListener("click", (ev) => { const p = $("newPop"); if (p && !p.
 document.addEventListener("keydown", (ev) => { const p = $("newPop"); if (ev.key === "Escape" && p && !p.hidden) p.hidden = true; });
 function renderPeek() {
   if (pkPending && pkPending.id !== state.peek) flushPeek();
-  if (state.peekUnlock && state.peekUnlock !== state.peek) { state.peekUnlock = null; state.sentDraft = null; }
+  if (state.peekUnlock && state.peekUnlock !== state.peek && !state.sentDraft) state.peekUnlock = null;
   let c = state.peek && state.cal.find((x) => x.id === state.peek);
   if (c && pkPending && pkPending.id === c.id) c = { ...c, email: pkPending.email, asunto: pkPending.email.asunto_a, preheader: pkPending.email.preheader };
   if (state.sentDraft && state.sentDraft.id !== state.peek) state.sentDraft = null;
@@ -1480,14 +1503,13 @@ function renderPeek() {
         <button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button>
       </div>
     </div>
-    ${editingSent ? `<div class="pk-editbar"><span>✎ Modo edición</span><span class="sp"></span><button type="button" class="btn btn-line btn-sm" id="pkCancelSent">Cancelar</button><button type="button" class="btn btn-ink btn-sm" id="pkSaveSent" ${state.sentDraft && state.sentDraft.id === c.id ? "" : "disabled"}>Guardar cambios</button></div>` : ""}
     ${e && !hasBody(e) && !locked ? `<button type="button" class="btn btn-ink pk-ai" id="pkAi">Que lo escriba Claude</button>` : ""}
     ${e ? `<div class="mini"><div class="mhead">
       <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" data-ph="Escribe el asunto" contenteditable="${ce}" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
       <div class="mrow"><span class="ml">Preheader</span><div class="mval" id="pkPre" data-ph="Escribe el preheader" contenteditable="${ce}" spellcheck="true">${esc(e.preheader || "")}</div></div>
     </div><article class="email"><div class="body" id="peekBody" contenteditable="${locked ? "false" : "true"}" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
   $("peek").hidden = false; $("prod").classList.add("open");
-  $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
+  $("peekClose").onclick = () => setPeek(null);
   const big = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); };
   if ($("peekOpen")) $("peekOpen").onclick = locked ? () => openView(c) : big;
   if ($("pkAi")) $("pkAi").onclick = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); if (!state.current && sample) sendChat("Escríbelo"); };
@@ -1526,8 +1548,8 @@ function renderPeek() {
     if (id !== "peekBody") el.addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); el.blur(); } });
   });
 }
-document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && state.peek && $("editor").hidden) { state.peek = null; renderPeek(); } });
-document.addEventListener("click", (ev) => { if (state.peek && !$("peek").hidden && ev.target.isConnected && ev.target.closest("#view-calendario") && !$("peek").contains(ev.target) && !ev.target.closest(".ev, #editor")) { state.peek = null; renderPeek(); } });
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && state.peek && $("editor").hidden && (!$("hsAsk") || $("hsAsk").hidden)) setPeek(null); });
+document.addEventListener("click", (ev) => { if (state.peek && !$("peek").hidden && ev.target.isConnected && ev.target.closest("#view-calendario") && !$("peek").contains(ev.target) && !ev.target.closest(".ev, #editor")) setPeek(null); });
 function wkLabel(w) {
   const f = addDays(w, 4), m = (d) => d.toLocaleDateString("es-ES", { month: "short" }).replace(".", "");
   return w.getMonth() === f.getMonth() ? `${w.getDate()}–${f.getDate()} ${m(f)}` : `${w.getDate()} ${m(w)} – ${f.getDate()} ${m(f)}`;
@@ -1652,7 +1674,7 @@ function renderCal() {
     : `<div class="empty">No hay envíos este mes.</div>`;
   document.querySelectorAll("#cal .ev[data-id], #agenda .ev[data-id]").forEach((b) => b.onclick = (ev) => {
     ev.stopPropagation(); const c = state.cal.find((x) => x.id === b.dataset.id); if (!c) return;
-    if (c.email || normEstado(c.estado) === "enviado") { closeEditor(); state.peek = c.id; renderPeek(); } else openEditor(c, null, null, b);
+    if (c.email || normEstado(c.estado) === "enviado") { closeEditor(); setPeek(c.id); } else openEditor(c, null, null, b);
   });
   $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openNew(b.dataset.date, b); });
   $("cal").querySelectorAll(".ghost").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); createEmail(b.dataset.seg, b.dataset.date); });
@@ -1854,7 +1876,7 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
 $("homeLink").onclick = (ev) => { ev.preventDefault(); if (!$("view-escribir").hidden) $("backBtn").onclick().then(() => showTab("calendario")); else showTab("calendario"); };
 function showTab(t) {
   if (t === "semana") t = "calendario";
-  if (t !== "calendario" && t !== "escribir" && state.peek) { state.peek = null; renderPeek(); }
+  if (t !== "calendario" && t !== "escribir" && state.peek) setPeek(null);
   const sel = t === "escribir" ? (state.returnTab || "calendario") : t;
   document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === sel));
   ["semana", "escribir", "calendario", "enviados", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
