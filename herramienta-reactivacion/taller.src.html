@@ -766,7 +766,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
         </div>
         <div class="grid2">
           <label class="l" for="eAsunto">Asunto<input type="text" id="eAsunto" placeholder="Asunto del email"></label>
-          <label class="l" for="eEstado">Estado<select id="eEstado"><option value="sin_empezar">Por escribir</option><option value="en_redaccion">Sin enviar</option><option value="enviado">Enviado</option></select></label>
+          <label class="l" for="eEstado">Estado<select id="eEstado"><option value="en_redaccion">En redacción</option><option value="enviado">Enviado</option></select></label>
         </div>
         <label class="l" for="ePre">Preheader<input type="text" id="ePre" placeholder="Preheader del email"></label>
         <label class="l" for="eHs">Enlace de HubSpot<input type="url" id="eHs" placeholder="https://app.hubspot.com/email/…"></label>
@@ -955,8 +955,8 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 const rich = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
   .replace(/\{\{\s*(nombre|contact\.firstname)\s*\}\}/g, '<span class="tok" contenteditable="false">Nombre</span>')
   .replace(/\[([^\]]{3,})\]/g, '<span class="ph">[$1]</span>').replace(/\n/g, "<br>");
-const ESTADOS = { sin_empezar: "Por escribir", en_redaccion: "Sin enviar", enviado: "Enviado", atrasado: "Atrasado" };
-const normEstado = (e) => ({ borrador: "en_redaccion", programado: "en_redaccion", listo: "en_redaccion", pendiente: "sin_empezar" }[e] || e || "sin_empezar");
+const ESTADOS = { en_redaccion: "En redacción", enviado: "Enviado" };
+const normEstado = (e) => (e === "enviado" ? "enviado" : "en_redaccion");
 const estLabel = (e) => ESTADOS[normEstado(e)] || e;
 const safeUrl = (u) => /^https:\/\/[^\s"<>]+$/i.test(String(u || "").trim()) ? String(u).trim() : "";
 
@@ -1250,7 +1250,7 @@ $("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleS
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
 function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }); }
-function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = sent ? "Marcar como sin enviar" : "Marcar como enviado"; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
+function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = sent ? "Volver a «En redacción»" : "Marcar como enviado"; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
 function likeUi() {
   const on = !!(state.slot?.id && (state.likes || []).some((x) => x.id === state.slot.id));
   $("likeBtn").hidden = !state.current || !db;
@@ -1295,8 +1295,8 @@ $("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); s
 /* ---------- Calendario ---------- */
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
 const hasBody = (e) => !!(e && Array.isArray(e.bloques) && e.bloques.some((b) => String(Array.isArray(b.contenido) ? b.contenido.join("") : b.contenido || "").trim()));
-const estTag = (c) => { const s = SEG[c.segmento] || SEG.nocontactado, st = normEstado(c.estado), k = st === "enviado" ? "env" : (hasBody(c.email) || (st === "en_redaccion" && !c.email)) ? "esc" : "por";
-  return `<span class="esttag est-${k}" style="--c:${s.color}">${k === "env" ? "Enviado" : k === "esc" ? "Sin enviar" : "Por escribir"}</span>`; };
+const estTag = (c) => { const s = SEG[c.segmento] || SEG.nocontactado, k = normEstado(c.estado) === "enviado" ? "env" : "esc";
+  return `<span class="esttag est-${k}" style="--c:${s.color}">${k === "env" ? "Enviado" : "En redacción"}</span>`; };
 const segTag = (k) => { const s = SEG[k] || SEG.nocontactado; return `<span class="segtag" style="--c:${s.color}"><i></i>${esc(s.nombre)}</span>`; };
 function evButton(c) {
   const s = SEG[c.segmento] || SEG.nocontactado, late = normEstado(c.estado) !== "enviado" && c.fecha < iso(new Date());
@@ -1362,9 +1362,9 @@ function openNew(date, anchor) {
     const k = o.dataset.k, s = SEG[k];
     const email = { asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: "", firma: "" };
     try {
-      const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "sin_empezar", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
+      const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "en_redaccion", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
       pop.hidden = true;
-      if (!state.cal.some((c) => c.id === ref.id)) state.cal.push({ id: ref.id, segmento: k, fecha: date, estado: "sin_empezar", email });
+      if (!state.cal.some((c) => c.id === ref.id)) state.cal.push({ id: ref.id, segmento: k, fecha: date, estado: "en_redaccion", email });
       state.peek = ref.id; renderPeek();
     } catch { o.disabled = false; }
   });
@@ -1389,7 +1389,7 @@ function renderPeek() {
       <div class="pk-btns">
         <div class="pk-mwrap"><button type="button" class="x" id="pkMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
           <div class="pk-menu" id="pkMenu" role="menu" hidden>
-            <button type="button" role="menuitem" id="pkSent">${sent ? "Marcar como sin enviar" : "Marcar como enviado"}</button>
+            <button type="button" role="menuitem" id="pkSent">${sent ? "Volver a «En redacción»" : "Marcar como enviado"}</button>
             <button type="button" role="menuitem" class="danger" id="pkDel">Borrar email</button>
           </div>
         </div>
@@ -1541,7 +1541,7 @@ function renderCal() {
     const cls = ["day", d.getMonth() !== base.getMonth() ? "out" : "", di === todayIso ? "today" : "", d.getDay() % 6 === 0 ? "weekend" : ""].join(" ");
     const dow = (d.getDay() + 6) % 7, wA = iso(monday(d)), wB = iso(addDays(monday(d), 6));
     const ghosts = di >= todayIso ? Object.entries(SEG).filter(([k, s]) => s.dia === dow && !(state.calHide || []).includes(k) && !state.cal.some((c) => c.segmento === k && c.fecha >= wA && c.fecha <= wB))
-      .map(([k, s]) => `<button type="button" class="ev ghost" data-seg="${k}" data-date="${di}" style="--c:${s.color}"><span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b> · por escribir</span><span></span></button>`).join("") : "";
+      .map(([k, s]) => `<button type="button" class="ev ghost" data-seg="${k}" data-date="${di}" style="--c:${s.color}"><span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b></span><span></span></button>`).join("") : "";
     h += `<div class="${cls}" data-date="${di}"><span class="num">${d.getDate()}</span>${db ? `<button type="button" class="plus" data-date="${di}" aria-label="Planificar el ${d.getDate()}">+</button>` : ""}${(byDay[di] || []).map(evButton).join("")}${ghosts}</div>`;
   }
   $("cal").innerHTML = h;
@@ -1613,7 +1613,7 @@ function setEditMode(on) {
 function closeMenu() { $("edMenu").hidden = true; $("edMenuBtn").setAttribute("aria-expanded", "false"); $("eDel").dataset.confirm = ""; $("eDel").textContent = "Borrar"; }
 function fillFields(item, seg, date) {
   $("eSeg").value = item ? item.segmento : seg; $("eFecha").value = item ? item.fecha : date;
-  $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? normEstado(item.estado) : "sin_empezar";
+  $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? normEstado(item.estado) : "en_redaccion";
   $("eHs").value = item ? item.hubspot || "" : ""; $("ePre").value = item ? item.preheader || "" : "";
   const m = (item && item.metricas) || {}, num = (v) => (v == null ? "" : String(v).replace(",", "."));
   $("mEnv").value = num(m.enviados); $("mAp").value = num(m.apertura); $("mCl").value = num(m.clic); $("mForm").value = num(m.formularios);
