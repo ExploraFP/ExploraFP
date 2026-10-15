@@ -242,7 +242,7 @@ textarea { min-height: 64px; resize: vertical; }
 @media (max-width: 600px) { .cell .hoy2 { display: block; width: max-content; margin: 4px 0 0; } .board col.c-w { width: 76px; } .board td.wk { white-space: normal; font-size: .72rem; padding: 8px; } .cell .sj { display: none; } .cell { padding: 8px; min-height: 48px; } .cell .st2 { font-size: .74rem; white-space: normal; } .board th { padding: 10px 8px; } }
 .todo-group + .todo-group { margin-top: 28px; }
 .prod { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
-.prod.open { grid-template-columns: minmax(0, 1fr) 420px; }
+.prod.open { grid-template-columns: minmax(0, 1fr); }
 .cell.sel { box-shadow: 0 0 0 3px var(--ink); }
 .cell[draggable="true"] { cursor: grab; }
 .cell.dragging, .ev.dragging { opacity: .45; }
@@ -253,7 +253,7 @@ textarea { min-height: 64px; resize: vertical; }
 .peek .when input { width: auto; padding: 4px 8px; font-size: .82rem; border-radius: 8px; }
 .peek .del { color: var(--err); }
 .peek .del.confirm { background: var(--err); color: #fff; border-color: var(--err); }
-.peek { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: grid; gap: 12px; padding: 14px 16px 16px; }
+.peek { position: fixed; right: 16px; top: 16px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: grid; gap: 12px; padding: 14px 16px 16px; }
 .peek .ph-head { display: flex; align-items: flex-start; gap: 6px; }
 .peek .x:hover { border-color: var(--ink); }
 .peek .ph-head .who { flex: 1; min-width: 0; }
@@ -278,7 +278,7 @@ textarea { min-height: 64px; resize: vertical; }
 .peek .acts .sp { flex: 1; }
 @media (max-width: 1000px) {
   .prod.open { grid-template-columns: minmax(0, 1fr); }
-  .peek { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; max-height: 82vh; z-index: 40; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+  .peek { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; max-height: 82vh; z-index: 40; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
 }
 .todo-group h2 { font-size: 2rem; margin: 0 0 4px; }
 .todo-group .eyebrow { margin-bottom: 12px; }
@@ -623,7 +623,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 
   <!-- CALENDARIO -->
   <section id="view-semana" hidden>
-    <div class="prod" id="prod"><div id="weekBox"></div><aside class="peek" id="peek" hidden aria-label="Vista previa del email"></aside></div>
+    <div id="weekBox"></div>
   </section>
 
   <section id="view-calendario">
@@ -637,8 +637,11 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
         <button type="button" class="icon-btn" id="calNext" aria-label="Mes siguiente">›</button>
       </div></div>
     </div>
-    <div class="month"><div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="days" id="cal"></div></div>
-    <div class="agenda" id="agenda"></div>
+    <div class="prod" id="prod">
+      <div><div class="month"><div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="days" id="cal"></div></div>
+      <div class="agenda" id="agenda"></div></div>
+      <aside class="peek" id="peek" hidden aria-label="Vista previa del email"></aside>
+    </div>
   </section>
 
   <section id="view-enviados" hidden>
@@ -1209,7 +1212,7 @@ function openWriter(seg, fecha, id) {
   $("editor").hidden = true;
   showTab("escribir");
 }
-$("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); } await saving; const id = state.slot?.id; state.slot = null; const t = state.returnTab || "calendario"; showTab(t);  };
+$("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); } await saving; const id = state.slot?.id; state.slot = null; const t = state.returnTab || "calendario"; showTab(t); if (t === "calendario" && id && state.cal.some((c) => c.id === id && c.email)) { state.peek = id; renderPeek(); }  };
 
 /* ---------- Calendario ---------- */
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
@@ -1287,6 +1290,7 @@ function renderPeek() {
   };
 }
 document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && state.peek && $("editor").hidden) { state.peek = null; renderPeek(); } });
+document.addEventListener("click", (ev) => { if (state.peek && !$("peek").hidden && ev.target.isConnected && ev.target.closest("#view-calendario") && !$("peek").contains(ev.target) && !ev.target.closest(".ev, #editor")) { state.peek = null; renderPeek(); } });
 function wkLabel(w) {
   const f = addDays(w, 4), m = (d) => d.toLocaleDateString("es-ES", { month: "short" }).replace(".", "");
   return w.getMonth() === f.getMonth() ? `${w.getDate()}–${f.getDate()} ${m(f)}` : `${w.getDate()} ${m(w)} – ${f.getDate()} ${m(f)}`;
@@ -1411,7 +1415,7 @@ function renderCal() {
     : `<div class="empty">No hay envíos este mes.</div>`;
   document.querySelectorAll("#cal .ev[data-id], #agenda .ev[data-id]").forEach((b) => b.onclick = (ev) => {
     ev.stopPropagation(); const c = state.cal.find((x) => x.id === b.dataset.id); if (!c) return;
-    openEditor(c, null, null, b);
+    if (c.email || normEstado(c.estado) === "enviado") { closeEditor(); state.peek = c.id; renderPeek(); } else openEditor(c, null, null, b);
   });
   $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openEditor(null, segForDay(b.dataset.date), b.dataset.date, b); });
   $("cal").querySelectorAll(".ghost").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openWriter(b.dataset.seg, b.dataset.date); });
