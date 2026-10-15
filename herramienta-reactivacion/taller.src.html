@@ -524,14 +524,20 @@ button.wb-date:disabled { cursor: default; }
 .stable td.h a { text-decoration: none; font-weight: 600; }
 
 /* Calendario: vista de mes */
-.cal-head { display: grid; gap: 14px; margin-bottom: 14px; }
-.ch-top { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 18px; }
-.ch-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-top: 14px; border-top: 1px solid var(--line); }
-.ch-bar .legend { margin: 0; gap: 6px; }
-.cal-nav { display: inline-flex !important; align-items: center; gap: 0 !important; margin-bottom: 8px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--paper); padding: 2px; }
-.cal-nav button { height: 27px; min-width: 27px; border: 0 !important; background: transparent !important; box-shadow: none !important; border-radius: 999px !important; color: var(--ink); font: 600 .8rem var(--font-body); padding: 0 10px !important; cursor: pointer; display: inline-grid; place-items: center; }
-.cal-nav .icon-btn { width: 27px; padding: 0 !important; font-size: 1rem; }
+.cal-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: end; gap: 12px 24px; margin-bottom: 16px; }
+.cal-head > .vsw { justify-self: center; margin-bottom: 5px; }
+.cal-right { display: flex; align-items: center; gap: 12px; margin-bottom: 5px; }
+.cal-right .legend { margin: 0; gap: 6px; flex-wrap: nowrap; }
+.cal-right .cal-nav { padding-left: 12px; border-left: 0; position: relative; }
+.cal-right::before { content: none; }
+.cal-nav { display: inline-flex !important; align-items: center; gap: 0 !important; border: 1.5px solid var(--line); border-radius: 999px; background: var(--paper); padding: 2px; }
+.cal-nav button { height: 25px; min-width: 25px; border: 0 !important; background: transparent !important; box-shadow: none !important; border-radius: 999px !important; color: var(--ink); font: 600 .8rem var(--font-body); padding: 0 10px !important; cursor: pointer; display: inline-grid; place-items: center; }
+.cal-nav .icon-btn { width: 25px; padding: 0 !important; font-size: 1rem; }
 .cal-nav button:hover { background: var(--bg) !important; }
+.cal-nav[hidden] { display: none !important; }
+.cal-right .cal-nav { padding: 2px !important; }
+@media (max-width: 1180px) { .cal-head { grid-template-columns: 1fr auto; } .cal-head > .vsw { grid-row: 2; grid-column: 1; justify-self: start; margin: 0; } .cal-right { grid-row: 2; grid-column: 2; margin: 0; } }
+@media (max-width: 760px) { .cal-head { grid-template-columns: 1fr; } .cal-right { grid-row: auto; grid-column: 1; flex-wrap: wrap; } .cal-right .legend { flex-wrap: wrap; } }
 .cal-head h2 { font-size: 2rem; }
 .cal-nav { display: flex; gap: 6px; align-items: center; }
 .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.05rem; cursor: pointer; display: grid; place-items: center; }
@@ -602,6 +608,9 @@ button.wb-date:disabled { cursor: default; }
 .clist tr.gh td.nm i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--c); }
 .clist tr.gh td.nm { font-weight: 500; }
 .clist .noas { color: var(--muted); }
+.clist tr.grp td { height: auto; padding: 14px 12px 6px; font: 600 .68rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: var(--bg); border-left: 0 !important; }
+.clist tr.grp.late td { color: #B4232A; }
+.clist tr.late td.dy { color: #B4232A; font-weight: 600; }
 @media (max-width: 760px) {
   .clist .stable { min-width: 0; table-layout: auto; }
   .clist .stable colgroup, .clist .stable thead { display: none; }
@@ -613,6 +622,8 @@ button.wb-date:disabled { cursor: default; }
   .clist td.dy { grid-column: 2; grid-row: 1; font-size: .72rem; color: var(--muted); }
   .clist td.a { grid-column: 1; grid-row: 2; padding-left: 17px; }
   .clist td:last-child { grid-column: 2; grid-row: 2; justify-self: end; }
+  .clist .stable tr.grp { display: block; padding: 0; }
+  .clist tr.grp td { display: block; padding: 12px 14px 6px; justify-self: stretch; text-align: left; }
 }
 @media (max-width: 760px) {
   .month { display: none; }
@@ -837,13 +848,14 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
   <section id="view-calendario">
 
     <div class="cal-head">
-      <div class="ch-top"><div><p class="eyebrow">Correos</p><h2 id="calTitle">Octubre 2026</h2></div>
+      <div><p class="eyebrow">Correos</p><h2 id="calTitle">Octubre 2026</h2></div>
+      <div class="vsw" role="group" aria-label="Vista" id="calView"><button type="button" data-v="cal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Calendario</button><button type="button" data-v="list"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Lista</button></div>
+      <div class="cal-right"><div class="legend" id="legend"></div>
       <div class="cal-nav">
         <button type="button" class="icon-btn" id="calPrev" aria-label="Mes anterior">‹</button>
         <button type="button" class="btn btn-line btn-sm" id="calToday">Hoy</button>
         <button type="button" class="icon-btn" id="calNext" aria-label="Mes siguiente">›</button>
       </div></div>
-      <div class="ch-bar"><div class="vsw" role="group" aria-label="Vista" id="calView"><button type="button" data-v="cal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Calendario</button><button type="button" data-v="list"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Lista</button></div><div class="legend" id="legend"></div></div>
     </div>
     <div class="prod" id="prod">
       <div><div class="month"><div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="days" id="cal"></div></div>
@@ -1783,28 +1795,33 @@ function renderSent() {
 state.calView = (() => { try { return localStorage.getItem("nl_calview") || "cal"; } catch { return "cal"; } })();
 function calViewUi() {
   $("prod").classList.toggle("as-list", state.calView === "list");
+  document.querySelector(".cal-nav").hidden = state.calView === "list";
+  $("calTitle").textContent = state.calView === "list" ? "Pendientes" : MES(new Date(new Date().getFullYear(), new Date().getMonth() + state.weekOffset, 1));
   $("calView").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === state.calView)));
 }
 $("calView").querySelectorAll("button").forEach((b) => b.onclick = () => { state.calView = b.dataset.v; try { localStorage.setItem("nl_calview", state.calView); } catch {} calViewUi(); });
 function renderList(base, todayIso) {
-  const hide = state.calHide || [], y = base.getFullYear(), mo = base.getMonth();
-  const mStart = iso(base), mEnd = iso(new Date(y, mo + 1, 0));
-  const rows = state.cal.filter((c) => c.fecha >= mStart && c.fecha <= mEnd && !hide.includes(c.segmento)).map((c) => ({ c }));
-  for (let d = new Date(y, mo, 1); d.getMonth() === mo; d = addDays(d, 1)) {
-    const di = iso(d); if (di < todayIso) continue;
-    const dow = (d.getDay() + 6) % 7, wA = iso(monday(d)), wB = iso(addDays(monday(d), 6));
+  const hide = state.calHide || [], today = parse(todayIso);
+  const rows = state.cal.filter((c) => normEstado(c.estado) !== "enviado" && !hide.includes(c.segmento)).map((c) => ({ c }));
+  const lastDay = iso(addDays(monday(today), 13));
+  for (let d = today; iso(d) <= lastDay; d = addDays(d, 1)) {
+    const di = iso(d), dow = (d.getDay() + 6) % 7, wA = iso(monday(d)), wB = iso(addDays(monday(d), 6));
     Object.entries(SEG).forEach(([k, s]) => { if (s.dia === dow && !hide.includes(k) && !state.cal.some((c) => c.segmento === k && c.fecha >= wA && c.fecha <= wB)) rows.push({ ghost: true, c: { segmento: k, fecha: di } }); });
   }
   rows.sort((a, b) => a.c.fecha.localeCompare(b.c.fecha) || Object.keys(SEG).indexOf(a.c.segmento) - Object.keys(SEG).indexOf(b.c.segmento));
+  const wEnd = iso(addDays(monday(today), 6));
+  const grp = (f) => f < todayIso ? "Atrasados" : f <= wEnd ? "Esta semana" : "Más adelante";
   const day = (f) => { const t = parse(f).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" }); return t[0].toUpperCase() + t.slice(1); };
+  let last = "";
   $("calList").innerHTML = rows.length ? `<table class="stable"><colgroup><col class="c-dy"><col class="c-nm"><col><col class="c-st"></colgroup><thead><tr><th>Día</th><th>Nombre</th><th>Asunto</th><th>Estado</th></tr></thead><tbody>${rows.map(({ c, ghost }) => {
-    const s = SEG[c.segmento] || SEG.nocontactado, n = mailName(c.segmento, c.fecha);
-    return `<tr class="srow${ghost ? " gh" : ""}${c.fecha === todayIso ? " today" : ""}" style="--c:${s.color}" tabindex="0" ${ghost ? `data-seg="${c.segmento}" data-date="${c.fecha}"` : `data-id="${esc(c.id)}"`}>
+    const s = SEG[c.segmento] || SEG.nocontactado, n = mailName(c.segmento, c.fecha), g = grp(c.fecha), late = g === "Atrasados";
+    const head = g !== last ? `<tr class="grp${late ? " late" : ""}"><td colspan="4">${g}</td></tr>` : ""; last = g;
+    return head + `<tr class="srow${ghost ? " gh" : ""}${c.fecha === todayIso ? " today" : ""}${late ? " late" : ""}" style="--c:${s.color}" tabindex="0" ${ghost ? `data-seg="${c.segmento}" data-date="${c.fecha}"` : `data-id="${esc(c.id)}"`}>
       <td class="dy">${esc(day(c.fecha))}</td>
       <td class="nm" title="${esc(n)}"><i></i>${esc(n)}</td>
       <td class="a">${c.asunto ? `<b title="${esc(c.asunto)}">${esc(c.asunto)}</b>` : `<span class="noas">Sin asunto</span>`}</td>
       <td>${ghost ? "" : estTag(c)}</td></tr>`; }).join("")}</tbody></table>`
-    : `<div class="empty" style="border:0">No hay correos este mes.</div>`;
+    : `<div class="empty" style="border:0">Todo al día.</div>`;
   $("calList").querySelectorAll(".srow").forEach((r) => {
     r.onclick = (ev) => { ev.stopPropagation();
       if (r.dataset.seg) return createEmail(r.dataset.seg, r.dataset.date);
@@ -1821,7 +1838,7 @@ function segForDay(di) {
 }
 function renderCal() {
   const today = new Date(), base = new Date(today.getFullYear(), today.getMonth() + state.weekOffset, 1);
-  $("calTitle").textContent = MES(base);
+  $("calTitle").textContent = state.calView === "list" ? "Pendientes" : MES(base);
   const start = monday(base), todayIso = iso(today);
   const byDay = {};
   state.cal.forEach((c) => { if (!(state.calHide || []).includes(c.segmento)) (byDay[c.fecha] ||= []).push(c); });
