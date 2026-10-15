@@ -316,6 +316,9 @@ textarea { min-height: 64px; resize: vertical; }
 .writer-bar .wb-name { border: 0 !important; background: none !important; padding: 0 !important; font: inherit !important; color: inherit !important; text-transform: inherit; letter-spacing: inherit; cursor: copy; }
 .writer-bar .wb-name.ok { color: var(--forest, #366B40) !important; }
 .wb-date { font: 500 .8rem var(--font-body); color: var(--muted); margin-left: 4px; }
+button.wb-date { border: 0; background: none; padding: 0; cursor: pointer; }
+button.wb-date:not(:disabled):hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+button.wb-date:disabled { cursor: default; }
 .pk-dwrap { position: relative; display: inline-flex; }
 .pk-datebtn { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--muted); border-radius: 6px; padding: 3px 6px; font: 500 .8rem var(--font-body); cursor: pointer; text-align: left; }
 .pk-datebtn svg { color: var(--muted); flex: none; }
@@ -1334,7 +1337,10 @@ document.addEventListener("click", async (ev) => {
   try { await navigator.clipboard.writeText(t); } catch { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch {} ta.remove(); }
   sp.textContent = "Copiado"; b.classList.add("ok"); setTimeout(() => { sp.textContent = t; b.classList.remove("ok"); }, 1200);
 }, true);
-function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }) + `<span class="wb-date">${esc(((x) => x[0].toUpperCase() + x.slice(1))(parse(state.slot.fecha).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })))}</span>`; }
+function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }) + `<span class="pk-dwrap"><button type="button" class="wb-date" id="wrDay" ${$("pEstado").value === "enviado" ? "disabled" : 'title="Cambiar día de envío"'}>${esc(((x) => x[0].toUpperCase() + x.slice(1))(parse(state.slot.fecha).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })))}</button><input type="date" id="wrDate" value="${esc(state.slot.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true"></span>`;
+  $("wrDay").onclick = () => { const d = $("wrDate"); try { d.showPicker(); } catch { d.focus(); d.click(); } };
+  $("wrDate").onchange = async () => { const v = $("wrDate").value; if (!v || !state.slot || v === state.slot.fecha) return; state.slot.fecha = v; slotLabelUi(); wrTagsUi(); if (state.slot.id) { try { await db.collection("calendario").doc(state.slot.id).update({ fecha: v }); } catch {} } }; }
+function slotLabelUi() { const n = mailName(state.seg, state.slot.fecha); $("slotLabel").innerHTML = `<button type="button" class="mname wb-name" data-name="${esc(n)}" title="Copiar nombre para HubSpot"><span>${esc(n)}</span></button>`; }
 function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").hidden = sent || !state.current || !db; $("sentBtn").setAttribute("aria-pressed", String(sent)); }
 function likeUi() {
   const on = !!(state.slot?.id && (state.likes || []).some((x) => x.id === state.slot.id));
@@ -1379,7 +1385,7 @@ function openWriter(seg, fecha, id) {
   renderChat(); renderPreview(); resetHistory(prev && prev.versiones); $("status").textContent = ""; sentUi();
   const s = SEG[seg], d = parse(fecha);
   document.querySelector(".writer-bar").style.setProperty("--c", s.color);
-  $("slotLabel").innerHTML = `<button type="button" class="mname wb-name" data-name="${esc(mailName(seg, fecha))}" title="Copiar nombre para HubSpot"><span>${esc(mailName(seg, fecha))}</span></button>`;
+  slotLabelUi();
   $("editor").hidden = true;
   showTab("escribir");
 }
