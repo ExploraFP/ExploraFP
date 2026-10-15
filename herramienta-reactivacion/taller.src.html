@@ -791,20 +791,13 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
       </div>
 
       <div class="preview">
-        <div class="pv-bar">
+        <div class="pv-bar" hidden>
           <div class="undo" id="undoBox" hidden>
             <button type="button" class="icon-btn" id="undoBtn" aria-label="Deshacer (Ctrl/Cmd + Z)" title="Deshacer (Ctrl/Cmd + Z)">↶</button>
             <button type="button" class="icon-btn" id="redoBtn" aria-label="Rehacer (Ctrl/Cmd + Mayús + Z)" title="Rehacer (Ctrl/Cmd + Mayús + Z)">↷</button>
             <button type="button" class="like-btn" id="likeBtn" aria-pressed="false" hidden>♡ Me gusta</button>
           </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <div class="seg2" role="group" aria-label="Pantalla">
-              <button type="button" aria-pressed="true" data-dev="desktop">Ordenador</button>
-              <button type="button" aria-pressed="false" data-dev="mobile">Móvil</button>
-            </div>
-          </div>
         </div>
-        <div class="alts" id="alts" hidden><span class="alts-l">Otros asuntos</span><div class="alt-list" id="altList"></div></div>
         <div hidden><span id="ibFrom"></span><span id="ibFrom2"></span><b id="ibB"></b><span id="ibPre2"></span></div>
         <div class="stage" id="stage">
           <div class="mail-meta" aria-label="Cabecera del email">
@@ -1019,7 +1012,7 @@ El asunto es lo más importante del email: si no se abre, lo demás no existe.
 - Vuestros leads no conocen al narrador: el asunto y el preheader, juntos, tienen que darle un ancla que reconozca (la FP que pidió, el título o su situación). Sin vender: nada de "matricúlate", "oferta" ni promesas.
 - La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Si el preheader nombra la FP, el asunto no la nombra; si no la nombra, el asunto la lleva.
 - Tono de WhatsApp: 2-8 palabras, sin emojis ni exclamaciones. Empieza SIEMPRE con la primera letra en mayúscula ("Tienes algo a medias…"); el resto, en minúsculas naturales como en una frase normal (nada de Mayúsculas De Título).
-- Cómo elegirlos: escribe en silencio al menos 15 asuntos con mecanismos distintos. Puntúa cada uno del 1 al 10 imaginando que llega de un desconocido entre 40 correos de un lunes: ¿lo abrirías? Tira todo lo que no llegue a 8. El mejor es el asunto; los 6 siguientes van en "asuntos_extra". Si no llegas a 8 buenos, escribe más hasta tenerlos.
+- Cómo elegirlos: escribe en silencio al menos 15 asuntos con mecanismos distintos. Puntúa cada uno del 1 al 10 imaginando que llega de un desconocido entre 40 correos de un lunes: ¿lo abrirías? Tira todo lo que no llegue a 8. Quédate con el mejor. Si ninguno llega a 8, escribe más hasta tenerlo.
 - Prohibido: asuntos que solo hablan del narrador; "Re:" o "Fwd:" falsos; "lo de…" o "sobre…"; "¿qué pasó con…?" y fórmulas de comercial; titulares de blog o con mayúsculas de título; preguntas de sí o no tibias; gratis, oferta, urgente, última oportunidad; cebo que el email no cumple.
 - El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres.
 - Bueno: "Tienes algo a medias (y no es la compra)" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "Dejé la compra a medias" (solo habla del narrador, a un desconocido le da igual), "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida).
@@ -1075,11 +1068,9 @@ Ejemplo 2 · qué NO hacer. Gancho de la pizza quemada que conecta así: "Aprend
 
 const FORMATO = `Responde SOLO con un objeto JSON:
 {"angulo":"una frase","asunto_a":"el asunto","preheader":"...",
- "asuntos_extra":[{"asunto":"...","mecanismo":"confesión"}],
  "bloques":[{"tipo":"texto","contenido":"párrafo de 1-3 frases (puede llevar {{nombre}} y **negrita**)"},{"tipo":"lista","contenido":["punto corto","punto corto"]},{"tipo":"boton","contenido":"Texto del botón"}],
  "despedida":"...","firma":"— ...","pd":"P.D.: ..."}
-Exactamente dos bloques "boton". Bloque "lista" opcional, como mucho uno.
-"asuntos_extra": exactamente 6, distintos del asunto. Si no te piden cambiar los asuntos, devuelve los mismos.`;
+Exactamente dos bloques "boton". Bloque "lista" opcional, como mucho uno.`;
 
 
 const state = { chat: [], slot: null, seg: "nocontactado", angulo: "", formacion: "", buyer: "", current: null, cal: [], weekOffset: 0, editing: null, bSector: "", bOpen: "" };
@@ -1133,7 +1124,7 @@ function renderPreview() {
     $("emailBody").innerHTML = `<div class="skel empty-start"><button type="button" class="btn btn-ink" id="esAi" ${sample ? "" : "disabled"}>Que lo escriba Claude</button><button type="button" class="btn btn-line" id="esMe">Escribir yo</button></div>`;
     $("esAi").onclick = () => sendChat("Escríbelo");
     $("esMe").onclick = () => { const sg = SEG[state.seg]; state.current = { segmento: state.seg, asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: "", firma: "" }; renderPreview(); renderChat(); wrTagsUi(); setTimeout(() => { const p = $("emailBody").querySelector("p"); if (!p) return; $("emailBody").focus(); const r = document.createRange(); r.selectNodeContents(p); r.collapse(true); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }, 30); };
-    $("saveBar").hidden = true; $("undoBox").hidden = true; $("alts").hidden = true;
+    $("saveBar").hidden = true; $("undoBox").hidden = true;
     return;
   }
   const s = SEG[e.segmento];
@@ -1151,24 +1142,10 @@ function renderPreview() {
   $("emailBody").innerHTML = parts.join("");
   $("emailBody").contentEditable = "true";
   $("saveBar").hidden = !db;
-  renderAlts();
 }
 const extras = (e) => (Array.isArray(e && e.asuntos_extra) ? e.asuntos_extra : [])
   .map((x) => (typeof x === "string" ? { asunto: x, mecanismo: "" } : { asunto: String(x && x.asunto || "").trim(), mecanismo: String(x && x.mecanismo || "").trim() }))
   .filter((x) => x.asunto).slice(0, 8);
-function renderAlts() {
-  const list = extras(state.current);
-  $("alts").hidden = !list.length;
-  $("altList").innerHTML = list.map((x, i) => `<button type="button" class="alt" data-alt="${i}" title="Usar este asunto">${esc(x.asunto)}</button>`).join("");
-}
-$("alts").addEventListener("click", (ev) => {
-  const b = ev.target.closest("[data-alt]"); if (!b || !state.current) return;
-  const e = emailFromDom(), list = extras(e), i = +b.dataset.alt, key = "asunto_a";
-  const pick = list[i]; if (!pick) return;
-  list[i] = { asunto: e[key], mecanismo: "" };
-  state.current = { ...e, [key]: pick.asunto, asuntos_extra: list };
-  renderPreview(); snapNow(); scheduleSave(0);
-});
 function bodyHtml() {
   return [...$("emailBody").children].map((el) => {
     if (el.classList.contains("cta")) return `<p><strong>[BOTÓN: ${esc(el.innerText.trim())}]</strong></p>`;
@@ -1192,10 +1169,6 @@ function bodyText() {
 document.querySelectorAll("[data-tpl]").forEach((b) => b.onclick = () => {
   document.querySelectorAll("[data-tpl]").forEach((x) => x.setAttribute("aria-pressed", x === b));
   $("email").classList.toggle("plain", b.dataset.tpl === "plain");
-});
-document.querySelectorAll("[data-dev]").forEach((b) => b.onclick = () => {
-  document.querySelectorAll("[data-dev]").forEach((x) => x.setAttribute("aria-pressed", x === b));
-  $("stage").classList.toggle("mobile", b.dataset.dev === "mobile");
 });
 document.querySelectorAll("[data-copy]").forEach((b) => b.onclick = () => {
   const e = emailFromDom(), k = b.dataset.copy; if (!e) return;
@@ -1571,7 +1544,6 @@ function openView(c) {
   const hdr = document.querySelector("#email .hdr img")?.src || "", ftr = document.querySelector("#email .ftr img")?.src || "";
   v.innerHTML = `<div class="mv-box" role="dialog" aria-modal="true" aria-label="Email enviado">
     <div class="mv-top"><div class="pk-tags">${segTag(c.segmento)}${estTag(c)}</div><b>${esc(t)}</b><span class="sp"></span>
-      <div class="seg2" role="group" aria-label="Pantalla"><button type="button" aria-pressed="true" data-mvdev="desktop">Ordenador</button><button type="button" aria-pressed="false" data-mvdev="mobile">Móvil</button></div>
       <button type="button" class="x" id="mvClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
     <div class="stage" id="mvStage">
       <div class="mail-meta"><div class="mrow"><span class="ml">Asunto</span><b class="mv">${esc(e.asunto_a || "")}</b></div>
@@ -1583,7 +1555,6 @@ function openView(c) {
   const close = () => { v.hidden = true; };
   $("mvClose").onclick = close;
   v.onclick = (ev) => { if (ev.target === v) close(); };
-  v.querySelectorAll("[data-mvdev]").forEach((b) => b.onclick = () => { v.querySelectorAll("[data-mvdev]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); $("mvStage").classList.toggle("mobile", b.dataset.mvdev === "mobile"); });
 }
 document.addEventListener("keydown", (ev) => { const v = $("mailView"); if (ev.key === "Escape" && v && !v.hidden) v.hidden = true; });
 function askHubspot(current, onlyLink) {
