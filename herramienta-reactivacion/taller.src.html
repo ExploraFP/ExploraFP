@@ -1294,7 +1294,6 @@ function renderPeek() {
           <div class="pk-menu" id="pkMenu" role="menu" hidden>
             <button type="button" role="menuitem" id="pkSent">${sent ? "Marcar como sin enviar" : "Marcar como enviado"}</button>
             <button type="button" role="menuitem" id="pkDay">Cambiar día</button>
-            ${e ? `<button type="button" role="menuitem" id="pkOpen2">Abrir con el chat de Claude</button>` : ""}
             <button type="button" role="menuitem" class="danger" id="pkDel">Borrar email</button>
           </div>
           <input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true">
