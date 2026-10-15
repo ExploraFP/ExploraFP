@@ -117,7 +117,9 @@ textarea { min-height: 64px; resize: vertical; }
 .note { background: var(--s-plan-bg); color: var(--s-plan-fg); padding: 10px 14px; border-radius: 10px; font-size: .86rem; margin: 0; }
 
 .preview { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.pv-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.pv-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 8px 10px; }
+.pv-bar .icon-btn { width: 34px; height: 34px; border: 0; background: none; border-radius: 8px; }
+.pv-bar .icon-btn:hover:not(:disabled) { background: var(--bg); }
 .pill { font: 500 .74rem var(--font-mono); padding: 3px 9px; border-radius: 999px; background: var(--s-plan-bg); color: var(--s-plan-fg); }
 .seg2 { display: inline-flex; background: var(--paper); border: 1.5px solid var(--line); border-radius: 999px; padding: 2px; }
 .seg2 button { border: 0; background: transparent; color: var(--muted); font: 500 .8rem var(--font-body); padding: 5px 12px; border-radius: 999px; cursor: pointer; }
@@ -162,6 +164,14 @@ textarea { min-height: 64px; resize: vertical; }
 .email.plain .cta { text-align: left; margin: 1em 0; }
 .email.plain .cta a { background: none; color: #1A5DAB; padding: 0; text-decoration: underline; font-weight: 600; }
 .skel { display: grid; gap: 14px; padding: 6px 0 22px; }
+.skel.empty-start { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 48px 0 56px; }
+.skel.empty-start .btn { border-radius: 999px; }
+.chat-empty { margin: auto 0; display: grid; justify-items: center; gap: 12px; text-align: center; padding: 20px 6px; }
+.chat-empty .ce-ic { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--lime); color: #102016; font-size: 1.1rem; }
+.chat-empty b { font-size: 1rem; }
+.ce-opts { display: grid; gap: 8px; width: 100%; }
+.ce-opts button { text-align: left; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 12px; padding: 11px 14px; font: 500 .88rem var(--font-body); cursor: pointer; }
+.ce-opts button:hover { border-color: var(--ink); background: var(--bg); }
 .skel i { display: block; height: 12px; border-radius: 6px; background: #EEF2F0; }
 .tok { display: inline-flex; align-items: center; border: 1px solid #C9D3DD; border-radius: 4px; padding: 0 6px; font-size: .92em; background: #FFFFFF; color: #23496D; white-space: nowrap; }
 .tok::before { content: "👤"; font-size: .8em; margin-right: 4px; }
@@ -191,7 +201,7 @@ textarea { min-height: 64px; resize: vertical; }
 .ribbon .logo { height: 34px; width: auto; display: block; }
 
 /* Chat del editor */
-.chat { display: flex; flex-direction: column; gap: 10px; min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px; position: sticky; top: 16px; height: calc(100vh - 32px); max-height: 820px; }
+.chat { display: flex; flex-direction: column; gap: 10px; min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px; position: sticky; top: 16px; height: calc(100vh - 140px); min-height: 460px; max-height: 820px; }
 .chat-h { font: 600 .7rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--line); }
 .chat-log { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; overflow-y: auto; padding: 4px 2px; }
 .chat .msg.bot { background: var(--bg); }
@@ -223,8 +233,8 @@ textarea { min-height: 64px; resize: vertical; }
 .mail-meta .mv:empty::before { content: attr(data-ph); color: #A8B2BC; font-weight: 400; }
 
 /* Barra del editor de email */
-.writer-bar { position: relative; overflow: hidden; display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin-bottom: 20px; padding: 18px 20px; border-radius: 18px; background: linear-gradient(120deg, color-mix(in srgb, var(--c, var(--line)) 22%, var(--paper)) 0%, color-mix(in srgb, var(--c, var(--line)) 8%, var(--paper)) 70%); border: 1px solid color-mix(in srgb, var(--c, var(--line)) 30%, var(--line)); }
-.writer-bar::after { content: ""; position: absolute; right: -60px; top: -80px; width: 220px; height: 220px; border-radius: 50%; background: color-mix(in srgb, var(--c, var(--line)) 18%, transparent); pointer-events: none; }
+.writer-bar { position: relative; display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin-bottom: 18px; padding: 12px 16px; border-radius: 16px; background: color-mix(in srgb, var(--c, var(--line)) 14%, var(--paper)); border: 1px solid color-mix(in srgb, var(--c, var(--line)) 30%, var(--line)); }
+
 .writer-bar > * { position: relative; z-index: 1; }
 .writer-bar .segtag, .writer-bar .esttag { background: var(--paper); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 45%, var(--line)); }
 .writer-bar .esttag.est-env { background: color-mix(in srgb, var(--c) 22%, var(--paper)); }
@@ -232,7 +242,7 @@ textarea { min-height: 64px; resize: vertical; }
 .wb-back:hover { border-color: var(--ink); }
 .wb-title { display: grid; gap: 6px; min-width: 0; flex: 1; }
 .wb-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.writer-bar #slotLabel { font: 400 1.9rem/1 var(--font-head) !important; text-transform: uppercase; letter-spacing: .01em; }
+.writer-bar #slotLabel { font: 400 1.55rem/1 var(--font-head) !important; text-transform: uppercase; letter-spacing: .01em; }
 .wb-saved { margin-left: auto; font: 500 .78rem var(--font-body); color: var(--muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
 .wb-saved:not(:empty)::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--forest, #366B40); }
 .wb-saved.err::before { background: var(--err); }
@@ -1033,7 +1043,9 @@ function renderPreview() {
     $("ibFrom").textContent = $("ibFrom2").textContent = `${s.firma.nombre} · Explora FP`;
     $("ibA").textContent = $("ibB").textContent = ""; $("ibPre").textContent = $("ibPre2").textContent = "";
     $("emailBody").contentEditable = "false"; ["ibA", "ibB", "ibPre"].forEach((id) => { $(id).contentEditable = "false"; });
-    $("emailBody").innerHTML = '<div class="skel"><i></i><i></i><i style="width:70%"></i><i></i><i style="width:45%"></i></div>';
+    $("emailBody").innerHTML = `<div class="skel empty-start"><button type="button" class="btn btn-ink" id="esAi" ${sample ? "" : "disabled"}>Que lo escriba Claude</button><button type="button" class="btn btn-line" id="esMe">Escribir yo</button></div>`;
+    $("esAi").onclick = () => sendChat("Escríbelo");
+    $("esMe").onclick = () => { const sg = SEG[state.seg]; state.current = { segmento: state.seg, asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: "", firma: "" }; renderPreview(); renderChat(); wrTagsUi(); setTimeout(() => { const p = $("emailBody").querySelector("p"); if (!p) return; $("emailBody").focus(); const r = document.createRange(); r.selectNodeContents(p); r.collapse(true); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }, 30); };
     $("saveBar").hidden = true; $("undoBox").hidden = true; $("alts").hidden = true;
     return;
   }
@@ -1162,7 +1174,10 @@ const QUICK_NEW = ["Escríbelo", "Cuenta la historia de un alumno", "Pregunta di
 const QUICK_EDIT = ["Más corto", "Otro asunto", "Más humor", "Cambia el gancho"];
 function renderChat() {
   const log = state.chat || [];
-  $("chatLog").innerHTML = log.map((m) => `<div class="msg ${m.role === "user" ? "user" : "bot"}${m.thinking ? " thinking" : ""}">${esc(m.text)}</div>`).join("");
+  $("chatLog").innerHTML = log.length ? log.map((m) => `<div class="msg ${m.role === "user" ? "user" : "bot"}${m.thinking ? " thinking" : ""}">${esc(m.text)}</div>`).join("")
+    : `<div class="chat-empty"><span class="ce-ic">✦</span><b>¿Por dónde empezamos?</b><div class="ce-opts">${QUICK_NEW.map((q) => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div></div>`;
+  $("chatLog").querySelectorAll("[data-q]").forEach((b) => b.onclick = () => sendChat(b.dataset.q));
+  $("chatQuick").hidden = !log.length;
   $("chatLog").scrollTop = $("chatLog").scrollHeight;
   $("chatQuick").innerHTML = (state.current ? QUICK_EDIT : QUICK_NEW).map((q) => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("");
   $("chatQuick").querySelectorAll("button").forEach((b) => b.onclick = () => sendChat(b.dataset.q));
@@ -1247,6 +1262,7 @@ function domText(el) {
 function emailFromDom() {
   const e = state.current; if (!e) return null;
   const bloques = []; let pd = "", despedida = e.despedida, firma = e.firma;
+  for (const n of [...$("emailBody").childNodes]) { if (n.nodeType === 3 && n.textContent.trim()) { const p = document.createElement("p"); n.replaceWith(p); p.appendChild(n); } }
   for (const el of $("emailBody").children) {
     if (el.classList.contains("skel")) continue;
     if (el.classList.contains("cta")) { const t = el.innerText.trim(); if (t) bloques.push({ tipo: "boton", contenido: t }); continue; }
