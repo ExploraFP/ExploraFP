@@ -304,6 +304,16 @@ textarea { min-height: 64px; resize: vertical; }
 .np-o:hover { background: color-mix(in srgb, var(--c) 10%, var(--paper)); border-color: var(--c); }
 .np-o i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
 .pk-ai { align-self: flex-start; }
+.pk-lock { margin: 0; font-size: .8rem; color: var(--muted); background: var(--bg); border-radius: 8px; padding: 8px 10px; }
+.pk-datebtn:disabled { cursor: default; text-decoration: none; }
+.pk-datebtn:disabled:hover { background: none; }
+.hs-ask { position: fixed; inset: 0; z-index: 90; background: rgba(16,32,22,.35); display: grid; place-items: center; padding: 16px; }
+.hs-ask[hidden] { display: none; }
+.hs-card { width: min(440px, 100%); background: var(--paper); border-radius: 16px; padding: 20px; display: grid; gap: 10px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.hs-card b { font-size: 1.05rem; }
+.hs-card p { margin: 0; font-size: .86rem; color: var(--muted); }
+.hs-err { font-size: .78rem; color: var(--err); min-height: 1em; }
+.hs-row { display: flex; justify-content: flex-end; gap: 8px; }
 .mhead { background: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 8px 12px; display: grid; gap: 2px; font-family: Helvetica, Arial, sans-serif; }
 .mrow { display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: baseline; gap: 8px; }
 .ml { font-size: .72rem; color: #8A94A0; }
@@ -1269,7 +1279,12 @@ $("likeBtn").onclick = async () => {
   } catch { $("savedAt").className = "saved err"; $("savedAt").textContent = "No se pudo guardar el «Me gusta»."; }
   finally { $("likeBtn").disabled = false; likeUi(); }
 };
-$("sentBtn").onclick = () => { $("wbMenu").hidden = true; $("pEstado").value = $("pEstado").value === "enviado" ? "en_redaccion" : "enviado"; sentUi(); scheduleSave(0); };
+$("sentBtn").onclick = async () => {
+  $("wbMenu").hidden = true;
+  if ($("pEstado").value === "enviado") { $("pEstado").value = "en_redaccion"; sentUi(); scheduleSave(0); return; }
+  const r = await askHubspot($("pHs").value.trim()); if (!r) return;
+  $("pHs").value = r.url; $("pEstado").value = "enviado"; sentUi(); scheduleSave(0);
+};
 $("wbMoreBtn").onclick = (ev) => { ev.stopPropagation(); $("wbMenu").hidden = !$("wbMenu").hidden; $("wbMoreBtn").setAttribute("aria-expanded", String(!$("wbMenu").hidden)); };
 $("wbMenu").addEventListener("click", (ev) => { if (ev.target.closest("[data-copy]")) { $("wbMenu").hidden = true; $("wbMoreBtn").setAttribute("aria-expanded", "false"); } });
 document.addEventListener("click", (ev) => { if (!$("wbMenu").hidden && !ev.target.closest("#wbMenu, #wbMoreBtn")) { $("wbMenu").hidden = true; $("wbMoreBtn").setAttribute("aria-expanded", "false"); } });
@@ -1300,7 +1315,7 @@ const estTag = (c) => { const s = SEG[c.segmento] || SEG.nocontactado, k = normE
 const segTag = (k) => { const s = SEG[k] || SEG.nocontactado; return `<span class="segtag" style="--c:${s.color}"><i></i>${esc(s.nombre)}</span>`; };
 function evButton(c) {
   const s = SEG[c.segmento] || SEG.nocontactado, late = normEstado(c.estado) !== "enviado" && c.fecha < iso(new Date());
-  return `<button type="button" draggable="true" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
+  return `<button type="button" draggable="${normEstado(c.estado) !== "enviado"}" class="ev st-${esc(normEstado(c.estado))}-ev" style="--c:${s.color}" data-id="${esc(c.id)}" title="${esc(s.nombre)} · ${esc(estLabel(c.estado))}${c.asunto ? " · " + esc(c.asunto) : ""}">
     <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b> · ${esc(c.asunto || "sin asunto")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
 function peekBody(e) {
@@ -1357,22 +1372,36 @@ function openNew(date, anchor) {
   let left = r.right + 8; if (left + W > vw - 12) left = Math.max(12, r.left - W - 8);
   pop.style.left = left + window.scrollX + "px"; pop.style.top = Math.max(12, r.top + window.scrollY - 8) + "px";
   pop.querySelector(".np-x").onclick = () => { pop.hidden = true; };
-  pop.querySelectorAll(".np-o").forEach((o) => o.onclick = async () => {
-    if (!db) return; o.disabled = true;
-    const k = o.dataset.k, s = SEG[k];
-    const email = { asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: "", firma: "" };
-    try {
-      const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "en_redaccion", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
-      pop.hidden = true;
-      if (!state.cal.some((c) => c.id === ref.id)) state.cal.push({ id: ref.id, segmento: k, fecha: date, estado: "en_redaccion", email });
-      state.peek = ref.id; renderPeek();
-    } catch { o.disabled = false; }
+  pop.querySelectorAll(".np-o").forEach((o) => o.onclick = async () => { o.disabled = true; if (await createEmail(o.dataset.k, date)) pop.hidden = true; else o.disabled = false; });
+}
+async function createEmail(k, date) {
+  if (!db) return false;
+  const email = { asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: "", firma: "" };
+  try {
+    const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "en_redaccion", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
+    if (!state.cal.some((c) => c.id === ref.id)) state.cal.push({ id: ref.id, segmento: k, fecha: date, estado: "en_redaccion", email });
+    closeEditor(); state.peek = ref.id; renderPeek(); return true;
+  } catch { return false; }
+}
+function askHubspot(current) {
+  return new Promise((resolve) => {
+    let m = $("hsAsk"); if (!m) { m = document.createElement("div"); m.id = "hsAsk"; m.className = "hs-ask"; document.body.appendChild(m); }
+    m.innerHTML = `<div class="hs-card" role="dialog" aria-modal="true" aria-labelledby="hsT"><b id="hsT">Marcar como enviado</b><label class="l" for="hsIn">Enlace de HubSpot (opcional)</label>
+      <input type="url" id="hsIn" placeholder="https://app-eu1.hubspot.com/email/…" value="${esc(current || "")}"><span class="hs-err" id="hsErr"></span>
+      <div class="hs-row"><button type="button" class="btn btn-line btn-sm" id="hsNo">Ahora no</button><button type="button" class="btn btn-ink btn-sm" id="hsOk">Marcar como enviado</button></div></div>`;
+    m.hidden = false; setTimeout(() => $("hsIn").focus(), 30);
+    const done = (v) => { m.hidden = true; resolve(v); };
+    $("hsOk").onclick = () => { const v = $("hsIn").value.trim(); if (v && !safeUrl(v)) { $("hsErr").textContent = "Tiene que empezar por https://"; return; } done({ url: v }); };
+    $("hsNo").onclick = () => done({ url: current || "" });
+    m.onclick = (ev) => { if (ev.target === m) done(null); };
+    $("hsIn").onkeydown = (ev) => { if (ev.key === "Enter") $("hsOk").click(); if (ev.key === "Escape") done(null); };
   });
 }
 document.addEventListener("click", (ev) => { const p = $("newPop"); if (p && !p.hidden && !p.contains(ev.target) && !ev.target.closest(".plus")) p.hidden = true; });
 document.addEventListener("keydown", (ev) => { const p = $("newPop"); if (ev.key === "Escape" && p && !p.hidden) p.hidden = true; });
 function renderPeek() {
   if (pkPending && pkPending.id !== state.peek) flushPeek();
+  if (state.peekUnlock && state.peekUnlock !== state.peek) state.peekUnlock = null;
   let c = state.peek && state.cal.find((x) => x.id === state.peek);
   if (c && pkPending && pkPending.id === c.id) c = { ...c, email: pkPending.email, asunto: pkPending.email.asunto_a, preheader: pkPending.email.preheader };
   document.querySelectorAll(".cell.sel, .ev.sel").forEach((x) => x.classList.remove("sel"));
@@ -1380,28 +1409,30 @@ function renderPeek() {
   document.querySelectorAll(`.cell[data-peek="${CSS.escape(c.id)}"], #cal .ev[data-id="${CSS.escape(c.id)}"], #agenda .ev[data-id="${CSS.escape(c.id)}"]`).forEach((x) => x.classList.add("sel"));
   if ($("peek").dataset.id === c.id && !$("peek").hidden && $("peek").contains(document.activeElement) && document.activeElement.isContentEditable) return;
   const s = SEG[c.segmento] || SEG.nocontactado, e = c.email, sent = normEstado(c.estado) === "enviado", hs = safeUrl(c.hubspot);
+  const locked = sent && state.peekUnlock !== c.id, ce = locked ? "false" : "plaintext-only";
   $("peek").dataset.id = c.id;
   $("peek").style.setProperty("--c", s.color);
   const fecha = ((d) => d[0].toUpperCase() + d.slice(1))(parse(c.fecha).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
   $("peek").innerHTML = `
     <div class="pk-top">
-      <div class="pk-meta"><div class="pk-tags">${segTag(c.segmento)}${estTag(c)}</div><span class="pk-dwrap"><button type="button" class="pk-datebtn" id="pkDay" title="Cambiar día de envío"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>${esc(fecha)}</button><input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true"></span></div>
+      <div class="pk-meta"><div class="pk-tags">${segTag(c.segmento)}${estTag(c)}</div><span class="pk-dwrap"><button type="button" class="pk-datebtn" id="pkDay" title="${locked ? "" : "Cambiar día de envío"}" ${locked ? "disabled" : ""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>${esc(fecha)}</button><input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true"></span></div>
       <div class="pk-btns">
         <div class="pk-mwrap"><button type="button" class="x" id="pkMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
           <div class="pk-menu" id="pkMenu" role="menu" hidden>
+            ${locked && e ? `<button type="button" role="menuitem" id="pkUnlock">Editar</button>` : ""}
             <button type="button" role="menuitem" id="pkSent">${sent ? "Volver a «En redacción»" : "Marcar como enviado"}</button>
             <button type="button" role="menuitem" class="danger" id="pkDel">Borrar email</button>
           </div>
         </div>
-        ${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}
+        ${e && !locked ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}
         <button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button>
       </div>
     </div>
-    ${e && !hasBody(e) ? `<button type="button" class="btn btn-ink pk-ai" id="pkAi">Que lo escriba Claude</button>` : ""}
+    ${e && !hasBody(e) && !locked ? `<button type="button" class="btn btn-ink pk-ai" id="pkAi">Que lo escriba Claude</button>` : ""}
     ${e ? `<div class="mini"><div class="mhead">
-      <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" data-ph="Escribe el asunto" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
-      <div class="mrow"><span class="ml">Preheader</span><div class="mval" id="pkPre" data-ph="Escribe el preheader" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</div></div>
-    </div><article class="email"><div class="body" id="peekBody" contenteditable="true" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
+      <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" data-ph="Escribe el asunto" contenteditable="${ce}" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
+      <div class="mrow"><span class="ml">Preheader</span><div class="mval" id="pkPre" data-ph="Escribe el preheader" contenteditable="${ce}" spellcheck="true">${esc(e.preheader || "")}</div></div>
+    </div><article class="email"><div class="body" id="peekBody" contenteditable="${locked ? "false" : "true"}" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
   const big = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); };
@@ -1411,8 +1442,15 @@ function renderPeek() {
   const menu = $("pkMenu"), mbtn = $("pkMenuBtn");
   const closeMenu = () => { menu.hidden = true; mbtn.setAttribute("aria-expanded", "false"); };
   mbtn.onclick = (ev) => { ev.stopPropagation(); menu.hidden = !menu.hidden; mbtn.setAttribute("aria-expanded", String(!menu.hidden)); };
-  $("pkSent").onclick = async () => { closeMenu(); try { await db.collection("calendario").doc(c.id).update({ estado: sent ? "en_redaccion" : "enviado" }); } catch {} };
-  $("pkDay").onclick = () => { const d = $("peekDate"); try { d.showPicker(); } catch { d.focus(); d.click(); } };
+  $("pkSent").onclick = async () => {
+    closeMenu(); await flushPeek();
+    if (sent) { try { await db.collection("calendario").doc(c.id).update({ estado: "en_redaccion" }); } catch {} return; }
+    const r = await askHubspot(c.hubspot); if (!r) return;
+    state.peekUnlock = null;
+    try { await db.collection("calendario").doc(c.id).update({ estado: "enviado", hubspot: safeUrl(r.url) }); } catch {}
+  };
+  if ($("pkUnlock")) $("pkUnlock").onclick = () => { closeMenu(); state.peekUnlock = c.id; $("peek").dataset.id = ""; renderPeek(); };
+  $("pkDay").onclick = () => { if (locked) return; const d = $("peekDate"); try { d.showPicker(); } catch { d.focus(); d.click(); } };
   $("peekDate").onchange = async () => { const v = $("peekDate").value; if (!v) return; try { await db.collection("calendario").doc(c.id).update({ fecha: v }); } catch {} };
   $("pkDel").onclick = async (ev) => {
     const b = $("pkDel"); ev.stopPropagation();
@@ -1555,13 +1593,13 @@ function renderCal() {
     if (c.email || normEstado(c.estado) === "enviado") { closeEditor(); state.peek = c.id; renderPeek(); } else openEditor(c, null, null, b);
   });
   $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openNew(b.dataset.date, b); });
-  $("cal").querySelectorAll(".ghost").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openWriter(b.dataset.seg, b.dataset.date); });
-  $("cal").querySelectorAll(".ev[draggable]").forEach((x) => {
+  $("cal").querySelectorAll(".ghost").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); createEmail(b.dataset.seg, b.dataset.date); });
+  $("cal").querySelectorAll('.ev[draggable="true"]').forEach((x) => {
     x.ondragstart = (ev) => { state.calDrag = x.dataset.id; ev.dataTransfer.effectAllowed = "move"; try { ev.dataTransfer.setData("text/plain", x.dataset.id); } catch {} x.classList.add("dragging"); };
     x.ondragend = () => { state.calDrag = null; x.classList.remove("dragging"); $("cal").querySelectorAll(".drop-ok").forEach((t) => t.classList.remove("drop-ok")); };
   });
   $("cal").querySelectorAll(".day[data-date]").forEach((d) => {
-    const ok = () => { const c = state.calDrag && state.cal.find((x) => x.id === state.calDrag); return c && c.fecha !== d.dataset.date ? c : null; };
+    const ok = () => { const c = state.calDrag && state.cal.find((x) => x.id === state.calDrag); return c && normEstado(c.estado) !== "enviado" && c.fecha !== d.dataset.date ? c : null; };
     d.ondragover = (ev) => { if (ok()) { ev.preventDefault(); d.classList.add("drop-ok"); } };
     d.ondragleave = (ev) => { if (!d.contains(ev.relatedTarget)) d.classList.remove("drop-ok"); };
     d.ondrop = async (ev) => { ev.preventDefault(); d.classList.remove("drop-ok"); const c = ok(); if (!c || !db) return; try { await db.collection("calendario").doc(c.id).update({ fecha: d.dataset.date }); } catch {} };
