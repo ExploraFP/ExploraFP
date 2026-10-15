@@ -245,11 +245,12 @@ textarea { min-height: 64px; resize: vertical; }
 .prod.open { grid-template-columns: minmax(0, 1fr) 420px; }
 .cell.sel { box-shadow: 0 0 0 3px var(--ink); }
 .peek { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: grid; gap: 12px; padding: 14px 16px 16px; }
-.peek .ph-head { display: flex; align-items: flex-start; gap: 10px; }
+.peek .ph-head { display: flex; align-items: flex-start; gap: 6px; }
+.peek .x:hover { border-color: var(--ink); }
 .peek .ph-head .who { flex: 1; min-width: 0; }
 .peek .ph-head b { display: block; font-size: .95rem; }
 .peek .ph-head span { font-size: .8rem; color: var(--muted); }
-.peek .x { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; font-size: 1rem; flex: none; }
+.peek .x { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; font-size: 1rem; flex: none; }
 .peek .subj { display: grid; gap: 4px; font-size: .85rem; background: var(--bg); border-radius: 10px; padding: 10px 12px; }
 .peek .subj div { overflow-wrap: anywhere; }
 .peek .subj i { font-style: normal; font: 600 .66rem var(--font-mono); color: var(--muted); margin-right: 6px; }
@@ -1205,9 +1206,8 @@ function renderPeek() {
   const s = SEG[c.segmento] || SEG.nocontactado, e = c.email, sent = normEstado(c.estado) === "enviado", hs = safeUrl(c.hubspot);
   $("peek").style.setProperty("--c", s.color);
   $("peek").innerHTML = `
-    <div class="ph-head"><div class="who"><b>${esc(s.firma.nombre)} · ${esc(s.nombre)}</b><span>${esc(fmtDay(parse(c.fecha)))} · ${sent ? "Enviado" : "Escrito, sin enviar"}</span></div><button type="button" class="x" id="peekClose" aria-label="Cerrar">✕</button></div>
+    <div class="ph-head"><div class="who"><b>${esc(s.firma.nombre)} · ${esc(s.nombre)}</b><span>${esc(fmtDay(parse(c.fecha)))} · ${sent ? "Enviado" : "Escrito, sin enviar"}</span></div>${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}<button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
     <div class="acts">
-      ${e ? `<button type="button" class="btn btn-ink btn-sm" id="peekOpen">Abrir en grande</button>` : ""}
       <button type="button" class="btn btn-line btn-sm" id="peekSent">${sent ? "Marcar como no enviado" : "Ya está enviado"}</button>
       <span class="sp"></span>
       ${hs ? `<a class="hs" href="${esc(hs)}" target="_blank" rel="noopener">HubSpot ↗</a>` : ""}
