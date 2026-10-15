@@ -251,7 +251,8 @@ textarea { min-height: 64px; resize: vertical; }
 .peek .when input { width: auto; padding: 4px 8px; font-size: .82rem; border-radius: 8px; }
 .peek .del { color: var(--err); }
 .peek .del.confirm { background: var(--err); color: #fff; border-color: var(--err); }
-.peek { position: fixed; right: 16px; top: 16px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: grid; gap: 12px; padding: 14px 16px 16px; }
+.peek > * { flex: none; }
+.peek { position: fixed; right: 16px; top: 16px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; overscroll-behavior: contain; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 16px; }
 .pk-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .pk-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; padding-top: 5px; }
 .pk-dwrap { position: relative; display: inline-flex; }
