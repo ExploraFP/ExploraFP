@@ -211,6 +211,11 @@ textarea { min-height: 64px; resize: vertical; }
 .msg.user { align-self: flex-end; background: var(--ink); color: var(--bg); border-bottom-right-radius: 4px; }
 .msg.bot { align-self: flex-start; background: var(--paper); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
 .msg.bot.thinking { color: var(--muted); font-style: italic; }
+.msg.rich { white-space: normal; }
+.msg.rich p { margin: 0; }
+.msg.rich p + p, .msg.rich ul + p, .msg.rich p + ul { margin-top: 8px; }
+.msg.rich ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.msg.rich li::marker { color: var(--c, var(--muted)); }
 .chat-quick { display: flex; flex-wrap: wrap; gap: 6px; }
 .chat-quick button { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 500 .8rem var(--font-body); cursor: pointer; }
 .chat-quick button:hover { border-color: var(--ink); }
@@ -1218,7 +1223,7 @@ function instructions(withBuyers) {
     return `--- ${sg ? sg.nombre + " · " + sg.firma.nombre : ""}\nAsunto: ${e.asunto_a || ""}\nPreheader: ${e.preheader || ""}\n\n${body}\n\n${e.pd || ""}\n${e.despedida || ""}\n${e.firma || ""}`;
   }).join("\n\n"));
   if (state.current) out.push("BORRADOR ACTUAL (cámbialo según lo que te pidan; si no te piden cambiar algo, mantenlo igual):\n" + JSON.stringify({ ...state.current, segmento: undefined, formacion: undefined }));
-  out.push("", "FORMATO DE CADA RESPUESTA: un objeto JSON con dos campos: \"mensaje\" (1-2 frases para el equipo explicando qué has hecho o preguntando algo) y \"email\" (el email completo con esta forma):", FORMATO);
+  out.push("", "FORMATO DE CADA RESPUESTA: un objeto JSON con dos campos: \"mensaje\" (para el equipo, corto y aireado: una primera frase breve con lo que has hecho; si hay varios cambios, debajo una lista con un cambio por línea empezando por \"- \" (máximo 4); si preguntas algo, la pregunta va sola en su propio párrafo al final; separa los párrafos con una línea en blanco; nada de párrafos largos ni más formato que \"- \" y **negrita** puntual) y \"email\" (el email completo con esta forma):", FORMATO);
   return out.join("\n");
 }
 const ERR = {
@@ -1231,9 +1236,19 @@ const ERR = {
 };
 const QUICK_NEW = ["Escríbelo", "Cuenta la historia de un alumno", "Pregunta directa y corta"];
 const QUICK_EDIT = ["Más corto", "Otro asunto", "Más humor", "Cambia el gancho"];
+function botHtml(t) {
+  const inl = (x) => esc(x).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  return String(t || "").trim().split(/\n\s*\n/).map((p) => {
+    const ls = p.split("\n").map((l) => l.trim()).filter(Boolean);
+    let h = "", ul = [];
+    const flush = () => { if (ul.length) { h += `<ul>${ul.map((x) => `<li>${inl(x)}</li>`).join("")}</ul>`; ul = []; } };
+    ls.forEach((l) => { const m = l.match(/^[-•*]\s+(.*)$/); if (m) ul.push(m[1]); else { flush(); h += `<p>${inl(l)}</p>`; } });
+    flush(); return h;
+  }).join("");
+}
 function renderChat() {
   const log = state.chat || [];
-  $("chatLog").innerHTML = log.length ? log.map((m) => `<div class="msg ${m.role === "user" ? "user" : "bot"}${m.thinking ? " thinking" : ""}">${esc(m.text)}</div>`).join("")
+  $("chatLog").innerHTML = log.length ? log.map((m) => m.role === "user" || m.thinking ? `<div class="msg ${m.role === "user" ? "user" : "bot"}${m.thinking ? " thinking" : ""}">${esc(m.text)}</div>` : `<div class="msg bot rich">${botHtml(m.text)}</div>`).join("")
     : `<div class="chat-empty"><span class="ce-ic">✦</span><b>¿Por dónde empezamos?</b><div class="ce-opts">${QUICK_NEW.map((q) => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div></div>`;
   $("chatLog").querySelectorAll("[data-q]").forEach((b) => b.onclick = () => sendChat(b.dataset.q));
   $("chatQuick").hidden = !log.length;
