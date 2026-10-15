@@ -334,7 +334,11 @@ button.wb-date:disabled { cursor: default; }
 .pk-menu button:hover { background: var(--bg); }
 .pk-menu .danger { color: var(--err); }
 .pk-menu .danger.confirm { background: var(--err); color: #fff; }
-.pk-hiddate { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
+.pk-hiddate { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 1; color-scheme: light; }
+.pk-hiddate::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; cursor: pointer; }
+.pk-hiddate:disabled { display: none; }
+.pk-dwrap:hover .pk-datebtn:not(:disabled) { background: var(--bg); }
+.pk-dwrap:hover button.wb-date:not(:disabled) { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .newpop { position: absolute; z-index: 60; width: 300px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 14px; display: grid; gap: 10px; }
 .newpop[hidden] { display: none; }
 .np-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
@@ -1356,8 +1360,7 @@ document.addEventListener("click", async (ev) => {
   try { await navigator.clipboard.writeText(t); } catch { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch {} ta.remove(); }
   sp.textContent = "Copiado"; b.classList.add("ok"); setTimeout(() => { sp.textContent = t; b.classList.remove("ok"); }, 1200);
 }, true);
-function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }) + `<span class="pk-dwrap"><button type="button" class="wb-date" id="wrDay" ${$("pEstado").value === "enviado" ? "disabled" : 'title="Cambiar día de envío"'}>${esc(((x) => x[0].toUpperCase() + x.slice(1))(parse(state.slot.fecha).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })))}</button><input type="date" id="wrDate" value="${esc(state.slot.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true"></span>`;
-  $("wrDay").onclick = () => { const d = $("wrDate"); try { d.showPicker(); } catch { d.focus(); d.click(); } };
+function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }) + `<span class="pk-dwrap"><button type="button" class="wb-date" id="wrDay" ${$("pEstado").value === "enviado" ? "disabled" : 'title="Cambiar día de envío"'}>${esc(((x) => x[0].toUpperCase() + x.slice(1))(parse(state.slot.fecha).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })))}</button><input type="date" id="wrDate" value="${esc(state.slot.fecha)}" class="pk-hiddate" aria-label="Cambiar día de envío" ${$("pEstado").value === "enviado" ? "disabled" : ""}></span>`;
   $("wrDate").onchange = async () => { const v = $("wrDate").value; if (!v || !state.slot || v === state.slot.fecha) return; state.slot.fecha = v; slotLabelUi(); wrTagsUi(); if (state.slot.id) { try { await db.collection("calendario").doc(state.slot.id).update({ fecha: v }); } catch {} } }; }
 function slotLabelUi() { const n = mailName(state.seg, state.slot.fecha); $("slotLabel").innerHTML = `<button type="button" class="mname wb-name" data-name="${esc(n)}" title="Copiar nombre para HubSpot"><span>${esc(n)}</span></button>`; }
 function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").hidden = sent || !state.current || !db; $("sentBtn").setAttribute("aria-pressed", String(sent)); }
@@ -1583,7 +1586,7 @@ function renderPeek() {
         ${e && !editingSent ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}
         <button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button>
       </div>
-      <div class="pk-tags">${segTag(c.segmento)}${estTag(c)}<span class="pk-dwrap"><button type="button" class="pk-datebtn" id="pkDay" title="${locked ? "" : "Cambiar día de envío"}" ${locked ? "disabled" : ""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>${esc(fecha)}</button><input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true"></span></div>
+      <div class="pk-tags">${segTag(c.segmento)}${estTag(c)}<span class="pk-dwrap"><button type="button" class="pk-datebtn" id="pkDay" title="${locked ? "" : "Cambiar día de envío"}" ${locked ? "disabled" : ""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>${esc(fecha)}</button><input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" aria-label="Cambiar día de envío" ${locked ? "disabled" : ""}></span></div>
     </div>
     ${e && !hasBody(e) && !locked ? `<button type="button" class="btn btn-ink pk-ai" id="pkAi">Que lo escriba Claude</button>` : ""}
     ${e ? `<div class="mini"><div class="mhead">
@@ -1617,7 +1620,6 @@ function renderPeek() {
       state.sentDraft = null; state.peekUnlock = null; $("peek").dataset.id = ""; renderPeek();
     } catch { $("pkSaveSent").disabled = false; $("pkSaveSent").textContent = "No se pudo. Reintentar"; }
   };
-  $("pkDay").onclick = () => { if (locked) return; const d = $("peekDate"); try { d.showPicker(); } catch { d.focus(); d.click(); } };
   $("peekDate").onchange = async () => { const v = $("peekDate").value; if (!v) return; try { await db.collection("calendario").doc(c.id).update({ fecha: v }); } catch {} };
   $("pkDel").onclick = async (ev) => {
     const b = $("pkDel"); ev.stopPropagation();
