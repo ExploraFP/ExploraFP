@@ -264,6 +264,11 @@ textarea { min-height: 64px; resize: vertical; }
 .peek .subj div { overflow-wrap: anywhere; }
 .peek .subj i { font-style: normal; font: 600 .66rem var(--font-mono); color: var(--muted); margin-right: 6px; }
 .peek .subj .pre { color: var(--muted); }
+.peek .ed1 { outline: none; border-radius: 4px; padding: 0 2px; }
+.peek .ed1:hover, .peek .ed1:focus { background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.peek .mini .body { outline: none; cursor: text; }
+.peek .mini .body > p:hover, .peek .mini .body > ul:hover { background: #F5FAF3; border-radius: 4px; }
+.peek .saved { font-size: .75rem; color: var(--muted); min-height: 1em; }
 .peek .mini { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
 .peek .mini .email { font-size: 13.5px; line-height: 1.6; box-shadow: none; }
 .peek .mini .email .body { padding: 16px 18px 4px; }
@@ -1202,18 +1207,46 @@ function evButton(c) {
     <span class="bar" style="background:${s.color}"></span><span class="tx"><b>${esc(s.nombre)}</b> · ${esc(c.asunto || "sin asunto")}</span><span class="sd sd-${esc(normEstado(c.estado))}" aria-label="${esc(estLabel(c.estado))}"></span></button>`;
 }
 function peekBody(e) {
-  const parts = (e.bloques || []).map((b) => b.tipo === "boton" ? `<div class="cta"><a>${esc(b.contenido)}</a></div>`
+  const parts = (e.bloques || []).map((b) => b.tipo === "boton" ? `<div class="cta" contenteditable="false"><a contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
     : b.tipo === "lista" ? `<ul>${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>` : `<p>${rich(b.contenido)}</p>`);
-  if (e.pd) parts.push(`<p>${rich(e.pd)}</p>`);
-  parts.push(`<p>${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
+  if (e.pd) parts.push(`<p data-role="pd">${rich(e.pd)}</p>`);
+  parts.push(`<p data-role="firma">${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
   return parts.join("");
+}
+function peekFromDom(c) {
+  const e = c.email, body = $("peekBody"); if (!e || !body) return null;
+  const bloques = []; let pd = "", despedida = e.despedida, firma = e.firma;
+  for (const el of body.children) {
+    if (el.classList.contains("cta")) { const t = el.innerText.trim(); if (t) bloques.push({ tipo: "boton", contenido: t }); continue; }
+    if (el.dataset.role === "pd") { pd = domText(el); continue; }
+    if (el.dataset.role === "firma") { const l = domText(el).split("\n").map((x) => x.trim()).filter(Boolean); despedida = l[0] || ""; firma = l.slice(1).join(" ") || ""; continue; }
+    if (el.tagName === "UL" || el.tagName === "OL") { const items = [...el.querySelectorAll("li")].map(domText).filter(Boolean); if (items.length) bloques.push({ tipo: "lista", contenido: items }); continue; }
+    const t = domText(el); if (t) bloques.push({ tipo: "texto", contenido: t });
+  }
+  const val = (id, d) => ($(id) ? $(id).textContent.trim() : d) || d;
+  return { ...e, bloques, pd, despedida, firma, asunto_a: val("pkA", e.asunto_a), asunto_b: val("pkB", e.asunto_b), preheader: $("pkPre") ? $("pkPre").textContent.trim() : (e.preheader || "") };
+}
+let peekTimer = null;
+function peekSave(c) {
+  clearTimeout(peekTimer);
+  peekTimer = setTimeout(async () => {
+    const e = peekFromDom(c); if (!e || !db) return;
+    const email = JSON.parse(JSON.stringify(e));
+    try {
+      await db.collection("calendario").doc(c.id).update({ email, asunto: e.asunto_a || "", preheader: e.preheader || "" });
+      if ((state.likes || []).some((x) => x.id === c.id)) db.collection("ejemplos").doc(c.id).update({ email }).catch(() => {});
+      if ($("pkSaved")) $("pkSaved").textContent = "Guardado";
+    } catch { if ($("pkSaved")) $("pkSaved").textContent = "No se ha guardado"; }
+  }, 900);
 }
 function renderPeek() {
   const c = state.peek && state.cal.find((x) => x.id === state.peek);
   document.querySelectorAll(".cell.sel").forEach((x) => x.classList.remove("sel"));
   if (!c) { state.peek = null; $("peek").hidden = true; $("prod").classList.remove("open"); return; }
   const cell = document.querySelector(`.cell[data-peek="${CSS.escape(c.id)}"]`); if (cell) cell.classList.add("sel");
+  if ($("peek").dataset.id === c.id && !$("peek").hidden && $("peek").contains(document.activeElement) && document.activeElement.isContentEditable) return;
   const s = SEG[c.segmento] || SEG.nocontactado, e = c.email, sent = normEstado(c.estado) === "enviado", hs = safeUrl(c.hubspot);
+  $("peek").dataset.id = c.id;
   $("peek").style.setProperty("--c", s.color);
   $("peek").innerHTML = `
     <div class="ph-head"><div class="who"><b>${esc(s.nombre)} <span style="font-weight:500">· ${esc(s.firma.nombre)}</span></b><span>${sent ? "Enviado" : "Escrito, sin enviar"}</span><label class="when">Día de envío <input type="date" id="peekDate" value="${esc(c.fecha)}"></label></div>${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}<button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
@@ -1224,13 +1257,17 @@ function renderPeek() {
       <button type="button" class="btn btn-line btn-sm" id="peekFicha">Ficha</button>
       <button type="button" class="x del" id="peekDel" aria-label="Borrar email" title="Borrar email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
     </div>
-    ${e ? `<div class="subj"><div><i>A</i>${esc(e.asunto_a || "")}</div>${e.asunto_b && e.asunto_b !== e.asunto_a ? `<div><i>B</i>${esc(e.asunto_b)}</div>` : ""}${e.preheader ? `<div class="pre"><i>PRE</i>${esc(e.preheader)}</div>` : ""}</div>
-    <div class="mini"><article class="email"><div class="body">${peekBody(e)}</div></article></div>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}
+    ${e ? `<div class="subj"><div><i>A</i><span class="ed1" id="pkA" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</span></div><div><i>B</i><span class="ed1" id="pkB" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_b || "")}</span></div><div class="pre"><i>PRE</i><span class="ed1" id="pkPre" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</span></div></div>
+    <div class="mini"><article class="email"><div class="body" id="peekBody" contenteditable="true" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}
 `;
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
   if ($("peekOpen")) $("peekOpen").onclick = () => openWriter(c.segmento, c.fecha, c.id);
   $("peekSent").onclick = async () => { $("peekSent").disabled = true; try { await db.collection("calendario").doc(c.id).update({ estado: sent ? "en_redaccion" : "enviado" }); } catch { $("peekSent").disabled = false; $("peekSent").textContent = "No se pudo"; } };
+  ["pkA", "pkB", "pkPre", "peekBody"].forEach((id) => { const el = $(id); if (!el) return;
+    el.addEventListener("input", () => { if ($("pkSaved")) $("pkSaved").textContent = "Guardando…"; peekSave(c); });
+    if (id !== "peekBody") el.addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); el.blur(); } });
+  });
   $("peekDate").onchange = async () => { const v = $("peekDate").value; if (!v) return; try { await db.collection("calendario").doc(c.id).update({ fecha: v }); } catch {} };
   $("peekDel").onclick = async () => {
     const b = $("peekDel");
