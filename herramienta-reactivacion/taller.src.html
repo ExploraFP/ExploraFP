@@ -78,6 +78,14 @@ h2 { font: 800 1.35rem/1.2 var(--font-display); margin: 0; text-wrap: balance; }
 /* Escribir */
 .write { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 28px; align-items: start; }
 @media (max-width: 900px) { .write { grid-template-columns: minmax(0, 1fr); } }
+@media (min-width: 901px) {
+  html:has(body.ed-lock), body.ed-lock { overflow: hidden; height: 100vh; }
+  body.ed-lock .wrap { padding-bottom: 0; }
+  body.ed-lock .write { height: calc(100vh - var(--write-top, 196px) - 16px); align-items: stretch; }
+  body.ed-lock .chat { position: static; height: 100% !important; max-height: none; min-height: 0; }
+  body.ed-lock .preview { min-height: 0; height: 100%; }
+  body.ed-lock .stage { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+}
 .brief { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 .step { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 0 12px; }
 .step .n { width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font: 600 .8rem var(--font-mono); }
@@ -1533,7 +1541,7 @@ function openWriter(seg, fecha, id) {
   showTab("escribir");
   requestAnimationFrame(fitChat);
 }
-function fitChat() { const c = $("chat"); if (!c || $("view-escribir").hidden) return; document.documentElement.style.setProperty("--chat-top", Math.max(90, Math.round(c.getBoundingClientRect().top + scrollY)) + "px"); }
+function fitChat() { const c = $("chat"); if (!c || $("view-escribir").hidden) return; const top = Math.max(90, Math.round(c.getBoundingClientRect().top + scrollY)); document.documentElement.style.setProperty("--chat-top", top + "px"); document.documentElement.style.setProperty("--write-top", top + "px"); }
 addEventListener("resize", fitChat);
 $("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; saving = saving.then(saveDraft); } await saving; const id = state.slot?.id; state.slot = null; const t = state.returnTab || "calendario"; showTab(t); if (t === "calendario" && id && state.cal.some((c) => c.id === id && c.email)) { state.peek = id; renderPeek(); }  };
 
@@ -2148,6 +2156,7 @@ function showTab(t) {
   if (t !== "calendario" && t !== "escribir" && state.peek) setPeek(null);
   const sel = t === "escribir" ? (state.returnTab || "calendario") : t;
   document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === (CTX.includes(sel) ? "contexto" : sel)));
+  document.body.classList.toggle("ed-lock", t === "escribir");
   ["semana", "escribir", "calendario", "enviados", "reglas", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
   $("ctxHead").hidden = !CTX.includes(t);
   if (t === "reglas") requestAnimationFrame(() => $("rgList").querySelectorAll("textarea").forEach(rgGrow));
