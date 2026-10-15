@@ -536,8 +536,8 @@ button.wb-date:disabled { cursor: default; }
 .cal-nav button:hover { background: var(--bg) !important; }
 .cal-nav[hidden] { display: none !important; }
 .cal-right .cal-nav { padding: 2px !important; }
-@media (max-width: 1180px) { .cal-head { grid-template-columns: 1fr auto; } .cal-head > .vsw { grid-row: 2; grid-column: 1; justify-self: start; margin: 0; } .cal-right { grid-row: 2; grid-column: 2; margin: 0; } }
-@media (max-width: 760px) { .cal-head { grid-template-columns: 1fr; } .cal-right { grid-row: auto; grid-column: 1; flex-wrap: wrap; } .cal-right .legend { flex-wrap: wrap; } }
+@media (max-width: 1180px) { .cal-head { grid-template-columns: auto 1fr; } .cal-head > .vsw { grid-row: 1; grid-column: 2; justify-self: start; margin: 0 0 6px; } .cal-right { grid-row: 2; grid-column: 1 / -1; justify-content: flex-end; margin: 0; } }
+@media (max-width: 760px) { .cal-head { grid-template-columns: 1fr; } .cal-head > .vsw { grid-row: auto; grid-column: 1; margin: 0; } .cal-right { grid-row: auto; grid-column: 1; flex-wrap: wrap; justify-content: flex-start; } .cal-right .legend { flex-wrap: wrap; } }
 .cal-head h2 { font-size: 2rem; }
 .cal-nav { display: flex; gap: 6px; align-items: center; }
 .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.05rem; cursor: pointer; display: grid; place-items: center; }
@@ -707,6 +707,11 @@ button.wb-date:disabled { cursor: default; }
 .ncard .never { background: var(--tint); border-radius: 10px; padding: 10px 12px; }
 
 /* Buyers */
+.ctx-head { margin: 0 0 18px; }
+.rg-acts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rg-acts select { width: auto; padding: 6px 10px; font-size: .85rem; border-radius: 999px; }
+.rg-text { display: block; width: 100%; min-height: 68vh; resize: vertical; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); color: var(--ink); padding: 18px 20px; font: 400 .9rem/1.6 var(--font-body); }
+.rg-text:focus { outline: none; border-color: var(--ink); }
 .b-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chips button { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 500 .82rem var(--font-body); cursor: pointer; }
@@ -777,8 +782,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="calendario">Correos</button>
       <button role="tab" aria-selected="false" data-tab="enviados">Análisis</button>
-      <button role="tab" aria-selected="false" data-tab="narradores">Narradores</button>
-      <button role="tab" aria-selected="false" data-tab="buyers">Buyers</button>
+      <button role="tab" aria-selected="false" data-tab="contexto">Contexto</button>
     </nav>
   </div>
 </div>
@@ -849,7 +853,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 
     <div class="cal-head">
       <div><p class="eyebrow">Correos</p><h2 id="calTitle">Octubre 2026</h2></div>
-      <div class="vsw" role="group" aria-label="Vista" id="calView"><button type="button" data-v="cal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Calendario</button><button type="button" data-v="list"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Lista</button></div>
+      <div class="vsw" role="group" aria-label="Vista" id="calView"><button type="button" data-v="cal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Calendario</button><button type="button" data-v="list"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Pendientes</button></div>
       <div class="cal-right"><div class="legend" id="legend"></div>
       <div class="cal-nav">
         <button type="button" class="icon-btn" id="calPrev" aria-label="Mes anterior">‹</button>
@@ -873,6 +877,14 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
   </section>
 
   <!-- NARRADORES -->
+  <div class="ctx-head" id="ctxHead" hidden><div class="vsw" role="group" aria-label="Contexto" id="ctxSw"><button type="button" data-ctx="reglas">Reglas</button><button type="button" data-ctx="narradores">Narradores</button><button type="button" data-ctx="buyers">Buyers</button></div></div>
+
+  <section id="view-reglas" hidden>
+    <div class="b-head"><div><p class="eyebrow">Reglas</p><h2>Cómo escribe Claude</h2></div>
+      <div class="rg-acts"><span class="saved" id="rgStatus" role="status"></span><select id="rgVer" aria-label="Versiones"></select><button type="button" class="btn btn-ink btn-sm" id="rgSave" disabled>Guardar</button></div></div>
+    <textarea id="rgText" class="rg-text" spellcheck="false" aria-label="Reglas de escritura"></textarea>
+  </section>
+
   <section id="view-narradores" hidden>
     <div class="b-head"><div><p class="eyebrow">Narradores</p><h2>Los tres narradores</h2></div></div>
     <div class="narr-grid" id="narrGrid"></div>
@@ -1218,12 +1230,38 @@ function findBuyers(q) {
     return [p, words.reduce((n, w) => n + (h.includes(w) ? 1 : 0), 0) + (p.id === t ? 99 : 0)]; })
     .filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p);
 }
+/* ---------- Reglas editables ---------- */
+state.reglasDoc = null;
+const reglas = () => (state.reglasDoc && String(state.reglasDoc.texto || "").trim()) || REGLAS;
+const fmtVer = (f) => new Date(f).toLocaleString("es-ES", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+function renderReglas(force) {
+  const t = $("rgText"), cur = reglas();
+  if (force || !t.dataset.dirty) { t.value = cur; t.dataset.dirty = ""; }
+  const h = (state.reglasDoc && state.reglasDoc.historial) || [];
+  $("rgVer").innerHTML = `<option value="">Versión actual${state.reglasDoc && state.reglasDoc.actualizado ? " · " + esc(fmtVer(state.reglasDoc.actualizado)) : ""}</option>` + h.slice().reverse().map((v, i) => `<option value="${h.length - 1 - i}">${esc(fmtVer(v.fecha))}</option>`).join("") + `<option value="orig">Original</option>`;
+  $("rgSave").disabled = !t.dataset.dirty || !db;
+}
+$("rgText").addEventListener("input", () => { $("rgText").dataset.dirty = "1"; $("rgSave").disabled = !db; $("rgStatus").textContent = ""; });
+$("rgVer").onchange = () => {
+  const v = $("rgVer").value, h = (state.reglasDoc && state.reglasDoc.historial) || [];
+  $("rgText").value = v === "" ? reglas() : v === "orig" ? REGLAS : (h[+v] || {}).texto || "";
+  $("rgText").dataset.dirty = v === "" ? "" : "1"; $("rgSave").disabled = v === "" || !db;
+};
+$("rgSave").onclick = async () => {
+  if (!db) return;
+  const texto = $("rgText").value.trim(); if (!texto) return;
+  const prev = state.reglasDoc && state.reglasDoc.texto ? [{ texto: state.reglasDoc.texto, fecha: state.reglasDoc.actualizado || new Date().toISOString() }] : [];
+  const historial = [...((state.reglasDoc && state.reglasDoc.historial) || []), ...prev].slice(-20);
+  $("rgSave").disabled = true; $("rgStatus").className = "saved"; $("rgStatus").textContent = "Guardando…";
+  try { await db.collection("config").doc("reglas").set({ texto, actualizado: new Date().toISOString(), historial }); $("rgText").dataset.dirty = ""; $("rgStatus").textContent = "Guardado"; }
+  catch { $("rgStatus").className = "saved err"; $("rgStatus").textContent = "No se pudo guardar"; $("rgSave").disabled = false; }
+};
 function instructions(withBuyers) {
   const s = SEG[state.seg], sent = state.cal.filter((c) => c.segmento === state.seg && c.id !== state.slot?.id).slice(-10);
   const d = parse(state.slot?.fecha || iso(new Date()));
   const out = [
     "Eres el redactor de la campaña de reactivación de leads perdidos de Explora FP (escuela de FP oficial online; antes se llamaba Ucademy). Trabajas en un chat con el equipo de marketing: escribes UN email en español de España y lo vas cambiando según te pidan.",
-    "", REGLAS, "", "NARRADOR (fijo, no lo cambies aunque te lo pidan):", VOCES[s.firma.nombre], "",
+    "", reglas(), "", "NARRADOR (fijo, no lo cambies aunque te lo pidan):", VOCES[s.firma.nombre], "",
     `SEGMENTO: ${s.nombre} (${s.desc}). Fecha de envío: ${d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}.`,
     "Cada email es único (no es una secuencia): tiene que funcionar solo.",
     `Ángulos habituales para este segmento (si no te piden uno, elige el que no se haya usado): ${s.pasos.join(" / ")}.`,
@@ -2061,12 +2099,18 @@ $("narrGrid").innerHTML = Object.entries(SEG).map(([k, s]) => { const n = NARR[k
 
 /* ---------- Pestañas ---------- */
 $("homeLink").onclick = (ev) => { ev.preventDefault(); if (!$("view-escribir").hidden) $("backBtn").onclick().then(() => showTab("calendario")); else showTab("calendario"); };
+const CTX = ["reglas", "narradores", "buyers"];
+state.ctx = (() => { try { const v = localStorage.getItem("nl_ctx"); return CTX.includes(v) ? v : "reglas"; } catch { return "reglas"; } })();
 function showTab(t) {
   if (t === "semana") t = "calendario";
+  if (t === "contexto") t = state.ctx;
+  if (CTX.includes(t)) { state.ctx = t; try { localStorage.setItem("nl_ctx", t); } catch {} }
   if (t !== "calendario" && t !== "escribir" && state.peek) setPeek(null);
   const sel = t === "escribir" ? (state.returnTab || "calendario") : t;
-  document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === sel));
-  ["semana", "escribir", "calendario", "enviados", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
+  document.querySelectorAll("[data-tab]").forEach((x) => x.setAttribute("aria-selected", x.dataset.tab === (CTX.includes(sel) ? "contexto" : sel)));
+  ["semana", "escribir", "calendario", "enviados", "reglas", "narradores", "buyers"].forEach((v) => { $("view-" + v).hidden = v !== t; });
+  $("ctxHead").hidden = !CTX.includes(t);
+  $("ctxSw").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ctx === t)));
   window.scrollTo(0, 0);
   try { localStorage.setItem("nl_tab", JSON.stringify(t === "escribir" && state.slot ? { tab: t, ret: sel, seg: state.seg, fecha: state.slot.fecha, id: state.slot.id || null } : { tab: t })); } catch {}
 }
@@ -2077,15 +2121,17 @@ try {
   else if (v && v.tab && $("view-" + v.tab) && v.tab !== "escribir") showTab(v.tab);
 } catch {}
 document.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
+$("ctxSw").querySelectorAll("button").forEach((b) => b.onclick = () => showTab(b.dataset.ctx));
 
 /* ---------- Arranque ---------- */
-renderPreview(); renderCal(); renderBuyers();
+renderPreview(); renderCal(); renderBuyers(); renderReglas(true);
 (async () => {
   if (!window.claude?.use) { $("noSample").hidden = false; $("goBtn").disabled = true; $("noDb").hidden = false; return; }
   sample = await window.claude.use("sample");
   if (!sample) { $("noSample").hidden = false; $("goBtn").disabled = true; }
   db = await window.claude.use("db");
   if (!db) { $("noDb").hidden = false; return; }
+  db.collection("config").onSnapshot((snap) => { const d = snap.docs.find((x) => x.id === "reglas"); state.reglasDoc = d ? d.data() : null; renderReglas(); });
   db.collection("ejemplos").onSnapshot((snap) => { state.likes = snap.docs.map((d) => ({ id: d.id, ...d.data() })); likeUi(); });
   db.collection("calendario").orderBy("fecha", "asc").onSnapshot((snap) => {
     state.cal = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderCal();
