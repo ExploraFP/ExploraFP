@@ -191,8 +191,10 @@ textarea { min-height: 64px; resize: vertical; }
 .ribbon .logo { height: 34px; width: auto; display: block; }
 
 /* Chat del editor */
-.chat { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.chat-log { display: flex; flex-direction: column; gap: 8px; max-height: 56vh; overflow-y: auto; padding: 4px 2px; }
+.chat { display: flex; flex-direction: column; gap: 10px; min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px; position: sticky; top: 16px; height: calc(100vh - 32px); max-height: 820px; }
+.chat-h { font: 600 .7rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.chat-log { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; overflow-y: auto; padding: 4px 2px; }
+.chat .msg.bot { background: var(--bg); }
 .msg { max-width: 92%; padding: 10px 12px; border-radius: 14px; font-size: .9rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
 .msg.user { align-self: flex-end; background: var(--ink); color: var(--bg); border-bottom-right-radius: 4px; }
 .msg.bot { align-self: flex-start; background: var(--paper); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
@@ -202,11 +204,28 @@ textarea { min-height: 64px; resize: vertical; }
 .chat-quick button:hover { border-color: var(--ink); }
 .chat-input { display: grid; gap: 8px; }
 .chat-input textarea { min-height: 64px; }
-@media (max-width: 900px) { .chat-log { max-height: none; } }
+@media (max-width: 900px) { .chat { position: static; height: auto; max-height: none; } .chat-log { max-height: 50vh; } .wb-saved { margin-left: 0; } }
+@media (max-width: 600px) { .writer-bar .wb-title { flex: 1 1 calc(100% - 60px); } .writer-bar .wb-acts { margin-left: auto; } }
+.mail-meta { max-width: 600px; margin: 0 auto; background: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 12px 32px; display: grid; gap: 4px; font-family: Helvetica, Arial, sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-radius: 8px 8px 0 0; }
+.stage.mobile .mail-meta { max-width: 375px; padding: 12px 20px; }
+.mail-meta .mrow { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.mail-meta .ml { font-size: .76rem; color: #8A94A0; }
+.mail-meta .mv { font-size: .92rem; color: #23496D; outline: none; border-radius: 4px; padding: 1px 4px; margin-left: -4px; overflow-wrap: anywhere; }
+.mail-meta .mv[contenteditable="plaintext-only"]:hover, .mail-meta .mv:focus { background: #F5FAF3; }
+.mail-meta .mv:empty::before { content: attr(data-ph); color: #A8B2BC; font-weight: 400; }
 
 /* Barra del editor de email */
-.writer-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
-.writer-bar #slotLabel { font: 400 1.6rem/1 var(--font-head); text-transform: uppercase; }
+.writer-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.wb-back { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.1rem; cursor: pointer; flex: none; }
+.wb-back:hover { border-color: var(--ink); }
+.wb-title { display: grid; gap: 6px; min-width: 0; flex: 1; }
+.wb-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.writer-bar #slotLabel { font: 600 1.3rem/1.15 var(--font-body) !important; text-transform: none; letter-spacing: 0; }
+.wb-saved { margin-left: auto; font: 500 .76rem var(--font-body); color: var(--muted); white-space: nowrap; }
+.wb-saved.err { color: var(--err); white-space: normal; }
+.wb-acts { display: flex; gap: 6px; align-items: center; }
+.writer-bar .x { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; color: var(--ink); cursor: pointer; font-size: 1rem; }
+.writer-bar .x:hover, .writer-bar .x[aria-expanded="true"] { border-color: var(--ink); }
 .writer-bar #slotLabel small { font: 500 .8rem var(--font-body); color: var(--muted); margin-left: 6px; }
 
 /* Esta semana */
@@ -607,11 +626,23 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
   <!-- ESCRIBIR -->
   <section id="view-escribir" hidden>
     <div class="writer-bar">
-      <button type="button" class="btn btn-line btn-sm" id="backBtn">← Volver</button>
-      <span id="slotLabel"></span>
+      <button type="button" class="wb-back" id="backBtn" aria-label="Volver al calendario" title="Volver al calendario">←</button>
+      <div class="wb-title"><div class="wb-tags" id="wrTags"></div><span id="slotLabel"></span></div>
+      <span class="saved wb-saved" id="savedAt" role="status"></span>
+      <div class="wb-acts">
+        <button type="button" class="btn btn-ink btn-sm" data-copy="body">Copiar email</button>
+        <div class="pk-mwrap"><button type="button" class="x wb-more" id="wbMoreBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
+          <div class="pk-menu" id="wbMenu" role="menu" hidden>
+            <button type="button" role="menuitem" data-copy="a">Copiar asunto</button>
+            <button type="button" role="menuitem" data-copy="pre">Copiar preheader</button>
+            <button type="button" role="menuitem" id="sentBtn" hidden>Marcar como enviado</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="write">
       <div class="chat" id="chat">
+        <div class="chat-h">Claude</div>
         <div class="chat-log" id="chatLog" aria-live="polite"></div>
         <div class="chat-quick" id="chatQuick"></div>
         <form class="chat-input" id="chatForm" autocomplete="off">
@@ -640,30 +671,23 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           </div>
         </div>
         <div class="alts" id="alts" hidden><span class="alts-l">Otros asuntos</span><div class="alt-list" id="altList"></div></div>
-        <div class="inbox" aria-label="Vista en la bandeja de entrada">
-          <div class="cap">Así lo ve en la bandeja de entrada</div>
-          <div class="mail-row"><span class="from" id="ibFrom"></span><span class="line"><b id="ibA"></b> <span>– <span id="ibPre"></span></span></span><span class="time">9:41</span></div>
-          <div class="mail-row" hidden><span class="from" id="ibFrom2"></span><span class="line"><b id="ibB"></b> <span>– <span id="ibPre2"></span></span></span><span class="time">9:41</span></div>
-        </div>
+        <div hidden><span id="ibFrom2"></span><b id="ibB"></b><span id="ibPre2"></span></div>
         <div class="stage" id="stage">
+          <div class="mail-meta" aria-label="Cabecera del email">
+            <div class="mrow"><span class="ml">De</span><span class="mv" id="ibFrom"></span></div>
+            <div class="mrow"><span class="ml">Asunto</span><b class="mv" id="ibA" data-ph="Escribe el asunto"></b></div>
+            <div class="mrow"><span class="ml">Preheader</span><span class="mv" id="ibPre" data-ph="Escribe el preheader"></span></div>
+          </div>
           <article class="email" id="email">
             <div class="hdr"><img alt="Cabecera Explora × Ucademy · Formación Profesional" src="__HEADER__"></div>
             <div class="body" id="emailBody"></div>
             <div class="ftr"><img alt="Entrenamiento salvaje para tu profesión" src="__FOOTER__"></div>
           </article>
         </div>
-        <div class="actions">
-          <button type="button" class="btn btn-line btn-sm" data-copy="a">Copiar asunto</button>
-          <button type="button" class="btn btn-line btn-sm" data-copy="pre">Copiar preheader</button>
-          <button type="button" class="btn btn-ink btn-sm" data-copy="body">Copiar email</button>
-          <span class="sp"></span>
-          <button type="button" class="btn btn-line btn-sm" id="sentBtn" hidden>Ya está enviado</button>
-        </div>
         <p class="status" id="copyStatus" role="status"></p>
         <div class="savebar" id="saveBar" hidden>
           <select id="pEstado" hidden aria-hidden="true"><option value="en_redaccion">En redacción</option><option value="enviado">Enviado</option></select>
           <label class="l" for="pHs">Enlace de HubSpot<input type="url" id="pHs" placeholder="https://app.hubspot.com/…"></label>
-          <span class="saved" id="savedAt" role="status"></span>
         </div>
       </div>
     </div>
@@ -986,7 +1010,7 @@ function renderPreview() {
       ? `<ul>${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>`
       : `<p>${rich(b.contenido)}</p>`);
   if (e.pd) parts.push(`<p data-role="pd">${rich(e.pd)}</p>`);
-  parts.push(`<p data-role="firma">${rich(e.despedida)}<br>${rich(e.firma)}</p>`);
+  if ((e.despedida || "").trim() || (e.firma || "").trim()) parts.push(`<p data-role="firma">${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
   $("emailBody").innerHTML = parts.join("");
   $("emailBody").contentEditable = "true";
   $("saveBar").hidden = !db;
@@ -1134,7 +1158,7 @@ async function sendChat(text) {
     const keepAlt = extras(em).length ? extras(em) : extras(state.current);
     state.current = { ...em, asuntos_extra: keepAlt, segmento: state.seg, asunto_b: em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
     state.chat[state.chat.length - 1] = { role: "bot", text: (d.mensaje || "Listo.").trim() };
-    renderPreview(); snapNow();
+    renderPreview(); snapNow(); wrTagsUi();
     scheduleSave(0);
     $("chatText").focus();
   } catch (e) {
@@ -1223,7 +1247,8 @@ $("emailBody").addEventListener("input", () => { snapSoon(); undoUi(); scheduleS
 ["ibA", "ibB", "ibPre"].forEach((id) => $(id).addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); ev.target.blur(); } }));
 try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch {}
 $("pEstado").onchange = () => scheduleSave(0);
-function sentUi() { const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = sent ? "✓ Enviado · deshacer" : "Ya está enviado"; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
+function wrTagsUi() { if (!state.slot) return; $("wrTags").innerHTML = segTag(state.seg) + estTag({ segmento: state.seg, estado: $("pEstado").value, email: state.current }); }
+function sentUi() { wrTagsUi(); const sent = $("pEstado").value === "enviado"; $("sentBtn").textContent = sent ? "Marcar como sin enviar" : "Marcar como enviado"; $("sentBtn").classList.toggle("btn-ink", false); $("sentBtn").setAttribute("aria-pressed", String(sent)); }
 function likeUi() {
   const on = !!(state.slot?.id && (state.likes || []).some((x) => x.id === state.slot.id));
   $("likeBtn").hidden = !state.current || !db;
@@ -1242,7 +1267,10 @@ $("likeBtn").onclick = async () => {
   } catch { $("savedAt").className = "saved err"; $("savedAt").textContent = "No se pudo guardar el «Me gusta»."; }
   finally { $("likeBtn").disabled = false; likeUi(); }
 };
-$("sentBtn").onclick = () => { $("pEstado").value = $("pEstado").value === "enviado" ? "en_redaccion" : "enviado"; sentUi(); scheduleSave(0); };
+$("sentBtn").onclick = () => { $("wbMenu").hidden = true; $("pEstado").value = $("pEstado").value === "enviado" ? "en_redaccion" : "enviado"; sentUi(); scheduleSave(0); };
+$("wbMoreBtn").onclick = (ev) => { ev.stopPropagation(); $("wbMenu").hidden = !$("wbMenu").hidden; $("wbMoreBtn").setAttribute("aria-expanded", String(!$("wbMenu").hidden)); };
+$("wbMenu").addEventListener("click", (ev) => { if (ev.target.closest("[data-copy]")) { $("wbMenu").hidden = true; $("wbMoreBtn").setAttribute("aria-expanded", "false"); } });
+document.addEventListener("click", (ev) => { if (!$("wbMenu").hidden && !ev.target.closest("#wbMenu, #wbMoreBtn")) { $("wbMenu").hidden = true; $("wbMoreBtn").setAttribute("aria-expanded", "false"); } });
 $("pHs").addEventListener("change", () => scheduleSave(0));
 
 /* ---------- Abrir el editor desde un hueco del calendario ---------- */
@@ -1256,7 +1284,7 @@ function openWriter(seg, fecha, id) {
   $("pHs").value = prev ? prev.hubspot || "" : ""; $("savedAt").className = "saved"; $("savedAt").textContent = prev && prev.email ? "Guardado" : "";
   renderChat(); renderPreview(); resetHistory(prev && prev.versiones); $("status").textContent = ""; sentUi();
   const s = SEG[seg], d = parse(fecha);
-  $("slotLabel").innerHTML = `Email del ${esc(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }))}${segTag(seg)}`;
+  $("slotLabel").textContent = ((x) => x[0].toUpperCase() + x.slice(1))(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
   $("editor").hidden = true;
   showTab("escribir");
 }
@@ -1277,7 +1305,7 @@ function peekBody(e) {
   const parts = (e.bloques || []).map((b) => b.tipo === "boton" ? `<div class="cta" contenteditable="false"><a contenteditable="true" spellcheck="false">${esc(b.contenido)}</a></div>`
     : b.tipo === "lista" ? `<ul>${(Array.isArray(b.contenido) ? b.contenido : String(b.contenido).split("\n")).filter(Boolean).map((li) => `<li>${rich(li)}</li>`).join("")}</ul>` : `<p>${rich(b.contenido)}</p>`);
   if (e.pd) parts.push(`<p data-role="pd">${rich(e.pd)}</p>`);
-  parts.push(`<p data-role="firma">${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
+  if ((e.despedida || "").trim() || (e.firma || "").trim()) parts.push(`<p data-role="firma">${rich(e.despedida || "")}<br>${rich(e.firma || "")}</p>`);
   return parts.join("");
 }
 function peekFromDom(c) {
@@ -1330,7 +1358,7 @@ function openNew(date, anchor) {
   pop.querySelectorAll(".np-o").forEach((o) => o.onclick = async () => {
     if (!db) return; o.disabled = true;
     const k = o.dataset.k, s = SEG[k];
-    const email = { asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: s.firma.despedida, firma: "— " + s.firma.nombre };
+    const email = { asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: "", firma: "" };
     try {
       const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "sin_empezar", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
       pop.hidden = true;
