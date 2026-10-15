@@ -201,7 +201,7 @@ textarea { min-height: 64px; resize: vertical; }
 .ribbon .logo { height: 34px; width: auto; display: block; }
 
 /* Chat del editor */
-.chat { display: flex; flex-direction: column; gap: 10px; min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px; position: sticky; top: 16px; height: calc(100vh - 140px); min-height: 460px; max-height: 820px; }
+.chat { display: flex; flex-direction: column; gap: 10px; min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px; position: sticky; top: 90px; height: calc(100vh - 110px); min-height: 460px; max-height: 820px; }
 .chat-h { font: 600 .7rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--line); }
 .chat-log { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; overflow-y: auto; padding: 4px 2px; }
 .chat .msg.bot { background: var(--bg); }
@@ -296,7 +296,7 @@ textarea { min-height: 64px; resize: vertical; }
 .peek .del { color: var(--err); }
 .peek .del.confirm { background: var(--err); color: #fff; border-color: var(--err); }
 .peek > * { flex: none; }
-.peek { position: fixed; right: 16px; top: 96px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; overscroll-behavior: contain; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 16px; }
+.peek { position: fixed; right: 16px; top: 86px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; overscroll-behavior: contain; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 16px; }
 .pk-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: -14px -16px 4px; padding: 14px 12px 12px 18px; background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: -14px; z-index: 3; }
 .pk-meta { display: grid; gap: 8px; min-width: 0; }
 .pk-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -638,8 +638,18 @@ textarea { min-height: 64px; resize: vertical; }
 @font-face { font-family: "Gravity Condensed"; src: url(__GRAVITY__) format("opentype"); font-weight: 100 900; font-style: normal; font-display: swap; }
 :root { --font-head: "Gravity Condensed", "Arial Narrow", "Roboto Condensed", Impact, sans-serif; }
 .brand h1, h2, .wcard .wday b, .ncard h3, .claim, .ag-date b, .form-block h3, .ed-read dd, .day .num, .seq button { font-family: var(--font-head) !important; font-weight: 400 !important; letter-spacing: .01em; }
-.brand h1 { font-size: 2.4rem !important; line-height: 1; text-transform: uppercase; margin: 0 !important; white-space: nowrap; }
-@media (max-width: 480px) { .brand h1 { font-size: 1.45rem !important; } }
+.brand h1 { font-size: 1.15rem !important; line-height: 1; text-transform: uppercase; margin: 0 !important; white-space: nowrap; letter-spacing: .06em !important; }
+.brand h1 .home { gap: 12px !important; }
+.brand .logo { height: 26px !important; transform: none !important; }
+.brand .bdiv { width: 1px; height: 22px; background: var(--band-ink); opacity: .3; }
+#nlText { color: var(--lime); padding-top: 2px; }
+.band { position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 0 rgba(0,0,0,.15); }
+.band-in { padding-block: 12px !important; align-items: center !important; }
+.brand { padding-bottom: 0 !important; }
+.tabs { gap: 2px; background: rgba(255,255,255,.07); border-radius: 999px; padding: 4px; }
+.tabs button { padding: 8px 16px !important; border-radius: 999px !important; font-size: .85rem !important; }
+.tabs button[aria-selected="true"] { background: var(--lime) !important; color: #102016 !important; }
+@media (max-width: 600px) { .band-in { gap: 10px !important; } .tabs { width: 100%; } .tabs button { padding: 7px 12px !important; } }
 h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 
 .week-head h2, .cal-head h2 { font-size: 2.6rem !important; }
@@ -659,7 +669,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
 <div class="band">
   <div class="band-in">
     <div class="brand">
-      <h1 id="brandTitle"><a href="#" id="homeLink" class="home" aria-label="Ir a Producción"><span id="nlText">Newsletter</span><img class="logo" id="nlLogo" src="__LOGO__" alt="Explora"></a></h1>
+      <h1 id="brandTitle"><a href="#" id="homeLink" class="home" aria-label="Ir al calendario"><img class="logo" id="nlLogo" src="__LOGO__" alt="Explora"><span class="bdiv" aria-hidden="true"></span><span id="nlText">Newsletter</span></a></h1>
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" aria-selected="true" data-tab="calendario">Calendario</button>
