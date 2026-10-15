@@ -269,7 +269,12 @@ textarea { min-height: 64px; resize: vertical; }
 .pk-menu .danger { color: var(--err); }
 .pk-menu .danger.confirm { background: var(--err); color: #fff; }
 .pk-hiddate { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
-.pk-inbox { display: grid; gap: 4px; }
+.mhead { background: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 8px 12px; display: grid; gap: 2px; font-family: Helvetica, Arial, sans-serif; }
+.mrow { display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: baseline; gap: 8px; }
+.ml { font-size: .72rem; color: #8A94A0; }
+.mval { font-size: .84rem; color: #23496D; outline: none; border-radius: 4px; padding: 2px 4px; margin-left: -4px; overflow-wrap: anywhere; cursor: text; }
+.mval:hover { background: #F5FAF3; }
+.mval:focus { background: #F5FAF3; box-shadow: 0 0 0 1.5px #C9D3DD; }
 .pk-lbl { font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 4px; }
 .pk-field { outline: none; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--paper); font-size: .9rem; cursor: text; overflow-wrap: anywhere; }
 .pk-field:hover { border-color: color-mix(in srgb, var(--ink) 35%, var(--line)); }
@@ -1305,11 +1310,10 @@ function renderPeek() {
         <button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button>
       </div>
     </div>
-    ${e ? `<div class="pk-inbox">
-      <label class="pk-lbl">Asunto</label><div class="pk-field pk-subj" id="pkA" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</div>
-      <label class="pk-lbl">Preheader</label><div class="pk-field pk-pre" id="pkPre" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</div>
-    </div>
-    <div class="mini"><article class="email"><div class="body" id="peekBody" contenteditable="true" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
+    ${e ? `<div class="mini"><div class="mhead">
+      <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
+      <div class="mrow"><span class="ml">Preheader</span><div class="mval" id="pkPre" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</div></div>
+    </div><article class="email"><div class="body" id="peekBody" contenteditable="true" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
   const big = () => openWriter(c.segmento, c.fecha, c.id);
