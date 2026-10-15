@@ -218,7 +218,18 @@ textarea { min-height: 64px; resize: vertical; }
 .msg { max-width: 92%; padding: 10px 12px; border-radius: 14px; font-size: .9rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
 .msg.user { align-self: flex-end; background: var(--ink); color: var(--bg); border-bottom-right-radius: 4px; }
 .msg.bot { align-self: flex-start; background: var(--paper); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
-.msg.bot.thinking { color: var(--muted); font-style: italic; }
+.msg.bot.thinking { color: var(--muted); font-style: italic; display: flex; align-items: flex-end; gap: 10px; padding-top: 14px; }
+.crab { display: inline-block; flex: none; animation: crab-hop .7s ease-in-out infinite; transform-origin: 50% 100%; }
+.crab svg { display: block; overflow: visible; }
+.crab .cr-claw { transform-box: fill-box; animation: crab-snap .35s ease-in-out infinite alternate; }
+.crab .cr-l { transform-origin: 100% 100%; }
+.crab .cr-r { transform-origin: 0% 100%; animation-name: crab-snap-r; animation-delay: .17s; }
+@keyframes crab-snap-r { from { transform: rotate(0deg); } to { transform: rotate(14deg); } }
+.crab .cr-legs { animation: crab-legs .35s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 0%; }
+@keyframes crab-hop { 0%, 100% { transform: translate(-3px, 0) rotate(-4deg); } 25% { transform: translate(0, -9px) rotate(0deg); } 50% { transform: translate(3px, 0) rotate(4deg); } 75% { transform: translate(0, -9px) rotate(0deg); } }
+@keyframes crab-snap { from { transform: rotate(0deg); } to { transform: rotate(-14deg); } }
+@keyframes crab-legs { from { transform: scaleX(1); } to { transform: scaleX(.85); } }
+@media (prefers-reduced-motion: reduce) { .crab, .crab * { animation: none !important; } }
 .msg.rich { white-space: normal; }
 .msg.rich p { margin: 0; }
 .msg.rich p + p, .msg.rich ul + p, .msg.rich p + ul { margin-top: 8px; }
@@ -1350,6 +1361,7 @@ const ERR = {
 };
 const QUICK_NEW = ["Escríbelo", "Cuenta la historia de un alumno", "Pregunta directa y corta"];
 const QUICK_EDIT = ["Más corto", "Otro asunto", "Más humor"];
+const CRAB = `<span class="crab" aria-hidden="true"><svg viewBox="0 0 64 48" width="34" height="26"><g class="cr-legs" stroke="#D9629B" stroke-width="3" stroke-linecap="round" fill="none"><path d="M18 32 9 38M17 36 10 44M46 32 55 38M47 36 54 44"/></g><g class="cr-claw cr-l"><path d="M16 26 8 18" stroke="#D9629B" stroke-width="3" stroke-linecap="round"/><path d="M8 18c-6-1-8-8-3-11 2 3 5 4 8 3-1 4-2 6-5 8z" fill="#F58DBE"/></g><g class="cr-claw cr-r"><path d="M48 26 56 18" stroke="#D9629B" stroke-width="3" stroke-linecap="round"/><path d="M56 18c6-1 8-8 3-11-2 3-5 4-8 3 1 4 2 6 5 8z" fill="#F58DBE"/></g><path d="M26 18v-7M38 18v-7" stroke="#D9629B" stroke-width="2.5" stroke-linecap="round"/><circle cx="26" cy="10" r="3.2" fill="#fff" stroke="#D9629B" stroke-width="1.5"/><circle cx="38" cy="10" r="3.2" fill="#fff" stroke="#D9629B" stroke-width="1.5"/><circle cx="26.6" cy="10.4" r="1.4" fill="#2A1A22"/><circle cx="38.6" cy="10.4" r="1.4" fill="#2A1A22"/><ellipse cx="32" cy="28" rx="17" ry="11" fill="#F58DBE"/><ellipse cx="27" cy="24" rx="5" ry="2.5" fill="#FFC2DD" opacity=".8"/><path d="M28 31q4 3 8 0" stroke="#B9467D" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></span>`;
 function botHtml(t) {
   const inl = (x) => esc(x).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
   return String(t || "").trim().split(/\n\s*\n/).map((p) => {
@@ -1362,7 +1374,7 @@ function botHtml(t) {
 }
 function renderChat() {
   const log = state.chat || [];
-  $("chatLog").innerHTML = log.length ? log.map((m) => m.role === "user" || m.thinking ? `<div class="msg ${m.role === "user" ? "user" : "bot"}${m.thinking ? " thinking" : ""}">${esc(m.text)}</div>` : `<div class="msg bot rich">${botHtml(m.text)}</div>`).join("")
+  $("chatLog").innerHTML = log.length ? log.map((m) => m.thinking ? `<div class="msg bot thinking">${CRAB}<span>${esc(m.text)}</span></div>` : m.role === "user" ? `<div class="msg user">${esc(m.text)}</div>` : `<div class="msg bot rich">${botHtml(m.text)}</div>`).join("")
     : `<div class="chat-empty"><span class="ce-ic">✦</span><b>¿Por dónde empezamos?</b><div class="ce-opts">${QUICK_NEW.map((q) => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div></div>`;
   $("chatLog").querySelectorAll("[data-q]").forEach((b) => b.onclick = () => sendChat(b.dataset.q));
   $("chatQuick").hidden = !log.length;
