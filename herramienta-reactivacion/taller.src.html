@@ -1488,13 +1488,13 @@ document.addEventListener("keydown", (ev) => { const v = $("mailView"); if (ev.k
 function askHubspot(current, onlyLink) {
   return new Promise((resolve) => {
     let m = $("hsAsk"); if (!m) { m = document.createElement("div"); m.id = "hsAsk"; m.className = "hs-ask"; document.body.appendChild(m); }
-    m.innerHTML = `<div class="hs-card" role="dialog" aria-modal="true" aria-labelledby="hsT"><b id="hsT">${onlyLink ? "Enlace de HubSpot" : "Marcar como enviado"}</b><label class="l" for="hsIn">Enlace de HubSpot${onlyLink ? "" : " (opcional)"}</label>
+    m.innerHTML = `<div class="hs-card" role="dialog" aria-modal="true" aria-labelledby="hsT"><b id="hsT">${onlyLink ? "Enlace de HubSpot" : "Marcar como enviado"}</b><label class="l" for="hsIn">Enlace de HubSpot</label>
       <input type="url" id="hsIn" placeholder="https://app-eu1.hubspot.com/email/…" value="${esc(current || "")}"><span class="hs-err" id="hsErr"></span>
-      <div class="hs-row"><button type="button" class="btn btn-line btn-sm" id="hsNo">${onlyLink ? "Cancelar" : "Ahora no"}</button><button type="button" class="btn btn-ink btn-sm" id="hsOk">${onlyLink ? "Guardar" : "Marcar como enviado"}</button></div></div>`;
+      <div class="hs-row"><button type="button" class="btn btn-line btn-sm" id="hsNo">Cancelar</button><button type="button" class="btn btn-ink btn-sm" id="hsOk">${onlyLink ? "Guardar" : "Marcar como enviado"}</button></div></div>`;
     m.hidden = false; setTimeout(() => $("hsIn").focus(), 30);
     const done = (v) => { m.hidden = true; resolve(v); };
-    $("hsOk").onclick = () => { const v = $("hsIn").value.trim(); if (v && !safeUrl(v)) { $("hsErr").textContent = "Tiene que empezar por https://"; return; } done({ url: v }); };
-    $("hsNo").onclick = () => done(onlyLink ? null : { url: current || "" });
+    $("hsOk").onclick = () => { const v = $("hsIn").value.trim(); if (!v) { $("hsErr").textContent = "Pega el enlace del email en HubSpot."; $("hsIn").focus(); return; } if (!safeUrl(v)) { $("hsErr").textContent = "Tiene que empezar por https://"; return; } done({ url: v }); };
+    $("hsNo").onclick = () => done(null);
     m.onclick = (ev) => { if (ev.target === m) done(null); };
     $("hsIn").onkeydown = (ev) => { if (ev.key === "Enter") $("hsOk").click(); if (ev.key === "Escape") done(null); };
   });
