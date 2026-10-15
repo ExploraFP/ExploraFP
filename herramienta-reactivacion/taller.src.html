@@ -696,6 +696,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <label class="l" for="eAsunto">Asunto<input type="text" id="eAsunto" placeholder="Asunto del email"></label>
           <label class="l" for="eEstado">Estado<select id="eEstado"><option value="sin_empezar">Sin empezar</option><option value="en_redaccion">En redacción</option><option value="enviado">Enviado</option></select></label>
         </div>
+        <label class="l" for="ePre">Preheader<input type="text" id="ePre" placeholder="Preheader del email"></label>
         <label class="l" for="eHs">Enlace de HubSpot<input type="url" id="eHs" placeholder="https://app.hubspot.com/email/…"></label>
         <div class="grid4">
           <label class="l" for="mEnv">Enviados<input type="number" min="0" step="1" id="mEnv" placeholder="2507"></label>
@@ -703,7 +704,6 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           <label class="l" for="mCl">Clic %<input type="number" min="0" max="100" step="0.01" id="mCl" placeholder="0.56"></label>
           <label class="l" for="mForm">Formularios<input type="number" min="0" step="1" id="mForm" placeholder="3"></label>
         </div>
-        <label class="l" for="eNotas">Notas<textarea id="eNotas"></textarea></label>
         <div class="go-row">
           <button type="submit" class="btn btn-ink btn-sm">Guardar</button>
           <button type="button" class="btn btn-line btn-sm" id="eDiscard">Cancelar</button>
@@ -1452,7 +1452,7 @@ function renderRead(item) {
     <p class="rs">${esc(item.asunto || "Sin asunto todavía")}</p>${item.preheader ? `<p class="rp">${esc(item.preheader)}</p>` : ""}
     ${full ? `<dl><div><dt>Enviados</dt><dd>${esc(fmtNum(m.enviados))}</dd></div><div><dt>Apertura</dt><dd>${esc(fmtNum(m.apertura, 1))}</dd></div><div><dt>Clic</dt><dd>${esc(fmtNum(m.clic, 1))}</dd></div><div><dt>Formularios</dt><dd>${esc(fmtNum(m.formularios))}</dd></div></dl>
     <div class="go-row">${hs ? `<a class="btn btn-ink btn-sm" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}</div>` : ""}
-    ${notas ? `<p class="rn">${esc(notas)}</p>` : ""}`;
+`;
 }
 function placeEditor() {
   const ed = $("editor"), a = state.anchor;
@@ -1477,7 +1477,7 @@ function closeMenu() { $("edMenu").hidden = true; $("edMenuBtn").setAttribute("a
 function fillFields(item, seg, date) {
   $("eSeg").value = item ? item.segmento : seg; $("eFecha").value = item ? item.fecha : date;
   $("eAsunto").value = item ? item.asunto || "" : ""; $("eEstado").value = item ? normEstado(item.estado) : "sin_empezar";
-  $("eHs").value = item ? item.hubspot || "" : ""; $("eNotas").value = item ? item.notas || "" : "";
+  $("eHs").value = item ? item.hubspot || "" : ""; $("ePre").value = item ? item.preheader || "" : "";
   const m = (item && item.metricas) || {}, num = (v) => (v == null ? "" : String(v).replace(",", "."));
   $("mEnv").value = num(m.enviados); $("mAp").value = num(m.apertura); $("mCl").value = num(m.clic); $("mForm").value = num(m.formularios);
 }
@@ -1508,10 +1508,12 @@ $("eWrite").onclick = () => openWriter($("eSeg").value, $("eFecha").value || nex
 $("editor").onsubmit = async (ev) => {
   ev.preventDefault();
   if ($("eHs").value && !safeUrl($("eHs").value)) { $("edStatus").textContent = "El enlace tiene que empezar por https://"; return; }
-  const data = { segmento: $("eSeg").value, fecha: $("eFecha").value, asunto: $("eAsunto").value.trim(), estado: $("eEstado").value, hubspot: safeUrl($("eHs").value), notas: $("eNotas").value.trim(),
+  const data = { segmento: $("eSeg").value, fecha: $("eFecha").value, asunto: $("eAsunto").value.trim(), preheader: $("ePre").value.trim(), estado: $("eEstado").value, hubspot: safeUrl($("eHs").value),
     metricas: { enviados: $("mEnv").value.trim(), apertura: $("mAp").value.trim().replace(".", ","), clic: $("mCl").value.trim().replace(".", ","), formularios: $("mForm").value.trim() } };
   try {
     if (state.editing) {
+      const prev = state.cal.find((c) => c.id === state.editing);
+      if (prev && prev.email) data.email = JSON.parse(JSON.stringify({ ...prev.email, asunto_a: data.asunto || prev.email.asunto_a, preheader: data.preheader }));
       await db.collection("calendario").doc(state.editing).update(data);
       const item = { ...state.cal.find((c) => c.id === state.editing), ...data };
       renderRead(item); $("edTitle").textContent = "Ficha del envío"; setEditMode(false);
