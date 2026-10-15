@@ -272,11 +272,27 @@ textarea { min-height: 64px; resize: vertical; }
 .pk-menu .danger { color: var(--err); }
 .pk-menu .danger.confirm { background: var(--err); color: #fff; }
 .pk-hiddate { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
+.newpop { position: absolute; z-index: 60; width: 300px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 14px; display: grid; gap: 10px; }
+.newpop[hidden] { display: none; }
+.np-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.np-h b { display: block; font-size: 1rem; }
+.np-k { display: block; font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 2px; }
+.np-x { width: 30px; height: 30px; border: 0; background: none; border-radius: 8px; color: var(--muted); cursor: pointer; }
+.np-x:hover { background: var(--bg); color: var(--ink); }
+.np-l { font-size: .82rem; color: var(--muted); }
+.np-opts { display: grid; gap: 6px; }
+.np-o { display: flex; align-items: center; gap: 10px; text-align: left; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: 600 .9rem var(--font-body); cursor: pointer; border-left: 4px solid var(--c); }
+.np-o:hover { background: color-mix(in srgb, var(--c) 10%, var(--paper)); border-color: var(--c); }
+.np-o i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.pk-ai { align-self: flex-start; }
 .mhead { background: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 8px 12px; display: grid; gap: 2px; font-family: Helvetica, Arial, sans-serif; }
 .mrow { display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: baseline; gap: 8px; }
 .ml { font-size: .72rem; color: #8A94A0; }
 .mval { font-size: .84rem; color: #23496D; outline: none; border-radius: 4px; padding: 2px 4px; margin-left: -4px; overflow-wrap: anywhere; cursor: text; }
 .mval:hover { background: #F5FAF3; }
+.mval:empty::before { content: attr(data-ph); color: #A8B2BC; }
+.peek .mini .body > p:empty { min-height: 1.6em; }
+.peek .mini .body > p:only-of-type:empty::before, .peek .mini .body > p:first-child:empty::before { content: "Escribe aquí el email…"; color: #A8B2BC; }
 .mval:focus { background: #F5FAF3; box-shadow: 0 0 0 1.5px #C9D3DD; }
 .pk-lbl { font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 4px; }
 .pk-field { outline: none; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--paper); font-size: .9rem; cursor: text; overflow-wrap: anywhere; }
@@ -1234,7 +1250,7 @@ function openWriter(seg, fecha, id) {
   const vis = ["semana", "calendario", "enviados"].find((t) => !$("view-" + t).hidden); if (vis) state.returnTab = vis;
   state.seg = seg; state.slot = { fecha, id: id || null }; state.chat = [];
   const prev = id && state.cal.find((c) => c.id === id);
-  state.current = prev && prev.email ? { ...prev.email, segmento: seg } : null;
+  state.current = prev && hasBody(prev.email) ? { ...prev.email, segmento: seg } : null;
   state.chat = prev && Array.isArray(prev.chat) ? prev.chat.map((m) => ({ role: m.role, text: m.text })) : [];
   $("pEstado").value = prev ? (normEstado(prev.estado) === "sin_empezar" ? "en_redaccion" : normEstado(prev.estado)) : "en_redaccion";
   $("pHs").value = prev ? prev.hubspot || "" : ""; $("savedAt").className = "saved"; $("savedAt").textContent = prev && prev.email ? "Guardado" : "";
@@ -1248,7 +1264,8 @@ $("backBtn").onclick = async () => { if (saveTimer) { clearTimeout(saveTimer); s
 
 /* ---------- Calendario ---------- */
 const MES = (d) => { const m = d.toLocaleDateString("es-ES", { month: "long" }); return m[0].toUpperCase() + m.slice(1) + " " + d.getFullYear(); };
-const estTag = (c) => { const s = SEG[c.segmento] || SEG.nocontactado, st = normEstado(c.estado), k = st === "enviado" ? "env" : (c.email || st === "en_redaccion") ? "esc" : "por";
+const hasBody = (e) => !!(e && Array.isArray(e.bloques) && e.bloques.some((b) => String(Array.isArray(b.contenido) ? b.contenido.join("") : b.contenido || "").trim()));
+const estTag = (c) => { const s = SEG[c.segmento] || SEG.nocontactado, st = normEstado(c.estado), k = st === "enviado" ? "env" : (hasBody(c.email) || (st === "en_redaccion" && !c.email)) ? "esc" : "por";
   return `<span class="esttag est-${k}" style="--c:${s.color}">${k === "env" ? "Enviado" : k === "esc" ? "Sin enviar" : "Por escribir"}</span>`; };
 const segTag = (k) => { const s = SEG[k] || SEG.nocontactado; return `<span class="segtag" style="--c:${s.color}"><i></i>${esc(s.nombre)}</span>`; };
 function evButton(c) {
@@ -1289,13 +1306,41 @@ async function flushPeek() {
   const p = pkPending; pkPending = null; if (!p || !db) return;
   const email = p.email;
   try {
-    await db.collection("calendario").doc(p.id).update({ email, asunto: email.asunto_a || "", preheader: email.preheader || "" });
+    const it = state.cal.find((x) => x.id === p.id), up = { email, asunto: email.asunto_a || "", preheader: email.preheader || "" };
+    if (it && normEstado(it.estado) === "sin_empezar" && hasBody(email)) up.estado = "en_redaccion";
+    await db.collection("calendario").doc(p.id).update(up);
     if ((state.likes || []).some((x) => x.id === p.id)) db.collection("ejemplos").doc(p.id).update({ email }).catch(() => {});
     if ($("pkSaved") && $("peek").dataset.id === p.id) $("pkSaved").textContent = "Guardado";
   } catch { pkPending = pkPending || p; if ($("pkSaved")) $("pkSaved").textContent = "No se ha guardado. Vuelve a intentarlo."; }
 }
 window.addEventListener("pagehide", () => { if (pkPending) flushPeek(); });
 document.addEventListener("visibilitychange", () => { if (document.hidden && pkPending) flushPeek(); });
+function openNew(date, anchor) {
+  closeEditor(); state.peek = null; renderPeek();
+  let pop = $("newPop"); if (!pop) { pop = document.createElement("div"); pop.id = "newPop"; pop.className = "newpop"; document.body.appendChild(pop); }
+  const d = parse(date), t = ((x) => x[0].toUpperCase() + x.slice(1))(d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }));
+  pop.innerHTML = `<div class="np-h"><div><span class="np-k">Nuevo email</span><b>${esc(t)}</b></div><button type="button" class="np-x" aria-label="Cerrar">✕</button></div>
+    <div class="np-l">¿Para qué motivo?</div>
+    <div class="np-opts">${Object.entries(SEG).map(([k, s]) => `<button type="button" class="np-o" data-k="${k}" style="--c:${s.color}"><i></i>${esc(s.nombre)}</button>`).join("")}</div>`;
+  pop.hidden = false;
+  const r = anchor.getBoundingClientRect(), W = 300, vw = document.documentElement.clientWidth;
+  let left = r.right + 8; if (left + W > vw - 12) left = Math.max(12, r.left - W - 8);
+  pop.style.left = left + window.scrollX + "px"; pop.style.top = Math.max(12, r.top + window.scrollY - 8) + "px";
+  pop.querySelector(".np-x").onclick = () => { pop.hidden = true; };
+  pop.querySelectorAll(".np-o").forEach((o) => o.onclick = async () => {
+    if (!db) return; o.disabled = true;
+    const k = o.dataset.k, s = SEG[k];
+    const email = { asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: s.firma.despedida, firma: "— " + s.firma.nombre };
+    try {
+      const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "sin_empezar", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
+      pop.hidden = true;
+      if (!state.cal.some((c) => c.id === ref.id)) state.cal.push({ id: ref.id, segmento: k, fecha: date, estado: "sin_empezar", email });
+      state.peek = ref.id; renderPeek();
+    } catch { o.disabled = false; }
+  });
+}
+document.addEventListener("click", (ev) => { const p = $("newPop"); if (p && !p.hidden && !p.contains(ev.target) && !ev.target.closest(".plus")) p.hidden = true; });
+document.addEventListener("keydown", (ev) => { const p = $("newPop"); if (ev.key === "Escape" && p && !p.hidden) p.hidden = true; });
 function renderPeek() {
   if (pkPending && pkPending.id !== state.peek) flushPeek();
   let c = state.peek && state.cal.find((x) => x.id === state.peek);
@@ -1322,14 +1367,16 @@ function renderPeek() {
         <button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button>
       </div>
     </div>
+    ${e && !hasBody(e) ? `<button type="button" class="btn btn-ink pk-ai" id="pkAi">Que lo escriba Claude</button>` : ""}
     ${e ? `<div class="mini"><div class="mhead">
-      <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
-      <div class="mrow"><span class="ml">Preheader</span><div class="mval" id="pkPre" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</div></div>
+      <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" data-ph="Escribe el asunto" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
+      <div class="mrow"><span class="ml">Preheader</span><div class="mval" id="pkPre" data-ph="Escribe el preheader" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</div></div>
     </div><article class="email"><div class="body" id="peekBody" contenteditable="true" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
   const big = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); };
   if ($("peekOpen")) $("peekOpen").onclick = big;
+  if ($("pkAi")) $("pkAi").onclick = async () => { await flushPeek(); openWriter(c.segmento, c.fecha, c.id); if (!state.current && sample) sendChat("Escríbelo"); };
   if ($("pkOpen2")) $("pkOpen2").onclick = big;
   const menu = $("pkMenu"), mbtn = $("pkMenuBtn");
   const closeMenu = () => { menu.hidden = true; mbtn.setAttribute("aria-expanded", "false"); };
@@ -1477,7 +1524,7 @@ function renderCal() {
     ev.stopPropagation(); const c = state.cal.find((x) => x.id === b.dataset.id); if (!c) return;
     if (c.email || normEstado(c.estado) === "enviado") { closeEditor(); state.peek = c.id; renderPeek(); } else openEditor(c, null, null, b);
   });
-  $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openEditor(null, segForDay(b.dataset.date), b.dataset.date, b); });
+  $("cal").querySelectorAll(".plus").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openNew(b.dataset.date, b); });
   $("cal").querySelectorAll(".ghost").forEach((b) => b.onclick = (ev) => { ev.stopPropagation(); openWriter(b.dataset.seg, b.dataset.date); });
   $("cal").querySelectorAll(".ev[draggable]").forEach((x) => {
     x.ondragstart = (ev) => { state.calDrag = x.dataset.id; ev.dataTransfer.effectAllowed = "move"; try { ev.dataTransfer.setData("text/plain", x.dataset.id); } catch {} x.classList.add("dragging"); };
