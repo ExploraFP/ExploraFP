@@ -224,6 +224,16 @@ textarea { min-height: 64px; resize: vertical; }
 .cmp-send:disabled { opacity: .35; cursor: default; }
 .cmp-stop { background: var(--bg); color: var(--ink); font-size: .7rem; right: 48px; }
 .chat-quick button { padding: 4px 10px !important; font-size: .76rem !important; }
+/* Color del motivo en el editor */
+#view-escribir .chat { border-top: 4px solid var(--c); }
+#view-escribir .chat-h { display: flex; align-items: center; gap: 8px; }
+#view-escribir .chat-h::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+#view-escribir .chat-empty .ce-ic { background: color-mix(in srgb, var(--c) 30%, var(--paper)); color: var(--ink); }
+#view-escribir .ce-opts button:hover, #view-escribir .chat-quick button:hover { border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--paper)); }
+#view-escribir .msg.bot { border-left: 3px solid var(--c); }
+#view-escribir .composer:focus-within { border-color: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
+#view-escribir .stage { background: color-mix(in srgb, var(--c) 10%, #E7ECF1); }
+#view-escribir .email ::selection, #view-escribir .mail-meta ::selection { background: color-mix(in srgb, var(--c) 40%, #fff); }
 @media (max-width: 900px) { .chat { position: static; height: auto; max-height: none; } .chat-log { max-height: 50vh; } .wb-saved { margin-left: 0; } }
 @media (max-width: 600px) { .writer-bar .wb-title { flex: 1 1 calc(100% - 60px); } .writer-bar .wb-acts { margin-left: auto; } }
 .mail-meta { max-width: 600px; margin: 0 auto; background: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 12px 32px; display: grid; gap: 4px; font-family: Helvetica, Arial, sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-radius: 8px 8px 0 0; }
@@ -1406,7 +1416,7 @@ function openWriter(seg, fecha, id) {
   $("pHs").value = prev ? prev.hubspot || "" : ""; $("savedAt").className = "saved"; $("savedAt").textContent = prev && prev.email ? "Guardado" : "";
   renderChat(); renderPreview(); resetHistory(prev && prev.versiones); $("status").textContent = ""; sentUi();
   const s = SEG[seg], d = parse(fecha);
-  document.querySelector(".writer-bar").style.setProperty("--c", s.color);
+  $("view-escribir").style.setProperty("--c", s.color);
   slotLabelUi();
   $("editor").hidden = true;
   showTab("escribir");
