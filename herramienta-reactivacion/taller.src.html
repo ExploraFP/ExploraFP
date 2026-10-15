@@ -124,7 +124,7 @@ textarea { min-height: 64px; resize: vertical; }
 .seg2 button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .inbox { background: #FFFFFF; color: #202124; border: 1px solid #DADCE0; border-radius: 12px; overflow: hidden; font-family: Roboto, Arial, sans-serif; }
 .inbox .cap { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: #5F6368; padding: 8px 14px; background: #F6F8FC; border-bottom: 1px solid #E5E7EB; }
-.mail-row { display: grid; grid-template-columns: 22px 160px minmax(0, 1fr) auto; gap: 10px; padding: 11px 14px; align-items: baseline; font-size: .9rem; }
+.mail-row { display: grid; grid-template-columns: 160px minmax(0, 1fr) auto; gap: 10px; padding: 11px 14px; align-items: baseline; font-size: .9rem; }
 .mail-row + .mail-row { border-top: 1px solid #F1F3F4; }
 .mail-row .ab { font: 600 .68rem var(--font-mono); color: #1A73E8; }
 .mail-row .from { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -133,13 +133,11 @@ textarea { min-height: 64px; resize: vertical; }
 .mail-row .line:has(#ibA:empty) > span, .mail-row .line:has(#ibB:empty) > span { visibility: hidden; }
 .mail-row .time { font-size: .78rem; color: #5F6368; font-weight: 700; }
 @media (max-width: 600px) { .mail-row { grid-template-columns: 22px minmax(0, 1fr) auto; } .mail-row .line { grid-column: 2 / -1; white-space: normal; } }
-.alts summary { cursor: pointer; font: 600 .8rem var(--font-body); color: var(--muted); padding: 2px 0; width: max-content; }
-.alts summary:hover { color: var(--ink); }
-.alt-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.alt { display: inline-flex; align-items: center; gap: 2px; padding: 3px 3px 3px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); font-size: .85rem; color: var(--ink); max-width: 100%; }
-.alt .t { min-width: 0; overflow-wrap: anywhere; margin-right: 4px; }
-.alt button { font: 600 .7rem var(--font-body); width: 28px; height: 28px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; }
-.alt button:hover { background: var(--line); color: var(--ink); }
+.alts { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.alts-l { font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); flex: none; }
+.alt-list { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; padding: 2px 0; min-width: 0; }
+.alt { flex: none; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); font: 500 .8rem var(--font-body); padding: 5px 12px; cursor: pointer; white-space: nowrap; }
+.alt:hover { border-color: var(--ink); }
 .stage { background: #E7ECF1; border-radius: 12px; padding: 22px 12px; overflow-x: auto; }
 .email { background: #FFFFFF; color: #23496D; margin: 0 auto; max-width: 600px; font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.75; transition: max-width .2s; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .stage.mobile .email { max-width: 375px; font-size: 15px; }
@@ -254,6 +252,24 @@ textarea { min-height: 64px; resize: vertical; }
 .peek .del { color: var(--err); }
 .peek .del.confirm { background: var(--err); color: #fff; border-color: var(--err); }
 .peek { position: fixed; right: 16px; top: 16px; bottom: 16px; width: min(440px, calc(100vw - 32px)); z-index: 40; box-shadow: 0 12px 48px rgba(0,0,0,.22); align-content: start; overflow: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; border-top: 5px solid var(--c); display: grid; gap: 12px; padding: 14px 16px 16px; }
+.pk-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.pk-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; padding-top: 5px; }
+.pk-date { font-size: .8rem; color: var(--muted); }
+.pk-btns { display: flex; gap: 6px; flex: none; }
+.pk-mwrap { position: relative; }
+.pk-menu { position: absolute; right: 0; top: 38px; z-index: 5; min-width: 230px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.16); padding: 6px; display: grid; }
+.pk-menu button { text-align: left; background: none; border: 0; border-radius: 8px; padding: 9px 12px; font: 500 .86rem var(--font-body); color: var(--ink); cursor: pointer; }
+.pk-menu button:hover { background: var(--bg); }
+.pk-menu .danger { color: var(--err); }
+.pk-menu .danger.confirm { background: var(--err); color: #fff; }
+.pk-hiddate { position: absolute; right: 0; top: 36px; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
+.pk-inbox { display: grid; gap: 4px; }
+.pk-lbl { font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 4px; }
+.pk-field { outline: none; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--paper); font-size: .9rem; cursor: text; overflow-wrap: anywhere; }
+.pk-field:hover { border-color: color-mix(in srgb, var(--ink) 35%, var(--line)); }
+.pk-field:focus { border-color: var(--ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--lime) 45%, transparent); }
+.pk-subj { font-weight: 600; }
+.pk-pre { color: var(--muted); }
 .peek .ph-head { display: flex; align-items: flex-start; gap: 6px; }
 .peek .x:hover { border-color: var(--ink); }
 .peek .ph-head .who { flex: 1; min-width: 0; }
@@ -594,12 +610,12 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
             </div>
           </div>
         </div>
+        <div class="alts" id="alts" hidden><span class="alts-l">Otros asuntos</span><div class="alt-list" id="altList"></div></div>
         <div class="inbox" aria-label="Vista en la bandeja de entrada">
           <div class="cap">Así lo ve en la bandeja de entrada</div>
-          <div class="mail-row"><span class="ab">A</span><span class="from" id="ibFrom"></span><span class="line"><b id="ibA"></b> <span>– <span id="ibPre"></span></span></span><span class="time">9:41</span></div>
-          <div class="mail-row"><span class="ab">B</span><span class="from" id="ibFrom2"></span><span class="line"><b id="ibB"></b> <span>– <span id="ibPre2"></span></span></span><span class="time">9:41</span></div>
+          <div class="mail-row"><span class="from" id="ibFrom"></span><span class="line"><b id="ibA"></b> <span>– <span id="ibPre"></span></span></span><span class="time">9:41</span></div>
+          <div class="mail-row" hidden><span class="from" id="ibFrom2"></span><span class="line"><b id="ibB"></b> <span>– <span id="ibPre2"></span></span></span><span class="time">9:41</span></div>
         </div>
-        <details class="alts" id="alts" hidden><summary>Más asuntos</summary><div class="alt-list" id="altList"></div></details>
         <div class="stage" id="stage">
           <article class="email" id="email">
             <div class="hdr"><img alt="Cabecera Explora × Ucademy · Formación Profesional" src="__HEADER__"></div>
@@ -608,8 +624,7 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           </article>
         </div>
         <div class="actions">
-          <button type="button" class="btn btn-line btn-sm" data-copy="a">Copiar asunto A</button>
-          <button type="button" class="btn btn-line btn-sm" data-copy="b">Copiar asunto B</button>
+          <button type="button" class="btn btn-line btn-sm" data-copy="a">Copiar asunto</button>
           <button type="button" class="btn btn-line btn-sm" data-copy="pre">Copiar preheader</button>
           <button type="button" class="btn btn-ink btn-sm" data-copy="body">Copiar email</button>
           <span class="sp"></span>
@@ -815,12 +830,12 @@ El asunto es lo más importante del email: si no se abre, lo demás no existe.
   · Nombre propio + hecho real de su ficha, si se parece al lector: "rosa volvió a estudiar a los 52"
   · Imagen absurda con él dentro: "a mitad del pasillo me acordé de ti"
 - Vuestros leads no conocen al narrador: el asunto y el preheader, juntos, tienen que darle un ancla que reconozca (la FP que pidió, el título o su situación). Sin vender: nada de "matricúlate", "oferta" ni promesas.
-- La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Como el preheader es el mismo para A y B: si el preheader nombra la FP, ningún asunto la nombra; si no la nombra, los dos asuntos la llevan.
+- La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Si el preheader nombra la FP, el asunto no la nombra; si no la nombra, el asunto la lleva.
 - Tono de WhatsApp: 2-8 palabras, minúsculas naturales, sin emojis ni exclamaciones.
-- Cómo elegirlos: escribe en silencio al menos 15 asuntos con mecanismos distintos. Puntúa cada uno del 1 al 10 imaginando que llega de un desconocido entre 40 correos de un lunes: ¿lo abrirías? Tira todo lo que no llegue a 8. A y B son los dos mejores, con mecanismos distintos; los 6 siguientes van en "asuntos_extra". Si no llegas a 8 buenos, escribe más hasta tenerlos.
+- Cómo elegirlos: escribe en silencio al menos 15 asuntos con mecanismos distintos. Puntúa cada uno del 1 al 10 imaginando que llega de un desconocido entre 40 correos de un lunes: ¿lo abrirías? Tira todo lo que no llegue a 8. El mejor es el asunto; los 6 siguientes van en "asuntos_extra". Si no llegas a 8 buenos, escribe más hasta tenerlos.
 - Prohibido: asuntos que solo hablan del narrador; "Re:" o "Fwd:" falsos; "lo de…" o "sobre…"; "¿qué pasó con…?" y fórmulas de comercial; titulares de blog o con mayúsculas de título; preguntas de sí o no tibias; gratis, oferta, urgente, última oportunidad; cebo que el email no cumple.
-- El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres. Tiene que funcionar con los dos asuntos.
-- Buenos: A "tienes algo a medias (y no es la compra)" / B "sé por qué no seguiste" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "dejé la compra a medias" (solo habla del narrador, a un desconocido le da igual), "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida).
+- El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres.
+- Bueno: "tienes algo a medias (y no es la compra)" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "dejé la compra a medias" (solo habla del narrador, a un desconocido le da igual), "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida).
 
 ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 - ¿La primera línea obliga a leer la segunda?
@@ -872,12 +887,12 @@ Qué funciona: gancho pequeño y verdadero, giro seco ("En fin."), historia conc
 Ejemplo 2 · qué NO hacer. Gancho de la pizza quemada que conecta así: "Aprendí que si te distraes se te quema la pizza, o peor, se te pasa la oportunidad de estudiar una FP". El puente es obvio y explica la moraleja. Además usa "Su plataforma con IA lo hace todo por ti" (promesa exagerada, Explora en tercera persona) y "la mayor bolsa de empleo jamás creada" (superlativo no demostrable). Evita todo eso.`;
 
 const FORMATO = `Responde SOLO con un objeto JSON:
-{"angulo":"una frase","asunto_a":"...","asunto_b":"...","preheader":"...",
+{"angulo":"una frase","asunto_a":"el asunto","preheader":"...",
  "asuntos_extra":[{"asunto":"...","mecanismo":"confesión"}],
  "bloques":[{"tipo":"texto","contenido":"párrafo de 1-3 frases (puede llevar {{nombre}} y **negrita**)"},{"tipo":"lista","contenido":["punto corto","punto corto"]},{"tipo":"boton","contenido":"Texto del botón"}],
  "despedida":"...","firma":"— ...","pd":"P.D.: ..."}
 Exactamente dos bloques "boton". Bloque "lista" opcional, como mucho uno.
-"asuntos_extra": exactamente 6, distintos de A y B. Si no te piden cambiar los asuntos, devuelve los mismos.`;
+"asuntos_extra": exactamente 6, distintos del asunto. Si no te piden cambiar los asuntos, devuelve los mismos.`;
 
 
 const state = { chat: [], slot: null, seg: "nocontactado", angulo: "", formacion: "", buyer: "", current: null, cal: [], weekOffset: 0, editing: null, bSector: "", bOpen: "" };
@@ -933,7 +948,7 @@ function renderPreview() {
   }
   const s = SEG[e.segmento];
   $("ibFrom").textContent = $("ibFrom2").textContent = `${s.firma.nombre} · Explora FP`;
-  $("ibA").textContent = e.asunto_a; $("ibB").textContent = e.asunto_b;
+  $("ibA").textContent = e.asunto_a; $("ibB").textContent = e.asunto_a;
   $("ibPre").textContent = $("ibPre2").textContent = e.preheader;
   ["ibA", "ibB", "ibPre"].forEach((id) => { $(id).contentEditable = "plaintext-only"; $(id).spellcheck = true; });
   const parts = e.bloques.map((b) => b.tipo === "boton"
@@ -954,11 +969,11 @@ const extras = (e) => (Array.isArray(e && e.asuntos_extra) ? e.asuntos_extra : [
 function renderAlts() {
   const list = extras(state.current);
   $("alts").hidden = !list.length;
-  $("altList").innerHTML = list.map((x, i) => `<span class="alt"><span class="t">${esc(x.asunto)}</span><button type="button" data-alt="${i}" data-k="a" title="Usar como asunto A" aria-label="Usar como asunto A">A</button><button type="button" data-alt="${i}" data-k="b" title="Usar como asunto B" aria-label="Usar como asunto B">B</button></span>`).join("");
+  $("altList").innerHTML = list.map((x, i) => `<button type="button" class="alt" data-alt="${i}" title="Usar este asunto">${esc(x.asunto)}</button>`).join("");
 }
 $("alts").addEventListener("click", (ev) => {
   const b = ev.target.closest("[data-alt]"); if (!b || !state.current) return;
-  const e = emailFromDom(), list = extras(e), i = +b.dataset.alt, key = b.dataset.k === "a" ? "asunto_a" : "asunto_b";
+  const e = emailFromDom(), list = extras(e), i = +b.dataset.alt, key = "asunto_a";
   const pick = list[i]; if (!pick) return;
   list[i] = { asunto: e[key], mecanismo: "" };
   state.current = { ...e, [key]: pick.asunto, asuntos_extra: list };
@@ -1038,7 +1053,7 @@ function instructions(withBuyers) {
   if (likes.length) out.push("EMAILS QUE AL EQUIPO LE HAN GUSTADO (es el nivel y el estilo que buscan: imita cómo están escritos, pero NO copies sus ganchos, asuntos ni frases):\n" + likes.map((x) => {
     const e = x.email, sg = SEG[x.segmento];
     const body = e.bloques.map((b) => b.tipo === "boton" ? `[BOTÓN: ${b.contenido}]` : b.tipo === "lista" ? (Array.isArray(b.contenido) ? b.contenido : [b.contenido]).map((l) => "- " + l).join("\n") : b.contenido).join("\n\n");
-    return `--- ${sg ? sg.nombre + " · " + sg.firma.nombre : ""}\nAsunto A: ${e.asunto_a || ""}\nAsunto B: ${e.asunto_b || ""}\nPreheader: ${e.preheader || ""}\n\n${body}\n\n${e.pd || ""}\n${e.despedida || ""}\n${e.firma || ""}`;
+    return `--- ${sg ? sg.nombre + " · " + sg.firma.nombre : ""}\nAsunto: ${e.asunto_a || ""}\nPreheader: ${e.preheader || ""}\n\n${body}\n\n${e.pd || ""}\n${e.despedida || ""}\n${e.firma || ""}`;
   }).join("\n\n"));
   if (state.current) out.push("BORRADOR ACTUAL (cámbialo según lo que te pidan; si no te piden cambiar algo, mantenlo igual):\n" + JSON.stringify({ ...state.current, segmento: undefined, formacion: undefined }));
   out.push("", "FORMATO DE CADA RESPUESTA: un objeto JSON con dos campos: \"mensaje\" (1-2 frases para el equipo explicando qué has hecho o preguntando algo) y \"email\" (el email completo con esta forma):", FORMATO);
@@ -1088,7 +1103,7 @@ async function sendChat(text) {
     const s = SEG[state.seg];
     if (state.current) snapNow();
     const keepAlt = extras(em).length ? extras(em) : extras(state.current);
-    state.current = { ...em, asuntos_extra: keepAlt, segmento: state.seg, asunto_b: em.asunto_b || em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
+    state.current = { ...em, asuntos_extra: keepAlt, segmento: state.seg, asunto_b: em.asunto_a, despedida: em.despedida || s.firma.despedida, firma: em.firma || "— " + s.firma.nombre };
     state.chat[state.chat.length - 1] = { role: "bot", text: (d.mensaje || "Listo.").trim() };
     renderPreview(); snapNow();
     scheduleSave(0);
@@ -1148,7 +1163,7 @@ function emailFromDom() {
     const t = domText(el); if (t) bloques.push({ tipo: "texto", contenido: t });
   }
   return { ...e, bloques, pd, despedida, firma,
-    asunto_a: $("ibA").textContent.trim() || e.asunto_a, asunto_b: $("ibB").textContent.trim() || e.asunto_b, preheader: $("ibPre").textContent.trim() };
+    asunto_a: $("ibA").textContent.trim() || e.asunto_a, asunto_b: $("ibA").textContent.trim() || e.asunto_a, preheader: $("ibPre").textContent.trim() };
 }
 let saveTimer = null, saving = Promise.resolve();
 function scheduleSave(ms) { clearTimeout(saveTimer); saveTimer = setTimeout(() => { saving = saving.then(saveDraft); }, ms ?? 1200); }
@@ -1246,7 +1261,7 @@ function peekFromDom(c) {
     const t = domText(el); if (t) bloques.push({ tipo: "texto", contenido: t });
   }
   const val = (id, d) => ($(id) ? $(id).textContent.trim() : d) || d;
-  return { ...e, bloques, pd, despedida, firma, asunto_a: val("pkA", e.asunto_a), asunto_b: val("pkB", e.asunto_b), preheader: $("pkPre") ? $("pkPre").textContent.trim() : (e.preheader || "") };
+  return { ...e, bloques, pd, despedida, firma, asunto_a: val("pkA", e.asunto_a), asunto_b: val("pkA", e.asunto_a), preheader: $("pkPre") ? $("pkPre").textContent.trim() : (e.preheader || "") };
 }
 let peekTimer = null;
 function peekSave(c) {
@@ -1270,30 +1285,51 @@ function renderPeek() {
   const s = SEG[c.segmento] || SEG.nocontactado, e = c.email, sent = normEstado(c.estado) === "enviado", hs = safeUrl(c.hubspot);
   $("peek").dataset.id = c.id;
   $("peek").style.setProperty("--c", s.color);
+  const fecha = ((d) => d[0].toUpperCase() + d.slice(1))(parse(c.fecha).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, ""));
   $("peek").innerHTML = `
-    <div class="ph-head"><div class="who"><b>${segTag(c.segmento)}</b><span>${estTag(c)}</span><label class="when">Día de envío <input type="date" id="peekDate" value="${esc(c.fecha)}"></label></div>${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}<button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
-    <div class="acts">
-      <button type="button" class="btn btn-line btn-sm" id="peekSent">${sent ? "Marcar como no enviado" : "Ya está enviado"}</button>
-      <span class="sp"></span>
-      <button type="button" class="x del" id="peekDel" aria-label="Borrar email" title="Borrar email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
+    <div class="pk-top">
+      <div class="pk-meta">${segTag(c.segmento)}${estTag(c)}<span class="pk-date">${esc(fecha)}</span></div>
+      <div class="pk-btns">
+        <div class="pk-mwrap"><button type="button" class="x" id="pkMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Más opciones" title="Más opciones">⋯</button>
+          <div class="pk-menu" id="pkMenu" role="menu" hidden>
+            <button type="button" role="menuitem" id="pkSent">${sent ? "Marcar como sin enviar" : "Marcar como enviado"}</button>
+            <button type="button" role="menuitem" id="pkDay">Cambiar día</button>
+            ${e ? `<button type="button" role="menuitem" id="pkOpen2">Abrir con el chat de Claude</button>` : ""}
+            <button type="button" role="menuitem" class="danger" id="pkDel">Borrar email</button>
+          </div>
+          <input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" tabindex="-1" aria-hidden="true">
+        </div>
+        ${e ? `<button type="button" class="x" id="peekOpen" aria-label="Abrir en grande" title="Abrir en grande"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>` : ""}
+        <button type="button" class="x" id="peekClose" aria-label="Cerrar" title="Cerrar">✕</button>
+      </div>
     </div>
-    ${e ? `<div class="subj"><div><i>A</i><span class="ed1" id="pkA" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</span></div><div><i>B</i><span class="ed1" id="pkB" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_b || "")}</span></div><div class="pre"><i>PRE</i><span class="ed1" id="pkPre" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</span></div></div>
-    <div class="mini"><article class="email"><div class="body" id="peekBody" contenteditable="true" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}
-`;
+    ${e ? `<div class="pk-inbox">
+      <label class="pk-lbl">Asunto</label><div class="pk-field pk-subj" id="pkA" contenteditable="plaintext-only" spellcheck="true">${esc(e.asunto_a || "")}</div>
+      <label class="pk-lbl">Preheader</label><div class="pk-field pk-pre" id="pkPre" contenteditable="plaintext-only" spellcheck="true">${esc(e.preheader || "")}</div>
+    </div>
+    <div class="mini"><article class="email"><div class="body" id="peekBody" contenteditable="true" spellcheck="true">${peekBody(e)}</div></article></div><span class="saved" id="pkSaved" role="status"></span>` : `<div class="empty-m">El texto de este email no está guardado en la herramienta.</div>`}`;
   $("peek").hidden = false; $("prod").classList.add("open");
   $("peekClose").onclick = () => { state.peek = null; renderPeek(); };
-  if ($("peekOpen")) $("peekOpen").onclick = () => openWriter(c.segmento, c.fecha, c.id);
-  $("peekSent").onclick = async () => { $("peekSent").disabled = true; try { await db.collection("calendario").doc(c.id).update({ estado: sent ? "en_redaccion" : "enviado" }); } catch { $("peekSent").disabled = false; $("peekSent").textContent = "No se pudo"; } };
-  ["pkA", "pkB", "pkPre", "peekBody"].forEach((id) => { const el = $(id); if (!el) return;
+  const big = () => openWriter(c.segmento, c.fecha, c.id);
+  if ($("peekOpen")) $("peekOpen").onclick = big;
+  if ($("pkOpen2")) $("pkOpen2").onclick = big;
+  const menu = $("pkMenu"), mbtn = $("pkMenuBtn");
+  const closeMenu = () => { menu.hidden = true; mbtn.setAttribute("aria-expanded", "false"); };
+  mbtn.onclick = (ev) => { ev.stopPropagation(); menu.hidden = !menu.hidden; mbtn.setAttribute("aria-expanded", String(!menu.hidden)); };
+  $("pkSent").onclick = async () => { closeMenu(); try { await db.collection("calendario").doc(c.id).update({ estado: sent ? "en_redaccion" : "enviado" }); } catch {} };
+  $("pkDay").onclick = () => { closeMenu(); const d = $("peekDate"); try { d.showPicker(); } catch { d.focus(); d.click(); } };
+  $("peekDate").onchange = async () => { const v = $("peekDate").value; if (!v) return; try { await db.collection("calendario").doc(c.id).update({ fecha: v }); } catch {} };
+  $("pkDel").onclick = async (ev) => {
+    const b = $("pkDel"); ev.stopPropagation();
+    if (!b.classList.contains("confirm")) { b.classList.add("confirm"); b.textContent = "Pulsa otra vez para borrar"; return; }
+    closeMenu();
+    try { await db.collection("calendario").doc(c.id).delete(); try { await db.collection("ejemplos").doc(c.id).delete(); } catch {} state.peek = null; renderPeek(); } catch {}
+  };
+  $("peek").onclick = (ev) => { if (!menu.hidden && !ev.target.closest(".pk-mwrap")) closeMenu(); };
+  ["pkA", "pkPre", "peekBody"].forEach((id) => { const el = $(id); if (!el) return;
     el.addEventListener("input", () => { if ($("pkSaved")) $("pkSaved").textContent = "Guardando…"; peekSave(c); });
     if (id !== "peekBody") el.addEventListener("keydown", (ev) => { if (ev.key === "Enter") { ev.preventDefault(); el.blur(); } });
   });
-  $("peekDate").onchange = async () => { const v = $("peekDate").value; if (!v) return; try { await db.collection("calendario").doc(c.id).update({ fecha: v }); } catch {} };
-  $("peekDel").onclick = async () => {
-    const b = $("peekDel");
-    if (!b.classList.contains("confirm")) { b.classList.add("confirm"); b.title = "Pulsa otra vez para borrar"; b.setAttribute("aria-label", "Pulsa otra vez para borrar"); setTimeout(() => { if (b.isConnected) { b.classList.remove("confirm"); b.title = "Borrar email"; } }, 3000); return; }
-    try { await db.collection("calendario").doc(c.id).delete(); try { await db.collection("ejemplos").doc(c.id).delete(); } catch {} state.peek = null; renderPeek(); } catch {}
-  };
 }
 document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && state.peek && $("editor").hidden) { state.peek = null; renderPeek(); } });
 document.addEventListener("click", (ev) => { if (state.peek && !$("peek").hidden && ev.target.isConnected && ev.target.closest("#view-calendario") && !$("peek").contains(ev.target) && !ev.target.closest(".ev, #editor")) { state.peek = null; renderPeek(); } });

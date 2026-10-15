@@ -1,6 +1,6 @@
 ---
 name: reactivacion-perdidos
-description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto A/B, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "Más tiempo" (firma Vera), "Ghosting" (firma Rai) y "No contactado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "un email de Ghosting", "un mail de Vera/Rai/Noe", "el correo de No contactado", etc. Sustituye a newsletter-explora y newsletter-rai.
+description: Escribe los emails de reactivación de leads perdidos de Explora FP (asunto, preheader, cuerpo, CTA y PD) según el motivo de pérdida — "Más tiempo" (firma Vera), "Ghosting" (firma Rai) y "No contactado" (firma Noe). Usa esta skill SIEMPRE que haya que redactar, revisar o iterar un email para leads perdidos, dormidos o de reactivación de Explora, o cuando el usuario diga "un email de Ghosting", "un mail de Vera/Rai/Noe", "el correo de No contactado", etc. Sustituye a newsletter-explora y newsletter-rai.
 ---
 
 # Reactivación de leads perdidos · Explora FP
@@ -123,12 +123,12 @@ El asunto es lo más importante del email: si no se abre, lo demás no existe.
   · Nombre propio + hecho real de su ficha, si se parece al lector: "rosa volvió a estudiar a los 52"
   · Imagen absurda con él dentro: "a mitad del pasillo me acordé de ti"
 - Vuestros leads no conocen al narrador: el asunto y el preheader, juntos, tienen que darle un ancla que reconozca (la FP que pidió, el título o su situación). Sin vender: nada de "matricúlate", "oferta" ni promesas.
-- La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Como el preheader es el mismo para A y B: si el preheader nombra la FP, ningún asunto la nombra; si no la nombra, los dos asuntos la llevan.
+- La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos. Si el preheader nombra la FP, el asunto no la nombra; si no la nombra, el asunto la lleva.
 - Tono de WhatsApp: 2-8 palabras, minúsculas naturales, sin emojis ni exclamaciones.
-- Cómo elegirlos: escribe en silencio al menos 15 asuntos con mecanismos distintos. Puntúa cada uno del 1 al 10 imaginando que llega de un desconocido entre 40 correos de un lunes: ¿lo abrirías? Tira todo lo que no llegue a 8. A y B son los dos mejores, con mecanismos distintos; los 6 siguientes van en "asuntos_extra". Si no llegas a 8 buenos, escribe más hasta tenerlos.
+- Cómo elegirlos: escribe en silencio al menos 15 asuntos con mecanismos distintos. Puntúa cada uno del 1 al 10 imaginando que llega de un desconocido entre 40 correos de un lunes: ¿lo abrirías? Tira todo lo que no llegue a 8. El mejor es el asunto; los 6 siguientes van en "asuntos_extra". Si no llegas a 8 buenos, escribe más hasta tenerlos.
 - Prohibido: asuntos que solo hablan del narrador; "Re:" o "Fwd:" falsos; "lo de…" o "sobre…"; "¿qué pasó con…?" y fórmulas de comercial; titulares de blog o con mayúsculas de título; preguntas de sí o no tibias; gratis, oferta, urgente, última oportunidad; cebo que el email no cumple.
-- El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres. Tiene que funcionar con los dos asuntos.
-- Buenos: A "tienes algo a medias (y no es la compra)" / B "sé por qué no seguiste" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "dejé la compra a medias" (solo habla del narrador, a un desconocido le da igual), "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida).
+- El preheader completa el asunto o le da un giro; nunca lo repite ni resume el email. Lo importante en los primeros 40 caracteres.
+- Bueno: "tienes algo a medias (y no es la compra)" + preheader "Yo dejé el carro. Tú, la propuesta de tu FP." Malos: "dejé la compra a medias" (solo habla del narrador, a un desconocido le da igual), "lo del carro de la compra" (vago, parece un recado), "¿qué pasó con la propuesta?" (suena a comercial), "¡Tu futuro te espera!", "Descubre tu FP ideal", "¿qué pasó con tu fp?" + "…la propuesta de tu FP." (FP repetida).
 
 ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 - ¿La primera línea obliga a leer la segunda?
@@ -176,7 +176,7 @@ El email de Rosa tuvo 33,47 % de apertura pero 0,56 % de clic con "Quiero más i
 ## Asunto y preheader
 
 - El asunto es el narrador hablando, por curiosidad; nunca un titular que vende. Sin exclamaciones ni urgencia falsa. ~45 caracteres.
-- Dos asuntos para test A/B con enfoques distintos (curiosidad en voz del narrador / nombre propio + resultado, como "Rosa se sacó una FP", si hay caso).
+- Un solo asunto y un solo preheader.
 - Preheader que completa o contrasta el asunto. ~60 caracteres.
 
 ## Entrega
