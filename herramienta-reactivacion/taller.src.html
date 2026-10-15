@@ -690,10 +690,9 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
           </div>
         </div>
         <div class="alts" id="alts" hidden><span class="alts-l">Otros asuntos</span><div class="alt-list" id="altList"></div></div>
-        <div hidden><span id="ibFrom2"></span><b id="ibB"></b><span id="ibPre2"></span></div>
+        <div hidden><span id="ibFrom"></span><span id="ibFrom2"></span><b id="ibB"></b><span id="ibPre2"></span></div>
         <div class="stage" id="stage">
           <div class="mail-meta" aria-label="Cabecera del email">
-            <div class="mrow"><span class="ml">De</span><span class="mv" id="ibFrom"></span></div>
             <div class="mrow"><span class="ml">Asunto</span><b class="mv" id="ibA" data-ph="Escribe el asunto"></b></div>
             <div class="mrow"><span class="ml">Preheader</span><span class="mv" id="ibPre" data-ph="Escribe el preheader"></span></div>
           </div>
@@ -1403,8 +1402,7 @@ function openView(c) {
       <div class="seg2" role="group" aria-label="Pantalla"><button type="button" aria-pressed="true" data-mvdev="desktop">Ordenador</button><button type="button" aria-pressed="false" data-mvdev="mobile">Móvil</button></div>
       <button type="button" class="x" id="mvClose" aria-label="Cerrar" title="Cerrar">✕</button></div>
     <div class="stage" id="mvStage">
-      <div class="mail-meta"><div class="mrow"><span class="ml">De</span><span class="mv">${esc(s.firma.nombre)} · Explora FP</span></div>
-        <div class="mrow"><span class="ml">Asunto</span><b class="mv">${esc(e.asunto_a || "")}</b></div>
+      <div class="mail-meta"><div class="mrow"><span class="ml">Asunto</span><b class="mv">${esc(e.asunto_a || "")}</b></div>
         <div class="mrow"><span class="ml">Preheader</span><span class="mv">${esc(e.preheader || "")}</span></div></div>
       <article class="email"><div class="hdr"><img alt="" src="${esc(hdr)}"></div><div class="body">${peekBody(e)}</div><div class="ftr"><img alt="" src="${esc(ftr)}"></div></article>
     </div></div>`;
