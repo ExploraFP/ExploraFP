@@ -159,7 +159,12 @@ async function pedirCambioSlide(peticion) {
       MESA.pidiendo = false; MESA.respuesta = 'Claude no ha cambiado nada. Prueba a decirlo de otra forma o a nombrar la slide (p. ej. «en la slide 3…»).';
       pintarCajaClaude(); return;
     }
+    // salta a la primera slide que ha cambiado, para que se vea el cambio (16/10/2026: Claude cambió la slide 3 y Sandra
+    // estaba mirando otra: «no veo que haya cambiado»)
+    const firma = o => o ? JSON.stringify(Object.keys(o).sort().filter(k => o[k] != null && o[k] !== '').map(k => [k, o[k]])) : '';
+    const cambiada = nuevas.findIndex((s, k) => firma(s) !== firma(c.slides[k]));
     c.slides = nuevas; if (copy != null) c.copy = copy;
+    if (cambiada >= 0) EST.sel = cambiada;
     if (EST.sel >= c.slides.length) EST.sel = c.slides.length - 1;
     guardarC(c);
     MESA.pidiendo = false; MESA.respuesta = '✓ ' + (r && r.resumen ? String(r.resumen) : 'Hecho') + ' · Si no te gusta: ↶ Deshacer';
