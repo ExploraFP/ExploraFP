@@ -1,0 +1,41 @@
+/* Contenidos · identidad común para la Newsletter (se inyecta al final de su <head> en construir.mjs).
+   Mismos colores, cabecera y pestañas que Carruseles. Los colores de los narradores (Vera, Rai, Noe) se quedan (decisión de Sandra). */
+:root {
+  --bg: #FAFFFA; --paper: #FFFFFF; --ink: #141417; --muted: #48564A; --line: #DBE3D6;
+  --band: #1B3620; --band-ink: #EAF3E8; --forest: #366B40; --lime: #D8FF6E; --leaf: #4CCD4B; --tint: #EDFEC3;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0F130F; --paper: #161B16; --ink: #E8EFE6; --muted: #A9B7A8; --line: #2C352C; --band: #0A0F0A; --tint: #26330F; }
+}
+:root[data-theme="dark"] { --bg: #0F130F; --paper: #161B16; --ink: #E8EFE6; --muted: #A9B7A8; --line: #2C352C; --band: #0A0F0A; --tint: #26330F; }
+
+/* Cabecera igual que la de Carruseles: nombre de la sección en Gravity y pestañas en píldora al lado */
+.band { position: sticky; top: 0; z-index: 30; }
+.band-in { max-width: none !important; padding: 12px 28px !important; gap: 28px !important; justify-content: flex-start !important; align-items: center !important; flex-wrap: nowrap !important; }
+.brand { padding: 0 28px 0 0 !important; border-right: 1px solid rgba(255,255,255,.12); }
+.brand .logo, .brand .bdiv, .brand .divider { display: none !important; }
+.brand h1 { font-size: 25px !important; letter-spacing: 0 !important; text-transform: none !important; color: #fff !important; line-height: .9 !important; }
+.brand h1 a, #nlText { color: #fff !important; }
+.band-in { min-height: 71px; }
+.brand h1 .home { gap: 0 !important; }
+.tabs { background: rgba(255,255,255,.07); padding: 3px; border-radius: 9px; gap: 2px !important; }
+.tabs button { padding: 8px 18px !important; border-radius: 9px !important; font: 500 14px var(--font-body) !important; color: #C9DAC7 !important; opacity: 1 !important; background: none !important; box-shadow: none !important; }
+.tabs button:hover { color: #fff !important; }
+.tabs button[aria-selected="true"] { background: var(--lime) !important; color: #1B3620 !important; font-weight: 700 !important; box-shadow: 0 2px 8px rgba(0,0,0,.18) !important; }
+.tabs .count { background: #1B3620; color: var(--lime); }
+
+/* Titulares como en Carruseles: Gravity, sin mayúsculas forzadas */
+h2, .week-head h2, .todo-group h2 { text-transform: none !important; letter-spacing: 0 !important; }
+.wrap { max-width: none !important; padding-inline: 28px !important; }
+
+/* La cinta de cierre (claim) sobra dentro de Contenidos */
+.ribbon { display: none !important; }
+
+@media (max-width: 900px) {
+  .band-in { padding: 10px 16px !important; gap: 12px !important; }
+  .brand { padding-right: 12px !important; }
+  .brand h1 { font-size: 20px !important; }
+  .tabs { overflow-x: auto; }
+  .tabs button { padding: 7px 12px !important; font-size: 13px !important; }
+  .wrap { padding-inline: 16px !important; }
+}

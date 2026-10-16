@@ -70,6 +70,12 @@ Si un YAML falla, el render sigue con los demás y lo lista al final.
 - Capas: la foto de portada va inclinada, sin marco blanco (nada de polaroid), y la caja inclinada al otro lado.
 - Faltan: ilustraciones 3D.
 
+## Contenidos (16/10/2026, pedido de Sandra)
+La herramienta de carruseles pasa a llamarse **Contenidos**: barra lateral izquierda con secciones (`web/contenidos.js` + `web/contenidos.css`; para añadir una, entrada en `CNT_SECCIONES`). De momento Carruseles y Newsletter; más adelante Guiones. Decisiones de Sandra: nombre «Contenidos», se monta sobre esta herramienta (mismo enlace, db, fotos y tareas programadas), los narradores de la newsletter conservan sus colores, solo la usa ella, nada de calendario conjunto todavía.
+- Newsletter: su página es `web/newsletter-base.html` (copia de https://claude.ai/artifact/3B8mFHQcaCsP7JWZwocvjo del 16/10/2026, sin la fuente Gravity incrustada: usa `fuentes/GravityCondensed.otf`). construir.mjs la publica como `newsletter.html` con `window.claude` del padre y `newsletter-identidad.css` (misma cabecera, pestañas y colores que Carruseles). contenidos.js la carga al abrirla en un iframe con srcdoc (aislada: su código y estilos no chocan con los de Carruseles). Usa las colecciones `calendario`, `config` y `ejemplos` del db de Contenidos.
+- Escritorio: barra de 220 px; de 901 a 1200 px solo iconos; móvil: barra abajo. El botón claro/oscuro va en la barra lateral (el de la cabecera de Carruseles se oculta en escritorio) y manda también en la newsletter.
+- La newsletter vieja se queda como copia de seguridad: no editarla después de mudar sus datos.
+
 ## Herramienta web (banco + estudio)
 Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de carruseles").
 - `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita

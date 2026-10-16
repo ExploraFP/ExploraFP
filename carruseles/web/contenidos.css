@@ -1,0 +1,55 @@
+/* ===== Contenidos: barra lateral izquierda con las secciones (contenidos.js) ===== */
+:root { --cnt-ancho: 220px; }
+body.cnt { padding-left: var(--cnt-ancho); }
+#cnt-lado { position: fixed; top: 0; left: 0; bottom: 0; width: var(--cnt-ancho); z-index: 45; background: var(--brand2); color: #EAF3E8;
+  display: flex; flex-direction: column; gap: 22px; padding: 18px 12px; border-right: 1px solid rgba(255,255,255,.08); }
+.cnt-marca { display: flex; flex-direction: column; gap: 6px; padding: 4px 10px 0; }
+.cnt-marca b { font-family: "Gravity Condensed", "Archivo", sans-serif; font-weight: 700; font-size: 28px; line-height: .9; color: #fff; }
+.cnt-marca img { height: 15px; width: auto; align-self: flex-start; opacity: .85; }
+.cnt-nav { display: flex; flex-direction: column; gap: 4px; }
+.cnt-nav button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 9px 10px; border: 0; border-radius: 10px; background: none;
+  color: #C9DAC7; font: 500 15px var(--f-ui); text-align: left; cursor: pointer; }
+.cnt-nav button:hover { background: rgba(255,255,255,.07); color: #fff; }
+.cnt-nav button[aria-current="page"] { background: var(--lima); color: var(--brand2); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.cnt-ico { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; background: rgba(255,255,255,.08); }
+.cnt-nav button[aria-current="page"] .cnt-ico { background: var(--brand2); }
+.cnt-ico svg { width: 24px; height: 24px; display: block; }
+.cnt-tema { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 9px 10px; border: 0; border-radius: 10px; background: none; color: #C9DAC7; font: 500 14px var(--f-ui); cursor: pointer; text-align: left; }
+.cnt-tema svg { flex: none; width: 30px; }
+.cnt-tema:hover { background: rgba(255,255,255,.07); color: #fff; }
+@media (min-width: 901px) { .cnt #tema { display: none !important; } }
+/* la marca de Carruseles en su cabecera: solo el nombre de la sección (el logo ya está en la barra lateral) */
+.cnt .mk-ico, .cnt .mk-txt img { display: none !important; }
+
+/* Newsletter: ocupa todo lo que no es la barra lateral */
+#cnt-newsletter { position: fixed; top: 0; right: 0; bottom: 0; left: var(--cnt-ancho); z-index: 30; background: var(--paper); }
+#cnt-newsletter iframe { display: block; width: 100%; height: 100%; border: 0; }
+.cnt-cargando { margin: 0; padding: 40px 28px; color: var(--ink2); }
+body.cnt-en-nl > header.top, body.cnt-en-nl > #canvas { display: none !important; }
+body.cnt-en-nl { overflow: hidden; }
+
+/* pantallas medianas (p. ej. el panel de claude.ai): la barra se queda en iconos */
+@media (min-width: 901px) and (max-width: 1200px) {
+  :root { --cnt-ancho: 64px; }
+  #cnt-lado { padding: 16px 8px; align-items: center; }
+  .cnt-marca { display: none; }
+  .cnt-nav button { padding: 6px; justify-content: center; }
+  .cnt-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .cnt-ico { width: 40px; height: 40px; }
+  .cnt-tema { padding: 10px; justify-content: center; }
+}
+/* móvil: las secciones van en una barra abajo */
+@media (max-width: 900px) {
+  :root { --cnt-ancho: 0px; }
+  body.cnt { padding-bottom: 64px; }
+  #cnt-lado { top: auto; right: 0; bottom: 0; width: auto; height: 60px; flex-direction: row; padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px));
+    border-right: 0; border-top: 1px solid rgba(255,255,255,.1); z-index: 35; height: auto; }
+  .cnt-marca { display: none; }
+  .cnt-nav { flex-direction: row; flex: 1; gap: 6px; }
+  .cnt-nav button { flex: 1; justify-content: center; padding: 8px; font-size: 14px; gap: 8px; }
+  .cnt-ico { width: 26px; height: 26px; background: none; }
+  .cnt-nav button[aria-current="page"] .cnt-ico { background: none; }
+  #cnt-newsletter { bottom: 60px; }
+  .cnt-tema { display: none; }
+  .cnt .top-in { align-items: center !important; min-height: 60px; }
+}

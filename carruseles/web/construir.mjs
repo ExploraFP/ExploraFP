@@ -93,7 +93,7 @@ const ICONO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><rect
   '<rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/>' +
   '<rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/>' +
   '<rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/></svg>';
-cambiar('<title>Banco de carruseles</title>', '<title>Banco de carruseles</title>\n<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' + encodeURIComponent(ICONO) + '">');
+cambiar('<title>Banco de carruseles</title>', '<title>Contenidos</title>\n<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' + encodeURIComponent(ICONO) + '">');
 // Marca de la herramienta: icono de slides en abanico + nombre en Gravity + logo real de Explora × Ucademy.
 cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <span>Explora <em>×</em> Ucademy</span>\n    </div>',
   '<div class="mark mk" id="ir-home" role="link" tabindex="0" aria-label="Ir al inicio" title="Ir al inicio"><svg class="mk-ico" viewBox="0 0 44 44" aria-hidden="true">' +
@@ -103,7 +103,7 @@ cambiar('<div class="mark">\n      <b>Banco d<i>e</i> carruseles</b>\n      <spa
   '<rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/>' +
   '<rect x="22.5" y="19.5" width="14" height="2" rx="1" fill="#85E159" transform="rotate(9 29 21)"/>' +
   '<rect x="22.5" y="23.5" width="9" height="2" rx="1" fill="#85E159" transform="rotate(9 29 21)"/></svg>' +
-  '<span class="mk-txt"><b>Banco de carruseles</b><img src="logos/blanco.webp" alt="Explora × Ucademy"></span></div>');
+  '<span class="mk-txt"><b>Carruseles</b><img src="logos/blanco.webp" alt="Explora × Ucademy"></span></div>');
 // Móvil: las pestañas se abren desde un lateral (botón ☰ junto al del tema).
 cambiar('<div class="top-right">', '<div class="top-right"><button class="icon-btn" id="menu-movil" aria-label="Abrir menú" aria-expanded="false" aria-controls="vistas"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>');
 cambiar('<div class="toast" id="toast" role="status" aria-live="polite"></div>',
@@ -114,7 +114,8 @@ ${readFileSync(join(WEB, "inicio.css"), "utf8")}
 ${readFileSync(join(WEB, "datos.css"), "utf8")}
 ${readFileSync(join(WEB, "produccion.css"), "utf8")}
 ${readFileSync(join(WEB, "mesa.css"), "utf8")}
-${readFileSync(join(WEB, "seleccion.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
+${readFileSync(join(WEB, "seleccion.css"), "utf8")}
+${readFileSync(join(WEB, "contenidos.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
 const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== */\n${motor}\n` +
   `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\n` +
   `const HOOKS = ${existsSync(join(WEB, 'hooks.json')) ? readFileSync(join(WEB, 'hooks.json'), 'utf8').trim() : '{}'};\n` +
@@ -123,11 +124,22 @@ const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== 
   `const PERSONA = ${readFileSync(join(WEB, 'persona.json'), 'utf8').trim()};\n` +
   `const IDEAS_FUERA = ${existsSync(join(WEB, 'ideas-fuera.json')) ? readFileSync(join(WEB, 'ideas-fuera.json'), 'utf8').trim() : '{}'};\n` +
   `const IDEAS_EXTRA = ${existsSync(join(WEB, 'ideas-extra.json')) ? readFileSync(join(WEB, 'ideas-extra.json'), 'utf8').trim() : '[]'};\n` +
-  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\n${readFileSync(join(WEB, "fotos.js"), "utf8")}\n${readFileSync(join(WEB, "inicio.js"), "utf8")}\n${readFileSync(join(WEB, "datos.js"), "utf8")}\n${readFileSync(join(WEB, "produccion.js"), "utf8")}\n${readFileSync(join(WEB, "mesa.js"), "utf8")}\n${readFileSync(join(WEB, "seleccion.js"), "utf8")}\nrender();\n</script>\n`;
+  `${readFileSync(join(WEB, "estudio.js"), "utf8")}\n${readFileSync(join(WEB, "matriz.js"), "utf8")}\n${readFileSync(join(WEB, "fotos.js"), "utf8")}\n${readFileSync(join(WEB, "inicio.js"), "utf8")}\n${readFileSync(join(WEB, "datos.js"), "utf8")}\n${readFileSync(join(WEB, "produccion.js"), "utf8")}\n${readFileSync(join(WEB, "mesa.js"), "utf8")}\n${readFileSync(join(WEB, "seleccion.js"), "utf8")}\n${readFileSync(join(WEB, "contenidos.js"), "utf8")}\nrender();\n</script>\n`;
 cambiar("</body></html>", script + "</body></html>");
 writeFileSync(join(DIST, "banco-de-carruseles.html"), h);
 
+// Newsletter (sección de Contenidos): su página va aparte y se abre en un marco (contenidos.js). Toma window.claude del padre
+// y la identidad común (newsletter-identidad.css). La fuente Gravity sale de fuentes/ (no se incrusta: licencia de Dinamo).
+{
+  let nl = readFileSync(join(WEB, "newsletter-base.html"), "utf8");
+  const pre = '<script>try{if(window.parent!==window&&window.parent.claude)window.claude=window.parent.claude}catch(e){}</script>';
+  if (!nl.includes("<head>") || !nl.includes("</body>")) throw new Error("newsletter-base.html sin <head> o </body>");
+  nl = nl.replace("<head>", "<head>" + pre).replace("</body>", "<style>\n" + readFileSync(join(WEB, "newsletter-identidad.css"), "utf8") + "</style></body>");
+  writeFileSync(join(DIST, "newsletter.html"), nl);
+}
+
 const archivos = [];
 for (const d of ["fotos", "logos", "trazos", "fuentes"]) for (const f of readdirSync(join(DIST, d))) archivos.push(`${d}/${f}`);
+archivos.push("newsletter.html");
 writeFileSync(join(DIST, "archivos.json"), JSON.stringify(archivos.map((p) => ({ path: p }))));
 console.log(`✓ web/dist/banco-de-carruseles.html (${Math.round(h.length / 1024)} KB) + ${archivos.length} archivos`);
