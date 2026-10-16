@@ -14,16 +14,16 @@
       if (Array.isArray(x)) { var a = new P.Array(); for (var i = 0; i < x.length; i++) a.push(aPadre(x[i])); return a; }
       var o = new P.Object(); for (var k in x) if (Object.prototype.hasOwnProperty.call(x, k)) o[k] = aPadre(x[k]); return o;
     };
-    var envolver = function (obj) {
-      if (obj === null || typeof obj !== 'object') return obj;
-      return new Proxy(obj, {get: function (t, k) {
-        var v = t[k]; if (typeof v !== 'function') return v;
-        return function () {
-          var args = Array.prototype.map.call(arguments, aPadre), r = v.apply(t, args);
-          return r && typeof r.then === 'function' ? r.then(envolver) : envolver(r);
-        };
-      }});
+    // Solo se adapta «sample» (el chat). La base de datos va directa, como antes: envolverla rompió la lectura del
+    // calendario en claude.ai (16/10/2026: «solo salen recuadros Sin asunto»).
+    var envolverSample = function (s) {
+      if (!s) return s;
+      return {
+        json: function (turns, opts) { return s.json(aPadre(turns), aPadre(opts)); },
+        limits: function () { return s.limits.apply(s, arguments); },
+        text: s.text ? function (turns, opts) { return s.text(aPadre(turns), aPadre(opts)); } : undefined
+      };
     };
-    window.claude = {use: function (k) { return P.claude.use(k).then(envolver); }};
+    window.claude = {use: function (k) { return k === 'sample' ? P.claude.use(k).then(envolverSample) : P.claude.use(k); }};
   } catch (e) {}
 })();
