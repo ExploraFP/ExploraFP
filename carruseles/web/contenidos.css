@@ -14,10 +14,7 @@ body.cnt { padding-left: var(--cnt-ancho); }
 .cnt-ico { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; background: rgba(255,255,255,.08); }
 .cnt-nav button[aria-current="page"] .cnt-ico { background: var(--brand2); }
 .cnt-ico svg { width: 24px; height: 24px; display: block; }
-.cnt-tema { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 9px 10px; border: 0; border-radius: 10px; background: none; color: #C9DAC7; font: 500 14px var(--f-ui); cursor: pointer; text-align: left; }
-.cnt-tema svg { flex: none; width: 30px; }
-.cnt-tema:hover { background: rgba(255,255,255,.07); color: #fff; }
-@media (min-width: 901px) { .cnt #tema { display: none !important; } }
+.cnt #tema { display: none !important; }  /* claro/oscuro solo en la barra lateral (o en la de abajo en el móvil) */
 /* la marca de Carruseles en su cabecera: solo el nombre de la sección (el logo ya está en la barra lateral) */
 .cnt .mk-ico, .cnt .mk-txt img { display: none !important; }
 
@@ -36,7 +33,6 @@ body.cnt-en-nl { overflow: hidden; }
   .cnt-nav button { padding: 6px; justify-content: center; }
   .cnt-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .cnt-ico { width: 40px; height: 40px; }
-  .cnt-tema { padding: 10px; justify-content: center; }
 }
 /* móvil: las secciones van en una barra abajo */
 @media (max-width: 900px) {
@@ -50,7 +46,6 @@ body.cnt-en-nl { overflow: hidden; }
   .cnt-ico { width: 26px; height: 26px; background: none; }
   .cnt-nav button[aria-current="page"] .cnt-ico { background: none; }
   #cnt-newsletter { bottom: 60px; }
-  .cnt-tema { display: none; }
   .cnt .top-in { align-items: center !important; min-height: 60px; }
 }
 /* La cabecera no se mueve (16/10/2026, Sandra: «se mueve a veces»): la pestaña activa iba en negrita y al ensancharse
@@ -63,3 +58,67 @@ html:has(body.cnt-en-nl) { scrollbar-gutter: auto; }  /* en la newsletter no hay
 /* Carruseles: el botón principal es lima en todas partes (en las ventanas salía verde oscuro) */
 .onbcaja .btn.pri { background: var(--lima); border-color: var(--lima); color: #12200F; font-weight: 600; }
 .onbcaja .btn.pri:hover { background: var(--brand2); border-color: var(--brand2); color: #fff; filter: none; }
+
+/* Móvil: un solo menú (16/10/2026, Sandra: «quita los dos menús»). Las secciones van en la barra de abajo y las pestañas
+   de cada sección en una fila bajo su nombre, igual en Carruseles y en Newsletter; nada de ☰. */
+@media (max-width: 900px) {
+  .cnt #menu-movil, .cnt #menu-velo { display: none !important; }
+  .cnt .top-in { flex-wrap: wrap !important; row-gap: 10px !important; }
+  .cnt .top-in .views { position: static !important; transform: none !important; inset: auto !important; width: auto !important; max-width: 100% !important;
+    order: 3; flex: 1 1 100% !important; flex-direction: row !important; align-items: center !important; gap: 2px !important; padding: 3px !important;
+    background: rgba(255,255,255,.07) !important; border-radius: 9px !important; box-shadow: none !important; overflow-x: auto; scrollbar-width: none; z-index: auto !important; }
+  .cnt .top-in .views::-webkit-scrollbar { display: none; }
+  .cnt .top-in .views button { flex: 0 0 auto !important; width: auto !important; padding: 7px 12px !important; font-size: 13px !important; border-radius: 8px !important; }
+}
+
+/* ===== Inicio de Contenidos, sección Imágenes y botón claro/oscuro (16/10/2026) ===== */
+.cnt-marca { border: 0; background: none; color: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
+.cnt-marca:hover b { color: var(--lima); }
+/* claro / oscuro: pequeño, arriba a la derecha, igual en todas las secciones */
+#cnt-tema { position: fixed; top: 20px; right: 22px; z-index: 50; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); color: #EAF3E8; cursor: pointer; padding: 0; margin: 0; }
+#cnt-tema:hover { background: rgba(255,255,255,.14); color: #fff; }
+.est-editor:not([hidden]) ~ #cnt-tema, body:has(.est-editor:not([hidden])) #cnt-tema { display: none; }
+/* Imágenes ya no es una pestaña de Carruseles: es su propia sección */
+.cnt #vistas button[data-v="fotos"] { display: none !important; }
+body.cnt-en-img #vistas { display: none !important; }
+/* Inicio */
+#cnt-inicio { position: fixed; top: 0; right: 0; bottom: 0; left: var(--cnt-ancho); z-index: 30; background: var(--paper); overflow-y: auto; }
+body.cnt-en-inicio > header.top, body.cnt-en-inicio > #canvas { display: none !important; }
+.cnt-banda { background: var(--brand2); min-height: 71px; display: flex; align-items: center; padding: 12px 28px; }
+.cnt-banda b { font-family: "Gravity Condensed", "Archivo", sans-serif; font-weight: 700; font-size: 25px; line-height: .9; color: #fff; }
+.cnt-ini { max-width: 1100px; padding: 28px; }
+.cnt-fecha { margin: 0 0 4px; font: 600 12px var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); }
+.cnt-ini h1 { margin: 0 0 22px; font-family: "Gravity Condensed", "Archivo", sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: var(--brand2); }
+.cnt-tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.cnt-tarjeta { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 18px; border: 1px solid var(--line); border-radius: 14px;
+  background: var(--surface); color: var(--ink); font: 400 14px var(--f-ui); cursor: pointer; box-shadow: var(--sh1); }
+.cnt-tarjeta:hover { border-color: var(--limaLine); box-shadow: var(--sh2); }
+.cnt-tarjeta .cnt-ico { width: 44px; height: 44px; background: var(--brand2); border-radius: 12px; margin-bottom: 8px; }
+.cnt-tarjeta .cnt-ico svg { width: 32px; height: 32px; }
+.cnt-tarjeta b { font-family: "Gravity Condensed", "Archivo", sans-serif; font-weight: 700; font-size: 26px; line-height: 1; color: var(--brand2); margin-bottom: 4px; }
+.cnt-tarjeta span { color: var(--ink2); }
+.cnt-tarjeta i { font-style: normal; font-weight: 600; margin-top: 10px; color: var(--brand); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cnt-ini h1, :root:not([data-theme="light"]) .cnt-tarjeta b { color: #E8EFE6; } }
+:root[data-theme="dark"] .cnt-ini h1, :root[data-theme="dark"] .cnt-tarjeta b { color: #E8EFE6; }
+@media (max-width: 900px) {
+  #cnt-inicio { bottom: 60px; }
+  #cnt-tema { top: 12px; right: 14px; }
+  .cnt-banda { min-height: 0; padding: 12px 16px; }
+  .cnt-ini { padding: 20px 16px; }
+}
+
+.cnt-solo-movil { display: none !important; }
+/* Imágenes: misma altura de cabecera que las demás secciones aunque no tenga pestañas */
+body.cnt-en-img .top-in { min-height: 71px; }
+body.cnt-en-img .top-in .mark { border-right: 0 !important; }
+@media (max-width: 900px) {
+  .cnt-solo-movil { display: flex !important; }
+  .cnt-nav { gap: 2px; }
+  .cnt-nav button { flex-direction: column; gap: 2px !important; padding: 6px 4px !important; font-size: 11px !important; border-radius: 10px; }
+  .cnt-nav button .cnt-ico { width: 24px; height: 24px; }
+  body.cnt-en-img .top-in { min-height: 0; }
+}
+/* Jerarquía (16/10/2026, Sandra: «parece que tengo dos títulos»): «Contenidos» es la marca (Gravity grande, en la barra lateral);
+   el nombre de la sección en la cabecera va en letra de interfaz, más pequeño. */
+.cnt .mk-txt b, .cnt-banda b { font-family: var(--f-ui) !important; font-weight: 600 !important; font-size: 17px !important; letter-spacing: 0 !important; line-height: 1.2 !important; color: #fff !important; }

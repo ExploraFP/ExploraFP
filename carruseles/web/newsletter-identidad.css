@@ -32,6 +32,10 @@ h2, .week-head h2, .todo-group h2 { text-transform: none !important; letter-spac
 .ribbon { display: none !important; }
 
 @media (max-width: 900px) {
+  /* igual que Carruseles en el móvil: nombre arriba y pestañas en una fila debajo */
+  .band-in { flex-wrap: wrap !important; row-gap: 10px !important; min-height: 0 !important; }
+  .brand { border-right: 0 !important; }
+  .tabs { flex: 1 1 100%; }
   .band-in { padding: 10px 16px !important; gap: 12px !important; }
   .brand { padding-right: 12px !important; }
   .brand h1 { font-size: 20px !important; }
@@ -81,3 +85,16 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
 /* chat: lo que escribes tú y el botón de enviar en verde de marca, no en negro */
 .msg.user { background: #1B3620 !important; color: #EAF3E8 !important; }
 .cmp-send { background: #1B3620 !important; color: var(--lime) !important; }
+/* El calendario cabe entero en la pantalla, sin bajar (16/10/2026, Sandra: «un poco más pequeño para no hacer scroll»):
+   la altura de cada semana se ajusta al alto de la ventana y los correos van más compactos. */
+@media (min-width: 761px) {
+  #view-calendario .cal-head { margin-bottom: 10px !important; }
+  #view-calendario .day { min-height: max(64px, calc((100vh - 225px) / 6)) !important; padding: 4px 5px !important; gap: 3px !important; }
+  #view-calendario .day .num { width: 22px !important; height: 22px !important; font-size: .85rem !important; }
+  #view-calendario .ev { font-size: .74rem !important; padding: 4px 6px 4px 0 !important; line-height: 1.2 !important; }
+  #view-calendario .ev span, #view-calendario .ev b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .wrap { padding-block: 18px 24px !important; }
+}
+/* nombre de la sección como en Carruseles: letra de interfaz, no Gravity (la marca «Contenidos» ya está en la barra lateral) */
+.brand h1 { font-family: var(--font-body) !important; font-weight: 600 !important; font-size: 17px !important; line-height: 1.2 !important; }
+@media (max-width: 900px) { .brand h1 { font-size: 16px !important; } }

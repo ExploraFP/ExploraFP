@@ -5,24 +5,36 @@
      los de Carruseles. Usa la misma base de datos (colecciones calendario, config y ejemplos) a través de window.claude del padre.
    · Para añadir una sección: una entrada en CNT_SECCIONES (+ su panel si no es Carruseles). */
 const CNT_ICONOS = {
+  inicio: '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M8 21L22 9l14 12v14a2 2 0 0 1-2 2H26V27h-8v10H10a2 2 0 0 1-2-2z" fill="#EDFEC3"/></svg>',
   carruseles: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/><rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/><rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/><rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/></svg>',
+  imagenes: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="9" width="32" height="26" rx="4" fill="#EDFEC3"/><circle cx="16" cy="18" r="4" fill="#4CCD4B"/><path d="M8 33l10-10 7 7 5-5 8 8" fill="#366B40"/></svg>',
   newsletter: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="11" width="32" height="23" rx="4" fill="#EDFEC3"/><path d="M8 14l14 10 14-10" fill="none" stroke="#366B40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="35" cy="12" r="5" fill="#4CCD4B"/></svg>'
 };
+// Imágenes es la pestaña «fotos» de Carruseles sacada a sección propia (común para todas; 16/10/2026)
 const CNT_SECCIONES = [
   {id: 'carruseles', nombre: 'Carruseles'},
-  {id: 'newsletter', nombre: 'Newsletter'}
+  {id: 'newsletter', nombre: 'Newsletter'},
+  {id: 'imagenes', nombre: 'Imágenes'}
 ];
-const CNT = {sec: 'carruseles', nl: null};
-try { const g = localStorage.getItem('contenidos.seccion'); if (CNT_SECCIONES.some(s => s.id === g)) CNT.sec = g; } catch (e) {}
+const CNT = {sec: 'inicio', nl: null, cal: null};
+try { const g = localStorage.getItem('contenidos.seccion'); if (g === 'inicio' || CNT_SECCIONES.some(s => s.id === g)) CNT.sec = g; } catch (e) {}
 
 function cntMontar() {
   const lado = document.createElement('aside'); lado.id = 'cnt-lado'; lado.setAttribute('aria-label', 'Secciones');
-  lado.innerHTML = '<div class="cnt-marca"><b>Contenidos</b><img src="logos/blanco.webp" alt="Explora × Ucademy"></div>' +
-    '<nav class="cnt-nav">' + CNT_SECCIONES.map(s => '<button type="button" data-cnt="' + s.id + '" title="' + s.nombre + '">' +
-      '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><span class="cnt-txt">' + s.nombre + '</span></button>').join('') + '</nav>' +
-    // claro / oscuro para toda la herramienta (hace lo mismo que el botón que tenía Carruseles en su cabecera)
-    '<button type="button" class="cnt-tema" id="cnt-tema" title="Cambiar entre claro y oscuro" aria-label="Cambiar entre claro y oscuro"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span class="cnt-txt">Claro / oscuro</span></button>';
+  lado.innerHTML = '<button type="button" class="cnt-marca" data-cnt="inicio" title="Ir al inicio de Contenidos"><b>Contenidos</b><img src="logos/blanco.webp" alt="Explora × Ucademy"></button>' +
+    '<nav class="cnt-nav">' +
+      // en el móvil la marca no se ve: el Inicio va como primer botón de la barra de abajo
+      '<button type="button" class="cnt-solo-movil" data-cnt="inicio" title="Inicio"><span class="cnt-ico">' + CNT_ICONOS.inicio + '</span><span class="cnt-txt">Inicio</span></button>' +
+      CNT_SECCIONES.map(s => '<button type="button" data-cnt="' + s.id + '" title="' + s.nombre + '">' +
+      '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><span class="cnt-txt">' + s.nombre + '</span></button>').join('') + '</nav>';
   document.body.insertBefore(lado, document.body.firstChild);
+  // claro / oscuro: pequeño, arriba a la derecha, el mismo en todas las secciones (pedido de Sandra)
+  const tema = document.createElement('button'); tema.type = 'button'; tema.id = 'cnt-tema'; tema.className = 'cnt-tema';
+  tema.title = 'Cambiar entre claro y oscuro'; tema.setAttribute('aria-label', 'Cambiar entre claro y oscuro');
+  tema.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg>';
+  document.body.appendChild(tema);
+  const ini = document.createElement('section'); ini.id = 'cnt-inicio'; ini.hidden = true; ini.setAttribute('aria-label', 'Inicio');
+  document.body.appendChild(ini);
   const nl = document.createElement('section'); nl.id = 'cnt-newsletter'; nl.hidden = true; nl.setAttribute('aria-label', 'Newsletter');
   document.body.appendChild(nl);
   document.body.classList.add('cnt');
@@ -30,12 +42,73 @@ function cntMontar() {
 }
 function cntIr(id, inicio) {
   CNT.sec = id; try { localStorage.setItem('contenidos.seccion', id); } catch (e) {}
-  document.querySelectorAll('#cnt-lado [data-cnt]').forEach(b => b.setAttribute('aria-current', b.dataset.cnt === id ? 'page' : 'false'));
+  document.querySelectorAll('#cnt-lado .cnt-nav [data-cnt]').forEach(b => b.setAttribute('aria-current', b.dataset.cnt === id ? 'page' : 'false'));
   document.body.classList.toggle('cnt-en-nl', id === 'newsletter');
+  document.body.classList.toggle('cnt-en-inicio', id === 'inicio');
+  document.body.classList.toggle('cnt-en-img', id === 'imagenes');
   const p = document.getElementById('cnt-newsletter'); if (p) p.hidden = id !== 'newsletter';
+  const h = document.getElementById('cnt-inicio'); if (h) h.hidden = id !== 'inicio';
+  const nombre = document.querySelector('.mk-txt b'); if (nombre) nombre.textContent = id === 'imagenes' ? 'Imágenes' : 'Carruseles';
   if (id === 'newsletter') cntCargarNewsletter();
+  if (id === 'inicio') cntPintarInicio();
+  // Imágenes = la vista «fotos»; Carruseles = cualquier otra
+  if (typeof S !== 'undefined') {
+    if (id === 'imagenes' && S.v !== 'fotos') { S.v = 'fotos'; CNT.sincro = true; render(); CNT.sincro = false; }
+    if (id === 'carruseles' && S.v === 'fotos') { S.v = 'inicio'; CNT.sincro = true; render(); CNT.sincro = false; }
+  }
   if (!inicio) { document.body.classList.remove('menu-abierto'); window.scrollTo(0, 0); }
 }
+// si desde Carruseles se salta a una foto (p. ej. un aviso de Inicio), la barra lateral pasa a Imágenes, y al revés
+const _renderCnt = render;
+render = function () {
+  _renderCnt.apply(this, arguments);
+  if (CNT.sincro || typeof S === 'undefined') return;
+  if (S.v === 'fotos' && CNT.sec !== 'imagenes') cntIr('imagenes', true);
+  else if (S.v !== 'fotos' && CNT.sec === 'imagenes') cntIr('carruseles', true);
+};
+
+/* ---------- Inicio de Contenidos: una tarjeta por sección con lo que tiene pendiente ---------- */
+function cntEstado(id) {
+  try {
+    if (id === 'carruseles') {
+      const cs = Object.values(EST.lista || {}).filter(c => c.estado !== 'hecho');
+      const rev = cs.filter(c => !c.listo && c.slides && c.slides.length).length, listos = cs.filter(c => c.listo).length;
+      return [rev + (rev === 1 ? ' en revisión' : ' en revisión'), listos + (listos === 1 ? ' listo para publicar' : ' listos para publicar')];
+    }
+    if (id === 'newsletter') {
+      if (!CNT.cal) return ['Cargando…'];
+      const hoy = new Date(), dia = (hoy.getDay() + 6) % 7, lun = new Date(hoy); lun.setDate(hoy.getDate() - dia); lun.setHours(0, 0, 0, 0);
+      const dom = new Date(lun); dom.setDate(lun.getDate() + 6);
+      const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      const semana = CNT.cal.filter(c => c.fecha >= iso(lun) && c.fecha <= iso(dom));
+      const pend = semana.filter(c => c.estado !== 'enviado').length;
+      return [semana.length + (semana.length === 1 ? ' correo esta semana' : ' correos esta semana'), pend + (pend === 1 ? ' sin enviar' : ' sin enviar')];
+    }
+    if (id === 'imagenes') {
+      const fs = (typeof fotosCatalogo === 'function' ? fotosCatalogo() : FOTOS).filter(f => !f.oculta);
+      const sin = fs.filter(f => f.estado === 'sin-catalogar' || f.estado === 'catalogando').length;
+      return [fs.length + ' imágenes', sin ? sin + ' sin catalogar (Claude las cataloga en breve)' : 'todas catalogadas'];
+    }
+  } catch (e) {}
+  return [];
+}
+function cntPintarInicio() {
+  const h = document.getElementById('cnt-inicio'); if (!h || CNT.sec !== 'inicio') return;
+  const hoy = new Date().toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long'});
+  h.innerHTML = '<div class="cnt-banda"><b>Inicio</b></div><div class="cnt-ini">' +
+    '<p class="cnt-fecha">' + esc(hoy.charAt(0).toUpperCase() + hoy.slice(1)) + '</p><h1>Contenidos</h1>' +
+    '<div class="cnt-tarjetas">' + CNT_SECCIONES.map(s => '<button type="button" class="cnt-tarjeta" data-cnt="' + s.id + '">' +
+      '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><b>' + s.nombre + '</b>' +
+      cntEstado(s.id).map(x => '<span>' + esc(x) + '</span>').join('') + '<i>Abrir →</i></button>').join('') + '</div></div>';
+}
+// los correos de la newsletter, para el resumen del Inicio (misma base de datos)
+(function cntLeerCalendario() {
+  const db = (typeof EST_DB !== 'undefined' && EST_DB) || (typeof DB !== 'undefined' && DB);
+  if (!db) return setTimeout(cntLeerCalendario, 1500);
+  try { db.collection('calendario').onSnapshot(snap => { CNT.cal = snap.docs.map(d => d.data()); cntPintarInicio(); }); } catch (e) {}
+})();
+setInterval(cntPintarInicio, 15000);
+
 /* La newsletter se carga la primera vez que se abre. srcdoc (no src) para que su window.claude sea el de esta página. */
 async function cntCargarNewsletter() {
   if (CNT.nl) return;

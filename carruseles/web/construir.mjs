@@ -132,7 +132,7 @@ writeFileSync(join(DIST, "banco-de-carruseles.html"), h);
 // y la identidad común (newsletter-identidad.css). La fuente Gravity sale de fuentes/ (no se incrusta: licencia de Dinamo).
 {
   let nl = readFileSync(join(WEB, "newsletter-base.html"), "utf8");
-  const pre = '<script>try{if(window.parent!==window&&window.parent.claude)window.claude=window.parent.claude}catch(e){}</script>';
+  const pre = '<script>' + readFileSync(join(WEB, "newsletter-puente.js"), "utf8") + '</script>';
   if (!nl.includes("<head>") || !nl.includes("</body>")) throw new Error("newsletter-base.html sin <head> o </body>");
   nl = nl.replace("<head>", "<head>" + pre).replace("</body>", "<style>\n" + readFileSync(join(WEB, "newsletter-identidad.css"), "utf8") + "</style></body>");
   writeFileSync(join(DIST, "newsletter.html"), nl);
