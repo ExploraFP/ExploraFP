@@ -91,7 +91,7 @@ export function crearMotor(R) {
           texto(s.texto) + si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
       case "cierre":
         return deco + etiqueta(s.etiqueta) + titulo(s.titulo) + texto(s.texto) +
-          si(s.cta, `<div class="cta-bloque"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}</div>`) + nota(s.nota);
+          si(s.cta, `<div class="cta-bloque"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}${flecha("f-cta-abajo")}</div>`) + nota(s.nota);
     }
   }
 

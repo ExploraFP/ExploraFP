@@ -38,3 +38,6 @@ ul.checklist b { flex: none; display: grid; place-items: center; width: 64px; he
 .fuente { font-size: 22px; margin-top: 30px; opacity: .7; }
 .tipo-cierre .titulo { font-size: 150px; }
 .cinta-cta { font-size: 46px; }
+/* Cierre: flecha a mano debajo del botón, apuntando hacia él (pedido de Sandra, 16/10/2026). La original ya apunta arriba-izquierda. */
+.cta-bloque { position: relative; }
+.f-cta-abajo { top: calc(100% + 12px); right: 60px; width: 150px; height: 126px; transform: rotate(8deg); }  /* pequeña: en cierres con texto el botón queda abajo y no debe tocar el borde */
