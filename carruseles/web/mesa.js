@@ -96,6 +96,7 @@ function promptSlide(c, i, peticion) {
     'Sandra está viendo la slide ' + (i + 1) + '. Si su petición no dice a qué slide se refiere, se refiere a esa.\n\n' +
     'LO QUE PIDE SANDRA: ' + peticion + '\n\n' +
     'Aplica EXACTAMENTE lo que pide, aunque toque varias slides, la foto ("imagen", solo rutas de FOTOS DISPONIBLES), el "marco" o el caption ("copy"). ' +
+    'Toca SOLO lo que pide: no cambies la foto ni el marco si no habla de la foto; no reescribas otras slides. ' +
     'Para quitar la flecha a mano de una slide pon "trazo": "ninguno"; para volver a ponerla, quita "trazo". ' +
     'CAMBIOS DE DISEÑO (mover algo, separarlo, hacerlo más grande o más pequeño, alinearlo, cambiar márgenes o un color de un elemento): SÍ puedes hacerlos, con el campo "estilo" de ESA slide: CSS que solo afecta a esa slide. ' +
     'La slide mide 1080×1350 px. Usa los selectores de las clases del HTML de abajo, SIN prefijos (no pongas #id ni .l-plantilla delante: ya se aplica solo a esa slide; para la slide entera usa ".slide"). ' +
@@ -142,6 +143,17 @@ async function pedirCambioSlide(peticion) {
     if (lista) nuevas = lista.map((s, k) => s && typeof s === 'object' ? limpiarSlide(s, c.slides[k]) : null).filter(Boolean);
     else if (una) { nuevas = c.slides.slice(); nuevas[i] = limpiarSlide(una, c.slides[i]) || c.slides[i]; }
     if (!nuevas || !nuevas.length) throw {message: 'sin slides'};
+    // la foto y el marco solo cambian si se piden (16/10/2026: Sandra pidió cambiar una red flag y Claude le cambió la foto de la portada)
+    if (!/\b(foto|fotos|imagen|imágenes|imagenes|fotograf|marco|portátil|portatil)/i.test(peticion)) {
+      const viejas = c.slides;
+      nuevas = nuevas.map(s => {
+        const v = viejas.find(x => x.tipo === s.tipo && (x.titulo || '') === (s.titulo || '')) || viejas[nuevas.indexOf(s)];
+        if (!v) return s;
+        const o = Object.assign({}, s);
+        ['imagen', 'marco'].forEach(k => { if (v[k]) o[k] = v[k]; else delete o[k]; });
+        return o;
+      });
+    }
     const copy = r && typeof r.copy === 'string' && r.copy.trim() ? r.copy.trim() : c.copy;
     if (JSON.stringify([nuevas, copy || '']) === antes) {
       MESA.pidiendo = false; MESA.respuesta = 'Claude no ha cambiado nada. Prueba a decirlo de otra forma o a nombrar la slide (p. ej. «en la slide 3…»).';
