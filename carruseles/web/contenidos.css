@@ -99,8 +99,8 @@ body.cnt-en-inicio > header.top, body.cnt-en-inicio > #canvas { display: none !i
 .cnt-tarjeta b { font-family: "Gravity Condensed", "Archivo", sans-serif; font-weight: 700; font-size: 26px; line-height: 1; color: var(--brand2); margin-bottom: 4px; }
 .cnt-tarjeta span { color: var(--ink2); }
 .cnt-tarjeta i { font-style: normal; font-weight: 600; margin-top: 10px; color: var(--brand); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cnt-ini h1, :root:not([data-theme="light"]) .cnt-tarjeta b { color: #E8EFE6; } }
-:root[data-theme="dark"] .cnt-ini h1, :root[data-theme="dark"] .cnt-tarjeta b { color: #E8EFE6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cnt-ini h1, :root:not([data-theme="light"]) .cnt-tarjeta b { color: var(--lima); } }
+:root[data-theme="dark"] .cnt-ini h1, :root[data-theme="dark"] .cnt-tarjeta b { color: var(--lima); }
 @media (max-width: 900px) {
   #cnt-inicio { bottom: 60px; }
   #cnt-tema { top: 12px; right: 14px; }

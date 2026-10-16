@@ -138,3 +138,12 @@ document.addEventListener('click', e => {
   e.preventDefault(); cntIr(b.dataset.cnt);
 });
 cntMontar();
+
+// La slide grande del editor se escalaba con el ancho que tenía ANTES de que acabara de colocarse la página: en el móvil
+// salía más grande que su caja y se cortaba por la derecha (repaso del 16/10/2026). Se vuelve a escalar en el siguiente fotograma.
+const _pintarEditorCnt = pintarEditor;
+pintarEditor = function () {
+  const r = _pintarEditorCnt.apply(this, arguments);
+  requestAnimationFrame(() => { const ed = document.getElementById('est-editor'); if (ed && !ed.hidden) pintarMinis(ed); });
+  return r;
+};
