@@ -19,9 +19,9 @@
 .band-in { min-height: 71px; }
 .brand h1 .home { gap: 0 !important; }
 .tabs { background: rgba(255,255,255,.07); padding: 3px; border-radius: 9px; gap: 2px !important; }
-.tabs button { padding: 8px 18px !important; border-radius: 9px !important; font: 500 14px var(--font-body) !important; color: #C9DAC7 !important; opacity: 1 !important; background: none !important; box-shadow: none !important; }
+.tabs button { padding: 8px 18px !important; border-radius: 9px !important; font: 600 14px var(--font-body) !important; color: #C9DAC7 !important; opacity: 1 !important; background: none !important; box-shadow: none !important; }
 .tabs button:hover { color: #fff !important; }
-.tabs button[aria-selected="true"] { background: var(--lime) !important; color: #1B3620 !important; font-weight: 700 !important; box-shadow: 0 2px 8px rgba(0,0,0,.18) !important; }
+.tabs button[aria-selected="true"] { background: var(--lime) !important; color: #1B3620 !important; font-weight: 600 !important; box-shadow: 0 2px 8px rgba(0,0,0,.18) !important; }
 .tabs .count { background: #1B3620; color: var(--lime); }
 
 /* Titulares como en Carruseles: Gravity, sin mayúsculas forzadas */
@@ -39,3 +39,6 @@ h2, .week-head h2, .todo-group h2 { text-transform: none !important; letter-spac
   .tabs button { padding: 7px 12px !important; font-size: 13px !important; }
   .wrap { padding-inline: 16px !important; }
 }
+
+/* la cabecera no se mueve: mismo grosor en todas las pestañas y hueco fijo para la barra de desplazamiento */
+html { scrollbar-gutter: stable; }

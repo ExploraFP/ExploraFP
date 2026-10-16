@@ -53,3 +53,8 @@ body.cnt-en-nl { overflow: hidden; }
   .cnt-tema { display: none; }
   .cnt .top-in { align-items: center !important; min-height: 60px; }
 }
+/* La cabecera no se mueve (16/10/2026, Sandra: «se mueve a veces»): la pestaña activa iba en negrita y al ensancharse
+   empujaba a las de su derecha; ahora todas tienen el mismo grosor. Y el hueco de la barra de desplazamiento se reserva
+   siempre, para que la página no cambie de ancho cuando aparece. */
+html { scrollbar-gutter: stable; }
+.views button, .views button[aria-current="true"] { font-weight: 600 !important; }
