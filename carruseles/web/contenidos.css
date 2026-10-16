@@ -57,4 +57,5 @@ body.cnt-en-nl { overflow: hidden; }
    empujaba a las de su derecha; ahora todas tienen el mismo grosor. Y el hueco de la barra de desplazamiento se reserva
    siempre, para que la página no cambie de ancho cuando aparece. */
 html { scrollbar-gutter: stable; }
+html:has(body.cnt-en-nl) { scrollbar-gutter: auto; }  /* en la newsletter no hay scroll de la página: sin franja a la derecha */
 .views button, .views button[aria-current="true"] { font-weight: 600 !important; }

@@ -40,5 +40,11 @@ h2, .week-head h2, .todo-group h2 { text-transform: none !important; letter-spac
   .wrap { padding-inline: 16px !important; }
 }
 
-/* la cabecera no se mueve: mismo grosor en todas las pestañas y hueco fijo para la barra de desplazamiento */
-html { scrollbar-gutter: stable; }
+/* Dentro de Contenidos la newsletter tiene 220 px menos de ancho (la barra lateral) y su cabecera del calendario saltaba al
+   diseño estrecho a partir de 1220 px. Se mantiene en una línea mientras quepa (hasta 1080 px), como antes de juntarlas. */
+@media (min-width: 1080px) and (max-width: 1220px) {
+  .cal-head { grid-template-columns: auto auto minmax(0, 1fr) !important; }
+  .cal-head > .vsw { grid-row: auto !important; grid-column: auto !important; justify-self: start !important; margin: 0 0 5px !important; }
+  .cal-right { grid-row: auto !important; grid-column: auto !important; justify-content: flex-end !important; margin: 0 0 9px !important; }
+}
+.legend .lg, .cal-nav button { white-space: nowrap; }
