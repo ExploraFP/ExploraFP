@@ -165,5 +165,13 @@ Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de 
 - Al final, en su propia línea, exactamente 5 hashtags. El revisor avisa si no son 5 o si va todo seguido.
 - 5-oct-2026: los captions de los 19 carruseles de Producción se reescribieron con esta voz (solo el campo `copy`; slides sin tocar). Hooks de la Matriz (`web/hooks.json`, que también puede pisar el titular de las ideas de ideas-extra): Sandra aprobó el criterio y se reescribieron 37 de 377 con el glosario de Explora (pisar barro, abrir brecha, manos a…, machete en mano, visto y hecho, ruta, trastear, botín), cada expresión 2–4 veces como mucho. Los de trámites, datos, homologación y los memes (V*) se dejan claros: no metas el glosario en todos (caricatura).
 
+## Próximas secciones de Contenidos (ideas de Sandra, 16/10/2026)
+Sacarle el tema EN CUANTO se termine la unificación del diseño de la newsletter (lo pidió ella).
+- **Guiones**: competencia (lo que hacen otros centros) + directorio de nuestros guiones.
+- **Biblioteca de imágenes común**: sacar «Imágenes» de Carruseles a una sección propia que usen todas.
+- **Estáticos** y **estáticos dinámicos** (piezas sueltas, no carruseles).
+- **Directorio de anuncios**: hoy están todos en Google Drive.
+Revisión general del 16/10/2026 (pendiente de que Sandra diga qué se repara): copia de seguridad semanal del db, juntar la rama con main, guardar las pruebas en el repo, bajar «Catalogar fotos» a 2-3 veces al día, «Monitor anuncios competencia» falla por acceso, aviso en la newsletter vieja, Carruseles con botón principal lima/verde según sitio, dos menús en móvil, dos customer persona distintos (la newsletter usa los antiguos), 5 carruseles con `marco: fondo` sin foto, caption del C07, D13, verificar contenido, cierre que no se descargaba. Las historias de alumnos de la newsletter son de personas con consentimiento (confirmado por Sandra).
+
 ## Pendientes (anotados por Sandra)
 - **Verificar contenido**: distinguir en la Matriz lo que propone Claude (ideas, hooks, objetivos, datos) de lo que Sandra ha revisado y dado el OK. Algo tendremos que hacer: estado «Propuesta de Claude» / «Revisada ✓» por idea, y que solo lo revisado se pueda producir o salga primero. Incluye las 42 ideas de ideas-extra, la clasificación automática de objetivos, las ideas del mes y el dato D13 (becas).
