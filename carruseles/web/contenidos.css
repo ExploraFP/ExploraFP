@@ -59,3 +59,7 @@ body.cnt-en-nl { overflow: hidden; }
 html { scrollbar-gutter: stable; }
 html:has(body.cnt-en-nl) { scrollbar-gutter: auto; }  /* en la newsletter no hay scroll de la página: sin franja a la derecha */
 .views button, .views button[aria-current="true"] { font-weight: 600 !important; }
+
+/* Carruseles: el botón principal es lima en todas partes (en las ventanas salía verde oscuro) */
+.onbcaja .btn.pri { background: var(--lima); border-color: var(--lima); color: #12200F; font-weight: 600; }
+.onbcaja .btn.pri:hover { background: var(--brand2); border-color: var(--brand2); color: #fff; filter: none; }

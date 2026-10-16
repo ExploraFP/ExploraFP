@@ -48,3 +48,36 @@ h2, .week-head h2, .todo-group h2 { text-transform: none !important; letter-spac
   .cal-right { grid-row: auto !important; grid-column: auto !important; justify-content: flex-end !important; margin: 0 0 9px !important; }
 }
 .legend .lg, .cal-nav button { white-space: nowrap; }
+
+/* ===== Piezas iguales que en Carruseles (16/10/2026, Sandra: «unifica») =====
+   Botón principal = lima con texto verde oscuro · secundario = blanco con borde fino · peligro = rojo.
+   Campos con borde de 1 px · ventanas con esquina de 14 px y la misma sombra · títulos sin mayúsculas forzadas. */
+.btn { font: 600 13px var(--font-body) !important; border-radius: 8px !important; padding: 8px 14px; box-shadow: 0 1px 2px rgba(20,20,23,.05) !important; }
+.btn-sm { padding: 6px 11px !important; font-size: 12.5px !important; }
+.btn-ink, .btn-go { background: var(--lime) !important; color: #12200F !important; border: 1px solid var(--lime) !important; }
+.btn-ink:hover, .btn-go:hover { background: #1B3620 !important; color: #fff !important; border-color: #1B3620 !important; }
+.btn-line { background: var(--paper) !important; color: var(--ink) !important; border: 1px solid #C2CEBC !important; }
+.btn-line:hover { background: #F1F4EE !important; }
+.btn:disabled { opacity: .45; cursor: default; }
+.peek .del.confirm, .pk-menu .danger.confirm { background: #B3261E !important; border-color: #B3261E !important; color: #fff !important; }
+.like-btn { border-width: 1px !important; border-radius: 8px !important; height: 34px !important; font-size: 12.5px !important; }
+.like-btn[aria-pressed="true"] { background: var(--lime) !important; border-color: var(--lime) !important; color: #12200F !important; }
+
+select, input[type=text], input[type=url], input[type=date], input[type=search], textarea { border-width: 1px !important; border-radius: 8px !important; }
+
+.hs-card, .mv-box, .newpop, .pk-menu { border-radius: 14px !important; border: 1px solid var(--line) !important;
+  box-shadow: 0 2px 4px rgba(27,54,32,.06), 0 14px 32px -16px rgba(27,54,32,.32) !important; }
+.mv-ov, .hs-ask { background: rgba(10,16,10,.55) !important; }
+
+/* títulos de correo en la ficha y en el editor: como los titulares de Carruseles (Gravity, sin mayúsculas forzadas) */
+.pk-title.mname, .writer-bar #slotLabel, .trow .tday b { text-transform: none !important; letter-spacing: 0 !important; }
+.writer-bar #slotLabel { font-size: 1.7rem !important; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn-line { border-color: #3D493D !important; } }
+:root[data-theme="dark"] .btn-line { border-color: #3D493D !important; }
+:root[data-theme="dark"] .btn-line:hover { background: #1D231D !important; }
+/* filtros seleccionados en lima (como en Carruseles), no en negro; titulares de sección sin mayúsculas forzadas */
+.chips button[aria-pressed="true"] { background: var(--lime) !important; color: #12200F !important; border-color: var(--lime) !important; }
+h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
+/* chat: lo que escribes tú y el botón de enviar en verde de marca, no en negro */
+.msg.user { background: #1B3620 !important; color: #EAF3E8 !important; }
+.cmp-send { background: #1B3620 !important; color: var(--lime) !important; }
