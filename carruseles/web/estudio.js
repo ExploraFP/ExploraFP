@@ -573,7 +573,7 @@ function editarCampo(k, v) {
   else if (v === '') delete s[k]; else s[k] = v;
   c.upd = new Date().toISOString();
   clearTimeout(estVista); estVista = setTimeout(() => pintarMinis($('#est-editor')), 250);
-  clearTimeout(estTempo); estTempo = setTimeout(() => guardarC(c), 600);
+  clearTimeout(estTempo); estTempo = setTimeout(() => { if (typeof MESA !== 'undefined') MESA.grupo = 'campo:' + EST.sel + ':' + k; guardarC(c); }, 600);
   clearTimeout(estQC); estQC = setTimeout(() => { pintarQCPanel(); pedirQC(c); }, 900);
 }
 
@@ -745,7 +745,7 @@ document.addEventListener('click', e => {
 document.addEventListener('input', e => {
   const t = e.target; if (!EST.abierto) return;
   if (t.dataset.estCampo && t.tagName !== 'SELECT') editarCampo(t.dataset.estCampo, t.value);
-  if (t.hasAttribute('data-est-copy')) { const c = EST.lista[EST.abierto]; c.copy = t.value; clearTimeout(estTempo); estTempo = setTimeout(() => guardarC(c), 600); }
+  if (t.hasAttribute('data-est-copy')) { const c = EST.lista[EST.abierto]; c.copy = t.value; clearTimeout(estTempo); estTempo = setTimeout(() => { if (typeof MESA !== 'undefined') MESA.grupo = 'copy'; guardarC(c); }, 600); }
 });
 document.addEventListener('change', e => {
   const t = e.target; if (!EST.abierto) return;

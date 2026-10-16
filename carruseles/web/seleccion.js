@@ -244,7 +244,8 @@ function aplicarTexto(v) {
   if (p.campo === 'items') { s.items = (s.items || []).slice(); s.items[p.idx] = v; }
   else if (v) s[p.campo] = v; else delete s[p.campo];
   const ed = $('#est-editor'); if (ed) pintarMinis(ed);
-  clearTimeout(SEL_GUARDA); SEL_GUARDA = setTimeout(() => guardarC(c), 700);
+  const grupo = 'pop:' + p.slide + ':' + p.campo + ':' + (p.idx ?? '');
+  clearTimeout(SEL_GUARDA); SEL_GUARDA = setTimeout(() => { MESA.grupo = grupo; guardarC(c); }, 700);
 }
 function cerrarPop() { SEL.pop = null; pintarPop(); marcarActivo(); }
 function colocarPop() { marcarActivo(); }
@@ -458,7 +459,8 @@ function guardarInline(ahora) {
   // solo las miniaturas de abajo: si se repinta la slide grande se recarga y se pierde lo que estás escribiendo
   const tira = document.querySelector('#est-editor .est-tira'); if (tira) pintarMinis(tira);
   clearTimeout(SEL_GUARDA_IN);
-  if (ahora) { SEL_GUARDA_IN = 0; guardarC(c); } else SEL_GUARDA_IN = setTimeout(() => { SEL_GUARDA_IN = 0; const cc = EST.lista[EST.abierto]; if (cc) guardarC(cc); }, 700);
+  const grupo = 'in:' + I.slide + ':' + I.campo + ':' + (I.idx ?? '');
+  if (ahora) { SEL_GUARDA_IN = 0; MESA.grupo = grupo; guardarC(c); } else SEL_GUARDA_IN = setTimeout(() => { SEL_GUARDA_IN = 0; const cc = EST.lista[EST.abierto]; if (cc) { MESA.grupo = grupo; guardarC(cc); } }, 700);
 }
 function terminarInline(repintar) {
   const I = SEL.inline; if (!I) return;

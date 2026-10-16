@@ -17,12 +17,17 @@ guardarC = function (c) {
     const ahora = fotoEstado(c), base = MESA.base[c.id];
     if (base && base !== ahora) {
       const h = MESA.hist[c.id] = MESA.hist[c.id] || [];
-      // los cambios seguidos (menos de 1,5 s) cuentan como uno solo
-      if (!h.length || Date.now() - MESA.ultPush > 1500) { h.push(base); if (h.length > 40) h.shift(); }
-      MESA.ultPush = Date.now();
+      // un paso por cambio. Solo se juntan los guardados seguidos (< 1,5 s) del MISMO texto mientras escribes
+      // (16/10/2026, Sandra: «solo me deja deshacer una vez»: antes se juntaba cualquier cambio a menos de 1,5 s del anterior,
+      // y dos ediciones rápidas en textos distintos, o un cambio del chat justo después de escribir, eran un solo paso)
+      const grupo = MESA.grupo || null;
+      const junta = grupo && grupo === MESA.ultGrupo && Date.now() - MESA.ultPush <= 1500 && h.length;
+      if (!junta) { h.push(base); if (h.length > 60) h.shift(); }
+      MESA.ultPush = Date.now(); MESA.ultGrupo = grupo;
     }
     MESA.base[c.id] = ahora;
   }
+  MESA.grupo = null;
   _guardarCMesa(c);
   if (c && c.id === EST.abierto) marcarGuardado();
 };
@@ -43,6 +48,9 @@ function restaurar(c, estado) {
 function deshacer() {
   const c = EST.lista[EST.abierto]; const h = MESA.hist[EST.abierto] || [];
   if (!c || !h.length) { toast('No hay nada que deshacer'); return; }
+  // los guardados pendientes de lo que escribías no pueden volver a meter lo deshecho después
+  clearTimeout(estTempo); if (typeof SEL_GUARDA !== 'undefined') clearTimeout(SEL_GUARDA);
+  MESA.ultGrupo = null;
   restaurar(c, h.pop()); toast('↶ Deshecho');
 }
 const _abrirEditorMesa = abrirEditor;
