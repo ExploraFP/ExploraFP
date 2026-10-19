@@ -621,13 +621,17 @@ async function descargarLote(lista) {
         EST.progreso = 'Descargando ' + (++hecho) + ' de ' + total + '…'; toast(EST.progreso); actualizarProgreso();
         let png;
         try { png = await pngDe(c, i); } catch (e) { throw {code: 'png', message: 'no pude crear la imagen de la slide ' + (i + 1) + (e && e.message ? ': ' + e.message : '')}; }
+        // un respiro entre archivos (y tras el último): claude.ai da por «guardado» un archivo que el navegador aún puede
+        // perder si llegan muy seguidos; a Sandra se le perdía siempre la última slide (19/10/2026)
+        if (i > 0) await new Promise(r => setTimeout(r, 1200));
         try { await guardarArchivo(down, base + '-' + String(i + 1).padStart(2, '0') + '.png', png); }
         catch (e) { if (e && e.code === 'declined') throw e; throw {code: (e && e.code) || 'guardar', message: 'se quedó en la slide ' + (i + 1) + ' de ' + c.slides.length + (e && e.message ? ': ' + e.message : '')}; }
       }
+      await new Promise(r => setTimeout(r, 1500));
       // descargado = va a subirse: se apunta para recordarle el enlace de Instagram (Sandra, 19/10/2026)
       if (lista.length === 1 && etapaDe(c) === 'listo' && !c.descargado) { c.descargado = fISO(hoy()); guardarC(c); }
     }
-    toast(lista.length > 1 ? lista.length + ' carruseles descargados' : 'Carrusel descargado' + (etapaDe(lista[0]) === 'listo' && !lista[0].ig ? ' · cuando lo subas, pega el enlace aquí' : ''));
+    toast(lista.length > 1 ? lista.length + ' carruseles descargados' : total + ' slides descargadas. Si falta alguna, bájala con «Solo la slide»' + (etapaDe(lista[0]) === 'listo' && !lista[0].ig ? ' · cuando lo subas, pega el enlace aquí' : ''));
     if (lista.length === 1 && EST.abierto === lista[0].id) pintarEditor(true);
   } catch (e) {
     console.error('descarga', e);
