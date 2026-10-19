@@ -4,14 +4,14 @@
    · Newsletter vive en un marco aparte (newsletter.html, se carga al abrirla): así su código y sus estilos no chocan con
      los de Carruseles. Usa la misma base de datos (colecciones calendario, config y ejemplos) a través de window.claude del padre.
    · Para añadir una sección: una entrada en CNT_SECCIONES (+ su panel si no es Carruseles). */
-// Iconos tipo app (19/10/2026, Sandra: «les falta profundidad… añade más colores»): cada sección con su color; el fondo
-// en degradado va en el CSS (contenidos.css, «Iconos con profundidad») y aquí solo el dibujo, en blanco con sombra.
+// Iconos de siempre (Sandra, 19/10/2026: los de colores «se ven antiguos»; vuelven estos con algo más de profundidad en el CSS)
 const CNT_ICONOS = {
-  inicio: '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M9 21.5L22 10l13 11.5V34a2 2 0 0 1-2 2h-7v-9h-8v9h-7a2 2 0 0 1-2-2z" fill="#1B3620"/></svg>',
-  carruseles: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="11" width="18" height="24" rx="3" fill="#B9F5B4" transform="rotate(-12 16 23)"/><rect x="13" y="9" width="18" height="24" rx="3" fill="#EDFEC3" transform="rotate(-2 22 21)"/><rect x="19" y="10" width="18" height="24" rx="3" fill="#fff" transform="rotate(9 28 22)"/><rect x="22" y="15" width="10" height="3" rx="1.5" fill="#2E9E3A" transform="rotate(9 28 22)"/><rect x="21.5" y="20" width="7" height="2.4" rx="1.2" fill="#9ED89A" transform="rotate(9 28 22)"/></svg>',
-  newsletter: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="12" width="30" height="22" rx="4" fill="#fff"/><path d="M9 15l13 9.5L35 15" fill="none" stroke="#E07A12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  imagenes: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="10" width="30" height="24" rx="4" fill="#fff"/><circle cx="16" cy="18" r="3.6" fill="#FFC93C"/><path d="M9 32l9-9 6 6 4-4 7 7z" fill="#2F7FE0"/></svg>',
-  ajustes: '<svg viewBox="0 0 44 44" aria-hidden="true"><path fill="#fff" d="M19.6 7h4.8l.8 4.2a11 11 0 0 1 3 1.7l4-1.4 2.4 4.2-3.2 2.8a11 11 0 0 1 0 3.4l3.2 2.8-2.4 4.2-4-1.4a11 11 0 0 1-3 1.7l-.8 4.2h-4.8l-.8-4.2a11 11 0 0 1-3-1.7l-4 1.4-2.4-4.2 3.2-2.8a11 11 0 0 1 0-3.4l-3.2-2.8 2.4-4.2 4 1.4a11 11 0 0 1 3-1.7z"/><circle cx="22" cy="22" r="4.5" fill="#5D6B63"/></svg>'
+  inicio: '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M8 21L22 9l14 12v14a2 2 0 0 1-2 2H26V27h-8v10H10a2 2 0 0 1-2-2z" fill="#EDFEC3"/></svg>',
+  carruseles: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/><rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/><rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/><rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/></svg>',
+  imagenes: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="9" width="32" height="26" rx="4" fill="#EDFEC3"/><circle cx="16" cy="18" r="4" fill="#4CCD4B"/><path d="M8 33l10-10 7 7 5-5 8 8" fill="#366B40"/></svg>',
+  newsletter: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="11" width="32" height="23" rx="4" fill="#EDFEC3"/><path d="M8 14l14 10 14-10" fill="none" stroke="#366B40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="35" cy="12" r="5" fill="#4CCD4B"/></svg>',
+  // Ajustes: icono de línea, sin cuadro (Sandra: el de antes «se ve muy antiguo»)
+  ajustes: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'
 };
 // Imágenes es la pestaña «fotos» de Carruseles sacada a sección propia (común para todas; 16/10/2026)
 const CNT_SECCIONES = [
@@ -56,13 +56,15 @@ function cntIr(id, inicio) {
   // Imágenes = la vista «fotos»; Carruseles = cualquier otra
   if (typeof S !== 'undefined') {
     if (id === 'imagenes' && S.v !== 'fotos') { S.v = 'fotos'; CNT.sincro = true; render(); CNT.sincro = false; }
-    if (id === 'carruseles' && S.v === 'fotos') { S.v = 'inicio'; CNT.sincro = true; render(); CNT.sincro = false; }
+    if (id === 'carruseles' && S.v === 'fotos') { S.v = 'producir'; CNT.sincro = true; render(); CNT.sincro = false; }
   }
   if (!inicio) { document.body.classList.remove('menu-abierto'); window.scrollTo(0, 0); }
 }
 // si desde Carruseles se salta a una foto (p. ej. un aviso de Inicio), la barra lateral pasa a Imágenes, y al revés
 const _renderCnt = render;
 render = function () {
+  // Carruseles ya no tiene pestaña Inicio (Sandra, 19/10/2026): lo que llevaba ahí se abre en Producción
+  if (typeof S !== 'undefined' && S.v === 'inicio') S.v = 'producir';
   _renderCnt.apply(this, arguments);
   if (CNT.sincro || typeof S === 'undefined') return;
   if (S.v === 'fotos' && CNT.sec !== 'imagenes') cntIr('imagenes', true);

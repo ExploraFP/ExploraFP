@@ -128,3 +128,12 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
   .tabs { gap: 20px !important; margin-top: 12px; overflow-x: auto; }
   .tabs button { padding: 0 2px 10px !important; font-size: 14px !important; }
 }
+
+/* Jerarquía (19/10/2026, Sandra: «Octubre 2026 parece más grande que el título de la sección»): el título de cada página
+   (mes del calendario, Análisis, reglas…) va por debajo del nombre de la sección (38 px); «Correos» encima del mes repetía la pestaña. */
+.week-head h2, .cal-head h2, .sent-head h2, .b-head h2 { font-size: 26px !important; line-height: 1.1 !important; }
+.cal-head .eyebrow { display: none; }
+@media (max-width: 900px) { .week-head h2, .cal-head h2, .sent-head h2, .b-head h2 { font-size: 22px !important; } }
+/* el cambio Calendario / Pendientes, más pequeño que las pestañas de arriba */
+.vsw button { font-size: 13.5px !important; padding: 6px 14px !important; }
+.vsw button svg { width: 14px; height: 14px; }
