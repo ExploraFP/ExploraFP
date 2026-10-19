@@ -1035,7 +1035,8 @@ ESTRUCTURA (molde probado)
 8. P.D.: corta, con una segunda razón, una objeción resuelta o un remate del gancho. Mucha gente lee solo la P.D.
 
 NOMBRE DEL LEAD
-- Escribe el token {{nombre}} UNA sola vez, incrustado a mitad del email, dentro de una frase ("Mira, {{nombre}}, …", "Y aquí viene lo tuyo, {{nombre}}."). Nunca en el saludo ni en los dos primeros párrafos: al principio suena a email comercial.
+- En el cuerpo, escribe el token {{nombre}} UNA sola vez, incrustado a mitad del email, dentro de una frase ("Mira, {{nombre}}, …", "Y aquí viene lo tuyo, {{nombre}}."). Nunca en el saludo ni en los dos primeros párrafos: al principio suena a email comercial.
+- En el asunto también puede ir {{nombre}}, al principio y seguido de coma ("{{nombre}}, una pregunta rápida"). Eso no cuenta para la vez del cuerpo.
 
 ESTRUCTURA VISUAL
 - Mucho aire: cada idea en su propio bloque de texto, de 1 a 3 líneas. Una frase sola en un bloque para los momentos importantes.
@@ -1084,16 +1085,20 @@ El asunto es lo más importante del email: si no se abre, lo demás no existe. P
   · El tema de la historia, si es universal: "El gimnasio de enero", "Lo del lunes que nunca llega".
   · Pregunta sencilla y real, de las que se contestan: "¿Al final lo pensaste?", "¿Te pillamos en mal momento?".
   · Un hecho directo sobre él, sin dramatizar: "Te llamamos el martes" (No contactado), "Tu propuesta sigue aquí".
+  · Con su nombre delante, como un mensaje a alguien concreto: "{{nombre}}, una pregunta rápida", "{{nombre}}, ¿sigues con lo de la FP?".
+  · Como de una persona que le conoce: "Te escribo por tu solicitud", "He visto que pediste información". Es verdad: la pidió.
+  · Curiosidad que el email SÍ cumple: "Lo que le pasó a Rosa con su FP", "La duda que más nos repiten". El asunto abre la pregunta y el correo la contesta entera; si no la contesta, es cebo y está prohibido.
+  · Muy corto, de 1 a 3 palabras, como un mensaje del móvil: "Una cosa", "¿Hablamos?". Aquí el ancla la pone el preheader.
 - Preheader: completa el asunto con el dato que falta, en tono plano. Corto (2-8 palabras), sin punto final si es una sola frase: "Antes limpiaba casas", "Y no dejó de trabajar", "Pediste información de una FP".
 - La palabra FP (o el título) aparece UNA sola vez en la pareja asunto + preheader, nunca en los dos.
-- Forma: 2-6 palabras en el asunto. Primera letra en mayúscula y el resto como en una frase normal (nada de Mayúsculas De Título). Sin emojis, sin exclamaciones, sin puntos suspensivos.
+- Forma: 1-6 palabras en el asunto (sin contar {{nombre}}). Primera letra en mayúscula y el resto como en una frase normal (nada de Mayúsculas De Título). Sin emojis, sin exclamaciones, sin puntos suspensivos.
 - Prohibido en asunto y preheader:
   · Adivinarle la mente o presumir: "Sé qué te frenó", "Sé por qué no seguiste", "Apuesto a que…".
   · Paréntesis y giros: "Tienes algo a medias (y no es la compra)".
   · Antítesis "Yo… Tú…": "Yo dejé el carro. Tú, la propuesta de tu FP."
   · Juegos de palabras, imágenes absurdas, chistes y misterio artificial.
   · Asuntos que solo hablan del narrador ("Dejé la compra a medias"): al lector no le importa.
-  · "Re:" o "Fwd:" falsos; "lo de…" o "sobre…"; "¿qué pasó con…?" y fórmulas de comercial; titulares de blog; gratis, oferta, urgente, última oportunidad; cebo que el email no cumple.
+  · "Re:" o "Fwd:" falsos; asuntos que empiezan por "Lo de…" o "Sobre…"; "¿qué pasó con…?" y fórmulas de comercial («lo de la FP» dentro de una pregunta normal sí vale: "¿sigues con lo de la FP?"); titulares de blog; gratis, oferta, urgente, última oportunidad; cebo que el email no cumple.
 - Prueba final: ¿lo escribiría un compañero de trabajo en un WhatsApp? ¿Se entiende en dos segundos sin saber quién lo manda? Si alguna respuesta es no, reescríbelo.
 - Cómo elegirlos: escribe en silencio al menos 10 asuntos. Tira los que tengan truco. De los que quedan, quédate con el más sencillo que aun así dé ganas de saber más.
 - Buenos: "Rosa se sacó una FP" + "Antes limpiaba casas"; "Tamara estudió con turnos partidos" + "Pidió información, igual que tú"; "¿Al final lo pensaste?" + "Tu propuesta de FP sigue aquí". Malos: "Sé qué te frenó (y no te voy a juzgar)", "Apuesto un calcetín a que sé tu pega", "Tu octubre tampoco está tranquilo", "Tienes algo esperando en el carrito".
@@ -1255,7 +1260,9 @@ document.querySelectorAll("[data-tpl]").forEach((b) => b.onclick = () => {
 });
 document.querySelectorAll("[data-copy]").forEach((b) => b.onclick = () => {
   const e = emailFromDom(), k = b.dataset.copy; if (!e) return;
-  const txt = k === "a" ? e.asunto_a : k === "b" ? e.asunto_b : k === "pre" ? e.preheader : bodyText();
+  // el {{nombre}} del asunto o del preheader sale con el token de HubSpot, igual que en el cuerpo
+  const hs = (x) => String(x || "").replace(/\{\{\s*(nombre|contact\.firstname)\s*\}\}/g, "{{ contact.firstname }}");
+  const txt = k === "a" ? hs(e.asunto_a) : k === "b" ? hs(e.asunto_b) : k === "pre" ? hs(e.preheader) : bodyText();
   const ok = () => { $("copyStatus").textContent = "Copiado."; };
   const fb = () => { const ta = document.createElement("textarea"); ta.value = txt; document.body.append(ta); ta.select(); $("copyStatus").textContent = "Texto seleccionado: pulsa Ctrl/Cmd + C."; setTimeout(() => ta.remove(), 8000); };
   if (k === "body" && window.ClipboardItem) {
