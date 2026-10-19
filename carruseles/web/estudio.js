@@ -760,6 +760,7 @@ document.addEventListener('click', e => {
     if (qcErrores(c) && EST.forzar !== c.id) { EST.forzar = c.id; pintarQCPanel();
       toast('Hay ' + qcErrores(c) + ' cosas por corregir. Pulsa otra vez si aun así está bien'); return; }
     EST.forzar = null;
+    if (!c.ig && typeof abrirPublicar === 'function') { abrirPublicar(c.id); return; }   // sin enlace de Instagram no se publica
     c.estado = 'hecho'; c.fecha = fISO(hoy()); guardarC(c);
     if (c.idea && IMAP[c.idea]) guardar(c.idea, {hecho: true, fecha: c.fecha});
     toast('Hecho. Lo tienes en «Inventario»'); pintarEditor(true); return; }

@@ -108,16 +108,18 @@ function abrirPublicar(id) {
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja pr-publicar" role="dialog" aria-modal="true" aria-label="Marcar como publicado"><header><k>Marcar como publicado</k><h2>' + esc(c.titulo || 'Carrusel') + '</h2></header><div class="cuerpo">' +
     '<label class="mz-cta">Fecha de publicación<input type="date" id="pr-fecha" value="' + esc(c.fecha || fISO(hoy())) + '"></label>' +
-    '<label class="mz-cta">Enlace del post en Instagram <small>(opcional)</small><input type="url" id="pr-ig" placeholder="https://www.instagram.com/p/…" value="' + esc(c.ig || '') + '"></label>' +
-    '<p class="est-pista">Pasará a «Terminados». Si te equivocas, arrástralo de vuelta.</p></div>' +
+    '<label class="mz-cta">Enlace del post en Instagram<input type="url" id="pr-ig" placeholder="https://www.instagram.com/p/…" value="' + esc(c.ig || '') + '" required></label>' +
+    '<p class="est-pista">Pasará a «Terminados». Necesita el enlace del post.</p></div>' +
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" data-pr-publicar-ok="' + esc(id) + '">✓ Publicado</button></footer></div>';
   setTimeout(() => { const i = $('#pr-fecha'); if (i) i.focus(); }, 30);
 }
 function publicar(id) {
   const c = EST.lista[id]; if (!c) return;
   const f = ($('#pr-fecha').value || fISO(hoy())), ig = ($('#pr-ig').value || '').trim();
-  if (ig && !/^https?:\/\//.test(ig)) { toast('El enlace tiene que empezar por https://'); return; }
-  c.estado = 'hecho'; c.listo = true; c.fecha = f; if (ig) c.ig = ig; else delete c.ig;
+  // sin enlace de Instagram no pasa a Terminados (Sandra, 19/10/2026)
+  if (!ig) { toast('Pega el enlace del post de Instagram: sin él no pasa a Terminados'); $('#pr-ig').focus(); return; }
+  if (!/^https?:\/\//.test(ig)) { toast('El enlace tiene que empezar por https://'); return; }
+  c.estado = 'hecho'; c.listo = true; c.fecha = f; c.ig = ig;
   guardarC(c); asegurarIdea(c); if (c.idea && IMAP[c.idea]) guardar(c.idea, {hecho: true, fecha: f});
   cerrarPanel(); if (EST.abierto) cerrarEditor(); else render();
   toast('✓ Publicado. Lo tienes en «Terminados»');
@@ -397,10 +399,21 @@ abrirEditor = function (id) {
 };
 
 let PR_FILTRO = (() => { try { return localStorage.getItem('explora.prFiltro') || 'todos'; } catch (e) { return 'todos'; } })();
-const PR_CORTE = 8, PR_PAGINA = 24;
+// 19/10/2026 (Sandra: «no quiero tener que darle a un botón»): en «Todos» se ven todas; filtrando, van saliendo solas al bajar
+const PR_CORTE = Infinity, PR_PAGINA = 24;
 let PR_LIMITE = PR_PAGINA;
 document.addEventListener('click', e => {
   const f = e.target.closest('[data-pr-filtro]');
   if (f) { PR_FILTRO = f.dataset.prFiltro; PR_LIMITE = PR_PAGINA; try { localStorage.setItem('explora.prFiltro', PR_FILTRO); } catch (x) {} render(); window.scrollTo({top: 0}); return; }
   if (e.target.closest('[data-pr-mas]')) { PR_LIMITE += PR_PAGINA; render(); }
 });
+
+// filtrando: las siguientes 24 se cargan solas al acercarse al final (como la Matriz); el botón queda de respaldo
+let PR_CARGANDO = false;
+function prCargarSiCerca() {
+  const b = document.querySelector('[data-pr-mas]');
+  if (!b || PR_CARGANDO || b.getBoundingClientRect().top > innerHeight + 600) return;
+  PR_CARGANDO = true;
+  requestAnimationFrame(() => { PR_LIMITE += PR_PAGINA; render(); PR_CARGANDO = false; prCargarSiCerca(); });
+}
+addEventListener('scroll', prCargarSiCerca, {passive: true});
