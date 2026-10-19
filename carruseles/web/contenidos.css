@@ -163,3 +163,37 @@ body.cnt-en-img .top-in { min-height: 0 !important; padding-bottom: 20px !import
 .cnt .vcab:not(:has(.vstats)):not(:has(.vtxt p)) { display: none !important; }
 .cnt-ini h1 { display: none; }
 .cnt-ini .cnt-fecha { margin-bottom: 18px; }
+
+/* ===== Ajustes abajo del todo en la barra lateral (19/10/2026): el claro/oscuro sale de la cabecera ===== */
+#cnt-tema { display: none !important; }
+#cnt-ajustes { margin-top: auto; display: flex; align-items: center; gap: 12px; width: 100%; padding: 9px 10px; border: 0; border-radius: 10px; background: none;
+  color: #C9DAC7; font: 500 15px var(--f-ui); text-align: left; cursor: pointer; }
+#cnt-ajustes:hover, #cnt-ajustes[aria-expanded="true"] { background: rgba(255,255,255,.07); color: #fff; }
+
+#cnt-ajustes-menu { position: fixed; left: calc(var(--cnt-ancho) + 10px); bottom: 16px; z-index: 80; width: 230px; padding: 14px; border-radius: 14px;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 2px 4px rgba(27,54,32,.06), 0 14px 32px -16px rgba(27,54,32,.32); }
+#cnt-ajustes-menu b { display: block; font: 600 12px var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); margin: 0 0 8px 4px; }
+.cnt-aj-ops { display: flex; flex-direction: column; gap: 2px; }
+.cnt-aj-ops button { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 0; border-radius: 8px; background: none; color: var(--ink); font: 500 14px var(--f-ui); text-align: left; cursor: pointer; }
+.cnt-aj-ops button:hover { background: var(--surface2, rgba(0,0,0,.04)); }
+.cnt-aj-ops button[aria-checked="true"] { background: var(--lima); color: #12200F; font-weight: 600; }
+@media (min-width: 901px) and (max-width: 1200px) { #cnt-ajustes { justify-content: center; padding: 6px; } }
+@media (max-width: 900px) {
+  #cnt-ajustes { margin-top: 0; width: auto; flex: 0 0 auto; flex-direction: column; gap: 2px; padding: 6px 8px; font-size: 11px; }
+  #cnt-ajustes .cnt-ico { width: 24px; height: 24px; }
+  #cnt-ajustes-menu { left: auto; right: 10px; bottom: 76px; }
+}
+
+/* ===== Iconos con profundidad (19/10/2026, Sandra): cada sección con su color, degradado, brillo arriba y sombra; iguales en la
+   barra lateral y en las tarjetas del Inicio. Carruseles verde · Newsletter naranja · Imágenes azul · Inicio lima · Ajustes gris. */
+[data-cnt] .cnt-ico, #cnt-ajustes .cnt-ico { border-radius: 9px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 -2px 0 rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.28) !important; }
+[data-cnt] .cnt-ico svg, #cnt-ajustes .cnt-ico svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,.22)); }
+[data-cnt="inicio"] .cnt-ico { background: linear-gradient(160deg, #F0FFB0, #C6EE52) !important; }
+[data-cnt="carruseles"] .cnt-ico { background: linear-gradient(160deg, #6BE36A, #26943A) !important; }
+[data-cnt="newsletter"] .cnt-ico { background: linear-gradient(160deg, #FFC860, #EE7D1C) !important; }
+[data-cnt="imagenes"] .cnt-ico { background: linear-gradient(160deg, #74C6FF, #2C74DA) !important; }
+#cnt-ajustes .cnt-ico { background: linear-gradient(160deg, #A9B6AE, #5D6B63) !important; }
+.cnt-tarjeta .cnt-ico { border-radius: 12px !important; }
+/* la sección abierta: el icono no cambia de color, el botón se marca en lima como siempre */
+.cnt-nav button[aria-current="page"] .cnt-ico { box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 0 0 2px var(--brand2), 0 2px 6px rgba(0,0,0,.28) !important; }
+@media (max-width: 900px) { .cnt-nav button .cnt-ico, #cnt-ajustes .cnt-ico { width: 26px !important; height: 26px !important; border-radius: 8px !important; } .cnt-ico svg { width: 22px; height: 22px; } }

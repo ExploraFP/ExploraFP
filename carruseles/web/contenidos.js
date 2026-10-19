@@ -4,11 +4,14 @@
    · Newsletter vive en un marco aparte (newsletter.html, se carga al abrirla): así su código y sus estilos no chocan con
      los de Carruseles. Usa la misma base de datos (colecciones calendario, config y ejemplos) a través de window.claude del padre.
    · Para añadir una sección: una entrada en CNT_SECCIONES (+ su panel si no es Carruseles). */
+// Iconos tipo app (19/10/2026, Sandra: «les falta profundidad… añade más colores»): cada sección con su color; el fondo
+// en degradado va en el CSS (contenidos.css, «Iconos con profundidad») y aquí solo el dibujo, en blanco con sombra.
 const CNT_ICONOS = {
-  inicio: '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M8 21L22 9l14 12v14a2 2 0 0 1-2 2H26V27h-8v10H10a2 2 0 0 1-2-2z" fill="#EDFEC3"/></svg>',
-  carruseles: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/><rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/><rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/><rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/></svg>',
-  imagenes: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="9" width="32" height="26" rx="4" fill="#EDFEC3"/><circle cx="16" cy="18" r="4" fill="#4CCD4B"/><path d="M8 33l10-10 7 7 5-5 8 8" fill="#366B40"/></svg>',
-  newsletter: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="11" width="32" height="23" rx="4" fill="#EDFEC3"/><path d="M8 14l14 10 14-10" fill="none" stroke="#366B40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="35" cy="12" r="5" fill="#4CCD4B"/></svg>'
+  inicio: '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M9 21.5L22 10l13 11.5V34a2 2 0 0 1-2 2h-7v-9h-8v9h-7a2 2 0 0 1-2-2z" fill="#1B3620"/></svg>',
+  carruseles: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="11" width="18" height="24" rx="3" fill="#B9F5B4" transform="rotate(-12 16 23)"/><rect x="13" y="9" width="18" height="24" rx="3" fill="#EDFEC3" transform="rotate(-2 22 21)"/><rect x="19" y="10" width="18" height="24" rx="3" fill="#fff" transform="rotate(9 28 22)"/><rect x="22" y="15" width="10" height="3" rx="1.5" fill="#2E9E3A" transform="rotate(9 28 22)"/><rect x="21.5" y="20" width="7" height="2.4" rx="1.2" fill="#9ED89A" transform="rotate(9 28 22)"/></svg>',
+  newsletter: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="12" width="30" height="22" rx="4" fill="#fff"/><path d="M9 15l13 9.5L35 15" fill="none" stroke="#E07A12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  imagenes: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="10" width="30" height="24" rx="4" fill="#fff"/><circle cx="16" cy="18" r="3.6" fill="#FFC93C"/><path d="M9 32l9-9 6 6 4-4 7 7z" fill="#2F7FE0"/></svg>',
+  ajustes: '<svg viewBox="0 0 44 44" aria-hidden="true"><path fill="#fff" d="M19.6 7h4.8l.8 4.2a11 11 0 0 1 3 1.7l4-1.4 2.4 4.2-3.2 2.8a11 11 0 0 1 0 3.4l3.2 2.8-2.4 4.2-4-1.4a11 11 0 0 1-3 1.7l-.8 4.2h-4.8l-.8-4.2a11 11 0 0 1-3-1.7l-4 1.4-2.4-4.2 3.2-2.8a11 11 0 0 1 0-3.4l-3.2-2.8 2.4-4.2 4 1.4a11 11 0 0 1 3-1.7z"/><circle cx="22" cy="22" r="4.5" fill="#5D6B63"/></svg>'
 };
 // Imágenes es la pestaña «fotos» de Carruseles sacada a sección propia (común para todas; 16/10/2026)
 const CNT_SECCIONES = [
@@ -28,11 +31,10 @@ function cntMontar() {
       CNT_SECCIONES.map(s => '<button type="button" data-cnt="' + s.id + '" title="' + s.nombre + '">' +
       '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><span class="cnt-txt">' + s.nombre + '</span></button>').join('') + '</nav>';
   document.body.insertBefore(lado, document.body.firstChild);
-  // claro / oscuro: pequeño, arriba a la derecha, el mismo en todas las secciones (pedido de Sandra)
-  const tema = document.createElement('button'); tema.type = 'button'; tema.id = 'cnt-tema'; tema.className = 'cnt-tema';
-  tema.title = 'Cambiar entre claro y oscuro'; tema.setAttribute('aria-label', 'Cambiar entre claro y oscuro');
-  tema.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg>';
-  document.body.appendChild(tema);
+  // Ajustes abajo del todo en la barra lateral (Sandra, 19/10/2026: el claro/oscuro ya no va en la cabecera)
+  const aj = document.createElement('button'); aj.type = 'button'; aj.id = 'cnt-ajustes'; aj.title = 'Ajustes'; aj.setAttribute('aria-haspopup', 'true'); aj.setAttribute('aria-expanded', 'false');
+  aj.innerHTML = '<span class="cnt-ico">' + CNT_ICONOS.ajustes + '</span><span class="cnt-txt">Ajustes</span>';
+  lado.appendChild(aj);
   const ini = document.createElement('section'); ini.id = 'cnt-inicio'; ini.hidden = true; ini.setAttribute('aria-label', 'Inicio');
   document.body.appendChild(ini);
   const nl = document.createElement('section'); nl.id = 'cnt-newsletter'; nl.hidden = true; nl.setAttribute('aria-label', 'Newsletter');
@@ -133,10 +135,33 @@ function cntTemaNl() {
 }
 new MutationObserver(cntTemaNl).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});
 document.addEventListener('click', e => {
-  if (e.target.closest && e.target.closest('#cnt-tema')) { const t = document.getElementById('tema'); if (t) t.click(); return; }
+  const tm = e.target.closest && e.target.closest('[data-cnt-tema]');
+  if (tm) { cntPonerTema(tm.dataset.cntTema); cntAjustes(true); return; }
+  if (e.target.closest && e.target.closest('#cnt-ajustes')) { cntAjustes(); return; }
+  if (!(e.target.closest && e.target.closest('#cnt-ajustes-menu'))) cntAjustes(false);
   const b = e.target.closest && e.target.closest('[data-cnt]'); if (!b) return;
   e.preventDefault(); cntIr(b.dataset.cnt);
 });
+/* Ajustes: de momento solo la apariencia. Se recuerda en este navegador (contenidos.tema: light / dark / vacío = como el sistema). */
+function cntPonerTema(t) {
+  if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); else document.documentElement.removeAttribute('data-theme');
+  try { localStorage.setItem('contenidos.tema', t || ''); } catch (e) {}
+}
+function cntAjustes(abrir) {
+  let m = document.getElementById('cnt-ajustes-menu'); const btn = document.getElementById('cnt-ajustes');
+  if (abrir === undefined) abrir = !m;
+  if (m) m.remove();
+  if (btn) btn.setAttribute('aria-expanded', String(!!abrir));
+  if (!abrir) return;
+  const cur = document.documentElement.getAttribute('data-theme') || '';
+  m = document.createElement('div'); m.id = 'cnt-ajustes-menu'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Ajustes');
+  m.innerHTML = '<b>Apariencia</b><div class="cnt-aj-ops" role="radiogroup">' +
+    [['light', '☀️', 'Claro'], ['dark', '🌙', 'Oscuro'], ['', '💻', 'Como el sistema']].map(([k, ic, t]) =>
+      '<button type="button" role="radio" data-cnt-tema="' + k + '" aria-checked="' + (cur === k) + '"><span>' + ic + '</span>' + t + '</button>').join('') + '</div>';
+  document.body.appendChild(m);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('cnt-ajustes-menu')) cntAjustes(false); });
+try { const t = localStorage.getItem('contenidos.tema'); if (t) cntPonerTema(t); } catch (e) {}
 cntMontar();
 
 // La slide grande del editor se escalaba con el ancho que tenía ANTES de que acabara de colocarse la página: en el móvil

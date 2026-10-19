@@ -729,3 +729,15 @@ document.addEventListener('click', e => {
   if (o) { e.stopImmediatePropagation(); IDEA_R.objetivo = o.dataset.irObj; document.querySelectorAll('[data-ir-obj]').forEach(b => b.setAttribute('aria-pressed', b === o)); return; }
   if (t.id === 'ir-ok') { e.stopImmediatePropagation(); guardarIdeaRapida(); }
 }, true);
+
+// Al bajar se cargan solas las 60 siguientes (Sandra, 19/10/2026: «que se vayan cargando conforme voy bajando»).
+// El botón «Ver 60 más» se queda por si el navegador no avisa del scroll.
+let MZ_CARGANDO = false;
+function mzCargarSiCerca() {
+  const b = document.getElementById('mz-vermas');
+  if (!b || MZ_CARGANDO || b.getBoundingClientRect().top > innerHeight + 600) return;
+  MZ_CARGANDO = true;
+  requestAnimationFrame(() => { S.limite = (S.limite || 60) + 60; render(); MZ_CARGANDO = false; mzCargarSiCerca(); });
+}
+addEventListener('scroll', mzCargarSiCerca, {passive: true});
+addEventListener('resize', mzCargarSiCerca);
