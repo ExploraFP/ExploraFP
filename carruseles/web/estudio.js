@@ -612,7 +612,7 @@ async function descargarLote(lista) {
   if (EST.descargando) return;
   const down = DOWN || (typeof claude !== 'undefined' && claude.use ? await claude.use('downloads') : null);
   if (!down) { toast('La descarga no está disponible en esta vista'); return; }
-  const total = lista.reduce((n, c) => n + c.slides.length + (c.copy ? 1 : 0), 0);
+  const total = lista.reduce((n, c) => n + c.slides.length, 0);   // solo las slides: el texto del post se copia, no se descarga
   let hecho = 0; EST.descargando = true;
   try {
     for (let k = 0; k < lista.length; k++) {
@@ -623,8 +623,6 @@ async function descargarLote(lista) {
         try { png = await pngDe(c, i); } catch (e) { throw {code: 'png', message: 'no pude crear la imagen de la slide ' + (i + 1) + (e && e.message ? ': ' + e.message : '')}; }
         await guardarArchivo(down, base + '-' + String(i + 1).padStart(2, '0') + '.png', png);
       }
-      if (c.copy) { EST.progreso = 'Descargando ' + (++hecho) + ' de ' + total + '…'; actualizarProgreso();
-        await guardarArchivo(down, base + '-texto.txt', c.copy); }
     }
     toast(lista.length > 1 ? lista.length + ' carruseles descargados' : 'Carrusel descargado');
   } catch (e) {
