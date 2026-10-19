@@ -33,8 +33,8 @@ function filaDato(d) {
     '</div>' : '') + '</article>';
 }
 vDatos = function () {
-  const caducado = hoy() > CADUCA, bloq = DATOS.filter(d => /^BAJA/.test(d.confianza)).length;
-  let h = cabecera('Datos que puedes citar', '', [[DATOS.length - bloq, 'listos para citar', 'ok']].concat(bloq ? [[bloq, 'no usar todavía', 'rojo']] : []));
+  const caducado = hoy() > CADUCA;
+  let h = cabecera('Datos que puedes citar', '', []);  // sin cifras arriba (Sandra, 19/10/2026): «No lo uses todavía» ya sale como grupo
   h += '<p class="dt-rev' + (caducado ? ' tarde' : '') + '">' + (caducado ? '⚠️ <b>Toca revisar:</b> han pasado más de seis meses desde ' + esc(CONSULTA) + '.'
     : '📅 Comprobados en ' + esc(CONSULTA) + '. <b>Próxima revisión: marzo de 2027.</b> Después, ninguna cifra sale sin recomprobar.') + '</p>';
   h += '<div class="mz-buscabarra dt-busca"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>' +
