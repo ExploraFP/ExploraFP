@@ -891,14 +891,15 @@ h2 { text-transform: uppercase; line-height: 1.05; margin-top: 8px !important; }
   <section id="view-calendario">
 
     <div class="cal-head">
-      <div><p class="eyebrow">Correos</p><h2 id="calTitle">Octubre 2026</h2></div>
+      <div class="cal-mesfila"><p class="eyebrow">Correos</p>
+      <div class="cal-nav">
+        <button type="button" class="btn btn-line btn-sm" id="calToday">Hoy</button>
+        <button type="button" class="icon-btn" id="calPrev" aria-label="Mes anterior">‹</button>
+        <button type="button" class="icon-btn" id="calNext" aria-label="Mes siguiente">›</button>
+      </div><h2 id="calTitle" role="button" tabindex="0" aria-haspopup="true" title="Elegir mes">Octubre 2026</h2></div>
       <div class="vsw" role="group" aria-label="Vista" id="calView"><button type="button" data-v="cal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Calendario</button><button type="button" data-v="list"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Pendientes</button></div>
       <div class="cal-right"><div class="legend" id="legend"></div>
-      <div class="cal-nav">
-        <button type="button" class="icon-btn" id="calPrev" aria-label="Mes anterior">‹</button>
-        <button type="button" class="btn btn-line btn-sm" id="calToday">Hoy</button>
-        <button type="button" class="icon-btn" id="calNext" aria-label="Mes siguiente">›</button>
-      </div></div>
+      </div>
     </div>
     <div class="prod" id="prod">
       <div><div class="month"><div class="dow"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="days" id="cal"></div></div>
@@ -2099,6 +2100,32 @@ $("eVer").onclick = () => {
 $("calPrev").onclick = () => { state.weekOffset -= 1; renderCal(); };
 $("calNext").onclick = () => { state.weekOffset += 1; renderCal(); };
 $("calToday").onclick = () => { state.weekOffset = 0; renderCal(); };
+/* Elegir mes (Contenidos, 19/10/2026): al pulsar el mes sale una cuadrícula con los 12 meses y el año con ‹ ›. */
+function mesesPop(abrir) {
+  let m = document.getElementById("mesPop"); if (m) m.remove();
+  if (!abrir || state.calView === "list") return;
+  const hoy = new Date(), act = new Date(hoy.getFullYear(), hoy.getMonth() + state.weekOffset, 1);
+  let anio = act.getFullYear();
+  m = document.createElement("div"); m.id = "mesPop"; m.setAttribute("role", "dialog"); m.setAttribute("aria-label", "Elegir mes");
+  const pinta = () => {
+    m.innerHTML = `<div class="mp-head"><button type="button" class="mp-y" data-y="-1" aria-label="Año anterior">‹</button><b>${anio}</b><button type="button" class="mp-y" data-y="1" aria-label="Año siguiente">›</button></div><div class="mp-grid">` +
+      Array.from({ length: 12 }, (_, i) => { const d = new Date(anio, i, 1), t = d.toLocaleDateString("es-ES", { month: "short" }).replace(".", "");
+        const cls = (anio === act.getFullYear() && i === act.getMonth() ? " on" : "") + (anio === hoy.getFullYear() && i === hoy.getMonth() ? " hoy" : "");
+        return `<button type="button" class="mp-m${cls}" data-m="${i}">${t[0].toUpperCase() + t.slice(1)}</button>`; }).join("") + "</div>";
+  };
+  pinta();
+  m.addEventListener("click", (e) => {
+    e.stopPropagation();  // al cambiar de año se repinta y el botón pulsado ya no está dentro: que no lo cierre el clic de fuera
+    const y = e.target.closest(".mp-y"); if (y) { anio += +y.dataset.y; pinta(); return; }
+    const b = e.target.closest(".mp-m"); if (!b) return;
+    state.weekOffset = (anio - hoy.getFullYear()) * 12 + (+b.dataset.m - hoy.getMonth()); mesesPop(false); renderCal();
+  });
+  $("calTitle").parentElement.appendChild(m);
+}
+$("calTitle").addEventListener("click", (e) => { e.stopPropagation(); mesesPop(!document.getElementById("mesPop")); });
+$("calTitle").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); mesesPop(!document.getElementById("mesPop")); } });
+document.addEventListener("click", (e) => { if (!e.target.closest("#mesPop")) mesesPop(false); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") mesesPop(false); });
 
 /* ---------- Buyers ---------- */
 $("patterns").innerHTML = DATA.PATTERNS.map((p) => `<div class="pat"><strong>${esc(p.e)} ${esc(p.n)}</strong><span>${esc(p.d)}</span></div>`).join("");

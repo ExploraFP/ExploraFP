@@ -203,3 +203,22 @@ body.cnt-en-img .top-in { min-height: 0 !important; padding-bottom: 20px !import
 #cnt-ajustes .cnt-ico svg { width: 20px; height: 20px; filter: none !important; transition: transform .3s; }
 #cnt-ajustes:hover .cnt-ico svg, #cnt-ajustes[aria-expanded="true"] .cnt-ico svg { transform: rotate(45deg); }
 @media (max-width: 900px) { #cnt-ajustes { border-top: 0 !important; padding-top: 6px !important; font-size: 11px !important; } #cnt-ajustes .cnt-ico { width: 26px; height: 26px; } }
+
+/* Matriz: estado de cada idea con color en toda la fila (19/10/2026, Sandra): en producción (por generar, en revisión o listo)
+   en amarillo clarito; en cuanto se publica (hecha) pasa a verde. */
+.cnt .mz-tabla tr.mz-produccion td { background: #FFF7D1 !important; }
+.cnt .mz-tabla tr.mz-produccion td:first-child { box-shadow: inset 4px 0 0 #F2C230 !important; }
+.cnt .mz-tabla tr.mz-hecha td { background: #E6F7E3 !important; }
+.cnt .mz-tabla tr.mz-hecha td:first-child { box-shadow: inset 4px 0 0 #3FB54A !important; }
+.cnt .mz-okchk.prod { background: #F9E28A !important; color: #6B5300 !important; }
+.cnt .mz-okchk:not(.prod) { background: #BFE8BB !important; color: #1F6B2A !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cnt .mz-tabla tr.mz-produccion td { background: #2E2A12 !important; }
+  :root:not([data-theme="light"]) .cnt .mz-tabla tr.mz-hecha td { background: #16301A !important; }
+}
+:root[data-theme="dark"] .cnt .mz-tabla tr.mz-produccion td { background: #2E2A12 !important; }
+:root[data-theme="dark"] .cnt .mz-tabla tr.mz-hecha td { background: #16301A !important; }
+@media (max-width: 900px) {
+  .cnt .mz-tabla tr.mz-produccion { box-shadow: inset 4px 0 0 #F2C230 !important; }
+  .cnt .mz-tabla tr.mz-hecha { box-shadow: inset 4px 0 0 #3FB54A !important; }
+}

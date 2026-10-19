@@ -137,3 +137,30 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
 /* el cambio Calendario / Pendientes, más pequeño que las pestañas de arriba */
 .vsw button { font-size: 13.5px !important; padding: 6px 14px !important; }
 .vsw button svg { width: 14px; height: 14px; }
+
+/* Selector de mes (19/10/2026, Sandra: «mejora el seleccionador de meses»): como en Google Calendar, a la izquierda y junto al mes:
+   Hoy · ‹ › · Octubre 2026 ▾ (al pulsar el mes, cuadrícula de meses con el año). Antes iba diminuto a la derecha. */
+.cal-mesfila { display: flex; align-items: center; gap: 14px; position: relative; flex-wrap: wrap; }
+.cal-mesfila .cal-nav { display: inline-flex !important; gap: 6px !important; border: 0 !important; background: none !important; padding: 0 !important; }
+.cal-mesfila .cal-nav button { height: 34px !important; min-width: 34px !important; border-radius: 999px !important; font: 600 13.5px var(--font-body) !important; color: var(--ink) !important; }
+.cal-mesfila .cal-nav #calToday { padding: 0 16px !important; border: 1px solid #C2CEBC !important; background: var(--paper) !important; }
+.cal-mesfila .cal-nav .icon-btn { width: 34px !important; font-size: 20px !important; line-height: 1 !important; background: none !important; }
+.cal-mesfila .cal-nav button:hover { background: color-mix(in srgb, var(--lime) 35%, transparent) !important; }
+#calTitle { cursor: pointer; border-radius: 8px; padding: 2px 6px; margin-left: -6px; }
+#calTitle::after { content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 0 6px 10px; border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor; transform: rotate(45deg); opacity: .55; }
+#calTitle:hover { background: color-mix(in srgb, var(--lime) 30%, transparent); }
+.cal-nav[hidden] + #calTitle::after { display: none; }
+.cal-nav[hidden] + #calTitle { cursor: default; } .cal-nav[hidden] + #calTitle:hover { background: none; }
+#mesPop { position: absolute; top: calc(100% + 8px); left: 0; z-index: 60; width: 272px; padding: 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: 0 2px 4px rgba(27,54,32,.06), 0 14px 32px -16px rgba(27,54,32,.32); }
+#mesPop .mp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+#mesPop .mp-head b { font: 600 15px var(--font-body); }
+#mesPop button { border: 0; background: none; color: var(--ink); cursor: pointer; font: 500 14px var(--font-body); border-radius: 8px; }
+#mesPop .mp-y { width: 30px; height: 30px; font-size: 18px; }
+#mesPop .mp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+#mesPop .mp-m { padding: 9px 0; }
+#mesPop button:hover { background: color-mix(in srgb, var(--lime) 30%, transparent); }
+#mesPop .mp-m.hoy { box-shadow: inset 0 0 0 1.5px #4CCD4B; }
+#mesPop .mp-m.on { background: #1B3620; color: #fff; font-weight: 600; }
+:root[data-theme="dark"] #mesPop .mp-m.on { background: var(--lime); color: #12200F; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #mesPop .mp-m.on { background: var(--lime); color: #12200F; } }
