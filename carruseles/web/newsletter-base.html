@@ -1669,6 +1669,11 @@ function openNew(date, anchor) {
   pop.querySelector(".np-x").onclick = () => { pop.hidden = true; };
   pop.querySelectorAll(".np-o").forEach((o) => o.onclick = async () => { o.disabled = true; if (await createEmail(o.dataset.k, date)) pop.hidden = true; else o.disabled = false; });
 }
+// aviso pequeño abajo (Contenidos, 19/10/2026): que un fallo al guardar no pase en silencio
+function avisoNl(t) {
+  let a = document.getElementById("avisoNl"); if (!a) { a = document.createElement("div"); a.id = "avisoNl"; a.setAttribute("role", "alert"); document.body.appendChild(a); }
+  a.textContent = t; a.hidden = false; clearTimeout(avisoNl.t); avisoNl.t = setTimeout(() => { a.hidden = true; }, 7000);
+}
 async function createEmail(k, date) {
   if (!db) return false;
   const email = { asunto_a: "", asunto_b: "", preheader: "", bloques: [{ tipo: "texto", contenido: "" }], pd: "", despedida: "", firma: "" };
@@ -1676,7 +1681,7 @@ async function createEmail(k, date) {
     const ref = await db.collection("calendario").add({ segmento: k, fecha: date, estado: "en_redaccion", asunto: "", preheader: "", hubspot: "", metricas: {}, email, creado: new Date().toISOString() });
     if (!state.cal.some((c) => c.id === ref.id)) state.cal.push({ id: ref.id, segmento: k, fecha: date, estado: "en_redaccion", email });
     closeEditor(); await setPeek(ref.id); return true;
-  } catch { return false; }
+  } catch (err) { avisoNl("No he podido crear el correo: " + ((err && err.message) || err || "error desconocido")); return false; }
 }
 function openView(c) {
   const e = c.email; if (!e) return;
