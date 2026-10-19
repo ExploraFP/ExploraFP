@@ -52,6 +52,9 @@ vProducir = function () {
   const lista = carruselesDe('pendientes');
   const col = {generar: [], revision: [], listo: []};
   lista.forEach(c => col[etapaDe(c)] && col[etapaDe(c)].push(c));
+  // En revisión: el último que abriste, primero (pedido de Sandra, 19/10/2026); los no abiertos, por último cambio
+  const vistos = prVistos();
+  col.revision.sort((a, b) => (vistos[b.id] || 0) - (vistos[a.id] || 0) || String(b.upd || '').localeCompare(String(a.upd || '')));
   const faltan = col.generar.filter(c => c.estado === 'pendiente' || c.estado === 'error').length;
   let h = cabecera('Producción', '', []);
   h += '<div class="est-acciones">' +
@@ -373,3 +376,11 @@ document.addEventListener('click', e => {
     cerrarPanel(); render(); toast(n === 1 ? 'Borrado de Producción' : n + ' carruseles borrados de Producción');
   }
 });
+
+// Cuándo abriste cada carrusel por última vez (en este navegador), para ordenar «En revisión»
+function prVistos() { try { return JSON.parse(localStorage.getItem('explora.vistos') || '{}') || {}; } catch (e) { return {}; } }
+const _abrirEditorPr = abrirEditor;
+abrirEditor = function (id) {
+  try { const v = prVistos(); v[id] = Date.now(); localStorage.setItem('explora.vistos', JSON.stringify(v)); } catch (e) {}
+  return _abrirEditorPr.apply(this, arguments);
+};
