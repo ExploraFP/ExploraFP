@@ -1,0 +1,61 @@
+{
+  "cinta": "",
+  "color": "verde02",
+  "copy": "Querías comparar centros con calma.\nY todo son vueltas y letra pequeña 🚩\n\nEso no es un detalle. Es la primera alarma.\nSin código de centro, título propio, precios que no cuadran: humo 💨\n\nEtiqueta a quien esté buscando centro 👇\n\n#FPOnline #FormaciónProfesional #RedFlags #Explora #FPaDistancia",
+  "creado": "2026-09-29T19:47:47.308Z",
+  "cta": "Etiqueta a quien esté buscando centro",
+  "error": "",
+  "estado": "borrador",
+  "idea": "V21",
+  "num": 7,
+  "objetivo": "viral",
+  "plantilla": "capas",
+  "portada": "foto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "imagen": "fotos/foto-chica-agobiada-examen.jpg",
+      "marco": "fondo",
+      "subtitulo": "Antes de trazar tu ruta, lee esto",
+      "tipo": "portada",
+      "titulo": "Red flags de un centro de FP *online*"
+    },
+    {
+      "numero": "01",
+      "texto": "Todo centro oficial tiene código de centro. Pídelo y comprueba que existe. Si te da largas, desconfía y sigue buscando.",
+      "tipo": "contenido",
+      "titulo": "Si no sale el *código*, huye"
+    },
+    {
+      "numero": "02",
+      "texto": "Pregunta sin rodeos: ¿el título es oficial? Si te responden «título propio», no es el título oficial de FP.",
+      "tipo": "contenido",
+      "titulo": "Título *propio*: no es el oficial"
+    },
+    {
+      "items": [
+        "Título oficial, misma validez que presencial",
+        "Te ayudan a encontrar prácticas en empresa",
+        "Código de centro a la vista",
+        "Tutores que responden de verdad"
+      ],
+      "tipo": "lista",
+      "titulo": "Green flags: aquí *sí*"
+    },
+    {
+      "antetitulo": "",
+      "cifra": "Misma *validez* académica",
+      "fuente": "Esemtia, sept. 2026",
+      "texto": "La FP a distancia tiene carácter oficial. La fase práctica en empresa sí es presencial.",
+      "tipo": "dato"
+    },
+    {
+      "cta": "Etiqueta a quien esté buscando centro",
+      "texto": "Un centro serio no se esconde. Lo demuestra.",
+      "tipo": "cierre",
+      "titulo": "No pises *barro* por elegir mal"
+    }
+  ],
+  "titulo": "Red flags de un centro de FP online",
+  "upd": "2026-10-19T13:58:03.566Z"
+}

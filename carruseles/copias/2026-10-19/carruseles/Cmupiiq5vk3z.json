@@ -1,0 +1,60 @@
+{
+  "color": "verde01",
+  "copy": "1,24 millones de personas estudian FP este curso 📈\nNunca fueron tantas.\n\nY no es por descarte.\nEs porque la FP forma, coloca y no te hace perder el tiempo ⚡\nEl plan B se ha convertido en el plan 🎯\n\nGuárdalo para la próxima vez que alguien la mire de reojo 📌\n\n#FP #FPOnline #FormaciónProfesional #Explora #Ucademy",
+  "creado": "2026-10-01T12:30:41.395Z",
+  "cta": "Guárdalo y síguenos para más",
+  "error": "",
+  "estado": "hecho",
+  "fecha": "2026-10-15",
+  "idea": "M202610A",
+  "ig": "https://www.instagram.com/p/Deez5DyiNdl/?img_index=1",
+  "listo": true,
+  "num": 16,
+  "objetivo": "autoridad",
+  "plantilla": "capas",
+  "portada": "sinfoto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "marco": "fondo",
+      "tipo": "portada",
+      "titulo": "1,24 millones estudian *FP* este curso: nunca fueron tantos"
+    },
+    {
+      "numero": "01",
+      "texto": "Durante años se vendió como la opción de quien no llega a la universidad. Los números dicen justo lo contrario.",
+      "tipo": "contenido",
+      "titulo": "El mito: FP es para quien *no vale*"
+    },
+    {
+      "numero": "02",
+      "texto": "Cada vez más gente la pone primera en su lista. No por descarte, sino porque sabe lo que quiere.",
+      "tipo": "contenido",
+      "titulo": "Nadie *cae* en la FP, la elige"
+    },
+    {
+      "items": [
+        "Salida laboral directa",
+        "Formación práctica desde el primer día",
+        "Compatible con seguir currando",
+        "Nada de teoría de relleno"
+      ],
+      "tipo": "lista",
+      "titulo": "Por qué tanta gente *pisa* este terreno"
+    },
+    {
+      "numero": "03",
+      "texto": "Cuando tanta gente elige lo mismo, deja de ser una alternativa. Se convierte en la ruta que mejor funciona.",
+      "tipo": "contenido",
+      "titulo": "No es el plan B, es *el plan*"
+    },
+    {
+      "cta": "Guárdalo y síguenos para más",
+      "texto": "Deja de mirarla de reojo. Es la opción que está ganando, con datos y sin excusas.",
+      "tipo": "cierre",
+      "titulo": "La FP ya no pide *perdón*"
+    }
+  ],
+  "titulo": "1,24 millones estudian FP este curso: nunca fueron tantos",
+  "upd": "2026-10-19T10:19:45.208Z"
+}

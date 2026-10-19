@@ -1,0 +1,58 @@
+{
+  "color": "blanco",
+  "copy": "¿Hiciste un curso de auxiliar y crees que ya eres TCAE? 🛑\nPara un segundo.\n\nUn curso privado certifica horas.\nEl TCAE es un ciclo oficial del Ministerio.\nY solo el segundo abre bolsas, oposiciones y contratos 🏥\n\nEsto significa que te puede faltar el papel que de verdad cuenta 💥\n\nGuárdalo y compártelo con quien esté en ese punto 📌\n\n#TCAE #FPOnline #AuxiliarEnfermería #FormaciónProfesional #Explora",
+  "creado": "2026-10-01T11:49:50.026Z",
+  "cta": "Guárdalo y síguenos para más",
+  "error": "",
+  "estado": "borrador",
+  "idea": "C034",
+  "num": 9,
+  "objetivo": "autoridad",
+  "plantilla": "capas",
+  "portada": "sinfoto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "marco": "fondo",
+      "subtitulo": "Te explicamos la diferencia antes de que te la expliquen tarde",
+      "tipo": "portada",
+      "titulo": "Tu curso de auxiliar no es el *TCAE* oficial"
+    },
+    {
+      "numero": "01",
+      "texto": "Vale para aprender, pero no es un título oficial. Lo firma una academia, no el Ministerio.",
+      "tipo": "contenido",
+      "titulo": "Un curso privado certifica *horas*, no un título"
+    },
+    {
+      "numero": "02",
+      "texto": "Técnico en Cuidados Auxiliares de Enfermería. Título oficial, con validez en toda España.",
+      "tipo": "contenido",
+      "titulo": "El TCAE es un *ciclo* de FP del Ministerio"
+    },
+    {
+      "items": [
+        "Oposiciones y bolsas públicas",
+        "Convenios de clínicas y residencias",
+        "Reconocimiento en toda España",
+        "Seguir estudiando después"
+      ],
+      "tipo": "lista",
+      "titulo": "Qué puntúa de verdad"
+    },
+    {
+      "numero": "03",
+      "texto": "Sin título oficial, no entras en bolsas públicas ni sumas puntos en oposición. Así de claro.",
+      "tipo": "contenido",
+      "titulo": "El papel privado no abre esas *puertas*"
+    },
+    {
+      "cta": "Guárdalo y síguenos para más",
+      "texto": "Si dudas de tu curso, pregunta si es un ciclo de FP reconocido. Esa es la clave.",
+      "tipo": "cierre",
+      "titulo": "Confírmalo *antes* de perder tiempo"
+    }
+  ],
+  "titulo": "Tu curso de auxiliar no es el TCAE oficial",
+  "upd": "2026-10-14T16:30:07.127Z"
+}

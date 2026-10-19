@@ -1,0 +1,24 @@
+{
+  "asunto": "",
+  "creado": "2026-10-19T15:42:54.903Z",
+  "email": {
+    "asunto_a": "",
+    "asunto_b": "",
+    "bloques": [
+      {
+        "contenido": "",
+        "tipo": "texto"
+      }
+    ],
+    "despedida": "",
+    "firma": "",
+    "pd": "",
+    "preheader": ""
+  },
+  "estado": "en_redaccion",
+  "fecha": "2026-10-21",
+  "hubspot": "",
+  "metricas": {},
+  "preheader": "",
+  "segmento": "pensarlo"
+}

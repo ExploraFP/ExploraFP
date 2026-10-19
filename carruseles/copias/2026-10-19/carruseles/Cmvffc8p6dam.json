@@ -1,0 +1,74 @@
+{
+  "chat": [
+    {
+      "role": "user",
+      "text": "no tiene sentido el CTA si lo guardas es para verlo más tarde y si es para que lo vea otra persona dices enviar"
+    },
+    {
+      "role": "bot",
+      "text": "✓ He cambiado el CTA de cierre y el final del caption a «Envíaselo», porque la acción es mandárselo a otra persona, no guardarlo."
+    }
+  ],
+  "color": "verde01",
+  "copy": "«A mi edad ya no». Mentira. 🔥\n\nEsa frase frena a más gente que cualquier examen. Y casi nunca tiene nada que ver con la edad. 💥\n\nLa FP no pide carnet de joven. Pide ganas, un plan y tiempo que cuadre con tu vida. Trabajo, familia, turnos. Todo eso ya lo llevas encima. ⚡️\n\nAquí no hay ESO a los 16 como requisito moral. Hay gente que vuelve a estudiar después de años currando. Gente que ya sabe lo que es pisar barro. 🐊\n\nLo que te frena no es tu edad. Es la duda de si podrás volver a estudiar. Esa duda se desactiva probando, no pensando. 🎯\n\nEntra con mapa. Abre brecha. Caza el botín. ⚔️\n\nEnvíaselo a quien lleva tiempo diciendo «a mi edad ya no». 📍\n\n#FPOnline #FormacionProfesional #EstudiarFP #TituloOficial #ExploraxUcademy",
+  "creado": "2026-10-19T15:43:40.554Z",
+  "cta": "Guárdalo y síguenos para más",
+  "error": "",
+  "estado": "borrador",
+  "idea": "T67",
+  "num": 20,
+  "objetivo": "autoridad",
+  "plantilla": "capas",
+  "portada": "foto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "imagen": "/_blob/8028304b14798515dadddd63fc0d50c4",
+      "marco": "fondo",
+      "subtitulo": "La edad no es un requisito. Es una excusa con prisa.",
+      "tipo": "portada",
+      "titulo": "«A mi edad ya no». Mira *quién* estudia FP"
+    },
+    {
+      "numero": "01",
+      "texto": "«A mi edad ya no». La oyes en casa, en el curro, en tu cabeza. Suena a hecho. Es una creencia.",
+      "tipo": "contenido",
+      "titulo": "La frase que *frena* más que un examen"
+    },
+    {
+      "numero": "02",
+      "texto": "Esto significa que no hay un tope de edad para empezar. Pide ganas, un plan y un ritmo que cuadre con tu vida.",
+      "tipo": "contenido",
+      "titulo": "La FP no pide *carnet* de joven"
+    },
+    {
+      "items": [
+        "Tener un objetivo claro",
+        "Un ritmo que te cuadre",
+        "Tiempo real, no ideal",
+        "Dar el primer paso"
+      ],
+      "tipo": "lista",
+      "titulo": "Lo que sí cuenta de verdad"
+    },
+    {
+      "numero": "03",
+      "texto": "Tranquilo. Nadie vuelve sabiendo. Se vuelve probando, fallando y ajustando. Con guía, no a solas.",
+      "tipo": "contenido",
+      "titulo": "La duda real: ¿*sabré* volver?"
+    },
+    {
+      "numero": "04",
+      "texto": "Llevas años en el terreno. Sabes lo que es currar a turnos, aguantar y resolver. Eso ya es medio camino.",
+      "tipo": "contenido",
+      "titulo": "Tu experiencia es *ventaja*"
+    },
+    {
+      "cta": "Envíaselo a quien dice «a mi edad ya no»",
+      "tipo": "cierre",
+      "titulo": "Tu edad no te *frena*"
+    }
+  ],
+  "titulo": "«A mi edad ya no». Mira quién estudia FP",
+  "upd": "2026-10-19T15:44:40.880Z"
+}

@@ -1,0 +1,59 @@
+{
+  "color": "verde02",
+  "copy": "Años de carrera fuera.\nLlegas a España y el papel se queda en un cajón 📁\n\nNo es justo. Pero no empiezas de cero 💥\nHay otra puerta: un título oficial español que sí abre camino aquí.\nTu experiencia viaja contigo 🧭\n\n¿Te ha pasado a ti o a alguien cerca? Etiquétale. Esto le ahorra meses 📍\n\n#FPOnline #Homologación #EstudiarEnEspaña #SegundaOportunidad #Explora",
+  "creado": "2026-09-29T19:47:47.308Z",
+  "cta": "Comenta, etiqueta a alguien o compártelo",
+  "error": "",
+  "estado": "borrador",
+  "idea": "B023",
+  "num": 6,
+  "objetivo": "viral",
+  "plantilla": "capas",
+  "portada": "foto",
+  "slides": [
+    {
+      "etiqueta": "Titulación",
+      "imagen": "fotos/foto-globo-diploma.jpg",
+      "marco": "fondo",
+      "subtitulo": "Lo que nadie te cuenta cuando llegas con una carrera bajo el brazo",
+      "tipo": "portada",
+      "titulo": "Tu título no es *homologable*. Hay otra puerta"
+    },
+    {
+      "numero": "01",
+      "texto": "Informática en Colombia, México, Venezuela... llegas a España y tu título se queda en un cajón. No es justo, pero es lo que hay.",
+      "tipo": "contenido",
+      "titulo": "Años de carrera. Cero papel que valga aquí"
+    },
+    {
+      "numero": "02",
+      "texto": "No tiras tu experiencia a la basura. Sacas un título de FP oficial español y sigues pisando barro en lo tuyo.",
+      "tipo": "contenido",
+      "titulo": "No es *empezar de cero*. Es elegir otra ruta"
+    },
+    {
+      "items": [
+        "Tu experiencia en entrevistas",
+        "Lo que ya sabes hacer",
+        "Tu nivel real, no el papel",
+        "Tu tiempo, si eliges bien la vía"
+      ],
+      "tipo": "lista",
+      "titulo": "Lo que sí se reconoce"
+    },
+    {
+      "numero": "03",
+      "texto": "Formación oficial, reconocida en toda España. Sin depender de que un ministerio valide tu carrera de fuera.",
+      "tipo": "contenido",
+      "titulo": "Un título *español* que sí abre puertas aquí"
+    },
+    {
+      "cta": "Comenta, etiqueta a alguien o compártelo",
+      "texto": "Currar duro fuera no debería significar volver a foja cero aquí. Hay una vía, y no es la que te imaginas.",
+      "tipo": "cierre",
+      "titulo": "¿A ti también te pasó?"
+    }
+  ],
+  "titulo": "Tu título no es homologable. Hay otra puerta",
+  "upd": "2026-10-14T16:30:07.127Z"
+}

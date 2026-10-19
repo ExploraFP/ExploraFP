@@ -1,0 +1,54 @@
+{
+  "cinta": "",
+  "color": "verde01",
+  "copy": "«Para opositar necesitas carrera» 🙅\nPues no.\n\nCon una FP oficial se abren puertas en la Administración.\nY algunas plazas piden tu ciclo concreto: TCAE, Educación Infantil… 🏛️\n\nPrimero el título. Luego la plaza ⚡\nRevisa siempre las bases: ahí está la letra pequeña 📄\n\nEscríbenos tu ciclo por DM y te decimos tu caso 📍\n\n#FP #Oposiciones #FPOnline #EmpleoPúblico #Explora",
+  "creado": "2026-09-28T16:00:00.000Z",
+  "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+  "estado": "borrador",
+  "idea": "T63",
+  "listo": false,
+  "num": 2,
+  "objetivo": "informativo",
+  "plantilla": "poster",
+  "slides": [
+    {
+      "etiqueta": "Empleo público",
+      "imagen": "fotos/foto-grupo-estudiantes.jpg",
+      "subtitulo": "Sin carrera. Con un título de FP oficial.",
+      "tipo": "portada",
+      "titulo": "Oposiciones que puedes hacer *con una FP*"
+    },
+    {
+      "antetitulo": "Con un grado medio (título de Técnico) accedes al grupo",
+      "cifra": "C1",
+      "color": "verde",
+      "fuente": "Estatuto Básico del Empleado Público, art. 76",
+      "texto": "Y con un grado superior (Técnico Superior), al grupo B.",
+      "tipo": "dato"
+    },
+    {
+      "antetitulo": "Del Estado, con título de Técnico:",
+      "items": [
+        "Administrativo del Estado",
+        "Agente de Hacienda",
+        "Policía Nacional"
+      ],
+      "tipo": "lista",
+      "titulo": "Algunas que *puedes preparar*"
+    },
+    {
+      "antetitulo": "Plazas de sanidad y educación:",
+      "color": "blanco",
+      "texto": "Técnico en cuidados auxiliares de enfermería o técnico de educación infantil. Sin ese título, no entras.",
+      "tipo": "contenido",
+      "titulo": "Y otras piden *tu ciclo concreto*"
+    },
+    {
+      "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+      "tipo": "cierre",
+      "titulo": "Primero el título. Luego *la plaza*."
+    }
+  ],
+  "titulo": "Oposiciones que puedes hacer con una FP",
+  "upd": "2026-10-08T09:07:09.823Z"
+}

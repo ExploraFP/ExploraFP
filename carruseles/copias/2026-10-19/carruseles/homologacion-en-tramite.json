@@ -1,0 +1,53 @@
+{
+  "cinta": "Homologación",
+  "color": "blanco",
+  "copy": "Tu homologación lleva meses «en trámite».\nY tú con la vida en pausa ⏳\n\nEsperar al Ministerio no significa quedarte parado.\nVolante condicional. Prueba de acceso. Expediente al día.\nHay movimientos que puedes hacer YA ⚡\n\nEsto significa que tu ruta no espera al papel 🧭\n\nEscríbenos tu ciclo por DM y te decimos tu caso 📍\n\n#FP #FPOnline #Homologación #EstudiarEnEspaña #Explora",
+  "creado": "2026-09-28T16:00:00.000Z",
+  "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+  "estado": "borrador",
+  "idea": "T12",
+  "listo": false,
+  "num": 1,
+  "objetivo": "informativo",
+  "plantilla": "cuaderno",
+  "slides": [
+    {
+      "estilo": ".bloque-foto{position:absolute !important;top:56% !important;bottom:auto !important;transform:translateY(-50%) !important;} .pastilla{transform:translateY(255px) !important;}",
+      "etiqueta": "Homologación en trámite",
+      "imagen": "fotos/foto-globo-diploma.jpg",
+      "marco": "fondo",
+      "subtitulo": "Esperar al Ministerio no significa quedarte parado.",
+      "tipo": "portada",
+      "titulo": "Qué puedes hacer *ya*."
+    },
+    {
+      "nota": "esto significa que puedes empezar antes",
+      "numero": "01",
+      "texto": "Lo sacas al pedir la homologación y te deja matricularte mientras tanto. Ojo: si te la deniegan, lo cursado no vale.",
+      "tipo": "contenido",
+      "titulo": "Pide el *volante condicional*."
+    },
+    {
+      "numero": "02",
+      "texto": "Si no quieres depender del título, la prueba de acceso a ciclos es otra puerta. Grado medio desde los 17 años, grado superior desde los 19 años.",
+      "tipo": "contenido",
+      "titulo": "Mira la *prueba de acceso*."
+    },
+    {
+      "items": [
+        "Revisa tu expediente en la sede del Ministerio",
+        "Ten a mano tus documentos traducidos",
+        "Elige ya el ciclo que quieres hacer"
+      ],
+      "tipo": "lista",
+      "titulo": "Mientras tanto, *mueve ficha*."
+    },
+    {
+      "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+      "tipo": "cierre",
+      "titulo": "No esperes parado. *Muévete* ya."
+    }
+  ],
+  "titulo": "Qué puedes hacer ya.",
+  "upd": "2026-10-14T16:30:07.127Z"
+}
