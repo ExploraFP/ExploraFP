@@ -633,6 +633,9 @@ async function descargarLote(lista) {
     }
     toast(lista.length > 1 ? lista.length + ' carruseles descargados' : total + ' slides descargadas. Si falta alguna, bájala con «Solo la slide»' + (etapaDe(lista[0]) === 'listo' && !lista[0].ig ? ' · cuando lo subas, pega el enlace aquí' : ''));
     if (lista.length === 1 && EST.abierto === lista[0].id) pintarEditor(true);
+    // Sandra (19/10/2026): con «Todas» la ÚLTIMA slide a veces no llega (el navegador la pierde sin avisar) y a mano sí:
+    // al terminar, un aviso con un botón para volver a bajar solo esa
+    if (lista.length === 1) avisoUltima(lista[0]);
   } catch (e) {
     console.error('descarga', e);
     toast(e && e.code === 'declined' ? 'Descarga cancelada'
@@ -653,6 +656,16 @@ async function guardarArchivo(down, filename, data) {
 }
 function actualizarProgreso() { document.querySelectorAll('.est-progreso').forEach(el => { el.textContent = EST.progreso || ''; }); }
 const descargar = c => descargarLote([c]);
+function avisoUltima(c) {
+  let a = document.getElementById('dl-fin'); if (a) a.remove();
+  const n = c.slides.length;
+  a = document.createElement('div'); a.id = 'dl-fin'; a.setAttribute('role', 'status');
+  a.innerHTML = '<span>Descargadas las ' + n + ' slides. ¿No te ha llegado la última?</span><button type="button" class="btn mini pri" id="dl-fin-ok">Bajar la slide ' + n + '</button><button type="button" class="dl-fin-x" aria-label="Cerrar">×</button>';
+  document.body.appendChild(a);
+  a.querySelector('#dl-fin-ok').onclick = () => { a.remove(); descargarSlide(c, n - 1); };
+  a.querySelector('.dl-fin-x').onclick = () => a.remove();
+  setTimeout(() => a.remove(), 45000);
+}
 /* listos = generados, sin errores de calidad y ya medidos */
 const botonLote = () => { const n = listosLote().length;
   return n ? '<button class="btn" data-lote="listos">Descargar ' + (n === 1 ? 'el listo' : 'los ' + n + ' listos') + '</button>' : ''; };
