@@ -723,7 +723,7 @@ document.addEventListener('click', e => {
   if (dp) { const i = +dp.dataset.estDup; c.slides.splice(i + 1, 0, JSON.parse(JSON.stringify(c.slides[i]))); EST.sel = i + 1; guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' duplicada'); return; }
   const qt = t.closest('[data-est-quita]');
   if (qt) { if (c.slides.length < 2) return; const i = +qt.dataset.estQuita; c.slides.splice(i, 1); if (EST.sel >= c.slides.length || EST.sel > i) EST.sel = Math.max(0, EST.sel - 1);
-    guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' quitada · si te has equivocado: ↶ Deshacer'); return; }
+    guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' quitada · si te has equivocado: Ctrl/⌘ + Z'); return; }
   if (EST.menuNueva && !t.closest('.est-mas-menu')) { EST.menuNueva = false; pintarEditor(true); }
   const nv = t.closest('[data-est-nueva]');
   if (nv) { EST.menuNueva = false; EST.sel = c.slides.length - 1; const tipo = nv.dataset.estNueva; c.slides.splice(EST.sel + 1, 0, tipo === 'lista' ? {tipo: tipo, titulo: 'Nuevo *titular*', items: ['Primer punto', 'Segundo punto']}

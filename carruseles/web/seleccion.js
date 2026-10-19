@@ -94,6 +94,12 @@ pintarEditor = function (todo) {
     }
     return;
   }
+  // Diseño (plantilla y color) en la columna de la derecha, no en la barra de arriba; y sin el botón ↶: se deshace con
+  // Ctrl/⌘ + Z (Sandra, 19/10/2026). Plegado en una línea; al abrirlo enseña plantillas y colores.
+  ed.querySelectorAll('.est-ecab .sel-diseno, .est-ecab #mesa-deshacer').forEach(x => x.remove());
+  SEL.diseno = false;
+  const panelD = ed.querySelector('#est-panel');
+  if (panelD && !panelD.querySelector('.sel-dis-panel')) panelD.insertAdjacentHTML('afterbegin', htmlDisenoPanel(c));
   // la ventana de diseño nunca se sale de la pantalla
   const dp = ed.querySelector('.sel-diseno-pop');
   if (dp) { dp.style.left = '0px'; const r = dp.getBoundingClientRect(), sobra = r.right - (window.innerWidth - 12); if (sobra > 0) dp.style.left = Math.max(-r.left + 12, -sobra) + 'px'; }
@@ -127,6 +133,16 @@ pintarEditor = function (todo) {
   if (SEL.pop && !ed.querySelector('#sel-pop')) pintarPop();
   if (fr) marcarActivo();
 };
+function htmlDisenoPanel(c) {
+  const hex = (EST_COLORES.find(x => x.id === c.color) || {}).hex || '#366B40';
+  return '<details class="sel-dis-panel"' + (SEL.disAbierto ? ' open' : '') + '><summary><i style="background:' + hex + '"></i><b>Diseño</b><span>' +
+    esc(nombrePl(c.plantilla)) + ' · ' + esc(nombreCo(c.color)) + '</span></summary><div class="sel-dis-cuerpo"><h4>Plantilla</h4><div class="sel-pls">' +
+    EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') +
+    '</div><h4>Color</h4><div class="sel-cos">' +
+    EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-sel-co="' + x.id + '" aria-pressed="' + (c.color === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') +
+    '</div><p>Se aplica a todas las slides.</p></div></details>';
+}
+document.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('sel-dis-panel')) SEL.disAbierto = e.target.open; }, true);
 function htmlDiseno(c) {
   return '<div class="sel-diseno-pop" role="dialog" aria-label="Diseño del carrusel"><h4>Plantilla</h4><div class="sel-pls">' +
     EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') +
@@ -262,7 +278,7 @@ window.addEventListener('click', e => {
     const i = +quiB.dataset.estQuita; if (c.slides.length < 2) return;
     $('#onb').hidden = false;
     $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="sel-q-t"><div class="cuerpo">' +
-      '<h2 id="sel-q-t">¿Quitar la slide ' + (i + 1) + '?</h2><p>Se borra del carrusel. Si te equivocas, puedes recuperarla con ↶ Deshacer.</p></div>' +
+      '<h2 id="sel-q-t">¿Quitar la slide ' + (i + 1) + '?</h2><p>Se borra del carrusel. Si te equivocas, la recuperas con Ctrl/⌘ + Z.</p></div>' +
       '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" data-sel-quita-ok="' + i + '">Sí, quitar</button></footer></div>';
     return;
   }

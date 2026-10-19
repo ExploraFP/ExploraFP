@@ -123,3 +123,15 @@
 #dl-menu button{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:10px 12px;border:0;border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:600;text-align:left;cursor:pointer}
 #dl-menu button:hover,#dl-menu button:focus-visible{background:var(--limaSoft);outline:none}
 #dl-menu button span{font-weight:500;color:var(--ink3);font-size:13px}
+/* Diseño en la columna de la derecha (19/10/2026): una línea plegable arriba del panel */
+.sel-dis-panel{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:0 0 14px}
+.sel-dis-panel summary{list-style:none;display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;font-size:14px}
+.sel-dis-panel summary::-webkit-details-marker{display:none}
+.sel-dis-panel summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);transition:transform .15s}
+.sel-dis-panel[open] summary::after{transform:rotate(-135deg)}
+.sel-dis-panel summary i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.18);flex:none}
+.sel-dis-panel summary span{color:var(--ink3);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sel-dis-cuerpo{padding:2px 12px 12px}
+.sel-dis-cuerpo h4{margin:6px 0 8px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.sel-dis-cuerpo h4+div{margin-bottom:12px}
+.sel-dis-cuerpo p{margin:0;font-size:12px;color:var(--ink3)}
