@@ -604,10 +604,9 @@ function abrirMenuDescarga(b, c) {
   cerrarMenuDescarga();
   const r = b.getBoundingClientRect(), n = c.slides.length, i = EST.sel || 0;
   const m = document.createElement('div'); m.id = 'dl-menu'; m.setAttribute('role', 'menu');
-  // el texto del post no se descarga: se copia (Sandra, 19/10/2026: «no me interesa descargarlo sino copiar y pegar»)
+  // solo imágenes: el texto del post se copia desde el panel («Copiar caption»), no desde aquí (Sandra, 19/10/2026)
   m.innerHTML = '<button role="menuitem" data-dl="todas">Todas las slides <span>' + n + '</span></button>' +
-    '<button role="menuitem" data-dl="una">Solo la slide ' + (i + 1) + '</button>' +
-    (c.copy ? '<button role="menuitem" data-dl="copiar">Copiar el texto del post</button>' : '');
+    '<button role="menuitem" data-dl="una">Solo la slide ' + (i + 1) + '</button>';
   m.style.top = (r.bottom + 6) + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
   document.body.appendChild(m); m.querySelector('button').focus();
 }
@@ -638,7 +637,7 @@ window.addEventListener('click', e => {
     return;
   }
   const op = t.closest('#dl-menu [data-dl]');
-  if (op && c) { e.stopPropagation(); cerrarMenuDescarga(); if (op.dataset.dl === 'todas') descargar(c); else if (op.dataset.dl === 'copiar') copiar(c.copy || '', 'Texto del post copiado'); else descargarSlide(c, EST.sel || 0); return; }
+  if (op && c) { e.stopPropagation(); cerrarMenuDescarga(); if (op.dataset.dl === 'todas') descargar(c); else descargarSlide(c, EST.sel || 0); return; }
   if (!t.closest('#dl-menu')) cerrarMenuDescarga();
 }, true);
 window.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('dl-menu')) { e.stopImmediatePropagation(); cerrarMenuDescarga(); } }, true);
