@@ -180,3 +180,19 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
    «REGLAS / NARRADORES / BIBLIOTECA» repetía el selector de encima. Se quedan los títulos que dicen algo nuevo. */
 .sent-head .eyebrow, .sent-head h2, .b-head .eyebrow { display: none !important; }
 .sent-head { justify-content: flex-end !important; }
+
+/* ===== Menú arriba · maqueta G (19/10/2026): aquí solo la barra lima con las pestañas; el nombre de la sección ya está en la
+   barra de arriba de Contenidos ===== */
+@font-face { font-family: "Besley"; src: url("fuentes/besley-latin-400-normal.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Besley"; src: url("fuentes/besley-latin-600-normal.woff2") format("woff2"); font-weight: 600; }
+:root { --nl-lima-bar: #EDFEC3; --nl-lima-ink: #1B3620; --nl-lima-line: #DDEBB8; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --nl-lima-bar: #1C2A14; --nl-lima-ink: #D8FF6E; --nl-lima-line: #2C3B1F; } }
+:root[data-theme="dark"] { --nl-lima-bar: #1C2A14; --nl-lima-ink: #D8FF6E; --nl-lima-line: #2C3B1F; }
+.band { background: var(--nl-lima-bar) !important; border-bottom: 1px solid var(--nl-lima-line) !important; }
+.band-in { padding: 0 32px !important; align-items: stretch !important; min-height: 50px !important; }
+.brand { display: none !important; }
+.tabs { margin: 0 !important; gap: 34px !important; align-items: stretch !important; }
+.tabs button { font: 400 17px "Besley", Georgia, serif !important; color: var(--nl-lima-ink) !important; padding: 0 2px !important; min-height: 50px; letter-spacing: 0 !important; }
+.tabs button:hover { color: var(--nl-lima-ink) !important; }
+.tabs button[aria-selected="true"] { font-weight: 600 !important; color: var(--nl-lima-ink) !important; border-bottom-color: var(--nl-lima-ink) !important; }
+@media (max-width: 900px) { .band-in { padding: 0 16px !important; } .tabs { gap: 22px !important; } .tabs button { font-size: 16px !important; } }

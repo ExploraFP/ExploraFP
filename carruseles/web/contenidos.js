@@ -141,6 +141,8 @@ document.addEventListener('click', e => {
   if (tm) { cntPonerTema(tm.dataset.cntTema); cntAjustes(true); return; }
   if (e.target.closest && e.target.closest('#cnt-ajustes')) { cntAjustes(); return; }
   if (!(e.target.closest && e.target.closest('#cnt-ajustes-menu'))) cntAjustes(false);
+  // con el menú arriba el editor se abre dentro de la página: al cambiar de sección o de pestaña, se cierra
+  if (e.target.closest && e.target.closest('[data-cnt], #vistas button') && typeof EST !== 'undefined' && EST.abierto) cerrarEditor();
   const b = e.target.closest && e.target.closest('[data-cnt]'); if (!b) return;
   e.preventDefault(); cntIr(b.dataset.cnt);
 });

@@ -234,3 +234,73 @@ body.cnt-en-img .top-in { min-height: 0 !important; padding-bottom: 20px !import
 .cnt .mz-selbar.on { position: fixed !important; top: auto !important; bottom: 20px; left: calc(var(--cnt-ancho) + (100vw - var(--cnt-ancho)) / 2); transform: translateX(-50%);
   margin: 0 !important; z-index: 60; width: max-content; max-width: calc(100vw - var(--cnt-ancho) - 32px); box-shadow: 0 10px 30px rgba(0,0,0,.28) !important; }
 @media (max-width: 900px) { .cnt .mz-selbar.on { bottom: 76px; left: 50%; max-width: calc(100vw - 24px); } }
+
+/* =====================================================================================================================
+   MENÚ ARRIBA · maqueta G (19/10/2026, Sandra la eligió entre C · D · E · F · G):
+   barra superior verde oscuro con «Contenidos» + los botones de sección de siempre (icono en cuadro + nombre; la abierta en
+   lima) y Ajustes a la derecha; debajo, barra lima clarito con las pestañas de la sección en la letra de la web (Besley).
+   Las secciones sin pestañas (Inicio, Imágenes) no llevan barra lima. El editor de carruseles se abre DENTRO de la estructura
+   (las dos barras siguen arriba). En el móvil: tira oscura con «Contenidos» arriba, pestañas en lima y secciones abajo.
+   ===================================================================================================================== */
+@font-face { font-family: "Besley"; src: url("fuentes/besley-latin-400-normal.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Besley"; src: url("fuentes/besley-latin-600-normal.woff2") format("woff2"); font-weight: 600; }
+:root { --cnt-lima-bar: #EDFEC3; --cnt-lima-bar-ink: #1B3620; --cnt-lima-bar-line: #DDEBB8; --cnt-alto: 68px; --cnt-sub: 50px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --cnt-lima-bar: #1C2A14; --cnt-lima-bar-ink: #D8FF6E; --cnt-lima-bar-line: #2C3B1F; } }
+:root[data-theme="dark"] { --cnt-lima-bar: #1C2A14; --cnt-lima-bar-ink: #D8FF6E; --cnt-lima-bar-line: #2C3B1F; }
+
+/* barra lima con las pestañas (escritorio y móvil) */
+.cnt header.top { background: var(--cnt-lima-bar) !important; border-bottom: 1px solid var(--cnt-lima-bar-line) !important; }
+.cnt .top-in { padding: 0 32px !important; align-items: stretch !important; min-height: var(--cnt-sub) !important; }
+.cnt .top-in .mark { display: none !important; }
+.cnt .top-in .views { margin: 0 !important; gap: 34px !important; align-items: stretch !important; }
+.cnt .top-in .views button { font: 400 17px "Besley", Georgia, serif !important; color: var(--cnt-lima-bar-ink) !important; padding: 0 2px !important;
+  min-height: var(--cnt-sub); border-bottom: 2.5px solid transparent !important; margin-bottom: -1px; letter-spacing: 0 !important; }
+.cnt .top-in .views button:hover { color: var(--cnt-lima-bar-ink) !important; border-bottom-color: color-mix(in srgb, var(--cnt-lima-bar-ink) 35%, transparent) !important; }
+.cnt .top-in .views button[aria-current="true"] { font-weight: 600 !important; color: var(--cnt-lima-bar-ink) !important; border-bottom-color: var(--cnt-lima-bar-ink) !important; }
+body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no tiene pestañas: sin barra lima */
+.cnt-banda { display: none !important; }                          /* el Inicio tampoco */
+
+@media (min-width: 901px) {
+  :root { --cnt-ancho: 0px !important; }
+  body.cnt { padding-left: 0 !important; padding-top: var(--cnt-alto); }
+  #cnt-lado { top: 0 !important; left: 0 !important; right: 0 !important; bottom: auto !important; width: auto !important; height: var(--cnt-alto) !important;
+    flex-direction: row !important; align-items: center !important; gap: 10px !important; padding: 0 24px !important; border: 0 !important; z-index: 70 !important; }
+  .cnt-marca { display: flex !important; flex-direction: column; gap: 5px; padding: 0 !important; margin-right: 22px; }
+  .cnt-marca b { font-size: 28px !important; }
+  .cnt-marca img { height: 13px !important; }
+  .cnt-nav { flex-direction: row !important; gap: 4px !important; align-items: center; }
+  .cnt-nav button { width: auto !important; padding: 7px 14px 7px 8px !important; justify-content: flex-start !important; gap: 10px !important; }
+  .cnt-txt { position: static !important; width: auto !important; height: auto !important; overflow: visible !important; clip: auto !important; }
+  .cnt-nav .cnt-ico { width: 30px !important; height: 30px !important; }
+  #cnt-ajustes { margin: 0 0 0 auto !important; width: auto !important; border-top: 0 !important; border-radius: 10px !important; padding: 8px 10px !important; }
+  #cnt-ajustes:hover, #cnt-ajustes[aria-expanded="true"] { background: rgba(255,255,255,.07) !important; }
+  #cnt-ajustes-menu { left: auto !important; right: 16px; top: calc(var(--cnt-alto) + 8px); bottom: auto !important; }
+  .cnt header.top { position: sticky !important; top: var(--cnt-alto) !important; z-index: 40; }
+  #cnt-inicio, #cnt-newsletter { top: var(--cnt-alto) !important; left: 0 !important; }
+  /* el editor de carruseles, dentro de la estructura: debajo de las dos barras */
+  .cnt .est-editor { top: calc(var(--cnt-alto) + var(--cnt-sub)) !important; z-index: 39 !important; }
+}
+
+/* barra del editor: blanca, como una línea más de la página (antes era otra franja verde oscuro) */
+.cnt .est-ecab { background: var(--surface) !important; color: var(--ink) !important; border-bottom: 1px solid var(--line); min-height: 58px !important; padding: 8px 28px !important; }
+.cnt .est-ecab .eb-tit h2 { color: var(--ink) !important; }
+.cnt .est-ecab .eb-meta, .cnt .est-ecab #mesa-guardado { color: var(--ink2) !important; }
+.cnt .est-ecab .eb-icono, .cnt .eb-der .pr-menu > summary { color: var(--ink) !important; }
+.cnt .est-ecab .eb-icono:hover:not([disabled]), .cnt .eb-der .pr-menu > summary:hover { background: var(--surface2, rgba(0,0,0,.05)) !important; }
+.cnt .est-ecab .eb-sec { color: var(--ink) !important; border-color: var(--line2, #C2CEBC) !important; }
+.cnt .est-ecab .eb-sec:hover { background: var(--surface2, rgba(0,0,0,.04)) !important; }
+.cnt .est-ecab .eb-links a, .cnt .est-ecab .eb-links button { color: var(--ink2) !important; }
+
+@media (max-width: 900px) {
+  body.cnt { padding-top: 52px; }
+  body.cnt::before { content: "Contenidos"; position: fixed; top: 0; left: 0; right: 0; height: 52px; z-index: 70; background: var(--brand2); color: #fff;
+    font: 700 24px/52px "Gravity Condensed", "Archivo", sans-serif; padding-left: 16px; }
+  .cnt header.top { position: sticky !important; top: 52px !important; }
+  .cnt .top-in { padding: 0 16px !important; }
+  .cnt .top-in .views { gap: 22px !important; overflow-x: auto; background: none !important; padding: 0 !important; border-radius: 0 !important; flex: 1 1 100% !important; }
+  .cnt .top-in .views button { font-size: 16px !important; white-space: nowrap; padding: 0 2px !important; border-radius: 0 !important; background: none !important; }
+  #cnt-inicio, #cnt-newsletter { top: 52px !important; }
+}
+/* con las dos barras arriba (118 px) la slide grande se encoge lo justo para que slide + miniaturas sigan cabiendo sin bajar */
+@media (min-width: 901px) { .cnt .est-grande { width: min(760px, 100%, calc((100vh - 260px - var(--cnt-alto) - var(--cnt-sub)) * .8)) !important; } }
+@media (max-width: 900px) { .cnt .est-editor { top: 52px !important; } }   /* en el móvil, el editor debajo de la tira «Contenidos» (si no, la tapaba) */
