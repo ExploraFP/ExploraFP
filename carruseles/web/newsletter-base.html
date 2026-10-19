@@ -1078,10 +1078,11 @@ CTA
 
 ASUNTO Y PREHEADER (escuela Isra Bravo, adaptada a leads que no conocen al narrador)
 El asunto es lo más importante del email: si no se abre, lo demás no existe. Pero no se gana con trucos: se gana sonando a una persona normal que tiene algo que contar.
-- El modelo es el mejor asunto real de la campaña (33 % de apertura): "Rosa se sacó una FP" + preheader "Antes limpiaba casas". Frase normal, un hecho, y el preheader da el contraste. Nada más.
+- Un asunto que funcionó (33 % de apertura): "Rosa se sacó una FP" + preheader "Antes limpiaba casas". Es UN tipo de asunto (nombre + hecho), no el molde de todos: si todos los correos empiezan por un nombre y un hecho, dejan de sorprender.
 - Cómo lo hace Isra Bravo: el asunto nombra la historia o el tema del email con palabras de todos los días ("Los emails en frío", "Escribir como un cobarde"). Corto, claro, sin adornos. La curiosidad sale de la historia, no de un truco.
 - La diferencia con Isra: a él le conocen y a nuestros narradores no. Por eso el asunto + preheader, juntos, siempre dan un ancla que el lector reconoce: la FP que pidió, el título o su situación.
-- Asuntos que valen (elige el que mejor encaje con la historia del email):
+- VARÍA EL TIPO (Contenidos, 19/10/2026: «el asunto se parece a los de antes»): mira los asuntos YA PLANIFICADOS O ENVIADOS a este segmento que te paso y no repitas el tipo de los dos últimos. Si los últimos fueron «nombre + hecho» (Tamara…, Rosa…, Noemí…), este NO puede serlo: usa su nombre, uno de persona que le conoce, uno de curiosidad o uno muy corto.
+- Asuntos que valen (elige el tipo que toque y que mejor encaje con la historia del email):
   · Nombre + hecho real de su ficha: "Rosa se sacó una FP", "Tamara estudió con turnos partidos".
   · El tema de la historia, si es universal: "El gimnasio de enero", "Lo del lunes que nunca llega".
   · Pregunta sencilla y real, de las que se contestan: "¿Al final lo pensaste?", "¿Te pillamos en mal momento?".
@@ -1102,7 +1103,7 @@ El asunto es lo más importante del email: si no se abre, lo demás no existe. P
   · "Re:" o "Fwd:" falsos; asuntos que empiezan por "Lo de…" o "Sobre…"; "¿qué pasó con…?" y fórmulas de comercial («lo de la FP» dentro de una pregunta normal sí vale: "¿sigues con lo de la FP?"); titulares de blog; gratis, oferta, urgente, última oportunidad; cebo que el email no cumple.
 - Prueba final: ¿lo escribiría un compañero de trabajo en un WhatsApp? ¿Se entiende en dos segundos sin saber quién lo manda? Si alguna respuesta es no, reescríbelo.
 - Cómo elegirlos: escribe en silencio al menos 10 asuntos. Tira los que tengan truco. De los que quedan, quédate con el más sencillo que aun así dé ganas de saber más.
-- Buenos: "Rosa se sacó una FP" + "Antes limpiaba casas"; "Tamara estudió con turnos partidos" + "Pidió información, igual que tú"; "¿Al final lo pensaste?" + "Tu propuesta de FP sigue aquí". Malos: "Sé qué te frenó (y no te voy a juzgar)", "Apuesto un calcetín a que sé tu pega", "Tu octubre tampoco está tranquilo", "Tienes algo esperando en el carrito".
+- Buenos (de tipos distintos): "Rosa se sacó una FP" + "Antes limpiaba casas"; "{{nombre}}, una pregunta rápida" + "Sobre la FP que pediste"; "Te escribo por tu solicitud" + "Pediste información de una FP"; "La duda que más nos repiten" + "Y cómo la resolvió Tamara"; "Una cosa" + "Sobre tu solicitud de FP"; "¿Al final lo pensaste?" + "Tu propuesta de FP sigue aquí". Malos: "Sé qué te frenó (y no te voy a juzgar)", "Apuesto un calcetín a que sé tu pega", "Tu octubre tampoco está tranquilo", "Tienes algo esperando en el carrito".
 
 ANTES DE RESPONDER, COMPRUEBA EN SILENCIO
 - ¿El asunto suena a una persona normal, sin truco, y se entiende en dos segundos?
@@ -1349,6 +1350,9 @@ function instructions(withBuyers) {
   ];
   if (withBuyers) out.push("BIBLIOTECA DE BUYERS (id: nombre · formación · perfil). Usa la herramienta buscar_buyer para leer la ficha completa antes de contar una historia:\n" + BUYERS_INDEX);
   if (sent.length) out.push("YA PLANIFICADOS O ENVIADOS A ESTE SEGMENTO (no repitas ángulo, gancho ni asunto):\n" + sent.map((c) => `- ${c.fecha}: "${c.asunto || ""}"${c.angulo ? " · " + c.angulo : ""}${c.gancho ? " · gancho: " + c.gancho : ""}`).join("\n"));
+  // los últimos asuntos de TODA la campaña, para no repetir el tipo de asunto (Contenidos, 19/10/2026)
+  const ultimos = (state.cal || []).filter((c) => c.asunto && c.id !== state.slot?.id).sort((a, b) => String(b.fecha).localeCompare(String(a.fecha))).slice(0, 6);
+  if (ultimos.length) out.push("ÚLTIMOS ASUNTOS DE LA CAMPAÑA (todos los segmentos; el tuyo tiene que ser de OTRO tipo que la mayoría de estos):\n" + ultimos.map((c) => `- ${c.fecha}: "${c.asunto}"`).join("\n"));
   const likes = (state.likes || []).filter((x) => x.id !== state.slot?.id && x.email && Array.isArray(x.email.bloques))
     .sort((a, b) => (b.segmento === state.seg) - (a.segmento === state.seg) || String(b.fecha).localeCompare(String(a.fecha))).slice(0, 4);
   if (likes.length) out.push("EMAILS QUE AL EQUIPO LE HAN GUSTADO (es el nivel y el estilo que buscan: imita cómo están escritos, pero NO copies sus ganchos, asuntos ni frases):\n" + likes.map((x) => {
