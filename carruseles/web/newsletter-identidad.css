@@ -166,3 +166,9 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #mesPop .mp-m.on { background: var(--lime); color: #12200F; } }
 /* sin «Hoy» (19/10/2026, Sandra): el mes actual ya sale marcado en la cuadrícula de meses; las flechas se quedan para pasar de uno en uno */
 .cal-mesfila #calToday { display: none !important; }
+/* flechas a los lados del mes: ‹ Octubre 2026 ▾ › (19/10/2026, Sandra). Las flechas salen de su grupo y se ordenan alrededor del título;
+   en la vista «Pendientes» no hay mes ni flechas. */
+.cal-mesfila .cal-nav { display: contents !important; }
+.cal-mesfila #calPrev { order: 1; } .cal-mesfila #calTitle { order: 2; } .cal-mesfila #calNext { order: 3; }
+.cal-mesfila { gap: 6px; }
+.cal-mesfila .cal-nav[hidden] > * { display: none !important; }
