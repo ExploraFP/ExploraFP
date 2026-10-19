@@ -337,7 +337,7 @@ pedirCambioSlide = async function (peticion) {
   await _pedirChat(peticion);
   const cc = EST.lista[c.id] || c;
   if (cc !== c) cc.chat = c.chat;
-  cc.chat = (cc.chat || []).concat([{role: 'bot', text: String(MESA.respuesta || '').replace(/\s*·\s*Si no te gusta: (?:↶ Deshacer|Ctrl/⌘ + Z)\s*$/, '')}]).slice(-CHAT_MAX);
+  cc.chat = (cc.chat || []).concat([{role: 'bot', text: String(MESA.respuesta || '').replace(/\s*·\s*Si no te gusta: (?:↶ Deshacer|Ctrl\/⌘ \+ Z)\s*$/, '')}]).slice(-CHAT_MAX);
   guardarC(cc);
   if (EST.abierto === cc.id) { pintarCajaClaude(); const x = document.getElementById('mesa-claude-txt'); if (x) x.focus(); }
 };
