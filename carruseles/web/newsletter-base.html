@@ -1749,6 +1749,7 @@ function renderPeek() {
       </div>
       <div class="pk-tags">${segTag(c.segmento)}${estTag(c)}<span class="pk-dwrap"><button type="button" class="pk-datebtn" id="pkDay" title="${locked ? "" : "Cambiar día de envío"}" ${locked ? "disabled" : ""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>${esc(fecha)}</button><input type="date" id="peekDate" value="${esc(c.fecha)}" class="pk-hiddate" aria-label="Cambiar día de envío" ${locked ? "disabled" : ""}></span></div>
     </div>
+    ${hs ? `<a class="btn btn-line btn-sm pk-hslink" href="${esc(hs)}" target="_blank" rel="noopener">Abrir en HubSpot ↗</a>` : ""}
     ${e && !hasBody(e) && !locked ? `<button type="button" class="btn btn-ink pk-ai" id="pkAi">Que lo escriba Claude</button>` : ""}
     ${e ? `<div class="mini"><div class="mhead">
       <div class="mrow"><span class="ml">Asunto</span><div class="mval" id="pkA" data-ph="Escribe el asunto" contenteditable="${ce}" spellcheck="true">${esc(e.asunto_a || "")}</div></div>
