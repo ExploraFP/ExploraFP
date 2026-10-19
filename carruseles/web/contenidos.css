@@ -321,3 +321,10 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
 .dl-fin-x { border: 0; background: none; color: #C9DAC7; font-size: 20px; cursor: pointer; line-height: 1; padding: 0 4px; }
 @media (max-width: 900px) { #dl-fin { bottom: 76px; flex-wrap: wrap; } }
 #dl-fin .btn { background: var(--lima) !important; color: #12200F !important; border-color: var(--lima) !important; font-weight: 700; }
+/* aviso «N ideas borradas · Deshacer» (Matriz) */
+#mz-deshacer { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 90; display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px;
+  border-radius: 12px; background: var(--brand2); color: #fff; font: 500 14px var(--f-ui); box-shadow: 0 10px 30px rgba(0,0,0,.28); }
+#mz-deshacer .btn { background: var(--lima) !important; color: #12200F !important; border-color: var(--lima) !important; font-weight: 700; }
+@media (max-width: 900px) { #mz-deshacer { bottom: 76px; } }
+.mz-selbar.on #mz-borrar { background: transparent !important; color: #fff !important; border: 1px solid rgba(255,255,255,.35) !important; }
+.mz-selbar.on #mz-borrar:hover { background: rgba(255,255,255,.1) !important; }

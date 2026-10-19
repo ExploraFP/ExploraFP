@@ -133,7 +133,8 @@ S.f.tema = S.f.tema || ''; S.f.estado = '';   // en la matriz no se filtra por e
 const SELEC = new Set();
 S.agrupar = true; S.abiertos = S.abiertos || {};
 // las ideas del mes que prepara Claude el día 25 no se ven hasta que empieza ese mes (pedido de Sandra)
-const yaVisible = it => !(it.origen === 'claude' && it.mes && it.mes > mesClave());
+// borradas por Sandra (ops/<id>.descartada): dejan de verse en la Matriz, las vistas y las sugerencias (19/10/2026)
+const yaVisible = it => !(it.origen === 'claude' && it.mes && it.mes > mesClave()) && !(S.ops && S.ops[it.id] && S.ops[it.id].descartada);
 function pasaMatriz(it, salvo) {
   if (!yaVisible(it)) return false;
   const f = S.f, tokens = trozosBusqueda();
@@ -384,6 +385,7 @@ function barraSeleccion() {
   if (!SELEC.size) return '';
   return '<b>' + SELEC.size + (SELEC.size === 1 ? ' idea seleccionada' : ' ideas seleccionadas') + '</b>' +
     '<button class="btn pri" id="mz-producir">Producir (' + SELEC.size + ')</button>' +
+    '<button class="btn" id="mz-borrar">🗑 Borrar' + (SELEC.size === 1 ? '' : ' las ' + SELEC.size) + '</button>' +
     '<button class="linkbtn" id="mz-deseleccionar">Quitar selección</button>';
 }
 function pintarSeleccion() {
@@ -741,3 +743,33 @@ function mzCargarSiCerca() {
 }
 addEventListener('scroll', mzCargarSiCerca, {passive: true});
 addEventListener('resize', mzCargarSiCerca);
+
+/* Borrar ideas de la Matriz (Sandra, 19/10/2026: «tengo que poder borrar ideas, no solo deseleccionar»).
+   No se borran del banco: se marcan como descartadas (ops/<id>.descartada) y dejan de verse. Se puede deshacer. */
+let MZ_BORRADAS = [];
+function abrirBorrarIdeas() {
+  const its = [...SELEC].map(id => IMAP[id]).filter(Boolean); if (!its.length) return;
+  $('#onb').hidden = false;
+  $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="mz-bor-t"><div class="cuerpo">' +
+    '<h2 id="mz-bor-t">¿Borrar ' + (its.length === 1 ? 'esta idea' : 'estas ' + its.length + ' ideas') + ' de la Matriz?</h2>' +
+    '<ul class="pr-dvv-lista">' + its.slice(0, 6).map(it => '<li>«' + esc(tituloIdea(it)) + '»</li>').join('') + (its.length > 6 ? '<li>y ' + (its.length - 6) + ' más</li>' : '') + '</ul>' +
+    '<p>Dejan de salir en la Matriz y en las sugerencias. Justo después puedes deshacerlo.</p></div>' +
+    '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="mz-borrar-ok">Sí, borrar' + (its.length === 1 ? '' : ' las ' + its.length) + '</button></footer></div>';
+}
+function avisoDeshacerIdeas(n) {
+  let a = document.getElementById('mz-deshacer'); if (a) a.remove();
+  a = document.createElement('div'); a.id = 'mz-deshacer'; a.setAttribute('role', 'status');
+  a.innerHTML = '<span>' + (n === 1 ? 'Idea borrada' : n + ' ideas borradas') + '</span><button type="button" class="btn mini" id="mz-deshacer-ok">Deshacer</button>';
+  document.body.appendChild(a);
+  a.querySelector('#mz-deshacer-ok').onclick = () => { MZ_BORRADAS.forEach(id => guardar(id, {descartada: false})); toast('Recuperadas'); MZ_BORRADAS = []; a.remove(); };
+  setTimeout(() => a.remove(), 15000);
+}
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest && t.closest('#mz-borrar')) { e.stopImmediatePropagation(); abrirBorrarIdeas(); return; }
+  if (t.closest && t.closest('#mz-borrar-ok')) {
+    e.stopImmediatePropagation();
+    MZ_BORRADAS = [...SELEC]; MZ_BORRADAS.forEach(id => guardar(id, {descartada: true}));
+    SELEC.clear(); cerrarPanel(); render(); avisoDeshacerIdeas(MZ_BORRADAS.length);
+  }
+}, true);
