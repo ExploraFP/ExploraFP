@@ -46,7 +46,7 @@
 @media (max-width:720px){ .est-ecab h2{max-width:none;flex:1 1 60%} .est-ecab .btn{padding:6px 9px;font-size:12.5px} }
 .mesa-claude-r{margin:0;font-size:13px;line-height:1.4;color:var(--ink2)}
 /* número de cada slide bajo su miniatura, para pedir cambios al chat sin contar (19/10/2026) */
-.est-tira-it{display:flex;flex-direction:column;align-items:center;gap:3px}
+.est-tira-it{display:flex;flex-direction:column;align-items:center;gap:10px}  /* el reborde de la slide abierta (3 px + 2 de separación) no pisa el número */
 .est-tira-n{font:600 11px/1 var(--f-mono);color:var(--ink3)}
 .est-tira-it:has([aria-current="true"]) .est-tira-n{color:var(--brand2);font-weight:700}
 /* chat con Claude: mismo formato que el de la newsletter */
