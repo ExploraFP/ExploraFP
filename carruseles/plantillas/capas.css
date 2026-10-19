@@ -30,11 +30,12 @@
 .tarjetas.n3 .tarjeta .num { margin: 0; flex: none; }
 .lista-papel { }
 
-.caja-dato { padding: 56px 60px 60px; }
+.caja-dato { padding: 72px 72px 80px; }
 .cifra { font-family: var(--titular); font-weight: 900; font-stretch: 86%; letter-spacing: -.04em; font-size: 300px; line-height: .9; white-space: nowrap; color: var(--titulo-caja); }
-.caja-dato .texto { margin-top: 26px; }
+.caja-dato .texto { margin-top: 36px; }
+.caja-dato .ante { font-family: var(--cuerpo); font-weight: 700; font-size: 26px; letter-spacing: .16em; text-transform: uppercase; color: var(--titulo-caja); margin-bottom: 30px; }
 .fuente { font-family: var(--cuerpo); font-size: 22px; margin-top: 28px; opacity: .75; }
-.f-dato { top: -150px; right: -10px; transform: rotate(-60deg) scale(.8); }
+.f-dato { top: -230px; right: 40px; transform: rotate(-60deg) scale(.8); }  /* separada de la caja (Sandra: «la flecha muy pegada») */
 
 /* CIERRE */
 .tipo-cierre .titulo { font-size: 120px; }

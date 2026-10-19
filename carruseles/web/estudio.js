@@ -198,6 +198,7 @@ function promptCarrusel(c) {
   L.push('- Etiqueta (opcional, arriba de la slide): 1 a 3 palabras.');
   L.push('- Nada de emojis dentro de las slides. Nada de «desliza». Una idea por slide, que se entienda en dos segundos.');
   L.push('- NO inventes cifras, porcentajes, sueldos ni plazos. Solo puedes usar una slide "dato" con uno de los DATOS VERIFICADOS de abajo, copiando la cifra y la fuente tal cual. Si no hay datos, no hagas slide "dato".');
+  L.push('- En la slide "dato", "antetitulo" dice QUÉ es la cifra en 2-6 palabras ("Alumnos que trabajan", "Validez del título"); nunca etiquetas vacías como "Dato real" o "Dato verificado". Si la cifra ya se explica sola, déjalo vacío. La fuente no sale en la slide, pero ponla siempre.');
   const O = c.objetivo && typeof OBJETIVOS !== 'undefined' ? OBJETIVOS[c.objetivo] : null;
   if (O && c.cta) {
     L.push('- Cierre: un titular corto y un "cta" con ESTA acción, dicha con el tono de marca y adaptada al tema: «' + c.cta + '».' +

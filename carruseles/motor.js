@@ -22,6 +22,8 @@ export function crearMotor(R) {
   const numero = (n) => si(n, `<div class="num"><span>${esc(n)}</span><i class="ovalo"></i></div>`);
   const flecha = (clase) => `<i class="flecha ${clase}"></i>`;
   const titulo = (t, h = "h2") => `<${h} class="titulo">${fmt(t)}</${h}>`;
+  // dato: la fuente no se enseña en la slide (Sandra, 19/10/2026); sigue siendo obligatoria en el carrusel y el control de calidad la pide
+  const fuente = () => "";
   const sub = (t) => si(t, `<div class="subtitulo">${fmt(t)}</div>`);
   const texto = (t) => si(t, `<div class="texto">${parrafos(t)}</div>`);
   const nota = (t) => si(t, `<div class="nota">${fmt(t)}</div>`);
@@ -64,9 +66,10 @@ export function crearMotor(R) {
           `</div></div>` + nota(s.nota);
       }
       case "dato":
-        return `<div class="cabeza">${etiqueta(s.etiqueta)}${sub(s.antetitulo)}</div>` +
-          `<div class="pila"><div class="papel"></div><div class="caja caja-dato"><div class="cifra">${esc(s.cifra)}</div>${texto(s.texto)}` +
-          si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`) + `</div>${si(!sinDeco, flecha("f-dato"))}</div>`;
+        // el antetitulo (qué es la cifra) va dentro de la caja, como etiqueta de la cifra (Sandra, 19/10/2026: suelto arriba «no sé qué hace ahí»)
+        return si(s.etiqueta, `<div class="cabeza">${etiqueta(s.etiqueta)}</div>`) +
+          `<div class="pila"><div class="papel"></div><div class="caja caja-dato">${si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`)}<div class="cifra">${esc(s.cifra)}</div>${texto(s.texto)}` +
+          fuente(s) + `</div>${si(!sinDeco, flecha("f-dato"))}</div>`;
       case "cierre":
         return `<div class="cabeza">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${texto(s.texto)}</div>` +
           si(s.cta, `<div class="cta-fila"><div class="cta">${fmt(s.cta)}</div>${flecha("f-cta")}</div>`) + nota(s.nota);
@@ -88,7 +91,7 @@ export function crearMotor(R) {
           `<ul class="checklist">${(s.items || []).map((it) => `<li><b>✓</b><span>${fmt(it)}</span></li>`).join("")}</ul>` + nota(s.nota);
       case "dato":
         return etiqueta(s.etiqueta) + si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`) + `<div class="cifra">${esc(s.cifra)}</div>` +
-          texto(s.texto) + si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
+          texto(s.texto) + fuente(s);
       case "cierre":
         return deco + etiqueta(s.etiqueta) + titulo(s.titulo) + texto(s.texto) +
           si(s.cta, `<div class="cta-bloque"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}${flecha("f-cta-abajo")}</div>`) + nota(s.nota);
@@ -109,7 +112,7 @@ export function crearMotor(R) {
         return deco + etiqueta(s.etiqueta) + titulo(s.titulo) + ante +
           `<div class="pildoras">${(s.items || []).map((it) => `<span class="pildora"><b></b>${fmt(it)}</span>`).join("")}</div>`;
       case "dato":
-        return deco + foto + ante + `<div class="cifra">${esc(s.cifra)}</div>` + texto(s.texto) + si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`);
+        return deco + foto + ante + `<div class="cifra">${esc(s.cifra)}</div>` + texto(s.texto) + fuente(s);
       case "cierre":
         return deco + `<img class="logo-grande" src="${logo(LOGO_FONDO[s._color])}" alt="Explora × Ucademy">` + etiqueta(s.etiqueta) + titulo(s.titulo) + texto(s.texto) +
           si(s.cta, `<div class="cta-boton">${fmt(s.cta)}<i class="flecha f-boton"></i></div>`);
@@ -139,7 +142,7 @@ export function crearMotor(R) {
           `<ol class="lista-feed">${(s.items || []).map((it, n) => `<li><b>${dos(n + 1)}</b><span>${fmt(it)}</span></li>`).join("")}</ol>${toque}</div>` + nota(s.nota);
       case "dato":
         return pastilla + `<div class="bloque">${sub(s.antetitulo)}<div class="cifra">${esc(s.cifra)}</div>${texto(s.texto)}` +
-          si(s.fuente, `<div class="fuente">Fuente: ${esc(s.fuente)}</div>`) + `${toque}</div>`;
+          fuente(s) + `${toque}</div>`;
       case "cierre":
         return pastilla + `<div class="bloque">${tit("h2")}${texto(s.texto)}` +
           si(s.cta, `<div class="cta-feed"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}</div>`) + `${toque}</div>`;
