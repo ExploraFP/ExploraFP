@@ -122,3 +122,44 @@ body.cnt-en-img .top-in .mark { border-right: 0 !important; }
 /* Jerarquía (16/10/2026, Sandra: «parece que tengo dos títulos»): «Contenidos» es la marca (Gravity grande, en la barra lateral);
    el nombre de la sección en la cabecera va en letra de interfaz, más pequeño. */
 .cnt .mk-txt b, .cnt-banda b { font-family: var(--f-ui) !important; font-weight: 600 !important; font-size: 17px !important; letter-spacing: 0 !important; line-height: 1.2 !important; color: #fff !important; }
+
+/* ===== Cabecera clara con pestañas subrayadas (19/10/2026, Sandra eligió la maqueta «E · pestañas subrayadas»):
+   las secciones en la barra lateral y, en la página, el nombre de la sección y sus pestañas sobre el fondo claro,
+   sin franja oscura (dos zonas oscuras parecían dos menús del mismo nivel). Igual en Inicio, Carruseles, Imágenes y Newsletter. */
+.cnt header.top { background: var(--paper) !important; color: var(--ink) !important; box-shadow: none !important; border-bottom: 1px solid var(--line); }
+.cnt .top-in { flex-wrap: wrap !important; align-items: flex-end !important; gap: 0 !important; row-gap: 0 !important; padding: 24px 28px 0 !important; min-height: 0 !important; max-width: none !important; }
+.cnt .top-in .mark { flex: 1 1 100% !important; padding: 0 !important; border: 0 !important; min-height: 40px; align-items: center !important; }
+.cnt .mk-txt b, .cnt-banda b { font-family: "Gravity Condensed", "Archivo", sans-serif !important; font-weight: 700 !important; font-size: 38px !important; line-height: 1 !important; color: var(--brand2) !important; }
+.cnt .top-in .views { order: 2; flex: 1 1 100%; background: none !important; border: 0 !important; outline: 0 !important; padding: 0 !important; border-radius: 0 !important; gap: 26px !important; margin-top: 16px; box-shadow: none !important; }
+.cnt .top-in .views button { background: none !important; color: var(--ink2) !important; padding: 0 2px 12px !important; border-radius: 0 !important; font-size: 15px !important; font-weight: 600 !important;
+  border-bottom: 3px solid transparent !important; box-shadow: none !important; margin-bottom: -1px; }
+.cnt .top-in .views button:hover { color: var(--brand2) !important; }
+.cnt .top-in .views button[aria-current="true"] { color: var(--brand2) !important; border-bottom-color: #4CCD4B !important; }
+.cnt .top-in .top-right { position: absolute; }
+body.cnt-en-img .top-in { min-height: 0 !important; padding-bottom: 20px !important; }
+/* Inicio: misma cabecera */
+.cnt-banda { background: var(--paper) !important; min-height: 0 !important; padding: 24px 28px 20px !important; border-bottom: 1px solid var(--line); }
+/* claro / oscuro sobre fondo claro */
+#cnt-tema { border-color: var(--line); background: var(--surface); color: var(--brand2); top: 28px; }
+#cnt-tema:hover { background: var(--paper); color: var(--brand2); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cnt .mk-txt b, :root:not([data-theme="light"]) .cnt-banda b, :root:not([data-theme="light"]) .cnt .top-in .views button[aria-current="true"],
+  :root:not([data-theme="light"]) .cnt .top-in .views button:hover, :root:not([data-theme="light"]) #cnt-tema { color: var(--lima) !important; }
+  :root:not([data-theme="light"]) .cnt .top-in .views button[aria-current="true"] { border-bottom-color: var(--lima) !important; }
+}
+:root[data-theme="dark"] .cnt .mk-txt b, :root[data-theme="dark"] .cnt-banda b, :root[data-theme="dark"] .cnt .top-in .views button[aria-current="true"],
+:root[data-theme="dark"] .cnt .top-in .views button:hover, :root[data-theme="dark"] #cnt-tema { color: var(--lima) !important; }
+:root[data-theme="dark"] .cnt .top-in .views button[aria-current="true"] { border-bottom-color: var(--lima) !important; }
+@media (max-width: 900px) {
+  .cnt .top-in { padding: 16px 16px 0 !important; }
+  .cnt .mk-txt b, .cnt-banda b { font-size: 30px !important; }
+  .cnt .top-in .views { gap: 20px !important; margin-top: 12px; overflow-x: auto; }
+  .cnt .top-in .views button { padding: 0 2px 10px !important; font-size: 14px !important; }
+  .cnt-banda { padding: 16px 16px 14px !important; }
+  #cnt-tema { top: 16px; }
+}
+/* nada repetido: el nombre de la pestaña ya está subrayado arriba, así que la página no lo repite como titular */
+.cnt .vcab .vtxt h2 { display: none !important; }
+.cnt .vcab:not(:has(.vstats)):not(:has(.vtxt p)) { display: none !important; }
+.cnt-ini h1 { display: none; }
+.cnt-ini .cnt-fecha { margin-bottom: 18px; }

@@ -102,3 +102,29 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
 /* en oscuro, los titulares en lima, como en Carruseles */
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h2 { color: var(--lime) !important; } }
 :root[data-theme="dark"] h2 { color: var(--lime) !important; }
+
+/* ===== Cabecera clara con pestañas subrayadas, como Carruseles (19/10/2026, Sandra eligió «E · pestañas subrayadas») ===== */
+.band { background: var(--bg) !important; color: var(--ink) !important; box-shadow: none !important; border-bottom: 1px solid var(--line); }
+.band-in { flex-wrap: wrap !important; align-items: flex-end !important; gap: 0 !important; padding: 24px 28px 0 !important; min-height: 0 !important; }
+.brand { flex: 1 1 100%; padding: 0 !important; border: 0 !important; min-height: 40px; display: flex; align-items: center; }
+.brand h1, .brand h1 a, #nlText { font-family: "Gravity Condensed", "Archivo", sans-serif !important; font-weight: 700 !important; font-size: 38px !important; line-height: 1 !important; color: #1B3620 !important; }
+.tabs { flex: 1 1 100%; background: none !important; padding: 0 !important; border-radius: 0 !important; gap: 26px !important; margin-top: 16px; }
+.tabs button { background: none !important; color: var(--muted) !important; padding: 0 2px 12px !important; border-radius: 0 !important; font: 600 15px var(--font-body) !important;
+  border-bottom: 3px solid transparent !important; box-shadow: none !important; margin-bottom: -1px; }
+.tabs button:hover { color: #1B3620 !important; }
+.tabs button[aria-selected="true"] { background: none !important; color: #1B3620 !important; border-bottom-color: #4CCD4B !important; box-shadow: none !important; }
+.tabs .count { background: #EDFEC3; color: #1B3620; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand h1, :root:not([data-theme="light"]) .brand h1 a, :root:not([data-theme="light"]) #nlText,
+  :root:not([data-theme="light"]) .tabs button[aria-selected="true"], :root:not([data-theme="light"]) .tabs button:hover { color: var(--lime) !important; }
+  :root:not([data-theme="light"]) .tabs button[aria-selected="true"] { border-bottom-color: var(--lime) !important; }
+}
+:root[data-theme="dark"] .brand h1, :root[data-theme="dark"] .brand h1 a, :root[data-theme="dark"] #nlText,
+:root[data-theme="dark"] .tabs button[aria-selected="true"], :root[data-theme="dark"] .tabs button:hover { color: var(--lime) !important; }
+:root[data-theme="dark"] .tabs button[aria-selected="true"] { border-bottom-color: var(--lime) !important; }
+@media (max-width: 900px) {
+  .band-in { padding: 16px 16px 0 !important; }
+  .brand h1, .brand h1 a, #nlText { font-size: 30px !important; }
+  .tabs { gap: 20px !important; margin-top: 12px; overflow-x: auto; }
+  .tabs button { padding: 0 2px 10px !important; font-size: 14px !important; }
+}
