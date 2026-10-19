@@ -540,6 +540,7 @@ function pintarEditor(todo) {
       '<div class="est-grande">' + mini(c, EST.sel) + '</div>' +
       // miniaturas: aquí se duplican, se quitan y se añaden slides (no en el panel lateral)
       '<div class="est-tira">' + c.slides.map((x, i) => '<div class="est-tira-it">' + mini(c, i, {boton: 'data-est-sel="' + i + '" aria-current="' + (i === EST.sel) + '" aria-label="Slide ' + (i + 1) + '"'}) +
+        '<span class="est-tira-n" aria-hidden="true">' + (i + 1) + '</span>' +
         '<span class="est-tira-acc"><button type="button" data-est-dup="' + i + '" title="Duplicar slide ' + (i + 1) + '" aria-label="Duplicar slide ' + (i + 1) + '">⧉</button>' +
         (c.slides.length > 1 ? '<button type="button" data-est-quita="' + i + '" title="Quitar slide ' + (i + 1) + '" aria-label="Quitar slide ' + (i + 1) + '">🗑</button>' : '') + '</span></div>').join('') +
         '<div class="est-tira-mas"><button type="button" class="est-mas" id="est-mas" aria-expanded="' + !!EST.menuNueva + '" title="Añadir slide">+<span>Añadir</span></button>' +

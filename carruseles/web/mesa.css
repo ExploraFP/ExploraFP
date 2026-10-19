@@ -45,3 +45,22 @@
 @media (max-width:1250px){ .est-ecab h2{max-width:180px} .mesa-guardado{min-width:0} }
 @media (max-width:720px){ .est-ecab h2{max-width:none;flex:1 1 60%} .est-ecab .btn{padding:6px 9px;font-size:12.5px} }
 .mesa-claude-r{margin:0;font-size:13px;line-height:1.4;color:var(--ink2)}
+/* número de cada slide bajo su miniatura, para pedir cambios al chat sin contar (19/10/2026) */
+.est-tira-it{display:flex;flex-direction:column;align-items:center;gap:3px}
+.est-tira-n{font:600 11px/1 var(--f-mono);color:var(--ink3)}
+.est-tira-it:has([aria-current="true"]) .est-tira-n{color:var(--brand2);font-weight:700}
+/* chat con Claude: mismo formato que el de la newsletter */
+.mesa-claude.mchat{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--lima);border-radius:14px;padding:12px;gap:10px}
+.mchat-h{display:flex;align-items:center;gap:8px;font:600 11px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding-bottom:8px;border-bottom:1px solid var(--line)}
+.mchat-h::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--lima);box-shadow:0 0 0 1px var(--limaLine)}
+.mchat-log{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding:2px}
+.mchat-msg{max-width:92%;padding:9px 12px;border-radius:14px;font-size:13.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.mchat-msg.tu{align-self:flex-end;background:#1B3620;color:#EAF3E8;border-bottom-right-radius:4px}
+.mchat-msg.cl{align-self:flex-start;background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--limaLine);border-bottom-left-radius:4px;color:var(--ink)}
+.mchat-msg.pensando{color:var(--ink3);font-style:italic}
+.mchat-vacio{margin:0;font-size:13px;color:var(--ink3);line-height:1.45}
+.mchat-f{position:relative;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.mchat-f:focus-within{border-color:var(--brand2)}
+.mchat-f textarea{display:block;width:100%;min-height:58px;max-height:160px;border:0;outline:none;background:transparent;resize:none;padding:10px 48px 10px 12px;font:400 13.5px/1.45 var(--f-ui);color:var(--ink)}
+.mchat-env{position:absolute;right:8px;bottom:8px;width:32px;height:32px;border-radius:10px;border:0;display:grid;place-items:center;background:#1B3620;color:var(--lima);cursor:pointer}
+.mchat-env:disabled{opacity:.35;cursor:default}

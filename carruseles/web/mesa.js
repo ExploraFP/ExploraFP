@@ -304,3 +304,46 @@ document.addEventListener('drop', e => {
   const c = EST.lista[EST.abierto], de = MESA_ARR, a = +b.dataset.estSel; MESA_ARR = -1; if (!c || de === a) return;
   const x = c.slides.splice(de, 1)[0]; c.slides.splice(a, 0, x); EST.sel = a; guardarC(c); pintarEditor(true); toast('Slide movida a la posición ' + (a + 1));
 });
+
+/* ---------- Chat con Claude como el de la newsletter (19/10/2026, pedido de Sandra) ----------
+   Conversación guardada en el carrusel (c.chat, últimos 30 mensajes): tus mensajes a la derecha en verde, los de Claude a
+   la izquierda; caja de texto con botón redondo de enviar (Intro envía, Mayús+Intro = otra línea). Claude recibe también
+   lo último que habéis hablado, para que entienda «no, más corto» o «vuelve a lo de antes». */
+const CHAT_MAX = 30;
+htmlCajaClaude = function () {
+  const c = EST.lista[EST.abierto] || {}, log = (c.chat || []).slice(-CHAT_MAX);
+  const msgs = log.map(m => '<div class="mchat-msg ' + (m.role === 'user' ? 'tu' : 'cl') + '">' + esc(m.text) + '</div>').join('') +
+    (MESA.pidiendo && MESA.respC === EST.abierto ? '<div class="mchat-msg cl pensando">Claude está escribiendo…</div>' : '');
+  return '<div class="mesa-claude mchat" id="mesa-claude"><div class="mchat-h">Claude</div>' +
+    '<div class="mchat-log" id="mchat-log">' + (msgs || '<p class="mchat-vacio">Pídele lo que quieras cambiar. Mejor si dices el número de la slide: «en la slide 2, cambia el titular por una pregunta».</p>') + '</div>' +
+    '<form id="mesa-claude-f" class="mchat-f" autocomplete="off"><textarea id="mesa-claude-txt" rows="2" maxlength="600" spellcheck="true" placeholder="Pídele a Claude un cambio…"' + (MESA.pidiendo ? ' disabled' : '') + '></textarea>' +
+    '<button type="submit" class="mchat-env" aria-label="Enviar"' + (MESA.pidiendo ? ' disabled' : '') + '><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form></div>';
+};
+const _pintarCajaChat = pintarCajaClaude;
+pintarCajaClaude = function () { _pintarCajaChat(); const l = document.getElementById('mchat-log'); if (l) l.scrollTop = l.scrollHeight; };
+const _promptSlideChat = promptSlide;
+promptSlide = function (c, i, peticion) {
+  const p = _promptSlideChat(c, i, peticion), prev = (c.chat || []).slice(0, -1).slice(-8);
+  if (!prev.length) return p;
+  const hist = 'LO ÚLTIMO QUE HABÉIS HABLADO (para entender a qué se refiere; no lo repitas):\n' +
+    prev.map(m => (m.role === 'user' ? 'Sandra: ' : 'Tú: ') + m.text).join('\n') + '\n\n';
+  return p.replace('LO QUE PIDE SANDRA:', hist + 'LO QUE PIDE SANDRA:');
+};
+const _pedirChat = pedirCambioSlide;
+pedirCambioSlide = async function (peticion) {
+  const c = EST.lista[EST.abierto], t = String(peticion || '').trim();
+  if (!c || !t || MESA.pidiendo || !EST.sample) return _pedirChat(peticion);
+  c.chat = (c.chat || []).concat([{role: 'user', text: t}]).slice(-CHAT_MAX);
+  await _pedirChat(peticion);
+  const cc = EST.lista[c.id] || c;
+  if (cc !== c) cc.chat = c.chat;
+  cc.chat = (cc.chat || []).concat([{role: 'bot', text: String(MESA.respuesta || '').replace(/\s*·\s*Si no te gusta: ↶ Deshacer\s*$/, '')}]).slice(-CHAT_MAX);
+  guardarC(cc);
+  if (EST.abierto === cc.id) { pintarCajaClaude(); const x = document.getElementById('mesa-claude-txt'); if (x) x.focus(); }
+};
+// Intro envía; Mayús+Intro, otra línea
+document.addEventListener('keydown', e => {
+  if (e.target && e.target.id === 'mesa-claude-txt' && e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+    e.preventDefault(); const f = document.getElementById('mesa-claude-f'); if (f) f.requestSubmit();
+  }
+});
