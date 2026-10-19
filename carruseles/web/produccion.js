@@ -66,7 +66,16 @@ vProducir = function () {
   // Sandra prefiere las tarjetas grandes de antes: dos bloques (En revisión · Listo para publicar), uno debajo de otro,
   // cada uno con su rejilla de tarjetas grandes. «Por generar» solo sale mientras haya algo sin generar.
   col.publicado = carruselesDe('hecho').sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
-  const secciones = (col.generar.length ? ['generar'] : []).concat(['revision', 'listo', 'publicado']);
+  const todas = (col.generar.length ? ['generar'] : []).concat(['revision', 'listo', 'publicado']);
+  // Filtro por estado (Sandra, 19/10/2026: «que se pueda filtrar por estado y no siempre hacer scroll»): mismas pestañas que las
+  // vistas de la Matriz. En «Todos» cada sección enseña las primeras PR_CORTE y «Ver los N»; filtrando, de PR_PAGINA en PR_PAGINA.
+  if (PR_FILTRO !== 'todos' && !todas.includes(PR_FILTRO)) PR_FILTRO = 'todos';
+  const secciones = PR_FILTRO === 'todos' ? todas : [PR_FILTRO];
+  const nombreEt = k => k === 'publicado' ? 'Terminados' : k === 'listo' ? 'Listo' : ETAPAS[k];
+  h += '<div class="mz-vistas pr-filtros" role="tablist" aria-label="Filtrar por estado">' +
+    [['todos', 'Todos', todas.reduce((n, k) => n + col[k].length, 0)]].concat(todas.map(k => [k, nombreEt(k), col[k].length]))
+      .map(([k, t, n]) => '<button class="mz-vista" data-pr-filtro="' + k + '" aria-pressed="' + (PR_FILTRO === k) + '">' + t + ' <span>' + n + '</span></button>').join('') + '</div>';
+  const tope = k => PR_FILTRO === 'todos' ? PR_CORTE : PR_LIMITE;
   // selección de varios para borrarlos de golpe (pedido de Sandra): casilla en cada tarjeta y en cada sección; Terminados no se borran
   const marcable = (c, k) => k !== 'publicado' && c.estado !== 'generando';
   [...PR_SEL].forEach(id => { const c = EST.lista[id]; if (!c || etapaDe(c) === 'publicado' || c.estado === 'generando') PR_SEL.delete(id); });
@@ -79,10 +88,12 @@ vProducir = function () {
     const todos = marcables.length && marcables.every(c => PR_SEL.has(c.id));
     return '<section class="pr-sec pr-' + k + '" data-pr-etapa="' + k + '"><header><h3>' + (k === 'publicado' ? 'Terminados' : ETAPAS[k]) + (k === 'listo' ? ' para publicar' : '') + ' <b>' + col[k].length + '</b></h3>' +
       (marcables.length ? '<label class="pr-chksec"><input type="checkbox" data-pr-sel-sec="' + k + '"' + (todos ? ' checked' : '') + '> Seleccionar todos</label>' : '') + '</header>' +
-      (col[k].length ? '<div class="est-rejilla">' + col[k].map(c => { let t = tarjeta(c);
+      (col[k].length ? '<div class="est-rejilla">' + col[k].slice(0, tope(k)).map(c => { let t = tarjeta(c);
         if (marcable(c, k)) t = t.replace(/^<article class="/, '<article class="' + (PR_SEL.has(c.id) ? 'pr-marcada ' : '')).replace(/(<article [^>]*>)/, '$1' + casilla(c));
         return k === 'generar' ? t : t.replace('<article ', '<article draggable="true" data-pr-mover="' + esc(c.id) + '" '); }).join('') + '</div>'
-        : '<p class="pr-vacio">' + vacio[k] + '</p>') + '</section>'; }).join('');
+        : '<p class="pr-vacio">' + vacio[k] + '</p>') +
+      (col[k].length > tope(k) ? '<button class="btn pr-mas" ' + (PR_FILTRO === 'todos' ? 'data-pr-filtro="' + k + '">Ver los ' + col[k].length : 'data-pr-mas="1">Ver ' + Math.min(PR_PAGINA, col[k].length - tope(k)) + ' más') + '</button>' : '') +
+      '</section>'; }).join('');
   return h;
 };
 
@@ -384,3 +395,12 @@ abrirEditor = function (id) {
   try { const v = prVistos(); v[id] = Date.now(); localStorage.setItem('explora.vistos', JSON.stringify(v)); } catch (e) {}
   return _abrirEditorPr.apply(this, arguments);
 };
+
+let PR_FILTRO = (() => { try { return localStorage.getItem('explora.prFiltro') || 'todos'; } catch (e) { return 'todos'; } })();
+const PR_CORTE = 8, PR_PAGINA = 24;
+let PR_LIMITE = PR_PAGINA;
+document.addEventListener('click', e => {
+  const f = e.target.closest('[data-pr-filtro]');
+  if (f) { PR_FILTRO = f.dataset.prFiltro; PR_LIMITE = PR_PAGINA; try { localStorage.setItem('explora.prFiltro', PR_FILTRO); } catch (x) {} render(); window.scrollTo({top: 0}); return; }
+  if (e.target.closest('[data-pr-mas]')) { PR_LIMITE += PR_PAGINA; render(); }
+});

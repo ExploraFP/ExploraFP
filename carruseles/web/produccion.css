@@ -126,3 +126,7 @@
 
 /* código corto del carrusel (C01…) */
 .pr-cod{font-family:var(--f-mono);font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--ink2);background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+
+/* filtro por estado: las mismas pestañas que las vistas de la Matriz */
+.pr-filtros{margin:0 0 22px;flex-wrap:wrap}
+.pr-mas{margin-top:16px}
