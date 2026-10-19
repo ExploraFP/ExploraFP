@@ -30,12 +30,13 @@
 .tarjetas.n3 .tarjeta .num { margin: 0; flex: none; }
 .lista-papel { }
 
-.caja-dato { padding: 72px 72px 80px; }
-.cifra { font-family: var(--titular); font-weight: 900; font-stretch: 86%; letter-spacing: -.04em; font-size: 300px; line-height: .9; white-space: nowrap; color: var(--titulo-caja); }
-.caja-dato .texto { margin-top: 36px; }
-.caja-dato .ante { font-family: var(--cuerpo); font-weight: 700; font-size: 26px; letter-spacing: .16em; text-transform: uppercase; color: var(--titulo-caja); margin-bottom: 30px; }
+.caja-dato { padding: 64px 64px 70px; }
+.cifra { font-family: var(--titular); font-weight: 900; font-stretch: 86%; letter-spacing: -.04em; font-size: 340px; line-height: .9; white-space: nowrap; color: var(--titulo); }
+.cifra.cifra-frase { white-space: normal; font-size: 124px; line-height: 1.02; letter-spacing: -.025em; }
+.tipo-dato .ante { font-family: var(--cuerpo); font-weight: 700; font-size: 28px; letter-spacing: .16em; text-transform: uppercase; color: var(--titulo); margin-bottom: 24px; }
+.caja-dato .texto { font-size: 44px; }
 .fuente { font-family: var(--cuerpo); font-size: 22px; margin-top: 28px; opacity: .75; }
-.f-dato { top: -230px; right: 40px; transform: rotate(-60deg) scale(.8); }  /* separada de la caja (Sandra: «la flecha muy pegada») */
+.tipo-dato .cabeza + .pila { margin-top: 56px; }
 
 /* CIERRE */
 .tipo-cierre .titulo { font-size: 120px; }
