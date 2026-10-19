@@ -222,3 +222,15 @@ body.cnt-en-img .top-in { min-height: 0 !important; padding-bottom: 20px !import
   .cnt .mz-tabla tr.mz-produccion { box-shadow: inset 4px 0 0 #F2C230 !important; }
   .cnt .mz-tabla tr.mz-hecha { box-shadow: inset 4px 0 0 #3FB54A !important; }
 }
+
+/* Producción: tarjetas más pequeñas (19/10/2026, Sandra: «salen los carruseles muy grandes»): caben 6-7 por fila en un portátil */
+.cnt .pr-sec .est-rejilla { grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 12px; }
+.cnt .pr-sec .est-rejilla > article { max-width: 260px; }
+@media (max-width: 600px) { .cnt .pr-sec .est-rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+
+/* Barra de «N seleccionados» flotando abajo (19/10/2026, Sandra: al aparecer arriba empujaba la página y lo que tenía bajo
+   el cursor se movía). Ya no ocupa sitio en la página: no desplaza nada. Matriz y Producción. (Se perdió al restaurar los
+   iconos y se repuso el mismo día.) */
+.cnt .mz-selbar.on { position: fixed !important; top: auto !important; bottom: 20px; left: calc(var(--cnt-ancho) + (100vw - var(--cnt-ancho)) / 2); transform: translateX(-50%);
+  margin: 0 !important; z-index: 60; width: max-content; max-width: calc(100vw - var(--cnt-ancho) - 32px); box-shadow: 0 10px 30px rgba(0,0,0,.28) !important; }
+@media (max-width: 900px) { .cnt .mz-selbar.on { bottom: 76px; left: 50%; max-width: calc(100vw - 24px); } }
