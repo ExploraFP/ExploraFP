@@ -88,9 +88,13 @@ pintarEditor = function (todo) {
     ed.querySelectorAll('.est-tira [data-est-sel]').forEach(b => { b.draggable = false; b.title = ''; });
     const panel = ed.querySelector('#est-panel');
     if (panel && !panel.querySelector('.sv-aviso')) {
-      panel.innerHTML = '<div class="sv-aviso">' + (etapaDe(c) === 'listo' ? 'Aprobado: ya no se edita. Para cambiar algo, «Volver a revisión».' : 'Publicado: ya no se edita.') + '</div>' +
+      // ya descargado y sin enlace: recordatorio para pegar el enlace de Instagram al subirlo (Sandra, 19/10/2026)
+      const falta = etapaDe(c) === 'listo' && c.descargado && !c.ig;
+      panel.innerHTML = (falta ? '<div class="sv-enlace"><b>¿Ya lo has subido?</b><span>Pega el enlace de Instagram y queda como publicado.</span>' +
+          '<div class="sv-enlace-fila"><input type="url" id="sv-ig" placeholder="https://www.instagram.com/p/…"><button type="button" class="eb-pri" id="sv-ig-ok">Publicado</button></div></div>' : '') +
+        '<div class="sv-aviso">' + (etapaDe(c) === 'listo' ? 'Aprobado: ya no se edita. Para cambiar algo, «Volver a revisión».' : 'Publicado: ya no se edita.') + '</div>' +
         '<h3 class="sv-h">Caption</h3><div class="sv-caption">' + esc(c.copy || 'Sin caption') + '</div>' +
-        (c.copy ? '<button type="button" class="btn" data-est-copiar="' + c.id + '">Copiar caption</button>' : '');
+        (c.copy ? '<button type="button" class="linkbtn sv-copiar" data-est-copiar="' + c.id + '">Copiar caption</button>' : '');
     }
     return;
   }
@@ -642,3 +646,15 @@ window.addEventListener('click', e => {
 }, true);
 window.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('dl-menu')) { e.stopImmediatePropagation(); cerrarMenuDescarga(); } }, true);
 window.addEventListener('resize', cerrarMenuDescarga);
+
+// «¿Ya lo has subido?»: pegar el enlace de Instagram = marcar como publicado (fecha de hoy)
+document.addEventListener('click', e => {
+  if (!(e.target.closest && e.target.closest('#sv-ig-ok'))) return;
+  const c = EST.lista[EST.abierto]; if (!c) return;
+  const ig = ($('#sv-ig').value || '').trim();
+  if (!/^https?:\/\//.test(ig)) { toast('Pega el enlace del post (empieza por https://)'); $('#sv-ig').focus(); return; }
+  c.estado = 'hecho'; c.listo = true; c.fecha = c.fecha || fISO(hoy()); c.ig = ig;
+  guardarC(c); asegurarIdea(c); if (c.idea && IMAP[c.idea]) guardar(c.idea, {hecho: true, fecha: c.fecha});
+  cerrarEditor(); toast('✓ Publicado. Lo tienes en «Terminados»');
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'sv-ig') { e.preventDefault(); const b = $('#sv-ig-ok'); if (b) b.click(); } });

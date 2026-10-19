@@ -304,3 +304,13 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
 /* con las dos barras arriba (118 px) la slide grande se encoge lo justo para que slide + miniaturas sigan cabiendo sin bajar */
 @media (min-width: 901px) { .cnt .est-grande { width: min(760px, 100%, calc((100vh - 260px - var(--cnt-alto) - var(--cnt-sub)) * .8)) !important; } }
 @media (max-width: 900px) { .cnt .est-editor { top: 52px !important; } }   /* en el móvil, el editor debajo de la tira «Contenidos» (si no, la tapaba) */
+
+/* recordatorio del enlace de Instagram tras descargar (19/10/2026, Sandra: «que no se me olvide poner el enlace al subirlo») */
+.sv-enlace { border: 1.5px solid #F2C230; background: #FFF7D1; border-radius: 12px; padding: 12px 14px; margin: 0 0 14px; display: flex; flex-direction: column; gap: 4px; color: #3D3000; }
+.sv-enlace b { font-size: 14px; } .sv-enlace span { font-size: 13px; }
+.sv-enlace-fila { display: flex; gap: 8px; margin-top: 6px; }
+.sv-enlace-fila input { flex: 1; min-width: 0; height: 38px; border: 1px solid #E5D48A; border-radius: 8px; padding: 0 10px; font: inherit; background: #fff; color: #141417; }
+.pr-falta { display: inline-block; font: 600 12px var(--f-ui); padding: 3px 9px; border-radius: 999px; background: #FFF7D1; color: #6B5300; border: 1px solid #F2C230; }
+/* «Copiar caption» con menos protagonismo: un enlace pequeño, no un botón ancho */
+.sv-copiar, .cnt [data-est-copiar].btn.mini { width: auto !important; align-self: flex-start; padding: 2px 0 !important; border: 0 !important; background: none !important;
+  font: 600 12.5px var(--f-ui) !important; color: var(--brand) !important; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; box-shadow: none !important; }

@@ -621,10 +621,14 @@ async function descargarLote(lista) {
         EST.progreso = 'Descargando ' + (++hecho) + ' de ' + total + '…'; toast(EST.progreso); actualizarProgreso();
         let png;
         try { png = await pngDe(c, i); } catch (e) { throw {code: 'png', message: 'no pude crear la imagen de la slide ' + (i + 1) + (e && e.message ? ': ' + e.message : '')}; }
-        await guardarArchivo(down, base + '-' + String(i + 1).padStart(2, '0') + '.png', png);
+        try { await guardarArchivo(down, base + '-' + String(i + 1).padStart(2, '0') + '.png', png); }
+        catch (e) { if (e && e.code === 'declined') throw e; throw {code: (e && e.code) || 'guardar', message: 'se quedó en la slide ' + (i + 1) + ' de ' + c.slides.length + (e && e.message ? ': ' + e.message : '')}; }
       }
+      // descargado = va a subirse: se apunta para recordarle el enlace de Instagram (Sandra, 19/10/2026)
+      if (lista.length === 1 && etapaDe(c) === 'listo' && !c.descargado) { c.descargado = fISO(hoy()); guardarC(c); }
     }
-    toast(lista.length > 1 ? lista.length + ' carruseles descargados' : 'Carrusel descargado');
+    toast(lista.length > 1 ? lista.length + ' carruseles descargados' : 'Carrusel descargado' + (etapaDe(lista[0]) === 'listo' && !lista[0].ig ? ' · cuando lo subas, pega el enlace aquí' : ''));
+    if (lista.length === 1 && EST.abierto === lista[0].id) pintarEditor(true);
   } catch (e) {
     console.error('descarga', e);
     toast(e && e.code === 'declined' ? 'Descarga cancelada'
@@ -637,7 +641,8 @@ async function guardarArchivo(down, filename, data) {
   for (let intento = 0; ; intento++) {
     try { return await down.save({filename: filename, data: data}); }
     catch (e) {
-      if (e && e.code === 'rate_limited' && intento < 8) { await new Promise(r => setTimeout(r, 1200 * (intento + 1))); continue; }
+      // claude.ai limita las descargas seguidas: se espera hasta ~1,5 min antes de rendirse (19/10/2026, Sandra: «solo 5 de 6»)
+      if (e && e.code === 'rate_limited' && intento < 20) { toast('Esperando para descargar ' + filename.replace(/^.*-(\d+)\.png$/, 'la slide $1') + '…'); await new Promise(r => setTimeout(r, Math.min(1500 * (intento + 1), 6000))); continue; }
       throw e;
     }
   }
