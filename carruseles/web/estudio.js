@@ -201,9 +201,9 @@ function promptCarrusel(c) {
   L.push('- En la slide "dato", "antetitulo" dice QUÉ es la cifra en 2-6 palabras ("Alumnos que trabajan", "Validez del título"); nunca etiquetas vacías como "Dato real" o "Dato verificado". Si la cifra ya se explica sola, déjalo vacío. Si lo que tienes no es un número (porcentaje, cantidad, plazo, ley), NO es un dato: hazla "contenido" con su titular y su *resaltado*. La fuente no sale en la slide, pero ponla siempre.');
   const O = c.objetivo && typeof OBJETIVOS !== 'undefined' ? OBJETIVOS[c.objetivo] : null;
   if (O && c.cta) {
-    L.push('- Cierre: un titular corto y un "cta" con ESTA acción, dicha con el tono de marca y adaptada al tema: «' + c.cta + '».' +
+    L.push('- Cierre: un titular corto y un "cta" con ESTA acción, dicha con el tono de marca y adaptada al tema: «' + c.cta + '». UNA sola acción (comentar, etiquetar, guardar o escribir por DM), nunca varias seguidas tipo «comenta, etiqueta o compártelo»; no copies la frase tal cual: di a quién o para qué (p. ej. «Etiqueta a quien esté buscando centro»).' +
       (/PALABRA|\[recurso\]/.test(c.cta) ? ' Sustituye PALABRA por una palabra clave corta en mayúsculas que encaje (p. ej. REQUISITOS) y [recurso] por el recurso concreto que se llevaría (p. ej. «el checklist de tu ciclo»).' : ''));
-    L.push('- El texto del post ("copy") termina repitiendo esa misma acción.');
+    L.push('- El texto del post ("copy") termina repitiendo esa misma acción, y es la única llamada a la acción del texto.');
   } else {
     L.push('- Cierre: un titular corto y un "cta" que sea una coordenada, nunca una venta: ' + CTAS.map(x => x.replace(/\s*\S+$/, '')).join(' · ') + '. Poca información (pedido de Sandra, 14/10/2026): titular + cta y, como mucho, un "texto" de una línea que no repita lo que dice el cta (si lo repite, sin texto). Sin "cinta": solo si el cta manda al enlace del perfil, y entonces "cinta": "Enlace en el perfil".');
   }

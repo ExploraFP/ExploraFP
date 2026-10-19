@@ -32,7 +32,7 @@ IDEAS.forEach(it => {
    Cada idea trae un objetivo sugerido (reglas de abajo); ella lo cambia en la ficha y se guarda en ops/<id>.objetivo.
    El carrusel lo hereda al producir y ahí se puede cambiar, junto con el CTA. */
 const OBJETIVOS = {
-  viral:       {emoji: '🔮', nombre: 'Viral',       push: 1, cta: 'Comenta, etiqueta a alguien o compártelo', pista: 'Tendencia, entretener, comunidad y cercanía'},
+  viral:       {emoji: '🔮', nombre: 'Viral',       push: 1, cta: 'Etiqueta a quien le haga falta', pista: 'Tendencia, entretener, comunidad y cercanía'},
   autoridad:   {emoji: '🏆', nombre: 'Autoridad',   push: 2, cta: 'Guárdalo y síguenos para más',              pista: 'Demostrar que somos referentes del sector'},
   informativo: {emoji: '📌', nombre: 'Informativo', push: 3, cta: 'Escríbenos tu ciclo por DM y te decimos tu caso', pista: 'Requisitos, convalidaciones, plazos, precio'},
   leadmagnet:  {emoji: '🧲', nombre: 'Lead magnet', push: 4, cta: 'Comenta PALABRA y te mando [recurso]',     pista: 'Conseguir leads orgánicos con un recurso'},
