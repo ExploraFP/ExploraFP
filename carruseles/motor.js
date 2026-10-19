@@ -67,10 +67,10 @@ export function crearMotor(R) {
       }
       case "dato": {
         // Como «contenido»: la cifra grande arriba, fuera de la caja, y la explicación en la caja; sin flecha suelta
-        // (Sandra, 19/10/2026: «la flecha solitaria no se justifica», «demasiado vacío»). Si la «cifra» es una frase, va como titular.
+        // (Sandra, 19/10/2026: «la flecha solitaria no se justifica», «demasiado vacío»). Si la «cifra» es una frase, va como titular (con su *resaltado*).
         const frase = /[a-záéíóúñ]{4,}/i.test(String(s.cifra || ""));
         return `<div class="cabeza">${etiqueta(s.etiqueta)}${si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`)}` +
-          `<div class="cifra${frase ? " cifra-frase" : ""}">${esc(s.cifra)}</div></div>` +
+          (frase ? titulo(s.cifra) : `<div class="cifra">${esc(s.cifra)}</div>`) + `</div>` +
           si(s.texto, `<div class="pila"><div class="papel"></div><div class="caja caja-dato">${texto(s.texto)}${fuente(s)}</div></div>`);
       }
       case "cierre":
