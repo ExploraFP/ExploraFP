@@ -331,9 +331,7 @@ function vMatrizDentro() {
   // las ideas que apunta Sandra salen primero (las más nuevas arriba)
   const arriba = it => it.propia ? 2 : it.origen === 'claude' && it.mes >= mesClave(-1) ? 1 : 0;
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => arriba(b) - arriba(a) || (arriba(a) && arriba(b) ? b.id.localeCompare(a.id) : ordenar(a, b)));
-  const n = {porhacer: 0, produccion: 0, hecha: 0}; IDEAS.filter(yaVisible).forEach(it => n[estadoIdea(it)]++);
-  let h = cabecera('Matriz de contenido', '',
-    [[n.hecha, 'hechas', 'ok'], [n.produccion, 'en producción', n.produccion ? 'lima' : ''], [n.porhacer, 'por hacer']]);
+  let h = cabecera('Matriz de contenido', '', []);  // sin cifras arriba (Sandra, 19/10/2026); lo que queda por hacer ya sale en cada vista
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   // las sugerencias viven en Inicio (inicio.js)
   h += barraBusqueda();
