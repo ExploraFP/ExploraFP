@@ -10,6 +10,7 @@ const CNT_ICONOS = {
   carruseles: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="5" y="9" width="21" height="27" rx="3" fill="#4CCD4B" transform="rotate(-14 15 22)"/><rect x="12" y="7" width="21" height="27" rx="3" fill="#EDFEC3" transform="rotate(-3 22 20)"/><rect x="19" y="8" width="21" height="27" rx="3" fill="#fff" transform="rotate(9 29 21)"/><rect x="22.5" y="14" width="11" height="3.2" rx="1.6" fill="#366B40" transform="rotate(9 29 21)"/></svg>',
   imagenes: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="9" width="32" height="26" rx="4" fill="#EDFEC3"/><circle cx="16" cy="18" r="4" fill="#4CCD4B"/><path d="M8 33l10-10 7 7 5-5 8 8" fill="#366B40"/></svg>',
   newsletter: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="11" width="32" height="23" rx="4" fill="#EDFEC3"/><path d="M8 14l14 10 14-10" fill="none" stroke="#366B40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="35" cy="12" r="5" fill="#4CCD4B"/></svg>',
+  guiones: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="15" width="32" height="21" rx="3" fill="#EDFEC3"/><path d="M6 15l30-7 1.4 5.6L7.5 20.5z" fill="#4CCD4B"/><path d="M13 13.4l4.2 4.6M21 11.5l4.2 4.6M29 9.7l4.2 4.6" stroke="#366B40" stroke-width="2.2" stroke-linecap="round"/><path d="M13 25h18M13 30h11" stroke="#366B40" stroke-width="2.6" stroke-linecap="round"/></svg>',
   // Ajustes: icono de línea, sin cuadro (Sandra: el de antes «se ve muy antiguo»)
   ajustes: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'
 };
@@ -17,6 +18,7 @@ const CNT_ICONOS = {
 const CNT_SECCIONES = [
   {id: 'carruseles', nombre: 'Carruseles'},
   {id: 'newsletter', nombre: 'Newsletter'},
+  {id: 'guiones', nombre: 'Guiones'},   // 22/10/2026 (guiones.js)
   {id: 'imagenes', nombre: 'Imágenes'}
 ];
 const CNT = {sec: 'inicio', nl: null, cal: null};
@@ -39,6 +41,8 @@ function cntMontar() {
   document.body.appendChild(ini);
   const nl = document.createElement('section'); nl.id = 'cnt-newsletter'; nl.hidden = true; nl.setAttribute('aria-label', 'Newsletter');
   document.body.appendChild(nl);
+  const gu = document.createElement('section'); gu.id = 'cnt-guiones'; gu.hidden = true; gu.setAttribute('aria-label', 'Guiones');
+  document.body.appendChild(gu);
   document.body.classList.add('cnt');
   cntIr(CNT.sec, true);
 }
@@ -50,6 +54,9 @@ function cntIr(id, inicio) {
   document.body.classList.toggle('cnt-en-img', id === 'imagenes');
   const p = document.getElementById('cnt-newsletter'); if (p) p.hidden = id !== 'newsletter';
   const h = document.getElementById('cnt-inicio'); if (h) h.hidden = id !== 'inicio';
+  document.body.classList.toggle('cnt-en-gu', id === 'guiones');
+  const gu = document.getElementById('cnt-guiones'); if (gu) gu.hidden = id !== 'guiones';
+  if (id === 'guiones') setTimeout(() => { if (typeof guPintar === 'function') guPintar(true); }, 0);
   const nombre = document.querySelector('.mk-txt b'); if (nombre) nombre.textContent = id === 'imagenes' ? 'Imágenes' : 'Carruseles';
   if (id === 'newsletter') cntCargarNewsletter();
   if (id === 'inicio') cntPintarInicio();
@@ -87,6 +94,11 @@ function cntEstado(id) {
       const semana = CNT.cal.filter(c => c.fecha >= iso(lun) && c.fecha <= iso(dom));
       const pend = semana.filter(c => c.estado !== 'enviado').length;
       return [semana.length + (semana.length === 1 ? ' correo esta semana' : ' correos esta semana'), pend + (pend === 1 ? ' sin enviar' : ' sin enviar')];
+    }
+    if (id === 'guiones') {
+      if (typeof GU === 'undefined') return [];
+      const gs = Object.values(GU.lista), n = k => gs.filter(g => (g.etapa || 'borrador') === k).length;
+      return [n('borrador') + ' en borrador', n('grabar') + ' para grabar'];
     }
     if (id === 'imagenes') {
       const fs = (typeof fotosCatalogo === 'function' ? fotosCatalogo() : FOTOS).filter(f => !f.oculta);
