@@ -19,3 +19,5 @@
 @media (max-width: 760px) { .eb-pasos button { padding: 5px 8px; font-size: 12px; } }
 /* «Para publicar» se puede editar: el recordatorio del enlace va encima del panel normal */
 #est-panel > .sv-enlace { margin-bottom: 14px; }
+/* sin escalar todavía: oculta, para que nunca se vea la slide a tamaño real recortada (22/10/2026) */
+.est-mini iframe:not([style*="transform"]){visibility:hidden}

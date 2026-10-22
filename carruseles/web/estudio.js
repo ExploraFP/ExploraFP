@@ -112,9 +112,17 @@ function pintarMinis(raiz) {
     const c = EST.lista[f.dataset.c] || PREVIAS[f.dataset.c]; if (!c) return;
     const doc = docSlide(c, +f.dataset.i);
     if (f._doc !== doc) { f.srcdoc = doc; f._doc = doc; }
-    const w = f.parentElement.clientWidth; if (w) f.style.transform = 'scale(' + (w / 1080) + ')';
+    escalarMini(f.parentElement);
+    // si la caja aún no tiene ancho (la página se está colocando), se escala en cuanto lo tenga: antes se quedaba a 1080 px
+    // y la miniatura salía «con zoom» (Sandra, 22/10/2026: «suele fallar muchas veces»)
+    if (MINI_RO) MINI_RO.observe(f.parentElement);
   });
 }
+function escalarMini(caja) {
+  const f = caja && caja.querySelector(':scope > iframe'), w = caja && caja.clientWidth;
+  if (f && w) f.style.transform = 'scale(' + (w / 1080) + ')';
+}
+const MINI_RO = typeof ResizeObserver === 'function' ? new ResizeObserver(es => es.forEach(e => escalarMini(e.target))) : null;
 window.addEventListener('resize', () => pintarMinis());
 
 /* ---------- datos: base compartida (db) o este navegador ---------- */
