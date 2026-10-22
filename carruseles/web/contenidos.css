@@ -363,3 +363,10 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
 }
 @media (max-width: 900px) { .cnt-nav .cnt-ico, #cnt-ajustes .cnt-ico { font-size: 20px; } }
 @media (min-width: 901px) { .cnt-marca { border-radius: 0 !important; background: none !important; } }
+/* móvil con 7 botones (Estáticos, 22/10/2026): repartidos a todo el ancho, más estrechos, sin que Ajustes se salga */
+@media (max-width: 900px) {
+  #cnt-lado { gap: 0 !important; padding-left: 4px !important; padding-right: 4px !important; }
+  .cnt-nav { flex: 1 1 auto !important; gap: 0 !important; justify-content: space-between !important; min-width: 0; }
+  .cnt-nav button, #cnt-ajustes { flex: 1 1 0 !important; min-width: 0 !important; padding-left: 1px !important; padding-right: 1px !important; margin: 0 !important; }
+  .cnt-nav .cnt-txt, #cnt-ajustes .cnt-txt { font-size: 9.5px !important; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+}

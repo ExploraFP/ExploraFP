@@ -23,7 +23,8 @@ Object.assign(CNT_ICONOS, {inicio: '🏠', carruseles: '🎠', newsletter: '💌
 const CNT_SECCIONES = [
   {id: 'carruseles', nombre: 'Carruseles'},
   {id: 'newsletter', nombre: 'Newsletter'},
-  {id: 'guiones', nombre: 'Guiones', beta: true},   // 22/10/2026 (guiones.js); «Beta» hasta que Sandra lo dé por bueno
+  {id: 'guiones', nombre: 'Guiones', beta: true},
+  {id: 'estaticos', nombre: 'Estáticos', beta: true},   // 22/10/2026 (estaticos.js): normales 1:1 + vertical y dinámicos (vídeo vertical)   // 22/10/2026 (guiones.js); «Beta» hasta que Sandra lo dé por bueno
   {id: 'imagenes', nombre: 'Galería'},   // antes «Imágenes» (Sandra, 22/10/2026); el id sigue siendo 'imagenes'
   {id: 'directorio', nombre: 'Directorio', beta: true, cerrada: true}   // 22/10/2026: se ve pero aún no se abre (directorio de creatividades)
 ];
@@ -47,6 +48,8 @@ function cntMontar() {
   document.body.appendChild(ini);
   const nl = document.createElement('section'); nl.id = 'cnt-newsletter'; nl.hidden = true; nl.setAttribute('aria-label', 'Newsletter');
   document.body.appendChild(nl);
+  const es = document.createElement('section'); es.id = 'cnt-estaticos'; es.hidden = true; es.setAttribute('aria-label', 'Estáticos');
+  document.body.appendChild(es);
   const gu = document.createElement('section'); gu.id = 'cnt-guiones'; gu.hidden = true; gu.setAttribute('aria-label', 'Guiones');
   document.body.appendChild(gu);
   document.body.classList.add('cnt');
@@ -62,6 +65,9 @@ function cntIr(id, inicio) {
   const h = document.getElementById('cnt-inicio'); if (h) h.hidden = id !== 'inicio';
   document.body.classList.toggle('cnt-en-gu', id === 'guiones');
   const gu = document.getElementById('cnt-guiones'); if (gu) gu.hidden = id !== 'guiones';
+  document.body.classList.toggle('cnt-en-es', id === 'estaticos');
+  const es = document.getElementById('cnt-estaticos'); if (es) es.hidden = id !== 'estaticos';
+  if (id === 'estaticos') setTimeout(() => { if (typeof esPintar === 'function') esPintar(true); }, 0);
   if (id === 'guiones') setTimeout(() => { if (typeof guPintar === 'function') guPintar(true); }, 0);
   const nombre = document.querySelector('.mk-txt b'); if (nombre) nombre.textContent = id === 'imagenes' ? 'Galería' : 'Carruseles';
   if (id === 'newsletter') cntCargarNewsletter();
@@ -105,6 +111,11 @@ function cntEstado(id) {
       if (typeof GU === 'undefined') return [];
       const gs = Object.values(GU.lista), n = k => gs.filter(g => (g.etapa || 'borrador') === k).length;
       return [n('borrador') + ' en borrador', n('grabar') + ' para grabar'];
+    }
+    if (id === 'estaticos') {
+      if (typeof ES === 'undefined') return [];
+      const xs = Object.values(ES.lista), n = k => xs.filter(x => (x.tipo || 'normal') === k).length;
+      return [n('normal') + (n('normal') === 1 ? ' estático' : ' estáticos'), n('dinamico') + (n('dinamico') === 1 ? ' dinámico' : ' dinámicos')];
     }
     if (id === 'imagenes') {
       const fs = (typeof fotosCatalogo === 'function' ? fotosCatalogo() : FOTOS).filter(f => !f.oculta);
