@@ -328,3 +328,12 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
 @media (max-width: 900px) { #mz-deshacer { bottom: 76px; } }
 .mz-selbar.on #mz-borrar { background: transparent !important; color: #fff !important; border: 1px solid rgba(255,255,255,.35) !important; }
 .mz-selbar.on #mz-borrar:hover { background: rgba(255,255,255,.1) !important; }
+/* sección que aún no se abre (Directorio, 22/10/2026): se ve apagada, con su «Beta» */
+.cnt-nav button.cnt-cerrada { opacity: .55; cursor: default; }
+.cnt-nav button.cnt-cerrada:hover { background: none; color: #C9DAC7; }
+/* móvil: en la barra de abajo no caben 7 botones; el Directorio (aún cerrado) no sale y el «Beta» va más pequeño, encima del nombre */
+@media (max-width: 900px) {
+  .cnt-nav button.cnt-cerrada { display: none !important; }
+  .cnt-nav .cnt-txt .cnt-beta { position: absolute; top: -2px; right: -2px; font-size: 7.5px; padding: 2px 4px; margin: 0; }
+  .cnt-nav button { position: relative; }
+}

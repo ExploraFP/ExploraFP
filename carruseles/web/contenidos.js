@@ -11,6 +11,7 @@ const CNT_ICONOS = {
   imagenes: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="9" width="32" height="26" rx="4" fill="#EDFEC3"/><circle cx="16" cy="18" r="4" fill="#4CCD4B"/><path d="M8 33l10-10 7 7 5-5 8 8" fill="#366B40"/></svg>',
   newsletter: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="11" width="32" height="23" rx="4" fill="#EDFEC3"/><path d="M8 14l14 10 14-10" fill="none" stroke="#366B40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="35" cy="12" r="5" fill="#4CCD4B"/></svg>',
   guiones: '<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="15" width="32" height="21" rx="3" fill="#EDFEC3"/><path d="M6 15l30-7 1.4 5.6L7.5 20.5z" fill="#4CCD4B"/><path d="M13 13.4l4.2 4.6M21 11.5l4.2 4.6M29 9.7l4.2 4.6" stroke="#366B40" stroke-width="2.2" stroke-linecap="round"/><path d="M13 25h18M13 30h11" stroke="#366B40" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  directorio: '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M6 13a3 3 0 0 1 3-3h9l4 4h13a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z" fill="#EDFEC3"/><rect x="11" y="19" width="9" height="11" rx="1.5" fill="#4CCD4B"/><path d="M24 21h10M24 25h10M24 29h6" stroke="#366B40" stroke-width="2.4" stroke-linecap="round"/></svg>',
   // Ajustes: icono de línea, sin cuadro (Sandra: el de antes «se ve muy antiguo»)
   ajustes: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'
 };
@@ -19,7 +20,8 @@ const CNT_SECCIONES = [
   {id: 'carruseles', nombre: 'Carruseles'},
   {id: 'newsletter', nombre: 'Newsletter'},
   {id: 'guiones', nombre: 'Guiones', beta: true},   // 22/10/2026 (guiones.js); «Beta» hasta que Sandra lo dé por bueno
-  {id: 'imagenes', nombre: 'Imágenes'}
+  {id: 'imagenes', nombre: 'Galería'},   // antes «Imágenes» (Sandra, 22/10/2026); el id sigue siendo 'imagenes'
+  {id: 'directorio', nombre: 'Directorio', beta: true, cerrada: true}   // 22/10/2026: se ve pero aún no se abre (directorio de creatividades)
 ];
 const CNT = {sec: 'inicio', nl: null, cal: null};
 try { const g = localStorage.getItem('contenidos.seccion'); if (g === 'inicio' || CNT_SECCIONES.some(s => s.id === g)) CNT.sec = g; } catch (e) {}
@@ -30,7 +32,7 @@ function cntMontar() {
     '<nav class="cnt-nav">' +
       // en el móvil la marca no se ve: el Inicio va como primer botón de la barra de abajo
       '<button type="button" class="cnt-solo-movil" data-cnt="inicio" title="Inicio"><span class="cnt-ico">' + CNT_ICONOS.inicio + '</span><span class="cnt-txt">Inicio</span></button>' +
-      CNT_SECCIONES.map(s => '<button type="button" data-cnt="' + s.id + '" title="' + s.nombre + '">' +
+      CNT_SECCIONES.map(s => '<button type="button" ' + (s.cerrada ? 'data-cnt-cerrada="' + s.id + '" aria-disabled="true" class="cnt-cerrada" title="' + s.nombre + ': próximamente"' : 'data-cnt="' + s.id + '" title="' + s.nombre + '"') + '>' +
       '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><span class="cnt-txt">' + s.nombre + (s.beta ? ' <i class="cnt-beta">Beta</i>' : '') + '</span></button>').join('') + '</nav>';
   document.body.insertBefore(lado, document.body.firstChild);
   // Ajustes abajo del todo en la barra lateral (Sandra, 19/10/2026: el claro/oscuro ya no va en la cabecera)
@@ -57,7 +59,7 @@ function cntIr(id, inicio) {
   document.body.classList.toggle('cnt-en-gu', id === 'guiones');
   const gu = document.getElementById('cnt-guiones'); if (gu) gu.hidden = id !== 'guiones';
   if (id === 'guiones') setTimeout(() => { if (typeof guPintar === 'function') guPintar(true); }, 0);
-  const nombre = document.querySelector('.mk-txt b'); if (nombre) nombre.textContent = id === 'imagenes' ? 'Imágenes' : 'Carruseles';
+  const nombre = document.querySelector('.mk-txt b'); if (nombre) nombre.textContent = id === 'imagenes' ? 'Galería' : 'Carruseles';
   if (id === 'newsletter') cntCargarNewsletter();
   if (id === 'inicio') cntPintarInicio();
   // Imágenes = la vista «fotos»; Carruseles = cualquier otra
@@ -113,7 +115,7 @@ function cntPintarInicio() {
   const hoy = new Date().toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long'});
   h.innerHTML = '<div class="cnt-banda"><b>Inicio</b></div><div class="cnt-ini">' +
     '<p class="cnt-fecha">' + esc(hoy.charAt(0).toUpperCase() + hoy.slice(1)) + '</p><h1>Contenidos</h1>' +
-    '<div class="cnt-tarjetas">' + CNT_SECCIONES.map(s => '<button type="button" class="cnt-tarjeta" data-cnt="' + s.id + '">' +
+    '<div class="cnt-tarjetas">' + CNT_SECCIONES.filter(s => !s.cerrada).map(s => '<button type="button" class="cnt-tarjeta" data-cnt="' + s.id + '">' +
       '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><b>' + s.nombre + (s.beta ? ' <i class="cnt-beta">Beta</i>' : '') + '</b>' +
       cntEstado(s.id).map(x => '<span>' + esc(x) + '</span>').join('') + '<i>Abrir →</i></button>').join('') + '</div></div>';
 }
@@ -188,3 +190,10 @@ pintarEditor = function () {
   requestAnimationFrame(() => { const ed = document.getElementById('est-editor'); if (ed && !ed.hidden) pintarMinis(ed); });
   return r;
 };
+
+// secciones que aún no se abren (Directorio): avisan y no cambian de sección
+document.addEventListener('click', e => {
+  const c = e.target.closest && e.target.closest('[data-cnt-cerrada]'); if (!c) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  toast('El directorio de creatividades llega pronto');
+}, true);
