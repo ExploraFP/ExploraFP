@@ -101,7 +101,7 @@ vProducir = function () {
 function darOK(c, forzar) {
   if (!qcMedido(c)) { toast('Espera un segundo: estoy revisando las slides'); pedirQC(c); return false; }
   if (qcErrores(c) && !forzar && EST.forzar !== c.id) { EST.forzar = c.id; toast('Hay ' + qcErrores(c) + ' cosas por corregir. Pulsa otra vez si aun así está bien'); if (EST.abierto) pintarEditor(true); return false; }
-  EST.forzar = null; c.listo = true; guardarC(c); return true;
+  EST.forzar = null; c.listo = true; c.okFirma = firmaOK(c); guardarC(c); return true;
 }
 function abrirPublicar(id) {
   const c = EST.lista[id]; if (!c) return;
@@ -109,7 +109,7 @@ function abrirPublicar(id) {
   $('#onb').innerHTML = '<div class="onbcaja pr-publicar" role="dialog" aria-modal="true" aria-label="Marcar como publicado"><header><k>Marcar como publicado</k><h2>' + esc(c.titulo || 'Carrusel') + '</h2></header><div class="cuerpo">' +
     '<label class="mz-cta">Fecha de publicación<input type="date" id="pr-fecha" value="' + esc(c.fecha || fISO(hoy())) + '"></label>' +
     '<label class="mz-cta">Enlace del post en Instagram<input type="url" id="pr-ig" placeholder="https://www.instagram.com/p/…" value="' + esc(c.ig || '') + '" required></label>' +
-    '<p class="est-pista">Pasará a «Terminados». Necesita el enlace del post.</p></div>' +
+    '<p class="est-pista">Pasará a «Publicado». Necesita el enlace del post.</p></div>' +
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" data-pr-publicar-ok="' + esc(id) + '">✓ Publicado</button></footer></div>';
   setTimeout(() => { const i = $('#pr-fecha'); if (i) i.focus(); }, 30);
 }
@@ -117,12 +117,12 @@ function publicar(id) {
   const c = EST.lista[id]; if (!c) return;
   const f = ($('#pr-fecha').value || fISO(hoy())), ig = ($('#pr-ig').value || '').trim();
   // sin enlace de Instagram no pasa a Terminados (Sandra, 19/10/2026)
-  if (!ig) { toast('Pega el enlace del post de Instagram: sin él no pasa a Terminados'); $('#pr-ig').focus(); return; }
+  if (!ig) { toast('Pega el enlace del post de Instagram: sin él no pasa a Publicado'); $('#pr-ig').focus(); return; }
   if (!/^https?:\/\//.test(ig)) { toast('El enlace tiene que empezar por https://'); return; }
   c.estado = 'hecho'; c.listo = true; c.fecha = f; c.ig = ig;
   guardarC(c); asegurarIdea(c); if (c.idea && IMAP[c.idea]) guardar(c.idea, {hecho: true, fecha: f});
   cerrarPanel(); if (EST.abierto) cerrarEditor(); else render();
-  toast('✓ Publicado. Lo tienes en «Terminados»');
+  toast('✓ Publicado. Lo tienes en «Publicado»');
 }
 // si el carrusel no tiene idea en la Matriz, se crea una con sus datos y se enlaza (así todo lo hecho está en la Matriz)
 function asegurarIdea(c) {
@@ -169,14 +169,13 @@ pintarEditor = function (todo) {
   if (cab && !cab.querySelector('.pr-etapa')) {
     const h2 = cab.querySelector('h2'); if (h2) h2.insertAdjacentHTML('afterend', pillEtapa(c));
     const hb = cab.querySelector('#est-hecho');
-    if (hb) hb.outerHTML = e === 'revision' ? '<button class="btn pri" id="pr-ok">Aprobar</button>'
-      : e === 'listo' ? '<button class="btn pri" data-pr-publicar="' + c.id + '">Marcar como publicado</button>'
+    if (hb) hb.outerHTML = e === 'revision' ? '<button class="btn pri" id="pr-ok">Lista para publicar ✓</button>'
+      : e === 'listo' ? '<button class="btn pri" data-pr-publicar="' + c.id + '">Ya está publicado</button>'
       : e === 'publicado' ? '<span class="pr-pub">✓ Publicado' + (c.fecha ? ' el ' + esc(fCorta(c.fecha)) : '') + '</span>' : '';
     const dl = cab.querySelector('#est-descargar'); if (dl) dl.textContent = '⬇ Descargar';
     // lo que antes estaba en el ⋯ de la tarjeta vive ahora dentro
     // sin menú ⋯ (pedido de Sandra): lo poco que hace falta va como enlace pequeño junto al estado
-    const links = [e === 'listo' ? '<button type="button" data-pr-revision="' + c.id + '">Volver a revisión</button>' : '',
-      e === 'publicado' ? '<button type="button" data-pr-publicar="' + c.id + '">Cambiar fecha o enlace</button>' : '',
+    const links = [e === 'publicado' ? '<button type="button" data-pr-publicar="' + c.id + '">Cambiar fecha o enlace</button>' : '',
       e === 'publicado' && c.ig ? '<a href="' + esc(c.ig) + '" target="_blank" rel="noopener">Ver en Instagram ↗</a>' : ''].filter(Boolean);
     const pill = cab.querySelector('.pr-etapa'); if (links.length && pill) pill.insertAdjacentHTML('afterend', '<span class="eb-links">' + links.join('') + '</span>');
   }
@@ -269,7 +268,8 @@ document.addEventListener('click', e => {
   const ok = t.closest('[data-pr-ok]'); if (ok) { const c = EST.lista[ok.dataset.prOk]; if (c && darOK(c)) render(); return; }
   const rv = t.closest('[data-pr-revision]'); if (rv) { const c = EST.lista[rv.dataset.prRevision]; if (c) { c.listo = false; guardarC(c); render(); if (EST.abierto) pintarEditor(true); toast('Vuelve a revisión'); } return; }
   // al aprobar se cierra: un carrusel aprobado ya no se edita, solo se ve en «Listo para publicar»
-  if (t.id === 'pr-ok') { const c = EST.lista[EST.abierto]; if (c && darOK(c)) { cerrarEditor(); S.v = 'producir'; render(); toast('✓ Aprobado. Está en «Listo para publicar»'); } return; }
+  // 3 etapas (22/10/2026): al pasar a «Para publicar» el carrusel sigue abierto y se puede seguir editando; lo siguiente es descargarlo
+  if (t.id === 'pr-ok') { const c = EST.lista[EST.abierto]; if (c && darOK(c)) { pintarEditor(true); toast('✓ Para publicar. Ya puedes descargarlo'); } return; }
   const tab = t.closest('[data-pr-tab]'); if (tab) { EST.pestana = tab.dataset.prTab; const p = $('#est-panel'); if (p) p.dataset.tab = EST.pestana;
     document.querySelectorAll('[data-pr-tab]').forEach(b => b.setAttribute('aria-selected', String(b === tab))); return; }
   if (t.closest('#est-qc [data-est-sel]') || t.closest('#est-qc li')) { EST.pestana = 'slide';

@@ -77,7 +77,7 @@ function cntEstado(id) {
     if (id === 'carruseles') {
       const cs = Object.values(EST.lista || {}).filter(c => c.estado !== 'hecho');
       const rev = cs.filter(c => !c.listo && c.slides && c.slides.length).length, listos = cs.filter(c => c.listo).length;
-      return [rev + (rev === 1 ? ' en revisión' : ' en revisión'), listos + (listos === 1 ? ' listo para publicar' : ' listos para publicar')];
+      return [rev + ' en borrador', listos + ' para publicar'];
     }
     if (id === 'newsletter') {
       if (!CNT.cal) return ['Cargando…'];

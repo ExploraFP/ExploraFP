@@ -70,9 +70,7 @@ pintarEditor = function (todo) {
     [volver, tit].forEach(x => x && izq.appendChild(x));
     const der = document.createElement('div'); der.className = 'eb-der';
     // en Listo, «Volver a revisión» es un botón más (como enlace casi no se veía)
-    let volverRev = null;
-    if (et === 'listo') { volverRev = meta.querySelector('[data-pr-revision]'); if (volverRev) volverRev.className = 'eb-sec'; }
-    (et === 'listo' ? [volverRev, principal, descargar] : [descargar, menu, principal]).forEach(x => x && der.appendChild(x));
+    (et === 'listo' ? [principal, descargar] : [descargar, menu, principal]).forEach(x => x && der.appendChild(x));
     meta.querySelectorAll('.eb-links').forEach(l => { if (!l.children.length) l.remove(); });
     // ↶ justo a la izquierda del botón de diseño (pedido de Sandra)
     const centro = document.createElement('div'); centro.className = 'eb-centro';
@@ -80,7 +78,7 @@ pintarEditor = function (todo) {
     cab.innerHTML = ''; cab.appendChild(izq); cab.appendChild(centro); cab.appendChild(der);
   }
   // Listo y Terminado: solo se ven (pedido de Sandra). Para cambiar algo, «Volver a revisión».
-  const soloVer = ['listo', 'publicado'].indexOf(etapaDe(c)) >= 0;
+  const soloVer = etapaDe(c) === 'publicado';   // 22/10/2026: «Para publicar» se puede seguir editando
   ed.classList.toggle('solo-ver', soloVer);
   if (soloVer) {
     SEL.pop = null; SEL.diseno = false;
@@ -92,7 +90,7 @@ pintarEditor = function (todo) {
       const falta = etapaDe(c) === 'listo' && c.descargado && !c.ig;
       panel.innerHTML = (falta ? '<div class="sv-enlace"><b>¿Ya lo has subido?</b><span>Pega el enlace de Instagram y queda como publicado.</span>' +
           '<div class="sv-enlace-fila"><input type="url" id="sv-ig" placeholder="https://www.instagram.com/p/…"><button type="button" class="eb-pri" id="sv-ig-ok">Publicado</button></div></div>' : '') +
-        '<div class="sv-aviso">' + (etapaDe(c) === 'listo' ? 'Aprobado: ya no se edita. Para cambiar algo, «Volver a revisión».' : 'Publicado: ya no se edita.') + '</div>' +
+        '<div class="sv-aviso">Publicado: ya no se edita. Para cambiar algo, pulsa «Para publicar» arriba.</div>' +
         '<h3 class="sv-h">Caption</h3><div class="sv-caption">' + esc(c.copy || 'Sin caption') + '</div>' +
         (c.copy ? '<button type="button" class="linkbtn sv-copiar" data-est-copiar="' + c.id + '">Copiar caption</button>' : '');
     }
@@ -426,7 +424,7 @@ function deshacerEtapa() {
   if (u.antes.fecha) c.fecha = u.antes.fecha; else delete c.fecha;
   if (u.antes.ig) c.ig = u.antes.ig; else delete c.ig;
   guardarC(c); render();
-  toast('↶ Deshecho: vuelve a «' + ({revision: 'En revisión', listo: 'Listo para publicar', publicado: 'Terminados'}[etapaDe(c)] || ETAPAS[etapaDe(c)]) + '»');
+  toast('↶ Deshecho: vuelve a «' + ETAPAS[etapaDe(c)] + '»');
 }
 window.addEventListener('keydown', e => {
   if (!(e.metaKey || e.ctrlKey) || e.shiftKey || e.altKey || (e.key || '').toLowerCase() !== 'z') return;
@@ -655,6 +653,6 @@ document.addEventListener('click', e => {
   if (!/^https?:\/\//.test(ig)) { toast('Pega el enlace del post (empieza por https://)'); $('#sv-ig').focus(); return; }
   c.estado = 'hecho'; c.listo = true; c.fecha = c.fecha || fISO(hoy()); c.ig = ig;
   guardarC(c); asegurarIdea(c); if (c.idea && IMAP[c.idea]) guardar(c.idea, {hecho: true, fecha: c.fecha});
-  cerrarEditor(); toast('✓ Publicado. Lo tienes en «Terminados»');
+  cerrarEditor(); toast('✓ Publicado. Lo tienes en «Publicado»');
 });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'sv-ig') { e.preventDefault(); const b = $('#sv-ig-ok'); if (b) b.click(); } });

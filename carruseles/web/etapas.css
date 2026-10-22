@@ -1,0 +1,21 @@
+/* Tres etapas (22/10/2026): Borrador → Para publicar → Publicado */
+/* «Por generar» y «En revisión» son ahora la misma etapa (Borrador): la misma pastilla amarillita */
+.pr-etapa.e-generar { background: #FFF1CC; color: #8A5A00; }
+:root[data-theme="dark"] .pr-etapa.e-generar { background: #3A2F12; color: #F5DFA0; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pr-etapa.e-generar { background: #3A2F12; color: #F5DFA0; } }
+.pr-editado { display: inline-block; font: 600 12px var(--f-ui); padding: 3px 9px; border-radius: 999px; background: var(--surface2, #F1F4EF); color: var(--ink2); border: 1px solid var(--line2, #C2CEBC); }
+
+/* barra de pasos del editor */
+.eb-pasos { display: flex; align-items: center; list-style: none; margin: 0; padding: 3px; gap: 0; border-radius: 999px; background: var(--surface2, #F1F4EF); }
+.eb-pasos li { display: flex; align-items: center; }
+.eb-pasos li + li::before { content: "›"; color: var(--ink3, #8A968A); font-size: 15px; padding: 0 2px; }
+.eb-pasos button { border: 0; background: transparent; color: var(--ink2); font: 600 13px var(--f-ui, inherit); padding: 6px 13px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.eb-pasos button:hover:not(.actual) { color: var(--ink); background: rgba(0,0,0,.05); }
+.eb-pasos button.hecho { color: var(--ok, #2E7D32); }
+.eb-pasos button.actual { background: var(--lima, #D8FF6E); color: #12200F; cursor: default; }
+.eb-pasos button:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+:root[data-theme="dark"] .eb-pasos button:hover:not(.actual) { background: rgba(255,255,255,.08); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .eb-pasos button:hover:not(.actual) { background: rgba(255,255,255,.08); } }
+@media (max-width: 760px) { .eb-pasos button { padding: 5px 8px; font-size: 12px; } }
+/* «Para publicar» se puede editar: el recordatorio del enlace va encima del panel normal */
+#est-panel > .sv-enlace { margin-bottom: 14px; }
