@@ -337,3 +337,29 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
   .cnt-nav .cnt-txt .cnt-beta { position: absolute; top: -2px; right: -2px; font-size: 7.5px; padding: 2px 4px; margin: 0; }
   .cnt-nav button { position: relative; }
 }
+
+/* ===== Barra de arriba más ligera (22/10/2026, Sandra: «espacio mal utilizado», «muy arcaico», emoji en vez de dibujos) =====
+   Emoji sin cuadro, pestañas en píldora más bajas, marca más pequeña con una raya que la separa de las secciones,
+   Ajustes solo con su emoji a la derecha. La barra baja de 68 a 56 px (todo lo de debajo se recoloca con --cnt-alto). */
+.cnt-ico, [data-cnt] .cnt-ico, #cnt-ajustes .cnt-ico, .cnt-nav button[aria-current="page"] .cnt-ico, .cnt-tarjeta .cnt-ico {
+  background: none !important; box-shadow: none !important; border: 0 !important; width: auto !important; height: auto !important;
+  font-size: 17px; line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+.cnt-tarjeta .cnt-ico { font-size: 30px !important; margin-bottom: 6px; }
+@media (min-width: 901px) {
+  :root { --cnt-alto: 56px; }
+  #cnt-lado { gap: 0 !important; padding: 0 20px !important; }
+  .cnt-marca { flex-direction: row !important; align-items: baseline !important; gap: 10px !important; margin-right: 0 !important; padding-right: 20px !important;
+    border-right: 1px solid rgba(255,255,255,.14) !important; }
+  .cnt-marca b { font-size: 24px !important; }
+  .cnt-marca img { height: 11px !important; opacity: .7; }
+  .cnt-nav { gap: 2px !important; margin-left: 14px; }
+  .cnt-nav button { gap: 7px !important; padding: 7px 13px !important; border-radius: 999px !important; font: 500 14.5px var(--f-ui) !important; color: #C9DAC7 !important; box-shadow: none !important; }
+  .cnt-nav button:hover { background: rgba(255,255,255,.08) !important; color: #fff !important; }
+  .cnt-nav button[aria-current="page"] { background: var(--lima) !important; color: var(--brand2) !important; font-weight: 700 !important; }
+  .cnt-nav button.cnt-cerrada:hover { background: none !important; color: #C9DAC7 !important; }
+  #cnt-ajustes { padding: 7px 10px !important; border-radius: 999px !important; gap: 0 !important; }
+  #cnt-ajustes .cnt-txt { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; }
+  #cnt-ajustes .cnt-ico { font-size: 18px; }
+}
+@media (max-width: 900px) { .cnt-nav .cnt-ico, #cnt-ajustes .cnt-ico { font-size: 20px; } }
+@media (min-width: 901px) { .cnt-marca { border-radius: 0 !important; background: none !important; } }
