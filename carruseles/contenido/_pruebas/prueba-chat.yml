@@ -1,0 +1,28 @@
+plantilla: chat
+color: verde01
+slides:
+  - tipo: portada
+    etiqueta: Requisitos
+    titulo: ¿Puedo hacer FP *sin la ESO*?
+    subtitulo: "Me dejé la ESO a medias, ¿tengo opciones?"
+  - tipo: contenido
+    numero: "01"
+    titulo: Sí, con la prueba de acceso
+    texto: |
+      Si no tienes la ESO, puedes presentarte a la *prueba de acceso a grado medio* desde los 17 años.
+
+      Apruebas y entras como cualquiera.
+  - tipo: lista
+    titulo: Lo que te piden para grado superior
+    items:
+      - Bachillerato
+      - Un grado medio terminado
+      - O la prueba de acceso (19 años)
+  - tipo: dato
+    antetitulo: Lo que dura un grado superior
+    cifra: 2.000 h
+    texto: En dos cursos, prácticas en empresa incluidas.
+  - tipo: cierre
+    titulo: Tu ruta empieza *aquí*
+    texto: Te decimos qué te falta y cómo conseguirlo, sin rodeos.
+    cta: Escríbenos "RUTA" por DM

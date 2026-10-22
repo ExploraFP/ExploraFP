@@ -1,0 +1,49 @@
+/* TUIT (viral) · la frase como publicación de la cuenta: tarjeta clara sobre el color de fondo.
+   Funciona con frases cortas y rotundas, que es lo que más se comparte. */
+.cabecera { display: flex; justify-content: flex-end; top: 64px; }
+.cabecera span { display: none; }
+.cabecera img { height: 44px; }
+.cinta { display: none; }
+.contenido { inset: 0; padding: 170px 70px 110px; justify-content: center; align-items: stretch; gap: 0; }
+.etiqueta { margin-bottom: 34px; }
+
+.tuit { background: #fff; color: #0f1419; border-radius: 40px; padding: 56px 60px 50px; box-shadow: 0 30px 70px rgba(0,0,0,.18); }
+.c-blanco .tuit { box-shadow: 0 0 0 2px #e6ece6, 0 30px 70px rgba(0,0,0,.08); }
+.tuit-cab { display: flex; align-items: center; gap: 22px; margin-bottom: 36px; }
+.tuit-cab .avatar { display: grid; place-items: center; width: 92px; height: 92px; border-radius: 50%; background: var(--verde01); color: var(--verde03);
+  font-family: var(--titular); font-weight: 900; font-size: 54px; line-height: 1; }
+.tuit-cab strong { display: block; font-family: var(--cuerpo); font-weight: 700; font-size: 34px; }
+.tuit-cab .verif { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--verde02); color: #fff;
+  font-style: normal; font-size: 20px; vertical-align: 3px; margin-left: 6px; }
+.tuit-cab span { font-family: var(--cuerpo); font-size: 28px; color: #536471; }
+
+.tuit .titulo { font-family: var(--cuerpo); font-weight: 700; font-stretch: normal; letter-spacing: -.01em; word-spacing: 0; font-size: 64px; line-height: 1.15; color: #0f1419; }
+.tipo-portada .tuit .titulo { font-size: 78px; }
+.tuit .titulo em { --hl: var(--verde03); color: #0f1419; }
+.tuit .subtitulo { font-family: var(--cuerpo); font-size: 40px; line-height: 1.3; color: #0f1419; margin-top: 26px; }
+.tuit .texto { font-family: var(--cuerpo); font-size: 42px; line-height: 1.38; margin-top: 26px; color: #0f1419; }
+.tuit .texto em, .tuit .subtitulo em { text-decoration-color: var(--verde02); }
+.tuit .ante { font-family: var(--cuerpo); font-size: 40px; font-weight: 500; color: #536471; }
+.tuit .cifra { font-family: var(--titular); font-weight: 900; font-size: 260px; line-height: .9; letter-spacing: -.03em; color: var(--verde01); margin-top: 10px; }
+.tuit-lista { list-style: none; margin-top: 30px; display: flex; flex-direction: column; gap: 20px; }
+.tuit-lista li { font-family: var(--cuerpo); font-size: 44px; line-height: 1.3; }
+.tuit-lista b { color: var(--verde01); }
+.tuit-cta { margin-top: 34px; font-family: var(--cuerpo); font-weight: 700; font-size: 40px; color: var(--verde01); }
+.tuit-pie { display: flex; gap: 60px; margin-top: 40px; padding-top: 28px; border-top: 2px solid #eff3f4; font-family: var(--cuerpo); font-size: 30px; color: #536471; }
+.nota { position: absolute; left: var(--m); bottom: 56px; font-size: 28px; opacity: .7; }
+
+/* Más grande: la tarjeta tiene que llenar la slide, no flotar en el verde */
+.tuit { padding: 64px 64px 56px; }
+.tuit .titulo { font-size: 84px; line-height: 1.12; }
+.tipo-portada .tuit .titulo { font-size: 100px; }
+.tuit .subtitulo { font-size: 48px; }
+.tuit .texto { font-size: 52px; line-height: 1.35; }
+.tuit-lista li { font-size: 56px; }
+.tuit .ante { font-size: 48px; }
+.tuit .cifra { font-size: 300px; }
+.tuit-cta { font-size: 50px; }
+.tuit-cab .avatar { width: 104px; height: 104px; font-size: 62px; }
+.tuit-cab strong { font-size: 40px; }
+.tuit-cab span { font-size: 32px; }
+.tuit-pie { font-size: 36px; }
+.tuit .cifra { font-size: 250px; white-space: nowrap; }

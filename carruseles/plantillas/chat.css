@@ -1,0 +1,40 @@
+/* CHAT (viral) · la duda del lead llega como mensaje y Explora contesta. Se lee como una conversación real:
+   cabecera de chat arriba, burbujas grandes, la respuesta en el color de resalte. Logo arriba a la derecha. */
+.cabecera { display: flex; justify-content: flex-end; top: 64px; z-index: 5; }
+.cabecera span { display: none; }
+.cabecera img { height: 44px; }
+.cinta { display: none; }
+.contenido { inset: 0; padding: 200px var(--m) 110px; justify-content: center; gap: 0; }
+
+.chat-cab { position: absolute; top: 48px; left: var(--m); display: flex; align-items: center; gap: 22px; }
+.chat-cab .avatar { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: var(--resalte); color: var(--tinta-resalte);
+  font-family: var(--titular); font-weight: 900; font-size: 46px; line-height: 1; }
+.chat-cab strong { display: block; font-family: var(--cuerpo); font-weight: 700; font-size: 32px; }
+.chat-cab span { font-family: var(--cuerpo); font-size: 24px; opacity: .7; }
+
+.chat-hilo { display: flex; flex-direction: column; gap: 30px; }
+.burbuja { max-width: 820px; padding: 34px 44px; font-family: var(--cuerpo); font-size: 46px; line-height: 1.3; border-radius: 44px; position: relative; }
+.burbuja p + p { margin-top: 18px; }
+.burbuja.llega { align-self: flex-start; background: color-mix(in srgb, var(--tinta) 12%, var(--fondo)); color: var(--tinta); border-bottom-left-radius: 10px; font-weight: 500; }
+.burbuja.sale { align-self: flex-end; background: var(--resalte); color: var(--tinta-resalte); border-bottom-right-radius: 10px; }
+.burbuja.sale.corta { font-family: var(--titular); font-weight: 900; font-size: 64px; line-height: 1.02; padding: 26px 40px; }
+.burbuja em { font-style: normal; text-decoration: underline; text-decoration-thickness: 5px; text-underline-offset: 8px; }
+.burbuja .hora { display: block; text-align: right; font-style: normal; font-size: 24px; margin-top: 8px; opacity: .6; }
+.burbuja.dato { text-align: left; }
+.burbuja.dato .cifra { font-family: var(--titular); font-weight: 900; font-size: 230px; line-height: .9; letter-spacing: -.03em; }
+.burbuja.dato .texto { font-size: 40px; margin-top: 14px; }
+
+.tipo-portada .chat-hilo { margin-bottom: 50px; }
+.tipo-portada .titulo { font-size: 150px; line-height: 1; }
+.tipo-portada .etiqueta { margin-bottom: 30px; }
+.nota { position: absolute; left: var(--m); bottom: 56px; font-size: 28px; opacity: .7; }
+
+.chat-escribe { position: absolute; left: var(--m); right: var(--m); bottom: 80px; display: flex; align-items: center; gap: 22px;
+  background: color-mix(in srgb, var(--tinta) 10%, var(--fondo)); border-radius: 60px; padding: 18px 18px 18px 46px; }
+.chat-escribe span { flex: 1; font-family: var(--cuerpo); font-weight: 500; font-size: 38px; }
+.chat-escribe b { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; background: var(--resalte); color: var(--tinta-resalte); font-size: 38px; }
+
+/* Burbujas algo más grandes para que se lean como chat en el móvil */
+.burbuja { font-size: 52px; }
+.burbuja.sale.corta { font-size: 74px; }
+.chat-escribe span { font-size: 42px; }

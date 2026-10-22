@@ -2,7 +2,7 @@
 // Lo comparten el generador de PNG (render.js, Node) y la herramienta web (sin dependencias).
 // R resuelve los recursos según dónde se ejecute:
 //   R.logo(color) · R.imagen(ruta) · R.postit() → URL;  R.cabeza(plantilla) → <link>/<style> de la cabeza.
-export const PLANTILLAS = ["feed", "capas", "cuaderno", "poster"];
+export const PLANTILLAS = ["feed", "capas", "cuaderno", "poster", "chat", "tuit", "editorial", "bloques"];
 export const COLORES = ["verde01", "verde02", "blanco", "noche", "lima", "verde"];
 export const TIPOS = ["portada", "contenido", "lista", "dato", "cierre"];
 
@@ -152,7 +152,81 @@ export function crearMotor(R) {
     }
   }
 
-  const COMPOSICION = { feed, capas, cuaderno, poster };
+  // ===== Plantillas nuevas (22/10/2026, Sandra: «hazme varios diseños, algunos más virales, otros más normales») =====
+  // CHAT (viral): la duda del lead como mensaje que llega y la respuesta de Explora como mensaje que sale.
+  function chat(s) {
+    const yo = (t) => si(t, `<div class="burbuja sale">${parrafos(t)}<i class="hora">✓✓</i></div>`);
+    const el = (t) => si(t, `<div class="burbuja llega">${fmt(t)}</div>`);
+    const cab = `<div class="chat-cab"><b class="avatar">e</b><div><strong>Explora FP</strong><span>en línea</span></div></div>`;
+    switch (s.tipo) {
+      case "portada":
+        return cab + etiqueta(s.etiqueta) + `<div class="chat-hilo">${el(s.subtitulo || "")}</div>` + titulo(s.titulo, "h1") + nota(s.nota);
+      case "contenido":
+        return cab + `<div class="chat-hilo">${el(s.titulo)}${yo(s.texto)}${s.antetitulo ? el(s.antetitulo) : ""}</div>` + nota(s.nota);
+      case "lista":
+        return cab + `<div class="chat-hilo">${el(s.titulo)}${(s.items || []).map((it) => `<div class="burbuja sale corta">${fmt(it)}</div>`).join("")}</div>`;
+      case "dato":
+        return cab + `<div class="chat-hilo">${el(s.antetitulo || "¿Y eso es verdad?")}<div class="burbuja sale dato"><div class="cifra">${esc(s.cifra)}</div>${texto(s.texto)}</div></div>`;
+      case "cierre":
+        return cab + `<div class="chat-hilo">${el(s.titulo)}${yo(s.texto)}</div>` +
+          si(s.cta, `<div class="chat-escribe"><span>${fmt(s.cta)}</span><b>➤</b></div>`);
+    }
+  }
+
+  // TUIT (viral): la frase como publicación de la cuenta, en una tarjeta blanca sobre el color.
+  function tuit(s) {
+    const tarjeta = (cuerpo, pie = "") => `<div class="tuit"><div class="tuit-cab"><b class="avatar">e</b><div><strong>Explora FP <i class="verif">✓</i></strong><span>@explorafp</span></div></div>${cuerpo}${pie}</div>`;
+    const pie = `<div class="tuit-pie"><span>💬 312</span><span>🔁 1,2 mil</span><span>♥ 8,4 mil</span></div>`;
+    switch (s.tipo) {
+      case "portada":
+        return etiqueta(s.etiqueta) + tarjeta(titulo(s.titulo, "h1") + sub(s.subtitulo), pie) + nota(s.nota);
+      case "contenido":
+        return tarjeta(titulo(s.titulo) + texto(s.texto)) + nota(s.nota);
+      case "lista":
+        return tarjeta(titulo(s.titulo) + `<ol class="tuit-lista">${(s.items || []).map((it, n) => `<li><b>${n + 1}.</b> ${fmt(it)}</li>`).join("")}</ol>`);
+      case "dato":
+        return tarjeta(si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`) + `<div class="cifra">${esc(s.cifra)}</div>` + texto(s.texto));
+      case "cierre":
+        return tarjeta(titulo(s.titulo) + texto(s.texto) + si(s.cta, `<div class="tuit-cta">${fmt(s.cta)}</div>`), pie);
+    }
+  }
+
+  // EDITORIAL (normal): como una revista. Número de índice grande y fino, raya, mucho aire.
+  function editorial(s, i) {
+    const indice = `<div class="indice">${dos((s._i || 0) + 1)}</div>`;
+    switch (s.tipo) {
+      case "portada":
+        return si(s.etiqueta, `<div class="seccion">${fmt(s.etiqueta)}</div>`) + titulo(s.titulo, "h1") + `<hr>` + sub(s.subtitulo) + nota(s.nota);
+      case "contenido":
+        return indice + si(s.etiqueta, `<div class="seccion">${fmt(s.etiqueta)}</div>`) + titulo(s.titulo) + `<hr>` + texto(s.texto) + (s.imagen ? portatil(s) : "") + nota(s.nota);
+      case "lista":
+        return indice + titulo(s.titulo) + `<hr>` + `<ol class="ed-lista">${(s.items || []).map((it, n) => `<li><b>${dos(n + 1)}</b><span>${fmt(it)}</span></li>`).join("")}</ol>`;
+      case "dato":
+        return si(s.antetitulo, `<div class="seccion">${fmt(s.antetitulo)}</div>`) + `<div class="cifra">${esc(s.cifra)}</div><hr>` + texto(s.texto);
+      case "cierre":
+        return titulo(s.titulo) + `<hr>` + texto(s.texto) + si(s.cta, `<div class="ed-cta">${fmt(s.cta)} <b>→</b></div>`);
+    }
+  }
+
+  // BLOQUES (normal): la slide partida en dos. Arriba el bloque de color con el titular; abajo, en claro, la explicación.
+  function bloques(s) {
+    const arriba = (inner) => `<div class="bq-arriba">${inner}</div>`;
+    const abajo = (inner) => `<div class="bq-abajo">${inner}</div>`;
+    switch (s.tipo) {
+      case "portada":
+        return arriba(etiqueta(s.etiqueta) + titulo(s.titulo, "h1")) + abajo(sub(s.subtitulo) + nota(s.nota));
+      case "contenido":
+        return arriba(si(s.numero, `<div class="bq-num">${esc(s.numero)}</div>`) + titulo(s.titulo)) + abajo(texto(s.texto) + sub(s.antetitulo) + nota(s.nota));
+      case "lista":
+        return arriba(titulo(s.titulo)) + abajo(`<ul class="bq-lista">${(s.items || []).map((it) => `<li>${fmt(it)}</li>`).join("")}</ul>`);
+      case "dato":
+        return arriba(si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`) + `<div class="cifra">${esc(s.cifra)}</div>`) + abajo(texto(s.texto));
+      case "cierre":
+        return arriba(titulo(s.titulo)) + abajo(texto(s.texto) + si(s.cta, `<div class="bq-cta">${fmt(s.cta)}</div>`));
+    }
+  }
+
+  const COMPOSICION = { feed, capas, cuaderno, poster, chat, tuit, editorial, bloques };
 
   // Portada "notas": la textura manuscrita de marca de fondo a toda la slide y el titular en una esquina.
   // Vale para cualquier plantilla con `marco: notas`; en capas es la portada por defecto si no hay foto.
@@ -185,7 +259,7 @@ export function crearMotor(R) {
   }
 
   function html(plantilla, color, s, i, total, etiquetaCinta) {
-    s._color = color;
+    s._color = color; s._i = i;
     const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
     // en feed, una slide de contenido con foto lleva la foto arriba: el logo va en blanco encima
     const fotoArriba = plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil";
