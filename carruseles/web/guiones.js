@@ -67,7 +67,7 @@ function guPintar(todo) {
   if (!todo && GU.abierto && act && sec.contains(act) && /^(TEXTAREA|INPUT)$/.test(act.tagName)) { guPintarMeta(); return; }
   const y = sec.scrollTop;
   sec.innerHTML = '<nav class="gu-barra" aria-label="Pestañas de Guiones">' +
-    [['guiones', 'Guiones'], ['competencia', 'Competencia']].map(([k, t]) => '<button type="button" data-gu-tab="' + k + '" aria-current="' + (GU.tab === k && !GU.abierto) + '">' + t + '</button>').join('') + '</nav>' +
+    [['guiones', 'Guiones'], ['competencia', 'Competencia']].map(([k, t]) => '<button type="button" data-gu-tab="' + k + '" aria-current="' + (GU.tab === k && !GU.abierto) + '">' + t + '</button>').join('') + '<span class="gu-beta"><i class="cnt-beta">Beta</i> En pruebas: puede cambiar</span></nav>' +
     '<div class="gu-cuerpo">' + (GU.abierto && GU.lista[GU.abierto] ? guEditor(GU.lista[GU.abierto]) : GU.tab === 'competencia' ? guVCompetencia() : guVGuiones()) + '</div>';
   sec.scrollTop = todo ? 0 : y;
 }

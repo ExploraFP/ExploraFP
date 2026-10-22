@@ -103,3 +103,8 @@ body.cnt-en-gu { overflow: hidden; }
 #cnt-guiones .linkbtn, .gu-modal .linkbtn { border: 0; background: none; padding: 0; color: var(--ink2); font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 #cnt-guiones .linkbtn:hover, .gu-modal .linkbtn:hover { color: var(--ink); }
 #cnt-guiones .linkbtn.peligro, .gu-modal .linkbtn.peligro { color: var(--danger); }
+/* «Beta» (22/10/2026, Sandra: visible pero avisando de que está en pruebas) */
+.cnt-beta { display: inline-block; font: 700 9.5px/1 var(--f-ui); font-style: normal; letter-spacing: .08em; text-transform: uppercase; padding: 3px 6px; border-radius: 999px;
+  background: #FFE45E; color: #1B3620; vertical-align: 2px; margin-left: 4px; }
+.gu-beta { margin-left: auto; align-self: center; display: flex; align-items: center; gap: 8px; font: 13px var(--f-ui); color: var(--cnt-lima-bar-ink); opacity: .8; }
+@media (max-width: 900px) { .gu-beta { font-size: 0; gap: 0; } .gu-beta .cnt-beta { font-size: 9.5px; } }

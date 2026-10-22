@@ -18,7 +18,7 @@ const CNT_ICONOS = {
 const CNT_SECCIONES = [
   {id: 'carruseles', nombre: 'Carruseles'},
   {id: 'newsletter', nombre: 'Newsletter'},
-  {id: 'guiones', nombre: 'Guiones'},   // 22/10/2026 (guiones.js)
+  {id: 'guiones', nombre: 'Guiones', beta: true},   // 22/10/2026 (guiones.js); «Beta» hasta que Sandra lo dé por bueno
   {id: 'imagenes', nombre: 'Imágenes'}
 ];
 const CNT = {sec: 'inicio', nl: null, cal: null};
@@ -31,7 +31,7 @@ function cntMontar() {
       // en el móvil la marca no se ve: el Inicio va como primer botón de la barra de abajo
       '<button type="button" class="cnt-solo-movil" data-cnt="inicio" title="Inicio"><span class="cnt-ico">' + CNT_ICONOS.inicio + '</span><span class="cnt-txt">Inicio</span></button>' +
       CNT_SECCIONES.map(s => '<button type="button" data-cnt="' + s.id + '" title="' + s.nombre + '">' +
-      '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><span class="cnt-txt">' + s.nombre + '</span></button>').join('') + '</nav>';
+      '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><span class="cnt-txt">' + s.nombre + (s.beta ? ' <i class="cnt-beta">Beta</i>' : '') + '</span></button>').join('') + '</nav>';
   document.body.insertBefore(lado, document.body.firstChild);
   // Ajustes abajo del todo en la barra lateral (Sandra, 19/10/2026: el claro/oscuro ya no va en la cabecera)
   const aj = document.createElement('button'); aj.type = 'button'; aj.id = 'cnt-ajustes'; aj.title = 'Ajustes'; aj.setAttribute('aria-haspopup', 'true'); aj.setAttribute('aria-expanded', 'false');
@@ -114,7 +114,7 @@ function cntPintarInicio() {
   h.innerHTML = '<div class="cnt-banda"><b>Inicio</b></div><div class="cnt-ini">' +
     '<p class="cnt-fecha">' + esc(hoy.charAt(0).toUpperCase() + hoy.slice(1)) + '</p><h1>Contenidos</h1>' +
     '<div class="cnt-tarjetas">' + CNT_SECCIONES.map(s => '<button type="button" class="cnt-tarjeta" data-cnt="' + s.id + '">' +
-      '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><b>' + s.nombre + '</b>' +
+      '<span class="cnt-ico">' + (CNT_ICONOS[s.id] || '') + '</span><b>' + s.nombre + (s.beta ? ' <i class="cnt-beta">Beta</i>' : '') + '</b>' +
       cntEstado(s.id).map(x => '<span>' + esc(x) + '</span>').join('') + '<i>Abrir →</i></button>').join('') + '</div></div>';
 }
 // los correos de la newsletter, para el resumen del Inicio (misma base de datos)
