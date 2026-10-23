@@ -370,3 +370,9 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
   .cnt-nav button, #cnt-ajustes { flex: 1 1 0 !important; min-width: 0 !important; padding-left: 1px !important; padding-right: 1px !important; margin: 0 !important; }
   .cnt-nav .cnt-txt, #cnt-ajustes .cnt-txt { font-size: 9.5px !important; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 }
+/* 23/10/2026 (Sandra): el logo Explora × Ucademy debajo de «Contenidos», no al lado */
+@media (min-width: 901px) {
+  .cnt-marca { flex-direction: column !important; align-items: flex-start !important; justify-content: center !important; gap: 3px !important; }
+  .cnt-marca b { font-size: 22px !important; line-height: 1 !important; }
+  .cnt-marca img { height: 13px !important; opacity: .85 !important; }
+}
