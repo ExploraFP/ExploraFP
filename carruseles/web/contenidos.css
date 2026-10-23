@@ -376,3 +376,7 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
   .cnt-marca b { font-size: 22px !important; line-height: 1 !important; }
   .cnt-marca img { height: 13px !important; opacity: .85 !important; }
 }
+/* 23/10/2026 (Sandra, Guiones a página completa: «si subo rápido se mueve la franja lima»): el rebote del scroll (Mac/iPhone) estiraba
+   la zona con scroll y arrastraba la barra lima. Sin rebote en la página ni en las secciones con scroll propio. */
+html, body { overscroll-behavior-y: none; }
+#cnt-guiones, #cnt-estaticos, #cnt-directorio, #cnt-inicio { overscroll-behavior: none; }

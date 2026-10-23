@@ -200,3 +200,4 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
    sin la flechita del desplegable: al pasar el cursor se sombrea en verde y ya se entiende que se pulsa */
 #calTitle { width: 220px; flex: none; text-align: center; white-space: nowrap; margin-left: 0 !important; }
 #calTitle::after { display: none !important; }
+html, body { overscroll-behavior-y: none; }   /* sin rebote que mueva la barra lima (23/10/2026) */
