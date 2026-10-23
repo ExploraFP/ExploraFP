@@ -3,7 +3,7 @@
    Decisiones de Sandra:
    · Para Reels/TikTok orgánicos Y para anuncios: cada guion lleva el tipo («Reel» / «Anuncio») y se filtra por él.
    · Se escriben en TEXTO CORRIDO (sin tabla de escenas): gancho · desarrollo · CTA · texto en pantalla (opcional).
-   · Quién graba varía: campo «Graba: yo / otra persona». Etapas Borrador → Para grabar → Grabado → Publicado.
+   · «Quién graba» se quitó (23/10/2026: de momento solo la usa Sandra; el dato `graba` se conserva). Etapas Borrador → Para grabar → Grabado → Publicado.
      Para pasárselo a quien graba: «Copiar guion» (texto plano; no hace falta que tenga claude.ai).
    · Competencia: de momento se añaden a mano (enlace, centro, gancho, por qué funciona). Claude no puede buscar anuncios
      desde la web. Cada guion puede apuntar al anuncio en el que se inspira, y desde un anuncio se crea un guion.
@@ -123,10 +123,10 @@ function guVGuiones() {
   const todosMarcados = lista.length && lista.every(g => GU.sel.has(g.id));
   return h + '<div class="mz-selbar gu-selbar' + (GU.sel.size ? ' on' : '') + '"><b>' + GU.sel.size + (GU.sel.size === 1 ? ' seleccionado' : ' seleccionados') + '</b>' +
     '<button class="btn pri" id="gu-sel-borrar">🗑 Borrar ' + (GU.sel.size === 1 ? 'el seleccionado' : 'los ' + GU.sel.size) + '</button><button class="linkbtn" id="gu-sel-quitar">Quitar la selección</button></div>' +
-    '<div class="gu-tabla" role="table"><div class="gu-fila gu-th" role="row"><label class="gu-chk" title="Seleccionar todos"><input type="checkbox" data-gu-sel-todos="1"' + (todosMarcados ? ' checked' : '') + ' aria-label="Seleccionar todos"></label><span>Código</span><span>Guion</span><span>Graba</span><span>Duración</span><span>Etapa</span></div>' +
+    '<div class="gu-tabla" role="table"><div class="gu-fila gu-th" role="row"><label class="gu-chk" title="Seleccionar todos"><input type="checkbox" data-gu-sel-todos="1"' + (todosMarcados ? ' checked' : '') + ' aria-label="Seleccionar todos"></label><span>Código</span><span>Guion</span><span>Duración</span><span>Etapa</span></div>' +
     lista.map(g => '<div class="gu-fila' + (GU.sel.has(g.id) ? ' gu-marcada' : '') + '" role="row" tabindex="0" data-gu-abrir="' + esc(g.id) + '">' +
       '<label class="gu-chk"><input type="checkbox" data-gu-sel="' + esc(g.id) + '"' + (GU.sel.has(g.id) ? ' checked' : '') + ' aria-label="Seleccionar ' + esc(g.titulo || guCod(g)) + '"></label>' + (guCod(g) ? '<span class="pr-cod">' + guCod(g) + '</span>' : '<span class="gu-sincod" title="El código se da al pasarlo a Grabado">—</span>') + '<span class="gu-tit"><b>' + esc(guTit(g)) + '</b><small>' + esc((g.gancho || 'Sin gancho todavía').slice(0, 110)) + '</small></span>' +
-      '<span>' + (g.graba === 'otra' ? 'Otra persona' : 'Yo') + '</span><span>' + guDur(g) + '</span><span>' + guPill(g) + '</span></div>').join('') + '</div>';
+      '<span>' + guDur(g) + '</span><span>' + guPill(g) + '</span></div>').join('') + '</div>';
 }
 function guVCompetencia() {
   const lista = Object.values(GU.comp).sort((a, b) => String(b.creado || '').localeCompare(String(a.creado || '')));
@@ -157,7 +157,6 @@ function guEditor(g) {
     '<div class="gu-ecuerpo"><div class="gu-texto">' +
       regFicha('g', g) + '<div class="gu-ficha">' +
         '<label>Tipo<select data-gu-meta="tipo">' + Object.keys(GU_TIPOS).map(k => '<option value="' + k + '"' + ((g.tipo || 'reel') === k ? ' selected' : '') + '>' + GU_TIPOS[k] + '</option>').join('') + '</select></label>' +
-        '<label>Graba<select data-gu-meta="graba"><option value="yo"' + (g.graba !== 'otra' ? ' selected' : '') + '>Yo</option><option value="otra"' + (g.graba === 'otra' ? ' selected' : '') + '>Otra persona</option></select></label>' +
         '<label>Inspirado en<select data-gu-meta="inspira"><option value="">Ninguno</option>' + comp.map(a => '<option value="' + esc(a.id) + '"' + (g.inspira === a.id ? ' selected' : '') + '>' + esc((a.centro || 'Anuncio') + (a.gancho ? ' · ' + a.gancho.slice(0, 40) : '')) + '</option>').join('') + '</select></label>' +
         '<span class="gu-dur" id="gu-dur" title="Calculado por el número de palabras">' + guDur(g) + '</span>' +
       '</div>' +
@@ -254,7 +253,7 @@ function guIrA(g, k) {
   if ((k === 'grabado' || k === 'publicado') && !g.numFin) g.numFin = Object.values(GU.lista).reduce((m, x) => Math.max(m, +x.numFin || 0), 0) + 1;
   guGuardar('guiones', g); guPintar(true);
   if (k === 'grabado' && !g.video) { toast('✓ Grabado. Pega abajo el enlace de Drive del vídeo'); setTimeout(() => { const i = document.querySelector('[data-gu-meta="video"]'); if (i) i.focus(); }, 60); return; }
-  toast(k === 'grabar' ? '✓ Para grabar' + (g.graba === 'otra' ? '. Pulsa «Copiar guion» para pasárselo' : '') : 'Ahora está en «' + guNombreEt(k) + '»');
+  toast(k === 'grabar' ? '✓ Para grabar' : 'Ahora está en «' + guNombreEt(k) + '»');
 }
 function guTextoPlano(g) {
   return [guCod(g) + ' · ' + guTit(g) + ' (' + GU_TIPOS[g.tipo || 'reel'] + ', ' + guDur(g) + ')', '',

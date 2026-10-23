@@ -123,6 +123,8 @@ La herramienta de carruseles pasa a llamarse **Contenidos**: barra lateral izqui
 
 - 23/10/2026 · CÓDIGO DE GUION AL GRABAR (Sandra: borrar el G02 dejaba huecos): el código G01, G02… va en `numFin` y se da al pasar a Grabado o Publicado (el `num` de creación ya no se usa ni se enseña). En borrador, sin código («—» en la lista) y se reconoce por el título; si no tiene, se ve el inicio del gancho o del texto (`guTit`). Nombre del vídeo para Drive: `G03_ads_tcae_titulo.mp4` (`guNombreVideo`; botón «Copiar nombre del vídeo» junto al campo de Drive, cuando ya tiene código). Pruebas renumeradas: Gprueba04 = G01, Gprueba06 = G02.
 
+- 23/10/2026: fuera el campo «Graba» (yo / otra persona) del editor y la columna de la lista de Guiones: de momento la herramienta solo la usa Sandra (más adelante la usará más gente). El dato `graba` sigue guardado por si vuelve.
+
 ## Herramienta web (banco + estudio)
 Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de carruseles").
 - `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita
