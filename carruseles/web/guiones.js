@@ -70,7 +70,7 @@ function guPintar(todo) {
   const y = sec.scrollTop;
   sec.innerHTML = '<nav class="gu-barra" aria-label="Pestañas de Guiones">' +
     [['reel', 'Orgánicos'], ['anuncio', 'Ads'], ['competencia', 'Competencia']].map(([k, t]) => '<button type="button" data-gu-tab="' + k + '" aria-current="' +
-      (!GU.abierto && (k === 'competencia' ? GU.tab === 'competencia' : GU.tab === 'guiones' && (GU.tipo || 'reel') === k)) + '">' + t + '</button>').join('') + '<span class="gu-beta"><i class="cnt-beta">Beta</i> En pruebas: puede cambiar</span></nav>' +
+      (!GU.abierto && (k === 'competencia' ? GU.tab === 'competencia' : GU.tab === 'guiones' && (GU.tipo || 'reel') === k)) + '">' + t + '</button>').join('') + '</nav>' +
     '<div class="gu-cuerpo">' + (GU.abierto && GU.lista[GU.abierto] ? guEditor(GU.lista[GU.abierto]) : GU.tab === 'competencia' ? guVCompetencia() : '<div class="gu-conindice">' + guIndice() + '<div class="gu-principal">' + guVGuiones() + '</div></div>') + '</div>';
   sec.scrollTop = todo ? 0 : y;
 }

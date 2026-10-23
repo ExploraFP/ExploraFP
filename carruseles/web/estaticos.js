@@ -97,7 +97,7 @@ function esPintar(todo) {
   const y = sec.scrollTop;
   sec.innerHTML = '<nav class="gu-barra" aria-label="Pestañas de Estáticos">' +
     [['normal', 'Normales'], ['dinamico', 'Dinámicos']].map(([k, t]) => '<button type="button" data-es-tab="' + k + '" aria-current="' + (ES.tab === k && !ES.abierto) + '">' + t + '</button>').join('') +
-    '<span class="gu-beta"><i class="cnt-beta">Beta</i> En pruebas: puede cambiar</span></nav>' +
+    '</nav>' +
     '<div class="gu-cuerpo">' + (ES.abierto && ES.lista[ES.abierto] ? esEditor(ES.lista[ES.abierto]) : esVLista()) + '</div>';
   sec.scrollTop = todo ? 0 : y;
   esPintarMinis(sec);
