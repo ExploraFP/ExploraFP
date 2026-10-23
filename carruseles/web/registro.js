@@ -213,7 +213,7 @@ document.addEventListener('click', ev => {
     const para = fv.closest('#reg-fpop').dataset.para; regCerrarForm();
     if (para === 'filtro') { REG.form = fv.dataset.regFormV; regPintar(); return; }
     const [k, id] = para.split(':'), x = regObj(k, id); if (!x) return;
-    x.formacion = fv.dataset.regFormV; regGuardar(k, x);
+    x.formacion = fv.dataset.regFormV; if (k === 'e' && typeof tjAlElegirForm === 'function') tjAlElegirForm(x); regGuardar(k, x);
     if (k === 'x' && document.querySelector('.reg-extmodal')) { const f = document.querySelector('.reg-extmodal .reg-ficha'); if (f) f.outerHTML = regFicha('x', x); } else regRepintar(k);
     return;
   }

@@ -6,7 +6,10 @@
    · Claude escribe etiqueta, titular, subtítulo, botón y gancho a partir de un tema (`EST.sample`, con la voz de marca).
    Datos: colección `estaticos` del db. */
 var ES = {filtro: 'todos', tab: 'normal', lista: {}, abierto: null, listo: false, guarda: {}, pidiendo: false, haciendo: false, fq: ''};
-const ES_PLANTILLAS = [['foto', 'Foto'], ['bloque', 'Bloque'], ['titular', 'Titular']];
+// «Tarjeta» (23/10/2026) es la de los dinámicos del equipo (tarjeta.js); las otras tres siguen como opción
+const ES_PLANTILLAS = [['tarjeta', 'Tarjeta'], ['foto', 'Foto'], ['bloque', 'Bloque'], ['titular', 'Titular']];
+const TJ_TEXTOS = [['etiqueta', 'Encima del titular', 'Formación Profesional'], ['titulo', 'Titular', 'Doble grado'], ['ciclos', 'Ciclos (uno por línea, en lima)', 'Laboratorio Clínico y Biomédico'],
+  ['beneficio', 'Beneficio', 'Prácticas aseguradas en hospitales y laboratorios.'], ['cta', 'Botón', '¡Quiero info!'], ['pegatina', 'Pegatina', '100% ONLINE']];
 const ES_ANIM = [['zoom', 'Zoom', 'el fondo se acerca y el texto entra'], ['golpe', 'Golpe', 'la frase del gancho gigante y luego la pieza'],
   ['tachado', 'Tachado', 'el gancho tachado y después la verdad']];
 const ES_TEXTOS = [['etiqueta', 'Etiqueta', 'FP online'], ['titulo', 'Titular', 'Estudia *sin dejar* tu trabajo'], ['subtitulo', 'Subtítulo', 'Título oficial, a tu ritmo.'],
@@ -42,14 +45,16 @@ function esGuardar(e) {
 function esNuevo(tipo) {
   const num = Object.values(ES.lista).reduce((m, x) => Math.max(m, +x.num || 0), 0) + 1;
   const f = esFotos()[0];
-  const e = {id: 'E' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), num: num, tipo: tipo, plantilla: 'foto', color: 'verde01',
-    anim: 'zoom', foto: f ? f.ruta : '', etiqueta: 'FP online', titulo: 'Estudia *sin dejar* tu trabajo', subtitulo: 'Título oficial, a tu ritmo.', cta: 'Infórmate gratis',
-    gancho: '', creado: new Date().toISOString()};
+  // por defecto, la Tarjeta (la de los anuncios del equipo); las otras plantillas guardan sus textos por si se cambia
+  const e = {id: 'E' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), num: num, tipo: tipo, plantilla: 'tarjeta', color: 'verde01', fondo: 'cuadricula',
+    anim: 'zoom', foto: f ? f.ruta : '', etiqueta: 'Formación Profesional', titulo: 'Grado superior', ciclos: '', beneficio: 'Título oficial, 100% online y a tu ritmo.',
+    subtitulo: 'Título oficial, a tu ritmo.', cta: '¡Quiero info!', pegatina: '100% ONLINE', gancho: '', creado: new Date().toISOString()};
   esGuardar(e); return e;
 }
 
 /* ---------- la pieza ---------- */
 function esCuerpo(e, formato, animar) {
+  if (e.plantilla === 'tarjeta') return tjCuerpo(e, formato);
   const fmt2 = t => esc(t || '').trim().replace(/\*(.+?)\*/g, '<em>$1</em>');
   const pl = ES_PLANTILLAS.some(p => p[0] === e.plantilla) ? e.plantilla : 'foto';
   const logo = 'logos/' + (pl === 'titular' ? LOGO_FONDO[e.color] || 'Verde 03' : 'Blanco').toLowerCase().replace(/\s+/g, '-') + '.webp';
@@ -65,7 +70,7 @@ function esCuerpo(e, formato, animar) {
   return '<section class="pieza p-' + pl + ' c-' + (e.color || 'verde01') + (anim ? ' anim a-' + anim : '') + '">' + fondo + '<img class="es-logo" src="' + logo + '" alt="Explora × Ucademy">' + caja + capa + '</section>';
 }
 // el titular encoge hasta que la caja no se corta (como la cifra del carrusel)
-const ES_AJUSTE = '<script>document.fonts.ready.then(function(){var c=document.querySelector(".es-caja"),t=document.querySelector(".titulo");' +
+const ES_AJUSTE = '<script>document.fonts.ready.then(function(){var tt=document.querySelector(".tj-titulo");if(tt){var g=parseFloat(getComputedStyle(tt).fontSize),m=0;while(tt.scrollWidth>tt.clientWidth+2&&g>48&&m++<30){g-=4;tt.style.fontSize=g+"px"}}var c=document.querySelector(".es-caja"),t=document.querySelector(".titulo");' +
   'if(c&&t){var f=parseFloat(getComputedStyle(t).fontSize),n=0;while(c.scrollHeight>c.clientHeight+2&&f>56&&n++<40){f-=4;t.style.fontSize=f+"px"}}' +
   'document.body.setAttribute("data-listo","1")})<\/script>';
 function esDoc(e, formato, opc) {
@@ -108,7 +113,7 @@ function esVLista() {
     .sort((a, b) => ES_ETAPAS.findIndex(x => x[0] === esEtapa(a)) - ES_ETAPAS.findIndex(x => x[0] === esEtapa(b)) || String(b.upd || '').localeCompare(String(a.upd || '')));
   const din = ES.tab === 'dinamico';
   let h = '<div class="gu-acciones"><button class="btn pri" id="es-nuevo">+ Nuevo ' + (din ? 'dinámico' : 'estático') + '</button>' +
-    '<span class="est-pista">' + (din ? 'Vídeo vertical de 6 s: la pieza se anima y se queda quieta. Sin guion ni persona.' : 'Una pieza, dos formatos: 1:1 y vertical.') + '</span></div>';
+    '<span class="est-pista">' + (din ? 'Vídeo vertical de 6–8 s: el fondo se mueve y la pieza entra. Sin guion ni persona.' : 'Una pieza, dos formatos: 1:1 y vertical.') + '</span></div>';
   h += '<div class="mz-vistas gu-filtros" role="tablist" aria-label="Filtrar por etapa">' +
     [['todos', 'Todos', deTipo.length]].concat(ES_ETAPAS.map(([k, t]) => [k, t, deTipo.filter(e => esEtapa(e) === k).length]))
       .map(([k, t, n]) => '<button class="mz-vista" data-es-filtro="' + k + '" aria-pressed="' + (ES.filtro === k) + '">' + t + ' <span>' + n + '</span></button>').join('') + '</div>';
@@ -119,7 +124,7 @@ function esVLista() {
     esMini(e, din ? 'vertical' : 'cuadrado', {quieto: true}) + '<span class="es-tt"><span class="pr-cod">' + esCod(e) + '</span><b>' + esc(String(e.titulo || '(sin titular)').replace(/\*/g, '')) + '</b></span><span class="es-tt es-tmeta">' + regChips(e) + esPill(e) + '</span></button>').join('') + '</div>';
 }
 function esEditor(e) {
-  const din = e.tipo === 'dinamico';
+  const din = e.tipo === 'dinamico', tj = e.plantilla === 'tarjeta';
   const chips = (lista, campo) => '<div class="es-chips">' + lista.map(([k, t, p]) => '<button type="button" data-es-set="' + campo + '" data-v="' + k + '" aria-pressed="' + (e[campo] === k) + '"' + (p ? ' title="' + esc(p) + '"' : '') + '>' + t + '</button>').join('') + '</div>';
   const colores = '<div class="es-chips es-colores">' + EST_COLORES_ELEGIBLES.map(c => '<button type="button" data-es-set="color" data-v="' + c.id + '" aria-pressed="' + (e.color === c.id) + '" title="' + esc(c.nombre) + '"><i style="background:' + c.hex + '"></i>' + esc(c.nombre) + '</button>').join('') + '</div>';
   const fotoAct = e.foto && esFotos().find(f => f.ruta === e.foto);
@@ -129,15 +134,16 @@ function esEditor(e) {
     '<button type="button" class="' + (esEtapa(e) === 'borrador' ? 'eb-sec' : 'eb-pri') + '" id="es-bajar"' + (ES.haciendo ? ' disabled' : '') + '>' + (ES.haciendo ? esc(ES.haciendo) : din ? 'Descargar vídeo' : 'Descargar los 2 PNG') + '</button>' +
     (esEtapa(e) === 'borrador' ? '<button type="button" class="eb-pri" data-es-paso="listo">Listo ✓</button>' : esEtapa(e) === 'listo' ? '<button type="button" class="eb-sec" data-es-paso="subido">Ya está en Drive</button>' : '') + '</div></div>' +
     '<div class="es-ecuerpo"><div class="es-vistas' + (din ? ' din' : '') + '">' +
-      (din ? '<figure>' + esMini(e, 'vertical') + '<figcaption>Vertical · 6 s</figcaption></figure>'
+      (din ? '<figure>' + esMini(e, 'vertical') + '<figcaption>Vertical · ' + (e.plantilla === 'tarjeta' ? TJ_SEG : ES_SEG) + ' s</figcaption></figure>'
         : '<figure>' + esMini(e, 'cuadrado') + '<figcaption>1:1</figcaption></figure><figure>' + esMini(e, 'vertical') + '<figcaption>Vertical</figcaption></figure>') +
     '</div><aside class="es-panel">' +
       regFicha('e', e) + (esEtapa(e) === 'subido' ? '<label class="es-campo"><span>Enlace de Drive (opcional)</span><input data-es-campo="drive" value="' + esc(e.drive || '') + '" placeholder="https://drive.google.com/…"></label>' : '') +
-      '<h3>Diseño</h3>' + chips(ES_PLANTILLAS, 'plantilla') + colores +
-      (din ? '<h3>Animación</h3>' + chips(ES_ANIM, 'anim') + '<p class="es-pista">' + esc((ES_ANIM.find(a => a[0] === e.anim) || ES_ANIM[0])[2]) + (e.anim !== 'zoom' && !e.gancho ? '. Escribe el gancho abajo.' : '') + '</p>' : '') +
-      (e.plantilla !== 'titular' ? '<h3>Foto</h3><div class="pr-fotoact">' + (e.foto ? '<img src="' + esc(e.foto) + '" alt="">' : '<span class="pr-sinfoto">Sin foto</span>') +
+      '<h3>Diseño</h3>' + chips(ES_PLANTILLAS, 'plantilla') + (tj ? '<h3>Fondo</h3>' + chips(TJ_FONDOS.map(f => [f[0], f[1], f[2]]), 'fondo') : colores) +
+      (din && !tj ? '<h3>Animación</h3>' + chips(ES_ANIM, 'anim') + '<p class="es-pista">' + esc((ES_ANIM.find(a => a[0] === e.anim) || ES_ANIM[0])[2]) + (e.anim !== 'zoom' && !e.gancho ? '. Escribe el gancho abajo.' : '') + '</p>' : '') +
+      (e.plantilla !== 'titular' && !tj ? '<h3>Foto</h3><div class="pr-fotoact">' + (e.foto ? '<img src="' + esc(e.foto) + '" alt="">' : '<span class="pr-sinfoto">Sin foto</span>') +
         '<div><p>' + esc(fotoAct ? fotoAct.desc || 'Foto' : e.foto ? 'Foto' : 'Elige una de la Galería') + '</p><button type="button" class="btn mini" id="es-fotos">' + (e.foto ? 'Cambiar foto' : 'Poner foto') + '</button></div></div>' : '') +
-      '<h3>Textos</h3>' + ES_TEXTOS.filter(t => t[0] !== 'gancho' || din).map(([k, t, p]) => '<label class="es-campo"><span>' + t + '</span><input data-es-campo="' + k + '" value="' + esc(e[k] || '') + '" placeholder="' + esc(p) + '"></label>').join('') +
+      '<h3>Textos</h3>' + (tj ? TJ_TEXTOS : ES_TEXTOS.filter(t => t[0] !== 'gancho' || din)).map(([k, t, p]) => '<label class="es-campo"><span>' + t + '</span>' +
+        (k === 'ciclos' ? '<textarea data-es-campo="ciclos" rows="3" placeholder="' + esc(p) + '">' + esc(e[k] || '') + '</textarea>' : '<input data-es-campo="' + k + '" value="' + esc(e[k] || '') + '" placeholder="' + esc(p) + '">') + '</label>').join('') +
       '<p class="es-pista">*palabra* la resalta.</p>' +
       '<h3>Claude</h3><div class="gu-chat-caja"><textarea id="es-pide" rows="2" placeholder="Tema del anuncio: «FP sin la ESO», «homologación»… y lo escribe"' + (ES.pidiendo ? ' disabled' : '') + '></textarea>' +
         '<button type="button" class="btn pri" id="es-enviar"' + (ES.pidiendo || !EST.sample ? ' disabled' : '') + '>' + (ES.pidiendo ? '…' : '↑') + '</button></div>' +
@@ -162,10 +168,11 @@ function esPrompt(e, tema) {
   L.push('- "titulo": máximo 7 palabras; rodea con asteriscos UNA palabra o expresión corta para resaltarla.');
   L.push('- "subtitulo": máximo 12 palabras, lo que hace creíble el titular (título oficial, a tu ritmo, con guía…).');
   L.push('- "cta": 2-4 palabras, una sola acción («Infórmate gratis», «Traza tu ruta», «Pide información»).');
+  L.push('- "beneficio": una línea (máx. 10 palabras) con lo que hace creíble el anuncio (prácticas, título oficial, a tu ritmo…).');
   L.push('- "gancho": 2-5 palabras para el arranque del vídeo: una pregunta o la frase falsa que luego se desmiente («¿Sin la ESO?», «Online no vale»).');
   L.push(''); L.push('ANUNCIO ACTUAL: ' + JSON.stringify({etiqueta: e.etiqueta, titulo: e.titulo, subtitulo: e.subtitulo, cta: e.cta, gancho: e.gancho}));
   L.push('PETICIÓN DE SANDRA: ' + tema);
-  L.push('Devuelve {"respuesta": "una frase de lo que has hecho", "etiqueta": "...", "titulo": "...", "subtitulo": "...", "cta": "...", "gancho": "..."}.');
+  L.push('Devuelve {"respuesta": "una frase de lo que has hecho", "etiqueta": "...", "titulo": "...", "subtitulo": "...", "beneficio": "...", "cta": "...", "gancho": "..."}.');
   return L.join('\n');
 }
 async function esPedir() {
@@ -175,7 +182,7 @@ async function esPedir() {
   ES.pidiendo = true; esPintar(true);
   try {
     const r = await EST.sample.json(esPrompt(e, tema), {modelTier: 'default'});
-    ['etiqueta', 'titulo', 'subtitulo', 'cta', 'gancho'].forEach(k => { if (r && typeof r[k] === 'string') e[k] = r[k].trim(); });
+    ['etiqueta', 'titulo', 'subtitulo', 'beneficio', 'cta', 'gancho'].forEach(k => { if (r && typeof r[k] === 'string') e[k] = r[k].trim(); });
     e.respuesta = String(r && r.respuesta || 'Hecho.');
   } catch (x) { e.respuesta = 'No ha salido bien (' + (x && (x.code || x.message) || 'error') + '). Prueba otra vez.'; }
   ES.pidiendo = false; esGuardar(e); esPintar(true);
@@ -226,7 +233,7 @@ async function esVideo(e, avance) {
       if (b.animationName && b.animationName !== 'none') { el.setAttribute('data-k', k); quietas.push({sel: '[data-k="' + k + '"]::after', ret: segs(b.animationDelay)}); }
     });
     const hoja = d.createElement('style'); d.head.appendChild(hoja);
-    const total = ES_FPS * ES_SEG, lienzo = document.createElement('canvas'); lienzo.width = W; lienzo.height = H;
+    const total = ES_FPS * (e.plantilla === 'tarjeta' ? TJ_SEG : ES_SEG), lienzo = document.createElement('canvas'); lienzo.width = W; lienzo.height = H;
     const ctx = lienzo.getContext('2d'), fuentes = esFuentes();
     for (let i = 0; i < total; i++) {
       if (fallo) throw fallo;
@@ -324,3 +331,11 @@ document.addEventListener('input', ev => {
 });
 document.addEventListener('keydown', ev => { if (ev.target && ev.target.id === 'es-pide' && ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); esPedir(); } });
 esConectar();
+
+// al elegir la formación de una Tarjeta: rellena los ciclos (si están vacíos) y propone el fondo de su rama
+function tjAlElegirForm(e) {
+  if (!e || e.plantilla !== 'tarjeta') return;
+  if (!e.ciclos) e.ciclos = tjCiclosDe(e.formacion);
+  if (!e.fondoElegido) e.fondo = tjFondoDe(e.formacion);
+}
+document.addEventListener('click', ev => { const b = ev.target.closest && ev.target.closest('[data-es-set="fondo"]'); if (b) { const e = ES.lista[ES.abierto]; if (e) e.fondoElegido = true; } }, true);

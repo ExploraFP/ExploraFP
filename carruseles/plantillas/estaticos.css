@@ -95,3 +95,62 @@ html.f-vertical, html.f-vertical body { width: 1080px; height: 1920px; }
 .a-tachado .es-flecha { animation-delay: 2.8s; } .a-tachado .boton { animation-delay: 2.9s; }
 /* quieto: miniaturas y PNG, sin animar */
 .quieto *, .quieto *::after { animation: none !important; }
+
+/* ===== TARJETA (23/10/2026): como los dinámicos del equipo (fondo temático animado + tarjeta blanca + pegatina) =====
+   Mismo principio: el estilo normal es la pieza quieta; las animaciones solo existen en .anim (dinámico, 8 s). */
+.p-tarjeta { background: #000; }
+.tj-fondo, .tj-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.tj-hud { position: absolute; inset: 0; pointer-events: none; font-family: ui-monospace, "SFMono-Regular", Menlo, "Courier New", monospace; font-weight: 700; font-size: 30px; letter-spacing: .04em; }
+.tj-hud span { position: absolute; }
+.tj-h1 { top: 54px; left: 40px; color: #d8ff6e; }
+.tj-h2 { top: 54px; right: 40px; color: #fff; text-align: right; }
+.tj-h3 { bottom: 54px; left: 40px; color: #fff; font-weight: 600; font-size: 28px; }
+.f-cuadrado .tj-hud { font-size: 24px; } .f-cuadrado .tj-h1, .f-cuadrado .tj-h2 { top: 36px; } .f-cuadrado .tj-h3 { bottom: 36px; }
+.tj-enf1 { display: none; } .tj-enf2 { display: inline; }
+
+.tj-tarjeta { position: absolute; left: 166px; right: 166px; top: 400px; background: #f9fdf7; border-radius: 30px; padding: 56px 52px 96px;
+  box-shadow: 0 0 0 6px rgba(216,255,110,.95), 0 0 46px rgba(216,255,110,.55), 0 30px 60px rgba(0,0,0,.35); text-align: center; color: #12200F; }
+.f-cuadrado .tj-tarjeta { left: 150px; right: 150px; top: 130px; padding: 42px 44px 84px; }
+.tj-cab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; min-height: 52px; }
+.tj-logo { width: 230px; height: 52px; }   /* hueco del logo del Ministerio: se pondrá cuando llegue el archivo */
+.tj-oficial { background: #366B40; color: #fff; font: 700 26px var(--cuerpo); letter-spacing: .1em; padding: 10px 22px; border-radius: 999px; }
+.tj-oficial::first-letter { color: #d8ff6e; }
+.tj-sello { font: 600 40px var(--cuerpo); color: #366B40; margin-bottom: 12px; }
+.tj-titulo { font: 900 112px/1 var(--titular); letter-spacing: -.01em; color: #0c1a0e; margin: 0 0 22px; }
+.tj-titulo em { font-style: normal; background: linear-gradient(transparent .25em, #d8ff6e .25em); padding: 0 .06em; }
+.tj-ciclos { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.tj-ciclos span { font: 400 38px/1.25 var(--editorial); background: #d8ff6e; padding: 2px 10px; color: #12200F; }
+.tj-tarjeta hr { border: 0; height: 2px; background: #dfe7dc; margin: 34px 0 30px; }
+.tj-beneficio { font: 600 38px/1.35 var(--cuerpo); color: #12200F; margin: 0; }
+.tj-boton { position: absolute; left: 50%; bottom: -46px; transform: translateX(-50%); white-space: nowrap; background: #d8ff6e; color: #0c1a0e; font: 700 46px var(--cuerpo);
+  padding: 26px 64px; border-radius: 999px; box-shadow: 0 10px 26px rgba(0,0,0,.3); }
+.tj-pegatina { position: absolute; top: -58px; right: -50px; transform: rotate(5deg); background: #2f5e37; color: #d8ff6e; font: italic 900 44px/1 var(--titular);
+  padding: 16px 26px; border-radius: 12px; border: 3px solid #7fb27a; box-shadow: 0 0 22px rgba(120,200,255,.45), 0 8px 20px rgba(0,0,0,.35); }
+.f-cuadrado .tj-titulo { font-size: 96px; } .f-cuadrado .tj-ciclos span { font-size: 32px; } .f-cuadrado .tj-beneficio { font-size: 32px; } .f-cuadrado .tj-boton { font-size: 40px; padding: 22px 54px; }
+
+/* animaciones del dinámico (8 s) */
+@keyframes tjEntra { from { opacity: 0; transform: scale(.94); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes tjSale { from { opacity: 1; } to { opacity: 0; transform: scale(.97); } }
+@keyframes tjPega { 0% { opacity: 0; transform: rotate(5deg) scale(.3); } 70% { opacity: 1; transform: rotate(-3deg) scale(1.12); } 100% { opacity: 1; transform: rotate(5deg) scale(1); } }
+@keyframes tjLate { 0%, 100% { transform: rotate(5deg) scale(1); } 50% { transform: rotate(3deg) scale(1.07); } }
+@keyframes tjNivel { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tjLatido { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.012); } 24% { transform: scale(1); } 36% { transform: scale(1.008); } }
+@keyframes tjPulso { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes tjEnfoca { from { filter: blur(10px); } to { filter: blur(0); } }
+@keyframes tjDeriva1 { from { transform: translate(-30px, 20px); } to { transform: translate(30px, -20px); } }
+@keyframes tjDeriva2 { from { transform: translate(25px, -10px); } to { transform: translate(-25px, 15px); } }
+@keyframes tjDeriva3 { from { transform: translate(0, 30px); } to { transform: translate(0, -30px); } }
+@keyframes tjDesliza { from { transform: translate(0, 0); } to { transform: translate(-72px, -72px); } }
+@keyframes tjOculta { from, to { opacity: 0; } }
+.a-tarjeta .tj-tarjeta { animation: tjEntra .7s .2s cubic-bezier(.2,.8,.3,1) both, tjSale .5s 7.45s ease-in; }   /* la salida sin relleno: no pisa la entrada */
+.a-tarjeta .tj-pegatina { animation: tjPega .5s .9s cubic-bezier(.2,.8,.3,1) both, tjLate 1.2s 1.4s ease-in-out 5; }
+.a-tarjeta .tj-nivel { animation: tjNivel .5s ease-out both; }
+.a-tarjeta .tj-latido { transform-origin: 50% 50%; animation: tjLatido 1s linear 8; }
+.a-tarjeta .tj-pulso { animation: tjPulso 1s ease-in-out infinite; }
+.a-tarjeta .tj-enfoque { animation: tjEnfoca 1.4s .1s ease-out both; }
+.a-tarjeta .tj-c1 { animation: tjDeriva1 8s linear both; } .a-tarjeta .tj-c2 { animation: tjDeriva2 8s linear both; } .a-tarjeta .tj-c3 { animation: tjDeriva3 8s linear both; }
+.a-tarjeta .tj-desliza { animation: tjDesliza 8s linear both; }
+.a-tarjeta .tj-enf1 { display: inline; animation: tjOculta .01s 1.5s forwards; }
+.a-tarjeta .tj-enf2 { display: inline; animation: tjOculta 1.5s backwards; }
+
+.tj-h2 > span { position: absolute; right: 0; top: 0; white-space: nowrap; }
