@@ -26,7 +26,7 @@ const CNT_SECCIONES = [
   {id: 'guiones', nombre: 'Guiones', beta: true},
   {id: 'estaticos', nombre: 'Estáticos', beta: true},   // 22/10/2026 (estaticos.js): normales 1:1 + vertical y dinámicos (vídeo vertical)   // 22/10/2026 (guiones.js); «Beta» hasta que Sandra lo dé por bueno
   {id: 'imagenes', nombre: 'Galería'},   // antes «Imágenes» (Sandra, 22/10/2026); el id sigue siendo 'imagenes'
-  {id: 'directorio', nombre: 'Directorio', beta: true, cerrada: true}   // 22/10/2026: se ve pero aún no se abre (directorio de creatividades)
+  {id: 'directorio', nombre: 'Directorio', beta: true}   // 23/10/2026: biblioteca de lo terminado de todos los talleres (registro.js)
 ];
 const CNT = {sec: 'inicio', nl: null, cal: null};
 try { const g = localStorage.getItem('contenidos.seccion'); if (g === 'inicio' || CNT_SECCIONES.some(s => s.id === g)) CNT.sec = g; } catch (e) {}
@@ -48,6 +48,8 @@ function cntMontar() {
   document.body.appendChild(ini);
   const nl = document.createElement('section'); nl.id = 'cnt-newsletter'; nl.hidden = true; nl.setAttribute('aria-label', 'Newsletter');
   document.body.appendChild(nl);
+  const dr = document.createElement('section'); dr.id = 'cnt-directorio'; dr.hidden = true; dr.setAttribute('aria-label', 'Directorio');
+  document.body.appendChild(dr);
   const es = document.createElement('section'); es.id = 'cnt-estaticos'; es.hidden = true; es.setAttribute('aria-label', 'Estáticos');
   document.body.appendChild(es);
   const gu = document.createElement('section'); gu.id = 'cnt-guiones'; gu.hidden = true; gu.setAttribute('aria-label', 'Guiones');
@@ -65,6 +67,9 @@ function cntIr(id, inicio) {
   const h = document.getElementById('cnt-inicio'); if (h) h.hidden = id !== 'inicio';
   document.body.classList.toggle('cnt-en-gu', id === 'guiones');
   const gu = document.getElementById('cnt-guiones'); if (gu) gu.hidden = id !== 'guiones';
+  document.body.classList.toggle('cnt-en-dr', id === 'directorio');
+  const dr = document.getElementById('cnt-directorio'); if (dr) dr.hidden = id !== 'directorio';
+  if (id === 'directorio') setTimeout(() => { if (typeof regPintar === 'function') regPintar(); }, 0);
   document.body.classList.toggle('cnt-en-es', id === 'estaticos');
   const es = document.getElementById('cnt-estaticos'); if (es) es.hidden = id !== 'estaticos';
   if (id === 'estaticos') setTimeout(() => { if (typeof esPintar === 'function') esPintar(true); }, 0);
@@ -111,6 +116,11 @@ function cntEstado(id) {
       if (typeof GU === 'undefined') return [];
       const gs = Object.values(GU.lista), n = k => gs.filter(g => (g.etapa || 'borrador') === k).length;
       return [n('borrador') + ' en borrador', n('grabar') + ' para grabar'];
+    }
+    if (id === 'directorio') {
+      if (typeof regPiezas !== 'function') return [];
+      const ps = regPiezas(), mes = new Date().toISOString().slice(0, 7);
+      return [ps.length + (ps.length === 1 ? ' pieza terminada' : ' piezas terminadas'), ps.filter(p => String(p.creado || '').slice(0, 7) === mes).length + ' de este mes'];
     }
     if (id === 'estaticos') {
       if (typeof ES === 'undefined') return [];

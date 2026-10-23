@@ -5,13 +5,17 @@
    · Plantillas propias (plantillas/estaticos.css): Foto · Bloque · Titular. Las fotos salen de la Galería.
    · Claude escribe etiqueta, titular, subtítulo, botón y gancho a partir de un tema (`EST.sample`, con la voz de marca).
    Datos: colección `estaticos` del db. */
-var ES = {tab: 'normal', lista: {}, abierto: null, listo: false, guarda: {}, pidiendo: false, haciendo: false, fq: ''};
+var ES = {filtro: 'todos', tab: 'normal', lista: {}, abierto: null, listo: false, guarda: {}, pidiendo: false, haciendo: false, fq: ''};
 const ES_PLANTILLAS = [['foto', 'Foto'], ['bloque', 'Bloque'], ['titular', 'Titular']];
 const ES_ANIM = [['zoom', 'Zoom', 'el fondo se acerca y el texto entra'], ['golpe', 'Golpe', 'la frase del gancho gigante y luego la pieza'],
   ['tachado', 'Tachado', 'el gancho tachado y después la verdad']];
 const ES_TEXTOS = [['etiqueta', 'Etiqueta', 'FP online'], ['titulo', 'Titular', 'Estudia *sin dejar* tu trabajo'], ['subtitulo', 'Subtítulo', 'Título oficial, a tu ritmo.'],
   ['cta', 'Botón', 'Infórmate gratis'], ['gancho', 'Gancho (dinámicos)', '¿Sin la ESO?']];
 const ES_FPS = 25, ES_SEG = 6;
+// Etapas (23/10/2026): Sandra sube los estáticos a Drive y los publica otra persona → el final es «Subido a Drive»
+const ES_ETAPAS = [['borrador', 'Borrador'], ['listo', 'Listo'], ['subido', 'Subido a Drive']];
+const esEtapa = e => ES_ETAPAS.some(x => x[0] === e.etapa) ? e.etapa : 'borrador';
+const esPill = e => '<span class="gu-etapa g-' + {borrador: 'borrador', listo: 'grabar', subido: 'publicado'}[esEtapa(e)] + '">' + ES_ETAPAS.find(x => x[0] === esEtapa(e))[1] + '</span>';
 try { const t = localStorage.getItem('estaticos.tab'); if (t === 'normal' || t === 'dinamico') ES.tab = t; } catch (e) {}
 
 const esCod = e => e && e.num ? 'E' + String(e.num).padStart(2, '0') : '';
@@ -99,14 +103,20 @@ function esPintar(todo) {
   esPintarMinis(sec);
 }
 function esVLista() {
-  const lista = Object.values(ES.lista).filter(e => (e.tipo || 'normal') === ES.tab).sort((a, b) => String(b.upd || '').localeCompare(String(a.upd || '')));
+  const deTipo = Object.values(ES.lista).filter(e => (e.tipo || 'normal') === ES.tab);
+  const lista = deTipo.filter(e => ES.filtro === 'todos' || esEtapa(e) === ES.filtro)
+    .sort((a, b) => ES_ETAPAS.findIndex(x => x[0] === esEtapa(a)) - ES_ETAPAS.findIndex(x => x[0] === esEtapa(b)) || String(b.upd || '').localeCompare(String(a.upd || '')));
   const din = ES.tab === 'dinamico';
   let h = '<div class="gu-acciones"><button class="btn pri" id="es-nuevo">+ Nuevo ' + (din ? 'dinámico' : 'estático') + '</button>' +
     '<span class="est-pista">' + (din ? 'Vídeo vertical de 6 s: la pieza se anima y se queda quieta. Sin guion ni persona.' : 'Una pieza, dos formatos: 1:1 y vertical.') + '</span></div>';
+  h += '<div class="mz-vistas gu-filtros" role="tablist" aria-label="Filtrar por etapa">' +
+    [['todos', 'Todos', deTipo.length]].concat(ES_ETAPAS.map(([k, t]) => [k, t, deTipo.filter(e => esEtapa(e) === k).length]))
+      .map(([k, t, n]) => '<button class="mz-vista" data-es-filtro="' + k + '" aria-pressed="' + (ES.filtro === k) + '">' + t + ' <span>' + n + '</span></button>').join('') + '</div>';
   if (!ES.listo && guDb()) return h + '<p class="cnt-cargando">Cargando…</p>';
-  if (!lista.length) return h + '<div class="vacio"><b>Todavía no hay ' + (din ? 'dinámicos' : 'estáticos') + '</b>Crea el primero con «+ Nuevo».</div>';
+  if (!deTipo.length) return h + '<div class="vacio"><b>Todavía no hay ' + (din ? 'dinámicos' : 'estáticos') + '</b>Crea el primero con «+ Nuevo».</div>';
+  if (!lista.length) return h + '<p class="pr-vacio">Ninguno.</p>';
   return h + '<div class="es-rejilla' + (din ? ' din' : '') + '">' + lista.map(e => '<button type="button" class="es-tarjeta" data-es-abrir="' + esc(e.id) + '">' +
-    esMini(e, din ? 'vertical' : 'cuadrado', {quieto: true}) + '<span class="es-tt"><span class="pr-cod">' + esCod(e) + '</span><b>' + esc(String(e.titulo || '(sin titular)').replace(/\*/g, '')) + '</b></span></button>').join('') + '</div>';
+    esMini(e, din ? 'vertical' : 'cuadrado', {quieto: true}) + '<span class="es-tt"><span class="pr-cod">' + esCod(e) + '</span><b>' + esc(String(e.titulo || '(sin titular)').replace(/\*/g, '')) + '</b></span><span class="es-tt es-tmeta">' + regChips(e) + esPill(e) + '</span></button>').join('') + '</div>';
 }
 function esEditor(e) {
   const din = e.tipo === 'dinamico';
@@ -115,12 +125,14 @@ function esEditor(e) {
   const fotoAct = e.foto && esFotos().find(f => f.ruta === e.foto);
   return '<div class="gu-ecab"><button type="button" class="eb-icono" id="es-volver" aria-label="Volver" title="Volver">←</button>' +
     '<div class="gu-etit"><b class="es-etit">' + esc(String(e.titulo || '(sin titular)').replace(/\*/g, '')) + '</b><div class="eb-meta"><span class="eb-cod">' + esCod(e) + '</span><span>' + (din ? 'Dinámico · vertical' : 'Estático · 1:1 y vertical') + '</span><span id="es-guardado"></span></div></div>' +
-    '<div class="gu-eder">' + (din ? '<button type="button" class="eb-sec" id="es-otra">↻ Ver otra vez</button>' : '') +
-    '<button type="button" class="eb-pri" id="es-bajar"' + (ES.haciendo ? ' disabled' : '') + '>' + (ES.haciendo ? esc(ES.haciendo) : din ? 'Descargar vídeo' : 'Descargar los 2 PNG') + '</button></div></div>' +
+    esPasos(e) + '<div class="gu-eder">' + (din ? '<button type="button" class="eb-sec" id="es-otra">↻ Ver otra vez</button>' : '') +
+    '<button type="button" class="' + (esEtapa(e) === 'borrador' ? 'eb-sec' : 'eb-pri') + '" id="es-bajar"' + (ES.haciendo ? ' disabled' : '') + '>' + (ES.haciendo ? esc(ES.haciendo) : din ? 'Descargar vídeo' : 'Descargar los 2 PNG') + '</button>' +
+    (esEtapa(e) === 'borrador' ? '<button type="button" class="eb-pri" data-es-paso="listo">Listo ✓</button>' : esEtapa(e) === 'listo' ? '<button type="button" class="eb-sec" data-es-paso="subido">Ya está en Drive</button>' : '') + '</div></div>' +
     '<div class="es-ecuerpo"><div class="es-vistas' + (din ? ' din' : '') + '">' +
       (din ? '<figure>' + esMini(e, 'vertical') + '<figcaption>Vertical · 6 s</figcaption></figure>'
         : '<figure>' + esMini(e, 'cuadrado') + '<figcaption>1:1</figcaption></figure><figure>' + esMini(e, 'vertical') + '<figcaption>Vertical</figcaption></figure>') +
     '</div><aside class="es-panel">' +
+      regFicha('e', e) + (esEtapa(e) === 'subido' ? '<label class="es-campo"><span>Enlace de Drive (opcional)</span><input data-es-campo="drive" value="' + esc(e.drive || '') + '" placeholder="https://drive.google.com/…"></label>' : '') +
       '<h3>Diseño</h3>' + chips(ES_PLANTILLAS, 'plantilla') + colores +
       (din ? '<h3>Animación</h3>' + chips(ES_ANIM, 'anim') + '<p class="es-pista">' + esc((ES_ANIM.find(a => a[0] === e.anim) || ES_ANIM[0])[2]) + (e.anim !== 'zoom' && !e.gancho ? '. Escribe el gancho abajo.' : '') + '</p>' : '') +
       (e.plantilla !== 'titular' ? '<h3>Foto</h3><div class="pr-fotoact">' + (e.foto ? '<img src="' + esc(e.foto) + '" alt="">' : '<span class="pr-sinfoto">Sin foto</span>') +
@@ -132,6 +144,12 @@ function esEditor(e) {
       (e.respuesta ? '<p class="es-pista">' + esc(e.respuesta) + '</p>' : '') + (EST.sample ? '' : '<p class="es-pista">Para usar Claude abre la web en claude.ai.</p>') +
       '<button type="button" class="linkbtn peligro" id="es-borrar">Borrar</button>' +
     '</aside></div>';
+}
+
+function esPasos(e) {
+  const ahora = ES_ETAPAS.findIndex(x => x[0] === esEtapa(e));
+  return '<ol class="eb-pasos" aria-label="Etapa">' + ES_ETAPAS.map(([k, t], i) => '<li><button type="button" data-es-paso="' + k + '" class="' + (i < ahora ? 'hecho' : i === ahora ? 'actual' : '') + '"' +
+    (i === ahora ? ' aria-current="step"' : '') + '>' + (i < ahora ? '✓ ' : '') + t + '</button></li>').join('') + '</ol>';
 }
 
 /* ---------- Claude ---------- */
@@ -231,21 +249,21 @@ async function esDescargar(e) {
   if (ES.haciendo) return;
   const down = DOWN || (typeof claude !== 'undefined' && claude.use ? await claude.use('downloads') : null);
   if (!down) { toast('La descarga no está disponible en esta vista'); return; }
-  const base = esCod(e).toLowerCase() + '-' + esNombre(e);
+  const base = regNombre(e, esCod(e));   // nombre estándar: E03_dam_titulo (23/10/2026)
   const paso = t => { ES.haciendo = t; const b = document.getElementById('es-bajar'); if (b) { b.textContent = t; b.disabled = true; } };
   try {
     if (e.tipo === 'dinamico') {
       paso('Preparando el vídeo…');
       const r = await esVideo(e, (i, n) => paso('Creando vídeo ' + Math.round(i * 100 / n) + ' %'));
       paso('Descargando…');
-      await guardarArchivo(down, base + '-vertical.mp4', r.blob);
+      await guardarArchivo(down, base + '_vertical.mp4', r.blob);
       toast(r.codec === 'avc' ? '✓ Vídeo descargado (.mp4)' : '✓ Vídeo descargado. Tu navegador lo ha hecho en VP9: si Meta no lo acepta, descárgalo desde Chrome');
     } else {
       paso('Creando 1:1…'); const a = await esPng(e, 'cuadrado');
       paso('Creando vertical…'); const b = await esPng(e, 'vertical');
-      await guardarArchivo(down, base + '-1x1.png', a);
+      await guardarArchivo(down, base + '_1x1.png', a);
       await new Promise(r => setTimeout(r, 1200));
-      await guardarArchivo(down, base + '-vertical.png', b);
+      await guardarArchivo(down, base + '_vertical.png', b);
       toast('✓ Descargados los 2 formatos');
     }
   } catch (x) {
@@ -273,6 +291,10 @@ function esGridFotos(e) {
 document.addEventListener('click', ev => {
   const t = ev.target; if (!t.closest) return;
   const tab = t.closest('[data-es-tab]'); if (tab) { ES.tab = tab.dataset.esTab; ES.abierto = null; try { localStorage.setItem('estaticos.tab', ES.tab); } catch (x) {} esPintar(true); return; }
+  const fl = t.closest('[data-es-filtro]'); if (fl) { ES.filtro = fl.dataset.esFiltro; esPintar(false); return; }
+  const ps = t.closest('[data-es-paso]'); if (ps) { const e = ES.lista[ES.abierto]; if (!e || esEtapa(e) === ps.dataset.esPaso) return;
+    e.etapa = ps.dataset.esPaso; esGuardar(e); esPintar(false);
+    toast(e.etapa === 'subido' ? '✓ Subido a Drive: ya está en el Directorio' : 'Ahora está en «' + ES_ETAPAS.find(x => x[0] === e.etapa)[1] + '»'); return; }
   if (t.closest('#es-nuevo')) { const e = esNuevo(ES.tab); ES.abierto = e.id; esPintar(true); return; }
   const ab = t.closest('[data-es-abrir]'); if (ab) { ES.abierto = ab.dataset.esAbrir; esPintar(true); return; }
   if (t.closest('#es-volver')) { ES.abierto = null; esPintar(true); return; }

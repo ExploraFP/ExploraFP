@@ -117,7 +117,7 @@ function guEditor(g) {
     pasos + '<div class="gu-eder"><button type="button" class="eb-sec" id="gu-copiar">Copiar guion</button>' +
     (sig ? '<button type="button" class="eb-pri" data-gu-paso="' + sig[0] + '">' + (sig[0] === 'grabar' ? 'Listo para grabar ✓' : sig[0] === 'grabado' ? 'Ya está grabado' : 'Ya está publicado') + '</button>' : '') + '</div></div>' +
     '<div class="gu-ecuerpo"><div class="gu-texto">' +
-      '<div class="gu-ficha">' +
+      regFicha('g', g) + '<div class="gu-ficha">' +
         '<label>Tipo<select data-gu-meta="tipo">' + Object.keys(GU_TIPOS).map(k => '<option value="' + k + '"' + ((g.tipo || 'reel') === k ? ' selected' : '') + '>' + GU_TIPOS[k] + '</option>').join('') + '</select></label>' +
         '<label>Graba<select data-gu-meta="graba"><option value="yo"' + (g.graba !== 'otra' ? ' selected' : '') + '>Yo</option><option value="otra"' + (g.graba === 'otra' ? ' selected' : '') + '>Otra persona</option></select></label>' +
         '<label>Inspirado en<select data-gu-meta="inspira"><option value="">Ninguno</option>' + comp.map(a => '<option value="' + esc(a.id) + '"' + (g.inspira === a.id ? ' selected' : '') + '>' + esc((a.centro || 'Anuncio') + (a.gancho ? ' · ' + a.gancho.slice(0, 40) : '')) + '</option>').join('') + '</select></label>' +

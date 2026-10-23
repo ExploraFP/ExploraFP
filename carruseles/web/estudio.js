@@ -614,7 +614,8 @@ async function pngDe(c, i) {
 /* La plataforma no deja descargar .zip desde una herramienta publicada (solo imágenes, PDF,
    texto y Office). Por eso el lote sale como PNG seguidos, con nombres que se ordenan solos:
    «01-titulo-01.png», «01-titulo-02.png», «01-titulo-texto.txt», «02-otro-01.png»… */
-const nombreBase = c => (c.titulo || 'carrusel').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+// nombre estándar (23/10/2026): C07_dam_titulo (regNombre en registro.js); lo de abajo queda sin usar
+const nombreBase = c => regNombre(c, codigoC(c)) || (c.titulo || 'carrusel').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'carrusel';
 async function descargarLote(lista) {
   if (EST.descargando) return;

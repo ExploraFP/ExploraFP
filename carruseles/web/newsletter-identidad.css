@@ -196,3 +196,7 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
 .tabs button:hover { color: var(--nl-lima-ink) !important; }
 .tabs button[aria-selected="true"] { font-weight: 600 !important; color: var(--nl-lima-ink) !important; border-bottom-color: var(--nl-lima-ink) !important; }
 @media (max-width: 900px) { .band-in { padding: 0 16px !important; } .tabs { gap: 22px !important; } .tabs button { font-size: 16px !important; } }
+/* 23/10/2026 (Sandra): el mes ocupa siempre lo mismo (lo que mide «Septiembre 2026») y las flechas no se mueven al cambiar de mes;
+   sin la flechita del desplegable: al pasar el cursor se sombrea en verde y ya se entiende que se pulsa */
+#calTitle { width: 220px; flex: none; text-align: center; white-space: nowrap; margin-left: 0 !important; }
+#calTitle::after { display: none !important; }
