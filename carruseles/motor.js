@@ -4,7 +4,9 @@
 //   R.logo(color) · R.imagen(ruta) · R.postit() → URL;  R.cabeza(plantilla) → <link>/<style> de la cabeza.
 export const PLANTILLAS = ["feed", "capas", "cuaderno", "poster", "chat", "tuit", "editorial", "bloques"];
 export const COLORES = ["verde01", "verde02", "blanco", "noche", "lima", "verde"];
-export const TIPOS = ["portada", "contenido", "lista", "dato", "cierre"];
+// 23/10/2026 (Sandra: «todos los cuerpos son iguales»): tipos de cuerpo nuevos, con su estructura propia en TODAS las plantillas
+export const TIPOS = ["portada", "contenido", "lista", "dato", "cierre", "mito", "pregunta", "pasos", "comparacion", "cita"];
+const TIPOS_NUEVOS = ["mito", "pregunta", "pasos", "comparacion", "cita"];
 
 // Logos del catálogo de marca: uno para ir sobre la caja de color y otro sobre el fondo.
 const LOGO_CINTA = { verde01: "Verde 01", verde02: "Verde 03", noche: "Negro", lima: "Verde 03", verde: "Verde 03", blanco: "Verde 01" };
@@ -19,6 +21,7 @@ export function crearMotor(R) {
   const dos = (n) => String(n).padStart(2, "0");
 
   const etiqueta = (t) => si(t, `<div class="etiqueta"><span>${fmt(t)}</span><i class="ovalo"></i></div>`);
+  const etiquetaOvalo = etiqueta;
   const numero = (n) => si(n, `<div class="num"><span>${esc(n)}</span><i class="ovalo"></i></div>`);
   const flecha = (clase) => `<i class="flecha ${clase}"></i>`;
   const titulo = (t, h = "h2") => `<${h} class="titulo">${fmt(t)}</${h}>`;
@@ -228,6 +231,28 @@ export function crearMotor(R) {
 
   const COMPOSICION = { feed, capas, cuaderno, poster, chat, tuit, editorial, bloques };
 
+  // Tipos de cuerpo nuevos (23/10/2026). Misma estructura en todas las plantillas; el aspecto lo ponen los colores de cada una.
+  //   mito: la frase falsa tachada y la verdad debajo · pregunta: la duda como mensaje y la respuesta
+  //   pasos: 1 → 2 → 3 · comparacion: dos columnas · cita: frase grande entre comillas y quién la dice
+  function tipoNuevo(s, plantilla) {
+    // en feed la etiqueta es la pastilla de arriba (como en sus otras slides); en el resto, la etiqueta con óvalo
+    const etiqueta = (t) => plantilla === "feed" ? si(t, `<div class="pastilla">${fmt(t)}</div>`) : etiquetaOvalo(t);
+    const lis = (l) => (l || []).map((it) => `<li>${fmt(it)}</li>`).join("");
+    switch (s.tipo) {
+      case "mito":
+        return etiqueta(s.etiqueta) + `<div class="tn-mito"><span class="tn-falso">${fmt(s.mito)}</span></div>` + titulo(s.titulo) + texto(s.texto);
+      case "pregunta":
+        return etiqueta(s.etiqueta) + `<div class="tn-chat"><div class="tn-llega">${fmt(s.pregunta)}</div><div class="tn-sale">${parrafos(s.respuesta || "")}</div></div>`;
+      case "pasos":
+        return etiqueta(s.etiqueta) + titulo(s.titulo) + `<ol class="tn-pasos">${(s.items || []).map((it, n) => `<li><b>${n + 1}</b><span>${fmt(it)}</span></li>`).join("")}</ol>`;
+      case "comparacion":
+        return etiqueta(s.etiqueta) + titulo(s.titulo) + `<div class="tn-comp"><div class="tn-col tn-a"><h3>${fmt(s.colA)}</h3><ul>${lis(s.itemsA)}</ul></div>` +
+          `<div class="tn-col tn-b"><h3>${fmt(s.colB)}</h3><ul>${lis(s.itemsB)}</ul></div></div>`;
+      case "cita":
+        return etiqueta(s.etiqueta) + `<blockquote class="tn-cita"><p>${fmt(s.cita)}</p>${si(s.autor, `<cite>${fmt(s.autor)}</cite>`)}</blockquote>`;
+    }
+  }
+
   // Portada "notas": la textura manuscrita de marca de fondo a toda la slide y el titular en una esquina.
   // Vale para cualquier plantilla con `marco: notas`; en capas es la portada por defecto si no hay foto.
   const portadaNotas = (s) =>
@@ -271,7 +296,7 @@ export function crearMotor(R) {
   ${R.cabeza(plantilla)}${s.estilo ? `<style>${estiloSlide(s.estilo)}</style>` : ""}
   </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
   <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : LOGO_FONDO[color])}</div>
-  <div class="contenido">${fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : COMPOSICION[plantilla](s)}</div>${decoracion(s)}
+  <div class="contenido">${fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
   <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
   </section></body></html>`;

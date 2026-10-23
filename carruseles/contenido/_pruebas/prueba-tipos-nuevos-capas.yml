@@ -1,0 +1,46 @@
+plantilla: capas
+color: blanco
+slides:
+  - tipo: portada
+    etiqueta: FP Online
+    titulo: Lo que *nadie* te cuenta de la FP online
+    subtitulo: 5 cosas, sin rodeos.
+  - tipo: mito
+    etiqueta: Mito
+    mito: Un título online vale menos.
+    titulo: Vale *exactamente* lo mismo
+    texto: Es el mismo título oficial que en presencial. En el papel no pone «online».
+  - tipo: pregunta
+    etiqueta: La duda
+    pregunta: ¿Y si no tengo tiempo para estudiar?
+    respuesta: |
+      Estudias cuando puedes: por la noche, en el bus o el domingo.
+
+      Sin horarios fijos y con tu guía cuando la necesitas.
+  - tipo: pasos
+    etiqueta: Cómo empezar
+    titulo: Tu ruta en *3 pasos*
+    items:
+      - Eliges tu ciclo
+      - Te decimos qué te falta
+      - Empiezas cuando quieras
+  - tipo: comparacion
+    etiqueta: Presencial vs online
+    titulo: La *diferencia* real
+    colA: Presencial
+    itemsA:
+      - Horario fijo
+      - Desplazamientos
+      - Mismo título
+    colB: Online
+    itemsB:
+      - A tu ritmo
+      - Desde casa
+      - Mismo título
+  - tipo: cita
+    etiqueta: Alumna de TCAE
+    cita: Lo compaginé con mi trabajo y lo saqué *en año y medio*.
+    autor: Laura, 31 años
+  - tipo: cierre
+    titulo: Tu ruta, *a tu ritmo*
+    cta: Escríbenos RUTA por DM

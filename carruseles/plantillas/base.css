@@ -137,3 +137,57 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 
 /* trazo: ninguno → sin flechas a mano en esa slide (se quita pinchando la flecha en la web) */
 .sin-trazo .flecha { display: none !important; }
+
+/* ===== Tipos de cuerpo nuevos (23/10/2026, Sandra: «todos los cuerpos son iguales») =====
+   Valen en todas las plantillas: toman los colores de cada una (--titulo, --tinta, --resalte, --caja…). */
+/* MITO / REALIDAD: la frase falsa tachada arriba, la verdad como titular */
+.tn-mito { margin: 0 0 34px; }
+.tn-falso { position: relative; display: inline; font-family: var(--editorial); font-size: 54px; line-height: 1.3; color: var(--tinta); opacity: .6;
+  text-decoration: line-through; text-decoration-color: var(--amarillo); text-decoration-thickness: 9px; }
+.tipo-mito .titulo { font-size: 124px; }
+.tipo-mito .texto { margin-top: 30px; }
+/* PREGUNTA: la duda llega como mensaje; la respuesta sale en el color de resalte */
+.tn-chat { display: flex; flex-direction: column; gap: 30px; }
+.tn-llega, .tn-sale { max-width: 860px; padding: 36px 44px; border-radius: 44px; font-family: var(--cuerpo); font-size: 46px; line-height: 1.3; }
+.tn-llega { align-self: flex-start; background: color-mix(in srgb, var(--tinta) 11%, var(--fondo)); color: var(--tinta); border-bottom-left-radius: 10px; font-weight: 600; }
+.tn-sale { align-self: flex-end; background: var(--resalte); color: var(--tinta-resalte); border-bottom-right-radius: 10px; }
+.tn-sale p + p { margin-top: 16px; }
+.tn-sale em { font-style: normal; text-decoration: underline; text-decoration-thickness: 5px; text-underline-offset: 8px; }
+/* PASOS: 1 → 2 → 3 en vertical, unidos por una línea */
+.tn-pasos { list-style: none; margin: 46px 0 0; padding: 0; display: flex; flex-direction: column; gap: 34px; position: relative; }
+.tn-pasos::before { content: ""; position: absolute; left: 41px; top: 40px; bottom: 40px; width: 4px; background: var(--resalte); opacity: .7; }
+.tn-pasos li { position: relative; display: flex; align-items: center; gap: 34px; font-family: var(--cuerpo); font-size: 46px; line-height: 1.25; color: var(--tinta); }
+.tn-pasos b { flex: none; display: grid; place-items: center; width: 86px; height: 86px; border-radius: 50%; background: var(--resalte); color: var(--tinta-resalte);
+  font-family: var(--titular); font-weight: 900; font-size: 46px; line-height: 1; }
+.tipo-pasos .titulo { font-size: 104px; }
+/* COMPARACIÓN: dos columnas; la de la izquierda apagada, la de la derecha en el color de resalte */
+.tn-comp { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 46px; }
+.tn-col { border-radius: 26px; padding: 34px 32px; }
+.tn-col h3 { font-family: var(--titular); font-weight: 900; font-size: 56px; line-height: 1; margin-bottom: 24px; }
+.tn-col ul { list-style: none; display: flex; flex-direction: column; gap: 20px; margin: 0; padding: 0; }
+.tn-col li { font-family: var(--cuerpo); font-size: 38px; line-height: 1.25; padding-left: 44px; position: relative; }
+.tn-a { background: color-mix(in srgb, var(--tinta) 9%, var(--fondo)); color: var(--tinta); }
+.tn-a li::before { content: "✕"; position: absolute; left: 0; opacity: .6; }
+.tn-b { background: var(--resalte); color: var(--tinta-resalte); }
+.tn-b li::before { content: "✓"; position: absolute; left: 0; font-weight: 700; }
+.tipo-comparacion .titulo { font-size: 104px; }
+/* CITA: frase grande entre comillas y quién la dice */
+.tn-cita { margin: 0; position: relative; padding-top: 120px; }
+.tn-cita::before { content: "“"; position: absolute; top: -40px; left: -10px; font-family: var(--editorial); font-size: 320px; line-height: 1; color: var(--resalte); }
+.tn-cita p { font-family: var(--editorial); font-weight: 600; font-size: 72px; line-height: 1.2; color: var(--titulo); }
+.tn-cita p em { font-style: normal; background: linear-gradient(transparent .55em, var(--resalte) .55em); color: inherit; }
+.tn-cita cite { display: block; margin-top: 40px; font-style: normal; font-family: var(--cuerpo); font-weight: 700; font-size: 32px; letter-spacing: .1em; text-transform: uppercase; color: var(--acento); }
+/* más grandes: que llenen la slide como el resto (primera prueba, 23/10/2026) */
+.tn-falso { font-size: 62px; opacity: .7; }
+.tn-llega, .tn-sale { font-size: 52px; padding: 40px 48px; }
+.tn-pasos { gap: 44px; }
+.tn-pasos li { font-size: 56px; }
+.tn-pasos b { width: 100px; height: 100px; font-size: 54px; }
+.tn-pasos::before { left: 48px; }
+.tn-comp { gap: 24px; }
+.tn-col { padding: 40px 34px; }
+.tn-col h3 { font-size: 66px; }
+.tn-col ul { gap: 26px; }
+.tn-col li { font-size: 46px; padding-left: 50px; }
+.tn-cita p { font-size: 80px; }
+.tn-cita p em { color: var(--tinta-resalte); }
