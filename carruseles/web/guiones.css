@@ -141,3 +141,13 @@ body.cnt-en-gu { overflow: hidden; }
 .gu-video input { border-color: var(--brand) !important; }
 /* todas las filas con letra oscura y clara de leer, tengan o no guiones (Sandra: «lo veo en gris, poco claro») */
 .gu-indice button, .gu-indice button.vacio0 { color: var(--ink); opacity: 1; }
+/* índice con la identidad de cada etiqueta (23/10/2026): fondo y borde del color de la rama, letra del mismo color pero
+   más oscura para que se lea bien; la elegida, con borde más marcado */
+.gu-indice { gap: 4px; }
+.gu-indice .gu-tagfila { background: var(--cs); border: 1px solid var(--cl); color: color-mix(in srgb, var(--c) 70%, #000); font-weight: 600; }
+.gu-indice .gu-tagfila:hover { background: var(--cs); border-color: var(--c); }
+.gu-indice .gu-tagfila[aria-current="true"] { outline: 0; border-color: var(--c); box-shadow: inset 0 0 0 1px var(--c); font-weight: 700; }
+.gu-indice .gu-tagfila b { color: inherit; opacity: .8; }
+.gu-indice .gu-ip { background: var(--c); }
+:root[data-theme="dark"] .gu-indice .gu-tagfila { color: var(--c); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gu-indice .gu-tagfila { color: var(--c); } }

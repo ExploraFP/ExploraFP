@@ -71,7 +71,8 @@ function guPintar(todo) {
   sec.innerHTML = '<nav class="gu-barra" aria-label="Pestañas de Guiones">' +
     [['reel', 'Orgánicos'], ['anuncio', 'Ads'], ['competencia', 'Competencia']].map(([k, t]) => '<button type="button" data-gu-tab="' + k + '" aria-current="' +
       (!GU.abierto && (k === 'competencia' ? GU.tab === 'competencia' : GU.tab === 'guiones' && (GU.tipo || 'reel') === k)) + '">' + t + '</button>').join('') + '</nav>' +
-    '<div class="gu-cuerpo">' + (GU.abierto && GU.lista[GU.abierto] ? guEditor(GU.lista[GU.abierto]) : GU.tab === 'competencia' ? guVCompetencia() : '<div class="gu-conindice">' + guIndice() + '<div class="gu-principal">' + guVGuiones() + '</div></div>') + '</div>';
+    '<div class="gu-cuerpo">' + (GU.abierto && GU.lista[GU.abierto] ? guEditor(GU.lista[GU.abierto]) : GU.tab === 'competencia' ? '' :   // en blanco por ahora (Sandra, 23/10/2026); guVCompetencia() y sus datos siguen ahí
+       '<div class="gu-conindice">' + guIndice() + '<div class="gu-principal">' + guVGuiones() + '</div></div>') + '</div>';
   sec.scrollTop = todo ? 0 : y;
 }
 /* Índice como el Google Docs de Sandra (23/10/2026): Globales · Por rama · cada formación · Dobles grados.
@@ -80,12 +81,14 @@ function guFilaIndice(f, t) {
   if (f === '*' || f === '') return esc(t);
   const emo = FORM_EMOJI[f], rama = REG_RAMAS[f] || REG_RAMA_DE[f] || 'trans';
   const nombre = f === 'Transversal' ? 'Globales' : f;
-  return (emo ? '<i class="gu-ie">' + emo + '</i>' : '<i class="gu-ip r-' + rama + '"></i>') + esc(nombre);
+  return (emo ? '<i class="gu-ie">' + emo + '</i>' : '<i class="gu-ip"></i>') + esc(nombre);
 }
 function guIndice() {
   const todos = Object.values(GU.lista).filter(g => (g.tipo || 'reel') === (GU.tipo || 'reel')), n = f => todos.filter(g => regForm(g) === f).length;
   // filas de índice (emoji + nombre), no etiquetas sueltas: se lee como el índice de un documento (Sandra, 23/10/2026: «se ve raro»)
-  const it = (f, t) => '<button type="button" data-gu-grupo="' + esc(f) + '" aria-current="' + (GU.grupo === f) + '"' + (f !== '*' && !n(f) ? ' class="vacio0"' : '') + '>' +
+  // cada fila con la identidad de su etiqueta: fondo suave y borde del color de su rama (Sandra, 23/10/2026)
+  const rk = f => f === 'Transversal' ? 'trans' : REG_RAMAS[f] || REG_RAMA_DE[f] || 'trans';
+  const it = (f, t) => '<button type="button" data-gu-grupo="' + esc(f) + '" aria-current="' + (GU.grupo === f) + '"' + (f !== '*' && f !== '' ? ' class="gu-tagfila r-' + rk(f) + '"' : '') + '>' +
     '<span>' + guFilaIndice(f, t) + '</span><b>' + (f === '*' ? todos.length : n(f) || '') + '</b></button>';
   const ciclos = [].concat.apply([], FORM_CICLOS.map(g => g[1])).filter(c => !/^Doble/.test(c)), dobles = [].concat.apply([], FORM_CICLOS.map(g => g[1])).filter(c => /^Doble/.test(c));
   const sin = n('');
