@@ -151,3 +151,12 @@ body.cnt-en-gu { overflow: hidden; }
 .gu-indice .gu-ip { background: var(--c); }
 :root[data-theme="dark"] .gu-indice .gu-tagfila { color: var(--c); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gu-indice .gu-tagfila { color: var(--c); } }
+/* casillas para seleccionar guiones (23/10/2026) */
+.gu-fila { grid-template-columns: 30px 70px minmax(0, 1fr) 120px 90px 120px; }
+.gu-chk { display: grid; place-items: center; width: 30px; height: 30px; margin: -6px 0; cursor: pointer; }
+.gu-chk input { width: 17px; height: 17px; accent-color: var(--brand); cursor: pointer; }
+.gu-fila.gu-marcada { background: var(--cnt-lima-bar); }
+.gu-fila[data-gu-abrir] { cursor: pointer; }
+.gu-fila[data-gu-abrir]:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.gu-papelera { min-width: 38px; padding: 0 10px !important; }
+@media (max-width: 900px) { .gu-fila { grid-template-columns: 30px auto minmax(0, 1fr); } .gu-fila > :nth-child(n+4) { grid-column: 3; } }
