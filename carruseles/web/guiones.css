@@ -128,3 +128,5 @@ body.cnt-en-gu { overflow: hidden; }
   .gu-fila { grid-template-columns: auto minmax(0, 1fr); }
 }
 .gu-indice button > span { min-width: 0; } .gu-indice .chip { white-space: normal; text-align: left; line-height: 1.25; }
+/* 23/10/2026 (Sandra: «el lateral está como cortado»): el índice va entero y baja con la página, sin scroll propio ni recorte */
+@media (min-width: 901px) { .gu-indice { position: static; max-height: none; overflow: visible; padding: 2px 4px 2px 2px; } }
