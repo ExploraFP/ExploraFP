@@ -382,6 +382,3 @@ html, body { overscroll-behavior-y: none; }
 #cnt-guiones, #cnt-estaticos, #cnt-directorio, #cnt-inicio { overscroll-behavior: none; }
 /* … y en TODO lo que tenga scroll (editor, panel, ventanas, listas, desplegables): ningún rebote (Sandra, 23/10/2026) */
 *, *::before, *::after { overscroll-behavior: none; }
-/* arrastrar el menú (temporal) */
-.cnt-nav > button[draggable="true"] { cursor: grab; }
-.cnt-nav > button.cnt-arrastrando { opacity: .45; }

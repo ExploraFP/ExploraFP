@@ -65,3 +65,4 @@ body.cnt-en-dr { overflow: hidden; }
   background-repeat: no-repeat; background-position: right 14px center; }
 .reg-ffiltro > i { display: none; }
 .reg-ffiltro .mz-ftodas { font: 600 13px var(--f-ui); }
+.reg-convideo { font-style: normal; font: 700 12px var(--f-ui); background: var(--brand); color: #fff; border-radius: 999px; padding: 4px 10px; }

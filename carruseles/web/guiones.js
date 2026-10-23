@@ -76,16 +76,23 @@ function guPintar(todo) {
 }
 /* Índice como el Google Docs de Sandra (23/10/2026): Globales · Por rama · cada formación · Dobles grados.
    El grupo es la formación del guion (la misma que en todos los talleres: regForm). */
+function guFilaIndice(f, t) {
+  if (f === '*' || f === '') return esc(t);
+  const emo = FORM_EMOJI[f], rama = REG_RAMAS[f] || REG_RAMA_DE[f] || 'trans';
+  const nombre = f === 'Transversal' ? 'Globales' : f;
+  return (emo ? '<i class="gu-ie">' + emo + '</i>' : '<i class="gu-ip r-' + rama + '"></i>') + esc(nombre);
+}
 function guIndice() {
   const todos = Object.values(GU.lista).filter(g => (g.tipo || 'reel') === (GU.tipo || 'reel')), n = f => todos.filter(g => regForm(g) === f).length;
+  // filas de índice (emoji + nombre), no etiquetas sueltas: se lee como el índice de un documento (Sandra, 23/10/2026: «se ve raro»)
   const it = (f, t) => '<button type="button" data-gu-grupo="' + esc(f) + '" aria-current="' + (GU.grupo === f) + '"' + (f !== '*' && !n(f) ? ' class="vacio0"' : '') + '>' +
-    '<span>' + t + '</span><b>' + (f === '*' ? todos.length : n(f)) + '</b></button>';
+    '<span>' + guFilaIndice(f, t) + '</span><b>' + (f === '*' ? todos.length : n(f) || '') + '</b></button>';
   const ciclos = [].concat.apply([], FORM_CICLOS.map(g => g[1])).filter(c => !/^Doble/.test(c)), dobles = [].concat.apply([], FORM_CICLOS.map(g => g[1])).filter(c => /^Doble/.test(c));
   const sin = n('');
-  return '<nav class="gu-indice" aria-label="Índice de guiones">' + it('*', 'Todos') + it('Transversal', chipForm('Transversal')) +
-    '<h4>Por rama</h4>' + FORM_RAMAS.map(r => it(r[0], chipForm(r[0]))).join('') +
-    '<h4>Formaciones</h4>' + ciclos.map(c => it(c, chipForm(c))).join('') +
-    '<h4>Dobles grados</h4>' + dobles.map(c => it(c, chipForm(c))).join('') +
+  return '<nav class="gu-indice" aria-label="Índice de guiones">' + it('*', 'Todos') + it('Transversal', '') +
+    '<h4>Por rama</h4>' + FORM_RAMAS.map(r => it(r[0], '')).join('') +
+    '<h4>Formaciones</h4>' + ciclos.map(c => it(c, '')).join('') +
+    '<h4>Dobles grados</h4>' + dobles.map(c => it(c, '')).join('') +
     (sin ? '<h4>Sin ordenar</h4>' + it('', 'Sin formación') : '') + '</nav>';
 }
 function guVGuiones() {
@@ -140,7 +147,9 @@ function guEditor(g) {
         '<span class="gu-dur" id="gu-dur" title="Calculado por el número de palabras">' + guDur(g) + '</span>' +
       '</div>' +
       GU_CAMPOS.map(([k, t, p]) => '<label class="gu-campo gu-c-' + k + '"><span>' + t + '</span><textarea data-gu-campo="' + k + '" rows="' + (k === 'desarrollo' ? 9 : k === 'gancho' ? 2 : 3) + '" placeholder="' + esc(p) + '">' + esc(g[k] || '') + '</textarea></label>').join('') +
-      (guEtapa(g) === 'publicado' || g.enlace ? '<label class="gu-campo"><span>Enlace del vídeo publicado</span><input data-gu-meta="enlace" type="url" value="' + esc(g.enlace || '') + '" placeholder="https://…"></label>' : '') +
+      // el vídeo de cada guion, en Drive (Sandra, 23/10/2026: «cada guion que se lleva a cabo debería llevar linkeado su vídeo»)
+      (['grabado', 'publicado'].indexOf(guEtapa(g)) >= 0 || g.video ? '<label class="gu-campo gu-video"><span>🎞️ Vídeo en Drive</span><input data-gu-meta="video" type="url" value="' + esc(g.video || '') + '" placeholder="Pega el enlace de Drive del vídeo"></label>' : '') +
+      (guEtapa(g) === 'publicado' || g.enlace ? '<label class="gu-campo"><span>Enlace del vídeo publicado (opcional)</span><input data-gu-meta="enlace" type="url" value="' + esc(g.enlace || '') + '" placeholder="https://…"></label>' : '') +
       '<button type="button" class="linkbtn peligro" id="gu-borrar">Borrar este guion</button>' +
     '</div><aside class="gu-chat" aria-label="Chat con Claude"><h3>Claude</h3><div class="gu-chat-hilo" id="gu-hilo">' + guHilo(g) + '</div>' +
       (EST.sample ? '' : '<p class="est-pista">Para usar Claude abre la web en claude.ai.</p>') +
@@ -229,6 +238,7 @@ function guIrA(g, k) {
   if (k !== 'borrador' && !(g.gancho || g.desarrollo)) { toast('El guion está vacío: escríbelo antes de pasarlo'); return; }
   g.etapa = k; if (k === 'publicado' && !g.fecha) g.fecha = new Date().toISOString().slice(0, 10);
   guGuardar('guiones', g); guPintar(true);
+  if (k === 'grabado' && !g.video) { toast('✓ Grabado. Pega abajo el enlace de Drive del vídeo'); setTimeout(() => { const i = document.querySelector('[data-gu-meta="video"]'); if (i) i.focus(); }, 60); return; }
   toast(k === 'grabar' ? '✓ Para grabar' + (g.graba === 'otra' ? '. Pulsa «Copiar guion» para pasárselo' : '') : 'Ahora está en «' + guNombreEt(k) + '»');
 }
 function guTextoPlano(g) {
@@ -288,7 +298,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('input', e => {
   const t = e.target, g = GU.lista[GU.abierto]; if (!g || !t.closest || !t.closest('#cnt-guiones')) return;
-  const k = t.dataset.guCampo || (t.id === 'gu-titulo' ? 'titulo' : t.dataset.guMeta === 'enlace' ? 'enlace' : '');
+  const k = t.dataset.guCampo || (t.id === 'gu-titulo' ? 'titulo' : t.dataset.guMeta === 'enlace' || t.dataset.guMeta === 'video' ? t.dataset.guMeta : '');
   if (!k) return;
   g[k] = t.value; guPintarMeta();
   const gd = document.getElementById('gu-guardado'); if (gd) gd.textContent = 'Guardando…';
@@ -299,7 +309,7 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'gu-tipo-f') { GU.tipo = t.value; guPintar(false); return; }
   const m = t.dataset && t.dataset.guMeta, g = GU.lista[GU.abierto];
-  if (m && m !== 'enlace' && g) { g[m] = t.value; guGuardar('guiones', g); guPintar(false); }
+  if (m && m !== 'enlace' && m !== 'video' && g) { g[m] = t.value; guGuardar('guiones', g); guPintar(false); }
 });
 document.addEventListener('keydown', e => {
   if (e.target && e.target.id === 'gu-pide' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); guPedir(); }

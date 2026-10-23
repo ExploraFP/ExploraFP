@@ -114,8 +114,9 @@ function regPiezas() {
     creado: c.creado || c.fecha, enlace: c.ig ? [['Instagram', c.ig]] : [], fotos: [...new Set((c.slides || []).map(s => s.imagen).filter(Boolean))]}));
   Object.values(typeof ES !== 'undefined' ? ES.lista : {}).filter(e => e.etapa === 'subido').forEach(e => out.push({t: 'e', id: e.id, x: e, cod: esCod(e), formato: e.tipo === 'dinamico' ? 'Dinámico' : 'Estático',
     titulo: String(e.titulo || '').replace(/\*/g, ''), creado: e.creado, enlace: e.drive ? [['Drive', e.drive]] : [], fotos: e.foto ? [e.foto] : []}));
-  Object.values(typeof GU !== 'undefined' ? GU.lista : {}).filter(g => g.etapa === 'publicado').forEach(g => out.push({t: 'g', id: g.id, x: g, cod: guCod(g), formato: 'Vídeo',
-    titulo: g.titulo, creado: g.creado, enlace: g.enlace ? [['Vídeo', g.enlace]] : [], fotos: []}));
+  // guion terminado = publicado, o grabado con su vídeo ya en Drive (los de ads los publica otra persona)
+  Object.values(typeof GU !== 'undefined' ? GU.lista : {}).filter(g => g.etapa === 'publicado' || (g.etapa === 'grabado' && g.video)).forEach(g => out.push({t: 'g', id: g.id, x: g, cod: guCod(g),
+    formato: 'Vídeo', titulo: g.titulo, creado: g.creado, enlace: [g.video ? ['Vídeo en Drive', g.video] : null, g.enlace ? ['Publicado', g.enlace] : null].filter(Boolean), fotos: []}));
   Object.values(REG.ext).forEach(x => out.push({t: 'x', id: x.id, x: x, cod: x.num ? 'X' + String(x.num).padStart(2, '0') : '', formato: x.formato || 'Otro', titulo: x.titulo,
     creado: x.creado, enlace: x.enlace ? [['Archivo', x.enlace]] : [], fotos: [], fuera: true}));
   return out.sort((a, b) => String(b.creado || '').localeCompare(String(a.creado || '')));
@@ -123,7 +124,7 @@ function regPiezas() {
 function regMini(p) {
   if (p.t === 'c') return mini(p.x, 0);
   if (p.t === 'e') return esMini(p.x, p.x.tipo === 'dinamico' ? 'vertical' : 'cuadrado', {quieto: true});
-  if (p.t === 'g') return '<div class="reg-sinmini reg-guion"><span>🎬</span><b>«' + esc((p.x.gancho || p.x.titulo || '').slice(0, 90)) + '»</b></div>';
+  if (p.t === 'g') return '<div class="reg-sinmini reg-guion"><span>🎬</span><b>«' + esc((p.x.gancho || p.x.titulo || '').slice(0, 90)) + '»</b>' + (p.x.video ? '<i class="reg-convideo">▶ Vídeo en Drive</i>' : '') + '</div>';
   return '<div class="reg-sinmini"><span>' + regEmo(p.formato) + '</span><b>Hecha fuera</b></div>';
 }
 function regPintar() {
