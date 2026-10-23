@@ -121,6 +121,8 @@ La herramienta de carruseles pasa a llamarse **Contenidos**: barra lateral izqui
 
 - 23/10/2026: Guiones se pueden seleccionar (casilla por fila y «seleccionar todos») y borrar varios a la vez (barra flotante abajo, ventana con la lista); en el editor, papelera 🗑 a la vista en la barra de arriba (antes era un enlace escondido al final). Guiones de PRUEBA para que Sandra pruebe: G02-G07 (ids `Gprueba02`…`Gprueba07`, título «[PRUEBA] …», campo `prueba: true`; G04 y G06 tienen un vídeo falso y salen en el Directorio). Borrarlos cuando Sandra lo diga (o ella con la selección). G01 es un guion REAL de Sandra (Sanidad, ads, pegado): no tocar.
 
+- 23/10/2026 · CÓDIGO DE GUION AL GRABAR (Sandra: borrar el G02 dejaba huecos): el código G01, G02… va en `numFin` y se da al pasar a Grabado o Publicado (el `num` de creación ya no se usa ni se enseña). En borrador, sin código («—» en la lista) y se reconoce por el título; si no tiene, se ve el inicio del gancho o del texto (`guTit`). Nombre del vídeo para Drive: `G03_ads_tcae_titulo.mp4` (`guNombreVideo`; botón «Copiar nombre del vídeo» junto al campo de Drive, cuando ya tiene código). Pruebas renumeradas: Gprueba04 = G01, Gprueba06 = G02.
+
 ## Herramienta web (banco + estudio)
 Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de carruseles").
 - `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita

@@ -160,3 +160,4 @@ body.cnt-en-gu { overflow: hidden; }
 .gu-fila[data-gu-abrir]:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 .gu-papelera { min-width: 38px; padding: 0 10px !important; }
 @media (max-width: 900px) { .gu-fila { grid-template-columns: 30px auto minmax(0, 1fr); } .gu-fila > :nth-child(n+4) { grid-column: 3; } }
+.gu-sincod { color: var(--ink2); font-size: 13px; padding-left: 8px; } .gu-video .linkbtn { margin-left: 10px; font-size: 12px; text-transform: none; letter-spacing: 0; font-weight: 600; }

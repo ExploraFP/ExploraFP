@@ -116,7 +116,7 @@ function regPiezas() {
     titulo: String(e.titulo || '').replace(/\*/g, ''), creado: e.creado, enlace: e.drive ? [['Drive', e.drive]] : [], fotos: e.foto ? [e.foto] : []}));
   // guion terminado = publicado, o grabado con su vídeo ya en Drive (los de ads los publica otra persona)
   Object.values(typeof GU !== 'undefined' ? GU.lista : {}).filter(g => g.etapa === 'publicado' || (g.etapa === 'grabado' && g.video)).forEach(g => out.push({t: 'g', id: g.id, x: g, cod: guCod(g),
-    formato: 'Vídeo', titulo: g.titulo, creado: g.creado, enlace: [g.video ? ['Vídeo en Drive', g.video] : null, g.enlace ? ['Publicado', g.enlace] : null].filter(Boolean), fotos: []}));
+    formato: 'Vídeo', titulo: guTit(g), creado: g.creado, enlace: [g.video ? ['Vídeo en Drive', g.video] : null, g.enlace ? ['Publicado', g.enlace] : null].filter(Boolean), fotos: []}));
   Object.values(REG.ext).forEach(x => out.push({t: 'x', id: x.id, x: x, cod: x.num ? 'X' + String(x.num).padStart(2, '0') : '', formato: x.formato || 'Otro', titulo: x.titulo,
     creado: x.creado, enlace: x.enlace ? [['Archivo', x.enlace]] : [], fotos: [], fuera: true}));
   return out.sort((a, b) => String(b.creado || '').localeCompare(String(a.creado || '')));

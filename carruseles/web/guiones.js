@@ -21,7 +21,13 @@ try { const k = localStorage.getItem('guiones.tipo'); GU.tipo = k === 'anuncio' 
 try { const t = localStorage.getItem('guiones.tab'); if (t === 'guiones' || t === 'competencia') GU.tab = t; } catch (e) {}
 
 const guDb = () => (typeof EST_DB !== 'undefined' && EST_DB) || null;
-const guCod = g => g && g.num ? 'G' + String(g.num).padStart(2, '0') : '';
+// Código definitivo solo al pasar a Grabado o Publicado (Sandra, 23/10/2026): los borradores que se tiran no dejan huecos.
+// Va en `numFin` (el antiguo `num` de creación ya no se enseña). Mientras tanto el guion se reconoce por su título.
+const guCod = g => g && g.numFin ? 'G' + String(g.numFin).padStart(2, '0') : '';
+const guTit = g => g.titulo || (String(g.gancho || g.desarrollo || '').replace(/\s+/g, ' ').trim().split(' ').slice(0, 7).join(' ') + (String(g.gancho || g.desarrollo || '').trim().split(/\s+/).length > 7 ? '…' : '')) || '(sin título)';
+function guNombreVideo(g) {
+  return [guCod(g), g.tipo === 'anuncio' ? 'ads' : 'organico', regSlug(regForm(g)).slice(0, 22), regSlug(guTit(g)).slice(0, 40)].filter(Boolean).join('_') + '.mp4';
+}
 const guEtapa = g => GU_ETAPAS.some(e => e[0] === g.etapa) ? g.etapa : 'borrador';
 const guNombreEt = k => (GU_ETAPAS.find(e => e[0] === k) || GU_ETAPAS[0])[1];
 const guPill = g => '<span class="gu-etapa g-' + guEtapa(g) + '">' + guNombreEt(guEtapa(g)) + '</span>';
@@ -55,8 +61,7 @@ function guBorrar(col, id) {
   const db = guDb(); if (db) db.doc(col + '/' + id).delete().catch(() => {});
 }
 function guNuevo(datos) {
-  const num = Object.values(GU.lista).reduce((m, x) => Math.max(m, +x.num || 0), 0) + 1;
-  const g = Object.assign({id: 'G' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), num: num, titulo: '', tipo: 'reel', etapa: 'borrador',
+  const g = Object.assign({id: 'G' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), titulo: '', tipo: 'reel', etapa: 'borrador',
     graba: 'yo', gancho: '', desarrollo: '', cta: '', pantalla: '', chat: [], creado: new Date().toISOString()}, datos || {});
   guGuardar('guiones', g); return g;
 }
@@ -77,6 +82,7 @@ function guPintar(todo) {
 }
 /* Índice como el Google Docs de Sandra (23/10/2026): Globales · Por rama · cada formación · Dobles grados.
    El grupo es la formación del guion (la misma que en todos los talleres: regForm). */
+const ev0 = t => { const l = t.closest('label'); if (l) l.blur && l.blur(); };
 function guFilaIndice(f, t) {
   if (f === '*' || f === '') return esc(t);
   const emo = FORM_EMOJI[f], rama = REG_RAMAS[f] || REG_RAMA_DE[f] || 'trans';
@@ -119,8 +125,7 @@ function guVGuiones() {
     '<button class="btn pri" id="gu-sel-borrar">🗑 Borrar ' + (GU.sel.size === 1 ? 'el seleccionado' : 'los ' + GU.sel.size) + '</button><button class="linkbtn" id="gu-sel-quitar">Quitar la selección</button></div>' +
     '<div class="gu-tabla" role="table"><div class="gu-fila gu-th" role="row"><label class="gu-chk" title="Seleccionar todos"><input type="checkbox" data-gu-sel-todos="1"' + (todosMarcados ? ' checked' : '') + ' aria-label="Seleccionar todos"></label><span>Código</span><span>Guion</span><span>Graba</span><span>Duración</span><span>Etapa</span></div>' +
     lista.map(g => '<div class="gu-fila' + (GU.sel.has(g.id) ? ' gu-marcada' : '') + '" role="row" tabindex="0" data-gu-abrir="' + esc(g.id) + '">' +
-      '<label class="gu-chk"><input type="checkbox" data-gu-sel="' + esc(g.id) + '"' + (GU.sel.has(g.id) ? ' checked' : '') + ' aria-label="Seleccionar ' + esc(g.titulo || guCod(g)) + '"></label><span class="pr-cod">' + guCod(g) + '</span>' +
-      '<span class="gu-tit"><b>' + esc(g.titulo || '(sin título)') + '</b><small>' + esc((g.gancho || 'Sin gancho todavía').slice(0, 110)) + '</small></span>' +
+      '<label class="gu-chk"><input type="checkbox" data-gu-sel="' + esc(g.id) + '"' + (GU.sel.has(g.id) ? ' checked' : '') + ' aria-label="Seleccionar ' + esc(g.titulo || guCod(g)) + '"></label>' + (guCod(g) ? '<span class="pr-cod">' + guCod(g) + '</span>' : '<span class="gu-sincod" title="El código se da al pasarlo a Grabado">—</span>') + '<span class="gu-tit"><b>' + esc(guTit(g)) + '</b><small>' + esc((g.gancho || 'Sin gancho todavía').slice(0, 110)) + '</small></span>' +
       '<span>' + (g.graba === 'otra' ? 'Otra persona' : 'Yo') + '</span><span>' + guDur(g) + '</span><span>' + guPill(g) + '</span></div>').join('') + '</div>';
 }
 function guVCompetencia() {
@@ -158,7 +163,7 @@ function guEditor(g) {
       '</div>' +
       GU_CAMPOS.map(([k, t, p]) => '<label class="gu-campo gu-c-' + k + '"><span>' + t + '</span><textarea data-gu-campo="' + k + '" rows="' + (k === 'desarrollo' ? 9 : k === 'gancho' ? 2 : 3) + '" placeholder="' + esc(p) + '">' + esc(g[k] || '') + '</textarea></label>').join('') +
       // el vídeo de cada guion, en Drive (Sandra, 23/10/2026: «cada guion que se lleva a cabo debería llevar linkeado su vídeo»)
-      (['grabado', 'publicado'].indexOf(guEtapa(g)) >= 0 || g.video ? '<label class="gu-campo gu-video"><span>🎞️ Vídeo en Drive</span><input data-gu-meta="video" type="url" value="' + esc(g.video || '') + '" placeholder="Pega el enlace de Drive del vídeo"></label>' : '') +
+      (['grabado', 'publicado'].indexOf(guEtapa(g)) >= 0 || g.video ? '<label class="gu-campo gu-video"><span>🎞️ Vídeo en Drive' + (guCod(g) ? ' <button type="button" class="linkbtn" id="gu-copiar-nombre" title="' + esc(guNombreVideo(g)) + '">Copiar nombre del vídeo</button>' : '') + '</span><input data-gu-meta="video" type="url" value="' + esc(g.video || '') + '" placeholder="Pega el enlace de Drive del vídeo"></label>' : '') +
       (guEtapa(g) === 'publicado' || g.enlace ? '<label class="gu-campo"><span>Enlace del vídeo publicado (opcional)</span><input data-gu-meta="enlace" type="url" value="' + esc(g.enlace || '') + '" placeholder="https://…"></label>' : '') +
     '</div><aside class="gu-chat" aria-label="Chat con Claude"><h3>Claude</h3><div class="gu-chat-hilo" id="gu-hilo">' + guHilo(g) + '</div>' +
       (EST.sample ? '' : '<p class="est-pista">Para usar Claude abre la web en claude.ai.</p>') +
@@ -246,12 +251,13 @@ function guIrA(g, k) {
   if (guEtapa(g) === k) return;
   if (k !== 'borrador' && !(g.gancho || g.desarrollo)) { toast('El guion está vacío: escríbelo antes de pasarlo'); return; }
   g.etapa = k; if (k === 'publicado' && !g.fecha) g.fecha = new Date().toISOString().slice(0, 10);
+  if ((k === 'grabado' || k === 'publicado') && !g.numFin) g.numFin = Object.values(GU.lista).reduce((m, x) => Math.max(m, +x.numFin || 0), 0) + 1;
   guGuardar('guiones', g); guPintar(true);
   if (k === 'grabado' && !g.video) { toast('✓ Grabado. Pega abajo el enlace de Drive del vídeo'); setTimeout(() => { const i = document.querySelector('[data-gu-meta="video"]'); if (i) i.focus(); }, 60); return; }
   toast(k === 'grabar' ? '✓ Para grabar' + (g.graba === 'otra' ? '. Pulsa «Copiar guion» para pasárselo' : '') : 'Ahora está en «' + guNombreEt(k) + '»');
 }
 function guTextoPlano(g) {
-  return [guCod(g) + ' · ' + (g.titulo || 'Guion') + ' (' + GU_TIPOS[g.tipo || 'reel'] + ', ' + guDur(g) + ')', '',
+  return [guCod(g) + ' · ' + guTit(g) + ' (' + GU_TIPOS[g.tipo || 'reel'] + ', ' + guDur(g) + ')', '',
     'GANCHO', g.gancho || '—', '', 'DESARROLLO', g.desarrollo || '—', '', 'CTA', g.cta || '—']
     .concat(g.pantalla ? ['', 'TEXTO EN PANTALLA', g.pantalla] : []).join('\n');
 }
@@ -291,13 +297,15 @@ document.addEventListener('click', e => {
   if (t.closest('#gu-sel-borrar')) { const gs = [...GU.sel].map(id => GU.lista[id]).filter(Boolean); if (!gs.length) return;
     $('#onb').hidden = false;
     $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="gu-bv-t"><div class="cuerpo"><h2 id="gu-bv-t">¿Borrar ' + (gs.length === 1 ? 'este guion' : 'estos ' + gs.length + ' guiones') + '?</h2>' +
-      '<ul class="pr-dvv-lista">' + gs.slice(0, 6).map(g => '<li>' + esc(guCod(g) + ' · ' + (g.titulo || '(sin título)')) + '</li>').join('') + (gs.length > 6 ? '<li>y ' + (gs.length - 6) + ' más</li>' : '') + '</ul><p>No se pueden recuperar.</p></div>' +
+      '<ul class="pr-dvv-lista">' + gs.slice(0, 6).map(g => '<li>' + esc((guCod(g) ? guCod(g) + ' · ' : '') + guTit(g)) + '</li>').join('') + (gs.length > 6 ? '<li>y ' + (gs.length - 6) + ' más</li>' : '') + '</ul><p>No se pueden recuperar.</p></div>' +
       '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="gu-sel-borrar-ok">Sí, borrar' + (gs.length === 1 ? '' : ' los ' + gs.length) + '</button></footer></div>'; return; }
   if (t.closest('#gu-sel-borrar-ok')) { const n = GU.sel.size; [...GU.sel].forEach(id => guBorrar('guiones', id)); GU.sel.clear(); cerrarPanel(); guPintar(false); toast(n === 1 ? 'Guion borrado' : n + ' guiones borrados'); return; }
   const ab = t.closest('[data-gu-abrir]'); if (ab) { GU.abierto = ab.dataset.guAbrir; guPintar(true); return; }
   if (t.closest('#gu-volver')) { GU.abierto = null; guPintar(true); return; }
   const ps = t.closest('[data-gu-paso]'); if (ps) { const g = GU.lista[GU.abierto]; if (g) guIrA(g, ps.dataset.guPaso); return; }
   if (t.closest('#gu-enviar')) { guPedir(); return; }
+  if (t.closest('#gu-copiar-nombre')) { ev0(t); const g = GU.lista[GU.abierto]; if (!g) return;
+    navigator.clipboard.writeText(guNombreVideo(g)).then(() => toast('Copiado: ' + guNombreVideo(g)), () => toast(guNombreVideo(g))); return; }
   if (t.closest('#gu-copiar')) { const g = GU.lista[GU.abierto]; if (!g) return;
     navigator.clipboard.writeText(guTextoPlano(g)).then(() => toast('Guion copiado'), () => toast('No he podido copiarlo')); return; }
   if (t.closest('#gu-borrar')) { const g = GU.lista[GU.abierto]; if (!g) return;
