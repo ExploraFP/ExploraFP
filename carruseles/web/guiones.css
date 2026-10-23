@@ -108,3 +108,23 @@ body.cnt-en-gu { overflow: hidden; }
   background: #FFE45E; color: #1B3620; vertical-align: 2px; margin-left: 4px; }
 .gu-beta { margin-left: auto; align-self: center; display: flex; align-items: center; gap: 8px; font: 13px var(--f-ui); color: var(--cnt-lima-bar-ink); opacity: .8; }
 @media (max-width: 900px) { .gu-beta { font-size: 0; gap: 0; } .gu-beta .cnt-beta { font-size: 9.5px; } }
+
+/* índice a la izquierda, como el Google Docs de Sandra: Globales · Por rama · Formaciones · Dobles grados (23/10/2026) */
+.gu-conindice { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.gu-indice { position: sticky; top: calc(var(--cnt-sub) + 16px); display: flex; flex-direction: column; gap: 2px; max-height: calc(100vh - var(--cnt-alto) - var(--cnt-sub) - 40px); overflow-y: auto; padding-right: 4px; }
+.gu-indice h4 { margin: 14px 8px 4px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); }
+.gu-indice button { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 0; background: none; color: var(--ink); text-align: left; padding: 5px 8px; border-radius: 10px; cursor: pointer; font: 600 14px var(--f-ui); }
+.gu-indice button:hover { background: var(--surface2); }
+.gu-indice button[aria-current="true"] { background: var(--cnt-lima-bar); outline: 1.5px solid var(--cnt-lima-bar-line); }
+.gu-indice button b { font: 600 12px var(--f-ui); color: var(--ink2); }
+.gu-indice button.vacio0 { opacity: .55; }
+.gu-indice button.vacio0 b { visibility: hidden; }
+.gu-fila { grid-template-columns: 70px minmax(0, 1fr) 120px 90px 120px; }
+@media (max-width: 900px) {
+  .gu-conindice { grid-template-columns: 1fr; gap: 12px; }
+  .gu-indice { position: static; flex-direction: row; overflow-x: auto; max-height: none; padding-bottom: 4px; }
+  .gu-indice h4 { display: none; }
+  .gu-indice button { flex: none; }
+  .gu-fila { grid-template-columns: auto minmax(0, 1fr); }
+}
+.gu-indice button > span { min-width: 0; } .gu-indice .chip { white-space: normal; text-align: left; line-height: 1.25; }

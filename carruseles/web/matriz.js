@@ -230,7 +230,8 @@ chipAlcance = function (it, filtra) {
   if (it.alcTxt === 'Sanidad y Tecnología') return ['Sanidad', 'Tecnología'].map(r => chipAlcance(Object.assign({}, it, {alcTxt: r, alcTipo: 'rama', ramaColor: r}), filtra)).join(' ');
   if (it.alcTipo === 'varias' && it.alcTxt === 'Varios ciclos' && it.ramaColor !== 'Transversal') return chipAlcance(Object.assign({}, it, {alcTxt: it.ramaColor, alcTipo: 'rama'}), filtra);
   if (ALC_MULTI[it.alcTxt]) return ALC_MULTI[it.alcTxt].map(c => chipAlcance(Object.assign({}, it, {alcTxt: c, alcTipo: 'formacion'}), filtra)).join(' ');
-  const h = _chipAlcanceBase(it, filtra), e = FORM_EMOJI[it.alcTxt];
+  // «Transversal» se enseña como «Globales» (Sandra, 23/10/2026); por dentro el valor sigue siendo «Transversal»
+  const h = _chipAlcanceBase(it, filtra).replace(/Transversal/g, 'Globales'), e = FORM_EMOJI[it.alcTxt];
   return e ? h.replace(/class="chip /, 'class="chip con-emoji ').replace(/>([^<]*)<\/(span|button)>$/, '><i class="chip-emo">' + e + '</i> $1</$2>') : h;
 };
 
@@ -253,7 +254,7 @@ function barraBusqueda() {
     : '<span class="chip ' + cls + '">' + esc(txt) + '</span>';
   const o = (val, html) => { if (v === val) actual = html;
     return '<button type="button" class="mz-fopt' + (v === val ? ' on' : '') + '" data-forma-v="' + esc(val) + '">' + html + '</button>'; };
-  const lista = o('', '<span class="mz-ftodas">Todas las formaciones</span>') + o('gen', chip('Transversal', 'r-trans t-transversal')) + '<hr>' +
+  const lista = o('', '<span class="mz-ftodas">Todas las formaciones</span>') + o('gen', chip('Transversal', 'r-trans t-transversal').replace(/Transversal/g, 'Globales')) + '<hr>' +
     FORM_RAMAS.map(r => o('r:' + r[0], chip(r[0], 'r-' + r[1] + ' t-rama'))).join('') + '<hr>' +
     FORM_CICLOS.map(g => g[1].filter(c => hay[c]).map(c => o('c:' + c, chip(c, 'r-' + hay[c] + ' t-formacion'))).join('')).join('');
   return '<section class="mz-buscazona"><div class="mz-busca"><div class="mz-buscabarra">' +
@@ -272,7 +273,7 @@ function barraMatriz() {
   return '<div class="barra mz-barra">' +
     selMatriz('estado', 'Estado', 'Todas', Object.keys(ESTADOS_IDEA).map(k => [k, ESTADOS_IDEA[k]]), estadoIdea) +
     selMatriz('enf', 'Enfoque', 'Todas', Object.keys(ENFOQUES).map(k => [k, ENFOQUES[k]]), enfoqueDe) +
-    selMatriz('rama', 'Alcance: rama', 'Todas', RAMASF.map(r => [r, r === 'Servicios Socioculturales' ? 'Sociocultural' : r]), it => it.ramaColor) +
+    selMatriz('rama', 'Alcance: rama', 'Todas', RAMASF.map(r => [r, r === 'Servicios Socioculturales' ? 'Sociocultural' : r === 'Transversal' ? 'Globales' : r]), it => it.ramaColor) +
     selMatriz('form', S.f.rama ? 'Alcance: ciclo de ' + (S.f.rama === 'Servicios Socioculturales' ? 'Sociocultural' : S.f.rama) : 'Alcance: ciclo', 'Todos', CICLOS.map(c => [c, c]), it => it.alcTxt) +
     selMatriz('cif', 'Cifras', 'Cualquiera', ['sin', 'listo', 'repasar', 'comprobar', 'nopublicar'].map(k => [k, CIF[k]]), cifraDe) +
     (activos ? '<button class="linkbtn quitar" id="mz-limpiar">Quitar filtros</button>' : '') +
@@ -687,7 +688,7 @@ cargarIdeasPropias();
 let IDEA_R = null;
 function abrirIdeaRapida() {
   IDEA_R = IDEA_R || {objetivo: 'viral', tendencia: true, formacion: ''};
-  const opts = ['<option value="">Transversal</option>'].concat(FORM_RAMAS.map(r => '<option value="' + r[0] + '"' + (IDEA_R.formacion === r[0] ? ' selected' : '') + '>' + r[0] + '</option>'))
+  const opts = ['<option value="">Globales</option>'].concat(FORM_RAMAS.map(r => '<option value="' + r[0] + '"' + (IDEA_R.formacion === r[0] ? ' selected' : '') + '>' + r[0] + '</option>'))
     .concat(FORM_CICLOS.flatMap(g => g[1]).map(c => '<option value="' + esc(c) + '"' + (IDEA_R.formacion === c ? ' selected' : '') + '>' + esc(c) + '</option>')).join('');
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja mz-rapida" role="dialog" aria-modal="true" aria-label="Anota tu idea"><header><k>Anota tu idea</k><h2>✏️ Apúntala en 10 segundos</h2></header><div class="cuerpo">' +

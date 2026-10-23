@@ -20,7 +20,8 @@ const REG_FORMACIONES = ['Transversal'].concat(FORM_RAMAS.map(r => r[0]), [].con
 function chipForm(txt) {
   if (!txt) return '<span class="reg-sinform">Sin formación</span>';
   const cls = txt === 'Transversal' ? 'r-trans t-transversal' : REG_RAMAS[txt] ? 'r-' + REG_RAMAS[txt] + ' t-rama' : 'r-' + (REG_RAMA_DE[txt] || 'trans') + ' t-formacion';
-  return FORM_EMOJI[txt] ? '<span class="chip con-emoji ' + cls + '"><i class="chip-emo">' + FORM_EMOJI[txt] + '</i> ' + esc(txt) + '</span>' : '<span class="chip ' + cls + '">' + esc(txt) + '</span>';
+  const ver = txt === 'Transversal' ? 'Globales' : txt;   // «Globales» en pantalla (Sandra, 23/10/2026)
+  return FORM_EMOJI[txt] ? '<span class="chip con-emoji ' + cls + '"><i class="chip-emo">' + FORM_EMOJI[txt] + '</i> ' + esc(ver) + '</span>' : '<span class="chip ' + cls + '">' + esc(ver) + '</span>';
 }
 // formación de una pieza: la suya o, si no tiene, la de su idea (como hasta ahora en los carruseles)
 function regForm(x) {

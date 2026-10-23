@@ -8,14 +8,16 @@
    · Competencia: de momento se añaden a mano (enlace, centro, gancho, por qué funciona). Claude no puede buscar anuncios
      desde la web. Cada guion puede apuntar al anuncio en el que se inspira, y desde un anuncio se crea un guion.
    Datos: colecciones `guiones` y `competencia` del mismo db. Claude: el mismo `sample` de Carruseles (EST.sample). */
-var GU = {tab: 'guiones', lista: {}, comp: {}, abierto: null, filtro: 'todos', tipo: '', pidiendo: false, guarda: {}, listo: false};
+var GU = {grupo: '*', tab: 'guiones', lista: {}, comp: {}, abierto: null, filtro: 'todos', tipo: '', pidiendo: false, guarda: {}, listo: false};
 const GU_ETAPAS = [['borrador', 'Borrador'], ['grabar', 'Para grabar'], ['grabado', 'Grabado'], ['publicado', 'Publicado']];
-const GU_TIPOS = {reel: 'Reel', anuncio: 'Anuncio'};
+// Sandra separa los guiones de ads de los orgánicos (23/10/2026): son las dos primeras pestañas
+const GU_TIPOS = {reel: 'Orgánico', anuncio: 'Ads'};
 const GU_PLATAFORMAS = ['Instagram', 'TikTok', 'Meta Ads', 'YouTube', 'Otra'];
 const GU_CAMPOS = [['gancho', 'Gancho', 'Lo que se dice en los 3 primeros segundos. Para el scroll.'],
   ['desarrollo', 'Desarrollo', 'Lo que se cuenta, tal cual se dice a cámara.'],
   ['cta', 'CTA', 'Una sola acción al final.'],
   ['pantalla', 'Texto en pantalla', 'Opcional: rótulos que salen sobre el vídeo.']];
+try { const k = localStorage.getItem('guiones.tipo'); GU.tipo = k === 'anuncio' ? 'anuncio' : 'reel'; } catch (e) { GU.tipo = 'reel'; }
 try { const t = localStorage.getItem('guiones.tab'); if (t === 'guiones' || t === 'competencia') GU.tab = t; } catch (e) {}
 
 const guDb = () => (typeof EST_DB !== 'undefined' && EST_DB) || null;
@@ -23,7 +25,7 @@ const guCod = g => g && g.num ? 'G' + String(g.num).padStart(2, '0') : '';
 const guEtapa = g => GU_ETAPAS.some(e => e[0] === g.etapa) ? g.etapa : 'borrador';
 const guNombreEt = k => (GU_ETAPAS.find(e => e[0] === k) || GU_ETAPAS[0])[1];
 const guPill = g => '<span class="gu-etapa g-' + guEtapa(g) + '">' + guNombreEt(guEtapa(g)) + '</span>';
-const guTipo = g => '<span class="gu-tipo t-' + (g.tipo === 'anuncio' ? 'anuncio' : 'reel') + '">' + (g.tipo === 'anuncio' ? '📣 Anuncio' : '🎬 Reel') + '</span>';
+const guTipo = g => '<span class="gu-tipo t-' + (g.tipo === 'anuncio' ? 'anuncio' : 'reel') + '">' + (g.tipo === 'anuncio' ? '📣 Ads' : '🎬 Orgánico') + '</span>';
 // duración aproximada hablando a ritmo normal (unas 2,5 palabras por segundo)
 function guSegundos(g) { const n = ['gancho', 'desarrollo', 'cta'].map(k => g[k] || '').join(' ').split(/\s+/).filter(Boolean).length; return Math.round(n / 2.5); }
 const guDur = g => { const s = guSegundos(g); return s ? '≈ ' + s + ' s' : '—'; };
@@ -67,28 +69,42 @@ function guPintar(todo) {
   if (!todo && GU.abierto && act && sec.contains(act) && /^(TEXTAREA|INPUT)$/.test(act.tagName)) { guPintarMeta(); return; }
   const y = sec.scrollTop;
   sec.innerHTML = '<nav class="gu-barra" aria-label="Pestañas de Guiones">' +
-    [['guiones', 'Guiones'], ['competencia', 'Competencia']].map(([k, t]) => '<button type="button" data-gu-tab="' + k + '" aria-current="' + (GU.tab === k && !GU.abierto) + '">' + t + '</button>').join('') + '<span class="gu-beta"><i class="cnt-beta">Beta</i> En pruebas: puede cambiar</span></nav>' +
-    '<div class="gu-cuerpo">' + (GU.abierto && GU.lista[GU.abierto] ? guEditor(GU.lista[GU.abierto]) : GU.tab === 'competencia' ? guVCompetencia() : guVGuiones()) + '</div>';
+    [['reel', 'Orgánicos'], ['anuncio', 'Ads'], ['competencia', 'Competencia']].map(([k, t]) => '<button type="button" data-gu-tab="' + k + '" aria-current="' +
+      (!GU.abierto && (k === 'competencia' ? GU.tab === 'competencia' : GU.tab === 'guiones' && (GU.tipo || 'reel') === k)) + '">' + t + '</button>').join('') + '<span class="gu-beta"><i class="cnt-beta">Beta</i> En pruebas: puede cambiar</span></nav>' +
+    '<div class="gu-cuerpo">' + (GU.abierto && GU.lista[GU.abierto] ? guEditor(GU.lista[GU.abierto]) : GU.tab === 'competencia' ? guVCompetencia() : '<div class="gu-conindice">' + guIndice() + '<div class="gu-principal">' + guVGuiones() + '</div></div>') + '</div>';
   sec.scrollTop = todo ? 0 : y;
+}
+/* Índice como el Google Docs de Sandra (23/10/2026): Globales · Por rama · cada formación · Dobles grados.
+   El grupo es la formación del guion (la misma que en todos los talleres: regForm). */
+function guIndice() {
+  const todos = Object.values(GU.lista).filter(g => (g.tipo || 'reel') === (GU.tipo || 'reel')), n = f => todos.filter(g => regForm(g) === f).length;
+  const it = (f, t) => '<button type="button" data-gu-grupo="' + esc(f) + '" aria-current="' + (GU.grupo === f) + '"' + (f !== '*' && !n(f) ? ' class="vacio0"' : '') + '>' +
+    '<span>' + t + '</span><b>' + (f === '*' ? todos.length : n(f)) + '</b></button>';
+  const ciclos = [].concat.apply([], FORM_CICLOS.map(g => g[1])).filter(c => !/^Doble/.test(c)), dobles = [].concat.apply([], FORM_CICLOS.map(g => g[1])).filter(c => /^Doble/.test(c));
+  const sin = n('');
+  return '<nav class="gu-indice" aria-label="Índice de guiones">' + it('*', 'Todos') + it('Transversal', chipForm('Transversal')) +
+    '<h4>Por rama</h4>' + FORM_RAMAS.map(r => it(r[0], chipForm(r[0]))).join('') +
+    '<h4>Formaciones</h4>' + ciclos.map(c => it(c, chipForm(c))).join('') +
+    '<h4>Dobles grados</h4>' + dobles.map(c => it(c, chipForm(c))).join('') +
+    (sin ? '<h4>Sin ordenar</h4>' + it('', 'Sin formación') : '') + '</nav>';
 }
 function guVGuiones() {
   const todos = Object.values(GU.lista);
-  const deTipo = todos.filter(g => !GU.tipo || (g.tipo || 'reel') === GU.tipo);
+  const deTipo = todos.filter(g => (g.tipo || 'reel') === (GU.tipo || 'reel') && (GU.grupo === '*' || regForm(g) === GU.grupo));
   const lista = deTipo.filter(g => GU.filtro === 'todos' || guEtapa(g) === GU.filtro)
     .sort((a, b) => GU_ETAPAS.findIndex(e => e[0] === guEtapa(a)) - GU_ETAPAS.findIndex(e => e[0] === guEtapa(b)) || String(b.upd || '').localeCompare(String(a.upd || '')));
-  let h = '<div class="gu-acciones"><button class="btn pri" id="gu-nuevo">+ Nuevo guion</button>' +
-    '<label class="ft-sel' + (GU.tipo ? ' activo' : '') + '"><select id="gu-tipo-f" aria-label="Tipo"><option value="">Reels y anuncios</option>' +
-    Object.keys(GU_TIPOS).map(k => '<option value="' + k + '"' + (GU.tipo === k ? ' selected' : '') + '>' + (k === 'reel' ? 'Solo reels' : 'Solo anuncios') + '</option>').join('') + '</select></label></div>';
+  let h = '<div class="gu-acciones"><button class="btn pri" id="gu-nuevo">+ Nuevo guion</button><button class="btn" id="gu-pegar">Pegar un guion que ya tengo</button>' +
+'</div>';
   h += '<div class="mz-vistas gu-filtros" role="tablist" aria-label="Filtrar por etapa">' +
     [['todos', 'Todos', deTipo.length]].concat(GU_ETAPAS.map(([k, t]) => [k, t, deTipo.filter(g => guEtapa(g) === k).length]))
       .map(([k, t, n]) => '<button class="mz-vista" data-gu-filtro="' + k + '" aria-pressed="' + (GU.filtro === k) + '">' + t + ' <span>' + n + '</span></button>').join('') + '</div>';
   if (!GU.listo && guDb()) return h + '<p class="cnt-cargando">Cargando…</p>';
   if (!todos.length) return h + '<div class="vacio"><b>Todavía no hay guiones</b>Crea uno con «+ Nuevo guion» o desde un anuncio de la pestaña Competencia.</div>';
   if (!lista.length) return h + '<p class="pr-vacio">Ninguno.</p>';
-  return h + '<div class="gu-tabla" role="table"><div class="gu-fila gu-th" role="row"><span>Código</span><span>Guion</span><span>Tipo</span><span>Graba</span><span>Duración</span><span>Etapa</span></div>' +
+  return h + '<div class="gu-tabla" role="table"><div class="gu-fila gu-th" role="row"><span>Código</span><span>Guion</span><span>Graba</span><span>Duración</span><span>Etapa</span></div>' +
     lista.map(g => '<button type="button" class="gu-fila" role="row" data-gu-abrir="' + esc(g.id) + '"><span class="pr-cod">' + guCod(g) + '</span>' +
       '<span class="gu-tit"><b>' + esc(g.titulo || '(sin título)') + '</b><small>' + esc((g.gancho || 'Sin gancho todavía').slice(0, 110)) + '</small></span>' +
-      '<span>' + guTipo(g) + '</span><span>' + (g.graba === 'otra' ? 'Otra persona' : 'Yo') + '</span><span>' + guDur(g) + '</span><span>' + guPill(g) + '</span></button>').join('') + '</div>';
+      '<span>' + (g.graba === 'otra' ? 'Otra persona' : 'Yo') + '</span><span>' + guDur(g) + '</span><span>' + guPill(g) + '</span></button>').join('') + '</div>';
 }
 function guVCompetencia() {
   const lista = Object.values(GU.comp).sort((a, b) => String(b.creado || '').localeCompare(String(a.creado || '')));
@@ -182,6 +198,31 @@ async function guPedir() {
   GU.pidiendo = false; guGuardar('guiones', g); guPintar(true);
 }
 
+/* ---------- rescatar guiones que estaban en Docs, Notion o chats (Sandra, 23/10/2026: «los empecé a perder») ---------- */
+function guAbrirPegar() {
+  $('#onb').hidden = false;
+  $('#onb').innerHTML = '<div class="onbcaja gu-modal" role="dialog" aria-modal="true" aria-label="Pegar un guion"><header><k>' + GU_TIPOS[GU.tipo || 'reel'] + (GU.grupo && GU.grupo !== '*' ? ' · ' + esc(GU.grupo === 'Transversal' ? 'Globales' : GU.grupo) : '') + '</k><h2>Pegar un guion que ya tengo</h2></header><div class="cuerpo">' +
+    '<textarea id="gu-pegado" rows="12" placeholder="Pega el guion tal cual lo tienes (de Docs, Notion, un chat…). Claude lo reparte en gancho, desarrollo, CTA y texto en pantalla sin cambiarle las palabras."></textarea>' +
+    (EST.sample ? '' : '<p class="est-pista">Sin Claude (ábrelo en claude.ai) se guarda todo en «Desarrollo».</p>') + '</div>' +
+    '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" id="gu-pegar-ok">Guardar guion</button></footer></div>';
+  setTimeout(() => { const i = $('#gu-pegado'); if (i) i.focus(); }, 30);
+}
+async function guPegar() {
+  const txt = ($('#gu-pegado').value || '').trim(); if (!txt) { toast('Pega el texto del guion'); return; }
+  const b = $('#gu-pegar-ok'); if (b) { b.disabled = true; b.textContent = 'Ordenando…'; }
+  let campos = {titulo: txt.split('\n')[0].slice(0, 80), desarrollo: txt};
+  if (EST.sample) {
+    try {
+      const r = await EST.sample.json('Reparte este guion de vídeo en sus partes SIN cambiar ni una palabra (solo cortar y colocar). Responde SOLO con JSON: ' +
+        '{"titulo": "un título corto que lo identifique (máx. 8 palabras)", "gancho": "lo de los primeros segundos", "desarrollo": "el cuerpo", "cta": "la llamada a la acción final", "pantalla": "rótulos o texto en pantalla si los indica, uno por línea"}. ' +
+        'Si una parte no existe, déjala vacía.\n\nGUION:\n' + txt, {modelTier: 'default'});
+      if (r && (r.gancho || r.desarrollo)) campos = {titulo: String(r.titulo || campos.titulo), gancho: String(r.gancho || ''), desarrollo: String(r.desarrollo || ''), cta: String(r.cta || ''), pantalla: String(r.pantalla || '')};
+    } catch (e) {}
+  }
+  const g = guNuevo(Object.assign({tipo: GU.tipo || 'reel', origenTexto: txt}, GU.grupo !== '*' && GU.grupo ? {formacion: GU.grupo} : {}, campos));
+  cerrarPanel(); GU.abierto = g.id; guPintar(true); toast('Guion guardado. Revisa que esté bien repartido');
+}
+
 /* ---------- etapas, copiar, anuncios ---------- */
 function guIrA(g, k) {
   if (guEtapa(g) === k) return;
@@ -219,9 +260,13 @@ function guGuardarAnuncio(id) {
 /* ---------- eventos ---------- */
 document.addEventListener('click', e => {
   const t = e.target; if (!t.closest) return;
-  const tab = t.closest('[data-gu-tab]'); if (tab) { GU.tab = tab.dataset.guTab; GU.abierto = null; try { localStorage.setItem('guiones.tab', GU.tab); } catch (x) {} guPintar(true); return; }
+  const tab = t.closest('[data-gu-tab]'); if (tab) { const k = tab.dataset.guTab; GU.tab = k === 'competencia' ? 'competencia' : 'guiones'; if (k !== 'competencia') GU.tipo = k;
+    GU.abierto = null; try { localStorage.setItem('guiones.tab', GU.tab); localStorage.setItem('guiones.tipo', GU.tipo || 'reel'); } catch (x) {} guPintar(true); return; }
+  const gr = t.closest('[data-gu-grupo]'); if (gr) { GU.grupo = gr.dataset.guGrupo; guPintar(false); return; }
   const f = t.closest('[data-gu-filtro]'); if (f) { GU.filtro = f.dataset.guFiltro; guPintar(false); return; }
-  if (t.closest('#gu-nuevo')) { const g = guNuevo({tipo: GU.tipo || 'reel'}); GU.abierto = g.id; guPintar(true); setTimeout(() => { const i = $('#gu-titulo'); if (i) i.focus(); }, 30); return; }
+  if (t.closest('#gu-pegar')) { guAbrirPegar(); return; }
+  if (t.closest('#gu-pegar-ok')) { guPegar(); return; }
+  if (t.closest('#gu-nuevo')) { const g = guNuevo(Object.assign({tipo: GU.tipo || 'reel'}, GU.grupo !== '*' && GU.grupo ? {formacion: GU.grupo} : {})); GU.abierto = g.id; guPintar(true); setTimeout(() => { const i = $('#gu-titulo'); if (i) i.focus(); }, 30); return; }
   const ab = t.closest('[data-gu-abrir]'); if (ab) { GU.abierto = ab.dataset.guAbrir; guPintar(true); return; }
   if (t.closest('#gu-volver')) { GU.abierto = null; guPintar(true); return; }
   const ps = t.closest('[data-gu-paso]'); if (ps) { const g = GU.lista[GU.abierto]; if (g) guIrA(g, ps.dataset.guPaso); return; }
