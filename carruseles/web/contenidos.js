@@ -222,3 +222,44 @@ document.addEventListener('click', e => {
   e.preventDefault(); e.stopImmediatePropagation();
   toast('El directorio de creatividades llega pronto');
 }, true);
+
+/* ---------- ordenar el menú de arriba arrastrando (Sandra, 23/10/2026; TEMPORAL: cuando lo deje a su gusto, se quita el
+   arrastre y el orden se fija en CNT_SECCIONES). El orden se guarda en el db (ajustes/menu) para toda la cuenta. ---------- */
+let CNT_ARRASTRA = null;
+function cntOrdenar(orden) {
+  if (!Array.isArray(orden) || !orden.length) return;
+  const nav = document.querySelector('#cnt-lado .cnt-nav'); if (!nav) return;
+  orden.forEach(id => { const b = nav.querySelector('[data-cnt="' + id + '"]:not(.cnt-solo-movil), [data-cnt-cerrada="' + id + '"]'); if (b) nav.appendChild(b); });
+  const ini = nav.querySelector('.cnt-solo-movil'); if (ini) nav.insertBefore(ini, nav.firstChild);
+  CNT_SECCIONES.sort((a, b) => (orden.indexOf(a.id) + 1 || 99) - (orden.indexOf(b.id) + 1 || 99));
+  cntPintarInicio();
+}
+function cntOrdenActual() { return [...document.querySelectorAll('#cnt-lado .cnt-nav > button:not(.cnt-solo-movil)')].map(b => b.dataset.cnt || b.dataset.cntCerrada); }
+(function cntLeerOrden() {
+  const db = (typeof EST_DB !== 'undefined' && EST_DB) || null;
+  if (!db) return setTimeout(cntLeerOrden, 1200);
+  try { db.collection('ajustes').onSnapshot(snap => { const d = snap.docs.find(x => x.id === 'menu'); if (d && !CNT_ARRASTRA) cntOrdenar((d.data() || {}).orden); }); } catch (e) {}
+})();
+(function cntArrastrable() {
+  if (matchMedia('(max-width: 900px)').matches) return;   // en el móvil no (la barra de abajo no se arrastra bien)
+  document.querySelectorAll('#cnt-lado .cnt-nav > button:not(.cnt-solo-movil)').forEach(b => { b.draggable = true; b.title = (b.title || '') + ' · arrastra para cambiar el orden'; });
+})();
+document.addEventListener('dragstart', e => {
+  const b = e.target.closest && e.target.closest('#cnt-lado .cnt-nav > button'); if (!b) return;
+  CNT_ARRASTRA = b; b.classList.add('cnt-arrastrando'); e.dataTransfer.effectAllowed = 'move';
+  try { e.dataTransfer.setData('text/plain', b.dataset.cnt || ''); } catch (x) {}
+});
+document.addEventListener('dragover', e => {
+  if (!CNT_ARRASTRA) return;
+  const sobre = e.target.closest && e.target.closest('#cnt-lado .cnt-nav > button:not(.cnt-solo-movil)'); if (!sobre || sobre === CNT_ARRASTRA) return;
+  e.preventDefault();
+  const r = sobre.getBoundingClientRect(), antes = e.clientX < r.left + r.width / 2;
+  sobre.parentNode.insertBefore(CNT_ARRASTRA, antes ? sobre : sobre.nextSibling);
+});
+document.addEventListener('dragend', () => {
+  if (!CNT_ARRASTRA) return;
+  CNT_ARRASTRA.classList.remove('cnt-arrastrando'); CNT_ARRASTRA = null;
+  const orden = cntOrdenActual(); cntOrdenar(orden);
+  const db = (typeof EST_DB !== 'undefined' && EST_DB) || null;
+  if (db) db.doc('ajustes/menu').set({orden: orden, upd: new Date().toISOString()}).then(() => toast('Orden guardado'), x => toast('No he podido guardar el orden (' + (x && x.code || 'error') + ')'));
+});

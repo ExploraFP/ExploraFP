@@ -117,6 +117,8 @@ La herramienta de carruseles pasa a llamarse **Contenidos**: barra lateral izqui
 
 - 23/10/2026 (Sandra, Mac, página completa: «si subo rápido se mueve la franja lima», «quita todos los rebotes»): `overscroll-behavior: none` en TODO (`*` en contenidos.css y newsletter-identidad.css). El rebote del scroll de Mac arrastraba la barra lima pegada; en el Chromium de pruebas no rebota, así que no se ve en las pruebas. Fuera también el texto «Beta · En pruebas: puede cambiar» de las barras de Guiones y Estáticos (las etiquetas «Beta» del menú siguen). Índice de Guiones sin scroll propio (se veía cortado).
 
+- 23/10/2026 · TEMPORAL: el menú de arriba se ordena arrastrando (solo ordenador; final de contenidos.js, `cntOrdenar`/`cntOrdenActual`), y el orden se guarda en el db `ajustes/menu` {orden}. Sandra avisará cuando termine: entonces QUITAR el arrastre (bloque «ordenar el menú de arriba arrastrando» + reglas `.cnt-arrastrando`) y dejar su orden fijo en `CNT_SECCIONES` (leerlo de `ajustes/menu`).
+
 ## Herramienta web (banco + estudio)
 Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de carruseles").
 - `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita
