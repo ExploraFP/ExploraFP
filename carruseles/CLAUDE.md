@@ -115,6 +115,8 @@ La herramienta de carruseles pasa a llamarse **Contenidos**: barra lateral izqui
 
 - 23/10/2026 · GUIONES como el Google Docs de Sandra (los tenía en Docs, luego Notion y chats, «los empecé a perder»): pestañas **Orgánicos · Ads · Competencia** (el `tipo` reel/anuncio se enseña como Orgánico/Ads; ya no hay desplegable de tipo ni columna Tipo) y, dentro, un **índice a la izquierda**: Todos · Globales · Por rama · Formaciones · Dobles grados (+ «Sin formación» si hay), con su número; el grupo es la formación común (`regForm`). «+ Nuevo guion» hereda el tipo y la formación abiertos. «Pegar un guion que ya tengo»: Claude lo reparte en título, gancho, desarrollo, CTA y pantalla SIN cambiar palabras (guarda el original en `origenTexto`; sin Claude, todo va a Desarrollo). **«Transversal» se enseña como «Globales» en toda la herramienta** (Sandra); el valor guardado sigue siendo «Transversal» (chipAlcance, chipForm, filtros y opciones).
 
+- 23/10/2026 (Sandra, Mac, página completa: «si subo rápido se mueve la franja lima», «quita todos los rebotes»): `overscroll-behavior: none` en TODO (`*` en contenidos.css y newsletter-identidad.css). El rebote del scroll de Mac arrastraba la barra lima pegada; en el Chromium de pruebas no rebota, así que no se ve en las pruebas. Fuera también el texto «Beta · En pruebas: puede cambiar» de las barras de Guiones y Estáticos (las etiquetas «Beta» del menú siguen). Índice de Guiones sin scroll propio (se veía cortado).
+
 ## Herramienta web (banco + estudio)
 Publicada en https://claude.ai/artifact/1j6EgNthf9zB8n8rfSqa5t (antes "Banco de carruseles").
 - `web/banco-base.html`: la página del banco tal como estaba publicada (ideas, inventario, datos). Si se edita
