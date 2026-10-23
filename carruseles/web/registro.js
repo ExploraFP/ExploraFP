@@ -246,7 +246,8 @@ document.addEventListener('input', ev => {
 });
 document.addEventListener('change', ev => { if (ev.target.id === 'reg-formato') { REG.formato = ev.target.value; regPintar(); } });
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape') regCerrarForm(); });
-addEventListener('scroll', regCerrarForm, true);
+// se cierra si se mueve la página, no al deslizar DENTRO de la lista (Sandra, 23/10/2026: «no me deja deslizar»)
+addEventListener('scroll', ev => { const p = document.getElementById('reg-fpop'); if (p && !(ev.target === p || (ev.target.nodeType === 1 && p.contains(ev.target)))) regCerrarForm(); }, true);
 
 // la ficha común en el editor de carruseles (debajo de «Diseño»; en Publicado, solo para ver)
 const _pintarEditorReg = pintarEditor;
