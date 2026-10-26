@@ -52,7 +52,7 @@ body.cnt-en-nl { overflow: hidden; }
    empujaba a las de su derecha; ahora todas tienen el mismo grosor. Y el hueco de la barra de desplazamiento se reserva
    siempre, para que la página no cambie de ancho cuando aparece. */
 html { scrollbar-gutter: stable; }
-html:has(body.cnt-en-nl) { scrollbar-gutter: auto; }  /* en la newsletter no hay scroll de la página: sin franja a la derecha */
+/* 26/10/2026: la newsletter también reserva la franja del scroll; si no, el menú de arriba se movía 15 px al entrar en ella (Sandra) */
 .views button, .views button[aria-current="true"] { font-weight: 600 !important; }
 
 /* Carruseles: el botón principal es lima en todas partes (en las ventanas salía verde oscuro) */
@@ -385,3 +385,6 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
    secciones con caja propia (arriba), el panel de la ficha, las ventanas y los desplegables (abajo). */
 html, body { overscroll-behavior-y: none; }
 #dbody, .onbcaja .cuerpo, .reg-fpop, .mz-flista, .mz-fmtmenu { overscroll-behavior: none; }
+/* 26/10/2026 (Sandra: «la barra de arriba se mueve cuando selecciono una pestaña u otra»): la sección abierta iba en negrita (700)
+   y era ~3 px más ancha, así que empujaba a las de su derecha. Mismo grosor en todas; la negrita se simula con sombra. */
+.cnt-nav button[aria-current="page"] { font-weight: 500 !important; text-shadow: .5px 0 0 currentColor, -.5px 0 0 currentColor; }
