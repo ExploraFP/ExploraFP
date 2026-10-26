@@ -513,7 +513,7 @@ function refrescarEstudio() {
     window.scrollTo(0, y); pintarMinis($('#canvas'));
   }
   const n = carruselesDe('pendientes').length, b = document.querySelector('#vistas [data-v="producir"]');
-  if (b) b.textContent = 'Producción';
+  if (b) b.textContent = 'Carruseles';   // dentro de «Diseño» (26/10/2026)
   if (EST.abierto) pintarEditor();
 }
 

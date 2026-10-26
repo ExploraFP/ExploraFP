@@ -18,19 +18,21 @@ const CNT_ICONOS = {
 // 22/10/2026 (Sandra: la barra «parece muy arcaica», «quizá un emoji a cada uno»): emoji en vez de dibujos. Los dibujos se guardan
 // en CNT_ICONOS_DIBUJO por si se quiere volver.
 const CNT_ICONOS_DIBUJO = Object.assign({}, CNT_ICONOS);
-Object.assign(CNT_ICONOS, {inicio: '🏠', matriz: '🧭', carruseles: '🎠', newsletter: '💌', guiones: '🎬', estaticos: '🧩', imagenes: '🖼️', directorio: '🗂️', ajustes: '⚙️'});
+Object.assign(CNT_ICONOS, {inicio: '🏠', matriz: '🧭', diseno: '🎨', carruseles: '🎠', newsletter: '💌', guiones: '🎬', estaticos: '🧩', imagenes: '🖼️', directorio: '🗂️', ajustes: '⚙️'});
 // Imágenes es la pestaña «fotos» de Carruseles sacada a sección propia (común para todas; 16/10/2026)
 const CNT_SECCIONES = [   // orden elegido por Sandra arrastrando (23/10/2026); el arrastre ya no está
   {id: 'matriz', nombre: 'Matriz'},                        // 26/10/2026: sale de Carruseles, vale para todos los formatos (Matriz + Datos)
   {id: 'guiones', nombre: 'Guiones', beta: true},          // 22/10/2026 (guiones.js)
-  {id: 'estaticos', nombre: 'Estáticos', beta: true},      // 22/10/2026 (estaticos.js): normales 1:1 + vertical y dinámicos
-  {id: 'carruseles', nombre: 'Carruseles'},
+  // 26/10/2026 (Sandra): Carruseles y Estáticos van juntos en «Diseño», con subpestañas Carruseles · Estáticos · Dinámicos.
+  // Por dentro siguen siendo dos secciones ('carruseles' y 'estaticos', CNT_DISENO), cada una con su proceso.
+  {id: 'diseno', nombre: 'Diseño'},
   {id: 'newsletter', nombre: 'Newsletter'},
   {id: 'directorio', nombre: 'Directorio', beta: true},    // 23/10/2026: biblioteca de lo terminado (registro.js)
   {id: 'imagenes', nombre: 'Galería'}                      // antes «Imágenes» (22/10/2026); el id sigue siendo 'imagenes'
 ];
 const CNT = {sec: 'inicio', nl: null, cal: null};
-try { const g = localStorage.getItem('contenidos.seccion'); if (g === 'inicio' || CNT_SECCIONES.some(s => s.id === g)) CNT.sec = g; } catch (e) {}
+const CNT_DISENO = ['carruseles', 'estaticos'];
+try { const g = localStorage.getItem('contenidos.seccion'); if (g === 'inicio' || CNT_DISENO.indexOf(g) >= 0 || CNT_SECCIONES.some(s => s.id === g)) CNT.sec = g; } catch (e) {}
 
 function cntMontar() {
   const lado = document.createElement('aside'); lado.id = 'cnt-lado'; lado.setAttribute('aria-label', 'Secciones');
@@ -59,8 +61,11 @@ function cntMontar() {
   cntIr(CNT.sec, true);
 }
 function cntIr(id, inicio) {
-  CNT.sec = id; try { localStorage.setItem('contenidos.seccion', id); } catch (e) {}
-  document.querySelectorAll('#cnt-lado .cnt-nav [data-cnt]').forEach(b => b.setAttribute('aria-current', b.dataset.cnt === id ? 'page' : 'false'));
+  // «Diseño» abre la última de sus subpestañas (Carruseles o Estáticos/Dinámicos)
+  if (id === 'diseno') { id = 'carruseles'; try { const d = localStorage.getItem('contenidos.diseno'); if (CNT_DISENO.indexOf(d) >= 0) id = d; } catch (e) {} }
+  CNT.sec = id; try { localStorage.setItem('contenidos.seccion', id); if (CNT_DISENO.indexOf(id) >= 0) localStorage.setItem('contenidos.diseno', id); } catch (e) {}
+  const enMenu = CNT_DISENO.indexOf(id) >= 0 ? 'diseno' : id;
+  document.querySelectorAll('#cnt-lado .cnt-nav [data-cnt]').forEach(b => b.setAttribute('aria-current', b.dataset.cnt === enMenu ? 'page' : 'false'));
   document.body.classList.toggle('cnt-en-nl', id === 'newsletter');
   document.body.classList.toggle('cnt-en-inicio', id === 'inicio');
   document.body.classList.toggle('cnt-en-img', id === 'imagenes');
@@ -101,6 +106,11 @@ render = function () {
 /* ---------- Inicio de Contenidos: una tarjeta por sección con lo que tiene pendiente ---------- */
 function cntEstado(id) {
   try {
+    if (id === 'diseno') {
+      const xs = typeof ES !== 'undefined' ? Object.values(ES.lista) : [];
+      const c = cntEstado('carruseles');
+      return (c.length ? ['Carruseles: ' + c.join(', ')] : []).concat([xs.length + (xs.length === 1 ? ' estático o dinámico' : ' estáticos y dinámicos')]);
+    }
     if (id === 'carruseles') {
       const cs = Object.values(EST.lista || {}).filter(c => c.estado !== 'hecho');
       const rev = cs.filter(c => !c.listo && c.slides && c.slides.length).length, listos = cs.filter(c => c.listo).length;
@@ -213,6 +223,19 @@ function cntAjustes(abrir) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('cnt-ajustes-menu')) cntAjustes(false); });
 try { const t = localStorage.getItem('contenidos.tema'); if (t) cntPonerTema(t); } catch (e) {}
 cntMontar();
+// «Diseño»: en la barra lima de Carruseles, detrás de «Carruseles» (la vista Producción), van Estáticos y Dinámicos
+(function cntSubDiseno() {
+  const v = document.getElementById('vistas'); if (!v || v.querySelector('[data-dis-es]')) return;
+  v.insertAdjacentHTML('beforeend', '<button type="button" data-dis-es="normal">Estáticos</button><button type="button" data-dis-es="dinamico">Dinámicos</button>');
+})();
+document.addEventListener('click', e => {
+  const t = e.target;
+  const es = t.closest && t.closest('[data-dis-es]');
+  if (es) { e.preventDefault(); e.stopImmediatePropagation(); if (typeof EST !== 'undefined' && EST.abierto) cerrarEditor();
+    ES.tab = es.dataset.disEs; ES.abierto = null; try { localStorage.setItem('estaticos.tab', ES.tab); } catch (x) {} cntIr('estaticos'); return; }
+  const ca = t.closest && t.closest('[data-dis-ir]');
+  if (ca) { e.preventDefault(); e.stopImmediatePropagation(); if (typeof S !== 'undefined') S.v = 'producir'; cntIr('carruseles'); }
+}, true);
 
 // La slide grande del editor se escalaba con el ancho que tenía ANTES de que acabara de colocarse la página: en el móvil
 // salía más grande que su caja y se cortaba por la derecha (repaso del 16/10/2026). Se vuelve a escalar en el siguiente fotograma.

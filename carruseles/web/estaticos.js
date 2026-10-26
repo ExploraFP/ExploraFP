@@ -101,7 +101,9 @@ function esPintar(todo) {
   if (!todo && ES.abierto && act && sec.contains(act) && /^(TEXTAREA|INPUT)$/.test(act.tagName)) return;
   const y = sec.scrollTop;
   sec.innerHTML = '<nav class="gu-barra" aria-label="Pestañas de Estáticos">' +
-    [['normal', 'Normales'], ['dinamico', 'Dinámicos']].map(([k, t]) => '<button type="button" data-es-tab="' + k + '" aria-current="' + (ES.tab === k && !ES.abierto) + '">' + t + '</button>').join('') +
+    // subpestañas de «Diseño» (26/10/2026): Carruseles va a su sección; Estáticos y Dinámicos son las dos listas de aquí
+    '<button type="button" data-dis-ir="carruseles" aria-current="false">Carruseles</button>' +
+    [['normal', 'Estáticos'], ['dinamico', 'Dinámicos']].map(([k, t]) => '<button type="button" data-es-tab="' + k + '" aria-current="' + (ES.tab === k && !ES.abierto) + '">' + t + '</button>').join('') +
     '</nav>' +
     '<div class="gu-cuerpo">' + (ES.abierto && ES.lista[ES.abierto] ? esEditor(ES.lista[ES.abierto]) : esVLista()) + '</div>';
   sec.scrollTop = todo ? 0 : y;

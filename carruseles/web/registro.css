@@ -85,3 +85,11 @@ body.cnt:not(.cnt-en-mz) #vistas button[data-v="ideas"], body.cnt:not(.cnt-en-mz
 .mz-fmtmenu button { display: flex; align-items: center; gap: 10px; border: 0; background: none; text-align: left; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--ink); font: 14px var(--f-ui); }
 .mz-fmtmenu button:hover { background: var(--cnt-lima-bar); }
 .mz-fmtmenu button span { width: 20px; text-align: center; }
+/* «Diseño» (26/10/2026): Estáticos y Dinámicos solo en la barra de Carruseles */
+body.cnt.cnt-en-mz #vistas [data-dis-es], body.cnt.cnt-en-img #vistas [data-dis-es] { display: none !important; }
+/* «Diseño» (26/10/2026): al pasar de Carruseles a Estáticos la barra lima no se mueve. La pestaña abierta en negrita era más
+   ancha y empujaba a las de al lado (7 px); ahora la negrita se simula con sombra, así todas miden siempre lo mismo.
+   Y la barra de las secciones con caja propia mide lo mismo que la de Carruseles (51 px). */
+.cnt #vistas button, .cnt .gu-barra button { font-weight: 400 !important; }
+.cnt #vistas button[aria-current="true"], .cnt .gu-barra button[aria-current="true"] { text-shadow: .45px 0 0 currentColor, -.45px 0 0 currentColor; }
+.cnt .gu-barra, .cnt .gu-barra button { min-height: 51px; }
