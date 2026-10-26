@@ -22,12 +22,12 @@ Object.assign(CNT_ICONOS, {inicio: '🏠', matriz: '🧭', diseno: '🎨', carru
 // Imágenes es la pestaña «fotos» de Carruseles sacada a sección propia (común para todas; 16/10/2026)
 const CNT_SECCIONES = [   // orden elegido por Sandra arrastrando (23/10/2026); el arrastre ya no está
   {id: 'matriz', nombre: 'Matriz'},                        // 26/10/2026: sale de Carruseles, vale para todos los formatos (Matriz + Datos)
-  {id: 'guiones', nombre: 'Guiones', beta: true},          // 22/10/2026 (guiones.js)
+  {id: 'guiones', nombre: 'Guiones'},          // 22/10/2026 (guiones.js)
   // 26/10/2026 (Sandra): Carruseles y Estáticos van juntos en «Diseño», con subpestañas Carruseles · Estáticos · Dinámicos.
   // Por dentro siguen siendo dos secciones ('carruseles' y 'estaticos', CNT_DISENO), cada una con su proceso.
   {id: 'diseno', nombre: 'Diseño'},
   {id: 'newsletter', nombre: 'Newsletter'},
-  {id: 'directorio', nombre: 'Directorio', beta: true},    // 23/10/2026: biblioteca de lo terminado (registro.js)
+  {id: 'directorio', nombre: 'Directorio'},    // 23/10/2026: biblioteca de lo terminado (registro.js)
   {id: 'imagenes', nombre: 'Galería'}                      // antes «Imágenes» (22/10/2026); el id sigue siendo 'imagenes'
 ];
 const CNT = {sec: 'inicio', nl: null, cal: null};
@@ -217,7 +217,9 @@ function cntAjustes(abrir) {
   m = document.createElement('div'); m.id = 'cnt-ajustes-menu'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Ajustes');
   m.innerHTML = '<b>Apariencia</b><div class="cnt-aj-ops" role="radiogroup">' +
     [['light', '☀️', 'Claro'], ['dark', '🌙', 'Oscuro'], ['', '💻', 'Como el sistema']].map(([k, ic, t]) =>
-      '<button type="button" role="radio" data-cnt-tema="' + k + '" aria-checked="' + (cur === k) + '"><span>' + ic + '</span>' + t + '</button>').join('') + '</div>';
+      '<button type="button" role="radio" data-cnt-tema="' + k + '" aria-checked="' + (cur === k) + '"><span>' + ic + '</span>' + t + '</button>').join('') + '</div>' +
+    // papelera común (26/10/2026, papelera.js al final de registro.js)
+    (typeof PAP !== 'undefined' ? '<b>Borrados</b><div class="cnt-aj-ops"><button type="button" id="pap-abrir"><span>🗑</span>Papelera' + (Object.keys(PAP.docs).length ? ' (' + Object.keys(PAP.docs).length + ')' : '') + '</button></div>' : '');
   document.body.appendChild(m);
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('cnt-ajustes-menu')) cntAjustes(false); });

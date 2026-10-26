@@ -230,7 +230,7 @@ document.addEventListener('click', ev => {
   if (t.closest('#reg-nueva')) { regAbrirExt(null); return; }
   const eo = t.closest('[data-reg-ext-ok]'); if (eo) { regGuardarModalExt(eo.dataset.regExtOk); return; }
   const ed = t.closest('[data-reg-editar]'); if (ed) { regAbrirExt(ed.dataset.regEditar); return; }
-  const bo = t.closest('[data-reg-borrar]'); if (bo) { const id = bo.dataset.regBorrar; delete REG.ext[id]; const db = guDb(); if (db) db.doc('externas/' + id).delete().catch(() => {}); cerrarPanel(); regPintar(); toast('Borrada del directorio'); return; }
+  const bo = t.closest('[data-reg-borrar]'); if (bo) { const id = bo.dataset.regBorrar; if (REG.ext[id]) papTirar('externas', id, REG.ext[id], REG.ext[id].num ? 'X' + String(REG.ext[id].num).padStart(2, '0') : '', REG.ext[id].titulo); delete REG.ext[id]; const db = guDb(); if (db) db.doc('externas/' + id).delete().catch(() => {}); cerrarPanel(); regPintar(); toast('Borrada del directorio'); return; }
   const vr = t.closest('[data-reg-ver]'); if (vr) { const [k, id] = vr.dataset.regVer.split(':'); regVer(k, id); return; }
   const tl = t.closest('[data-reg-taller]');
   if (tl) { const [k, id] = tl.dataset.regTaller.split(':'); cerrarPanel();
@@ -345,3 +345,76 @@ abrirEditor = function (id) {
   if (CNT.sec === 'matriz') { cerrarPanel(); S.v = 'producir'; cntIr('carruseles', true); }
   return _abrirEditorMz.apply(this, arguments);
 };
+
+/* ---------- Papelera común (26/10/2026, Sandra: «la papelera me parece genial») ----------
+   Antes, borrar un carrusel, guion, estático o pieza hecha fuera no tenía vuelta atrás (se perdieron el C09 y un guion real).
+   Ahora, antes de borrar, se guarda una copia entera en la colección `papelera` (doc «<colección>__<id>»). Se ve en ⚙️ Ajustes →
+   Papelera: «Recuperar» la devuelve tal cual a su sitio; «Borrar ya» la quita para siempre. A los 30 días se vacía sola.
+   Las ideas de la Matriz no pasan por aquí (ya se marcan como descartadas y se deshacen); las fotos tampoco (se borra el archivo). */
+const PAP = {docs: {}};
+const PAP_DIAS = 30;
+const PAP_QUE = {carruseles: ['🎠', 'Carrusel'], guiones: ['🎬', 'Guion'], competencia: ['🎬', 'Anuncio de la competencia'], estaticos: ['🧩', 'Estático'], externas: ['📦', 'Hecha fuera']};
+function papTirar(col, id, x, cod, titulo) {
+  const db = guDb(); if (!db || !x) return;
+  const datos = JSON.parse(JSON.stringify(x)); delete datos.id;
+  const d = {col: col, id: id, datos: datos, cod: cod || '', titulo: String(titulo || '').slice(0, 140), borrado: new Date().toISOString()};
+  PAP.docs[col + '__' + id] = d;
+  db.doc('papelera/' + col + '__' + id).set(JSON.parse(JSON.stringify(d))).catch(() => {});
+}
+const _borrarCPap = borrarC;
+borrarC = function (id) { const c = EST.lista[id]; if (c) papTirar('carruseles', id, c, codigoC(c), c.titulo || c.tema); return _borrarCPap.apply(this, arguments); };
+const _guBorrarPap = guBorrar;
+guBorrar = function (col, id) { const x = (col === 'guiones' ? GU.lista : GU.comp)[id]; if (x) papTirar(col, id, x, col === 'guiones' ? guCod(x) : '', col === 'guiones' ? guTit(x) : (x.centro || x.gancho)); return _guBorrarPap.apply(this, arguments); };
+(function papConectar() {
+  const db = guDb(); if (!db) return setTimeout(papConectar, 1300);
+  db.collection('papelera').onSnapshot(snap => {
+    const m = {}; snap.docs.forEach(d => { const v = d.data(); if (v && v.col) m[d.id] = v; });
+    PAP.docs = m;
+    // se vacía sola a los 30 días
+    const tope = Date.now() - PAP_DIAS * 864e5;
+    Object.keys(m).forEach(k => { if (Date.parse(m[k].borrado || 0) < tope) { delete PAP.docs[k]; db.doc('papelera/' + k).delete().catch(() => {}); } });
+    if (document.getElementById('pap-lista')) papPintar();
+  }, () => {});
+})();
+function papDias(d) { const n = Math.floor((Date.now() - Date.parse(d.borrado)) / 864e5); return n <= 0 ? 'hoy' : n === 1 ? 'ayer' : 'hace ' + n + ' días'; }
+function papPintar() {
+  const l = document.getElementById('pap-lista'); if (!l) return;
+  const ds = Object.entries(PAP.docs).sort((a, b) => String(b[1].borrado).localeCompare(String(a[1].borrado)));
+  l.innerHTML = ds.length ? ds.map(([k, d]) => { const q = PAP_QUE[d.col] || ['🗂️', d.col];
+    return '<li><span class="pap-emo" title="' + esc(q[1]) + '">' + q[0] + '</span><span class="pap-txt"><b>' + esc((d.cod ? d.cod + ' · ' : '') + (String(d.titulo || '').replace(/\*/g, '') || '(sin título)')) + '</b>' +
+      '<small>' + esc(q[1]) + ' · borrado ' + papDias(d) + ' · se vacía en ' + Math.max(0, PAP_DIAS - Math.floor((Date.now() - Date.parse(d.borrado)) / 864e5)) + ' días</small></span>' +
+      '<button type="button" class="btn" data-pap-rec="' + esc(k) + '">Recuperar</button><button type="button" class="pap-ya" data-pap-ya="' + esc(k) + '" title="Borrar para siempre">Borrar ya</button></li>'; }).join('')
+    : '<li class="pap-vacia">La papelera está vacía.</li>';
+}
+function papAbrir() {
+  cntAjustes(false);
+  $('#onb').hidden = false;
+  $('#onb').innerHTML = '<div class="onbcaja pap-caja" role="dialog" aria-modal="true" aria-labelledby="pap-t"><div class="cuerpo"><h2 id="pap-t">🗑 Papelera</h2>' +
+    '<p class="pap-pista">Lo que borras se queda aquí ' + PAP_DIAS + ' días y luego se vacía solo.</p><ul class="pap-lista" id="pap-lista"></ul></div>' +
+    '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cerrar</button></footer></div>';
+  papPintar();
+}
+function papRecuperar(k) {
+  const d = PAP.docs[k], db = guDb(); if (!d || !db) return;
+  const x = Object.assign({}, d.datos);
+  // a su lista ya, sin esperar a la base de datos
+  if (d.col === 'carruseles') EST.lista[d.id] = Object.assign({id: d.id}, x);
+  else if (d.col === 'guiones') GU.lista[d.id] = Object.assign({id: d.id}, x);
+  else if (d.col === 'competencia') GU.comp[d.id] = Object.assign({id: d.id}, x);
+  else if (d.col === 'estaticos') ES.lista[d.id] = Object.assign({id: d.id}, x);
+  else if (d.col === 'externas') REG.ext[d.id] = Object.assign({id: d.id}, x);
+  db.doc(d.col + '/' + d.id).set(x).then(() => db.doc('papelera/' + k).delete()).catch(e => toast('No he podido recuperarlo (' + (e && e.code || 'error') + ')'));
+  delete PAP.docs[k]; papPintar();
+  toast((PAP_QUE[d.col] || ['', 'Pieza'])[1] + ' recuperado' + (d.cod ? ' (' + d.cod + ')' : '') + ': vuelve a estar en su sitio');
+  if (CNT.sec === 'carruseles' && typeof render === 'function') render(); else if (CNT.sec === 'guiones') guPintar(false); else if (CNT.sec === 'estaticos') esPintar(false); else if (CNT.sec === 'directorio') regPintar();
+}
+document.addEventListener('click', ev => {
+  const t = ev.target;
+  if (t.closest && t.closest('#pap-abrir')) { ev.stopImmediatePropagation(); papAbrir(); return; }
+  const r = t.closest && t.closest('[data-pap-rec]'); if (r) { ev.stopImmediatePropagation(); papRecuperar(r.dataset.papRec); return; }
+  const y = t.closest && t.closest('[data-pap-ya]');
+  if (y) { ev.stopImmediatePropagation(); const k = y.dataset.papYa;
+    if (y.dataset.seguro) { const db = guDb(); delete PAP.docs[k]; if (db) db.doc('papelera/' + k).delete().catch(() => {}); papPintar(); toast('Borrado para siempre'); }
+    else { y.dataset.seguro = '1'; y.textContent = '¿Seguro? Pulsa otra vez'; }
+    return; }
+}, true);

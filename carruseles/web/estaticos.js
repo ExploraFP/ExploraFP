@@ -315,10 +315,10 @@ document.addEventListener('click', ev => {
   if (t.closest('#es-bajar')) { const e = ES.lista[ES.abierto]; if (e) esDescargar(e); return; }
   if (t.closest('#es-borrar')) { const e = ES.lista[ES.abierto]; if (!e) return;
     $('#onb').hidden = false;
-    $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="es-b-t"><div class="cuerpo"><h2 id="es-b-t">¿Borrar ' + esc(esCod(e)) + '?</h2><p>No se puede recuperar.</p></div>' +
+    $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="es-b-t"><div class="cuerpo"><h2 id="es-b-t">¿Borrar ' + esc(esCod(e)) + '?</h2><p>Va a la papelera: la recuperas en ⚙️ Ajustes durante 30 días.</p></div>' +
       '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="es-borrar-ok">Sí, borrar</button></footer></div>'; return; }
-  if (t.closest('#es-borrar-ok')) { const id = ES.abierto; delete ES.lista[id]; const db = guDb(); if (db) db.doc('estaticos/' + id).delete().catch(() => {});
-    ES.abierto = null; cerrarPanel(); esPintar(true); toast('Borrado'); return; }
+  if (t.closest('#es-borrar-ok')) { const id = ES.abierto; if (ES.lista[id]) papTirar('estaticos', id, ES.lista[id], esCod(ES.lista[id]), String(ES.lista[id].titulo || '').replace(/\*/g, '')); delete ES.lista[id]; const db = guDb(); if (db) db.doc('estaticos/' + id).delete().catch(() => {});
+    ES.abierto = null; cerrarPanel(); esPintar(true); toast('Borrado: está en la papelera'); return; }
 });
 document.addEventListener('input', ev => {
   const t = ev.target;

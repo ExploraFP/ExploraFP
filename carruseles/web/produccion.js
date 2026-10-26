@@ -145,7 +145,7 @@ function abrirDevolver(id) {
   $('#onb').hidden = false;
   $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="pr-dv-t"><div class="cuerpo">' +
     '<h2 id="pr-dv-t">¿Borrar «' + esc(String(c.titulo || c.tema || 'este carrusel').replace(/\*/g, '')) + '» de Producción?</h2>' +
-    '<p>' + (c.slides.length ? 'Se borran sus slides y no se pueden recuperar. ' : '') + (c.idea && IMAP[c.idea] ? 'La idea no se borra: vuelve a estar «por hacer» en la Matriz.' : '') + '</p></div>' +
+    '<p>' + 'Va a la papelera: la recuperas en ⚙️ Ajustes durante 30 días. ' + (c.idea && IMAP[c.idea] ? 'La idea no se borra: vuelve a estar «por hacer» en la Matriz.' : '') + '</p></div>' +
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" data-pr-devolver-ok="' + esc(id) + '">Sí, borrar</button></footer></div>';
 }
 
@@ -368,7 +368,7 @@ function abrirBorrarVarios() {
   $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="pr-dvv-t"><div class="cuerpo">' +
     '<h2 id="pr-dvv-t">¿Borrar ' + (cs.length === 1 ? 'este carrusel' : 'estos ' + cs.length + ' carruseles') + ' de Producción?</h2>' +
     '<ul class="pr-dvv-lista">' + cs.slice(0, 6).map(c => '<li>' + tit(c) + '</li>').join('') + (cs.length > 6 ? '<li>y ' + (cs.length - 6) + ' más</li>' : '') + '</ul>' +
-    '<p>Se borran sus slides y no se pueden recuperar. Las ideas no se borran: vuelven a estar «por hacer» en la Matriz.</p></div>' +
+    '<p>Va a la papelera: la recuperas en ⚙️ Ajustes durante 30 días. Las ideas no se borran: vuelven a estar «por hacer» en la Matriz.</p></div>' +
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="pr-sel-borrar-ok">Sí, borrar' + (cs.length === 1 ? '' : ' los ' + cs.length) + '</button></footer></div>';
 }
 document.addEventListener('change', e => {

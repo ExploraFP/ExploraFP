@@ -296,7 +296,7 @@ document.addEventListener('click', e => {
   if (t.closest('#gu-sel-borrar')) { const gs = [...GU.sel].map(id => GU.lista[id]).filter(Boolean); if (!gs.length) return;
     $('#onb').hidden = false;
     $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="gu-bv-t"><div class="cuerpo"><h2 id="gu-bv-t">¿Borrar ' + (gs.length === 1 ? 'este guion' : 'estos ' + gs.length + ' guiones') + '?</h2>' +
-      '<ul class="pr-dvv-lista">' + gs.slice(0, 6).map(g => '<li>' + esc((guCod(g) ? guCod(g) + ' · ' : '') + guTit(g)) + '</li>').join('') + (gs.length > 6 ? '<li>y ' + (gs.length - 6) + ' más</li>' : '') + '</ul><p>No se pueden recuperar.</p></div>' +
+      '<ul class="pr-dvv-lista">' + gs.slice(0, 6).map(g => '<li>' + esc((guCod(g) ? guCod(g) + ' · ' : '') + guTit(g)) + '</li>').join('') + (gs.length > 6 ? '<li>y ' + (gs.length - 6) + ' más</li>' : '') + '</ul><p>Va a la papelera: la recuperas en ⚙️ Ajustes durante 30 días.</p></div>' +
       '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="gu-sel-borrar-ok">Sí, borrar' + (gs.length === 1 ? '' : ' los ' + gs.length) + '</button></footer></div>'; return; }
   if (t.closest('#gu-sel-borrar-ok')) { const n = GU.sel.size; [...GU.sel].forEach(id => guBorrar('guiones', id)); GU.sel.clear(); cerrarPanel(); guPintar(false); toast(n === 1 ? 'Guion borrado' : n + ' guiones borrados'); return; }
   const ab = t.closest('[data-gu-abrir]'); if (ab) { GU.abierto = ab.dataset.guAbrir; guPintar(true); return; }
@@ -309,7 +309,7 @@ document.addEventListener('click', e => {
     navigator.clipboard.writeText(guTextoPlano(g)).then(() => toast('Guion copiado'), () => toast('No he podido copiarlo')); return; }
   if (t.closest('#gu-borrar')) { const g = GU.lista[GU.abierto]; if (!g) return;
     $('#onb').hidden = false;
-    $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="gu-b-t"><div class="cuerpo"><h2 id="gu-b-t">¿Borrar «' + esc(g.titulo || guCod(g)) + '»?</h2><p>No se puede recuperar.</p></div>' +
+    $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="gu-b-t"><div class="cuerpo"><h2 id="gu-b-t">¿Borrar «' + esc(g.titulo || guCod(g)) + '»?</h2><p>Va a la papelera: la recuperas en ⚙️ Ajustes durante 30 días.</p></div>' +
       '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="gu-borrar-ok">Sí, borrar</button></footer></div>'; return; }
   if (t.closest('#gu-borrar-ok')) { guBorrar('guiones', GU.abierto); GU.abierto = null; cerrarPanel(); guPintar(true); toast('Guion borrado'); return; }
   if (t.closest('#gu-anuncio')) { guAbrirAnuncio(null); return; }
