@@ -278,7 +278,7 @@ function mzPiezasDe(ideaId) {
 }
 /* «Usada en» (26/10/2026, Sandra): una idea ya no está «hecha» ni «en producción» (eso solo miraba el carrusel). Con la Matriz común
    una idea puede ser carrusel, reel y anuncio a la vez: o está SIN USAR (por hacer) o USADA, y la fila dice en qué formatos.
-   Las sugerencias del mes, «Lo nuevo» y el Inicio cuentan solo las que no se han usado en ningún formato. */
+   El Inicio cuenta las que no se han usado en ningún formato. */
 const _estadoIdeaReg = estadoIdea;
 estadoIdea = function (it) { return _estadoIdeaReg(it) !== 'porhacer' || mzPiezasDe(it.id).length ? 'usada' : 'porhacer'; };
 ESTADOS_IDEA.usada = 'Usada';

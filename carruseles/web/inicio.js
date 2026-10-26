@@ -12,19 +12,15 @@ function fichaIdeaInicio(it) {
 }
 function vInicio() {
   let h = cabecera('Inicio', '', []);
-  // 1. sugerencias del mes
-  h += sugerencias() || '';
   // 2. en producción ahora
   const pend = carruselesDe('pendientes');
   h += bloqueInicio('En producción ahora',
     pend.length ? '<button class="in-ver" data-ir="producir">Ver todo en Producción (' + pend.length + ') →</button>' : '',
     pend.length ? '<div class="est-rejilla in-prod">' + pend.slice(0, 4).map(tarjeta).join('') + '</div>'
-      : '<p class="in-vacio">No hay nada en producción. Elige una sugerencia de arriba o busca en la <button class="in-link" data-ir="ideas">Matriz</button>.</p>');
+      : '<p class="in-vacio">No hay nada en producción. Busca en la <button class="in-link" data-ir="ideas">Matriz</button>.</p>');
   // 3. lo nuevo: ideas del mes que prepara Claude + las que has anotado tú y aún no has producido
   const mk = mesClave();
-  // sin repetir las que ya están en las sugerencias de arriba
-  const enSug = new Set(elegirCinco().map(it => it.id));
-  const nuevas = IDEAS.filter(it => yaVisible(it) && !enSug.has(it.id) && estadoIdea(it) === 'porhacer' && ((it.origen === 'claude' && it.mes === mk) || it.propia));
+  const nuevas = IDEAS.filter(it => yaVisible(it) && estadoIdea(it) === 'porhacer' && ((it.origen === 'claude' && it.mes === mk) || it.propia));
   if (nuevas.length) h += bloqueInicio('Lo nuevo', '<span class="in-sub">🆕 ideas del mes y las que has anotado tú</span>',
     '<div class="mz-sugfichas in-nuevas">' + nuevas.slice(0, 10).map(fichaIdeaInicio).join('') + '</div>');
   // 4. avisos: solo si hay algo que mirar

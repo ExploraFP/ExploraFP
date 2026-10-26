@@ -162,52 +162,12 @@ function selMatriz(dim, etiqueta, todas, opciones, fn) {
       return '<option value="' + esc(o[0]) + '"' + (sel === o[0] ? ' selected' : '') + (n ? '' : ' disabled') + '>' + esc(o[1]) + ' (' + n + ')</option>'; }).join('') +
     '</select></label>';
 }
-/* ---------- sugerencias: 5 fichas según el calendario académico ----------
-   Momentos del banco (CATALOGO.momentos, con sus meses) → ideas por hacer de ese momento, con más peso a las que más
-   empujan (BOFU) y variadas: como mucho 2 del mismo objetivo y del mismo alcance. «Otras 5» pasa a las siguientes. */
-S.sugOff = S.sugOff || 0;
-/* una frase por mes (del calendario académico) para el subtítulo de las sugerencias */
-const MES_FRASE = {1: 'Enero: el segundo arranque del año', 2: 'Febrero: segundo arranque y convalidaciones', 3: 'Marzo: toca convalidar y acreditar',
-  4: 'Abril: convalidaciones y becas', 5: 'Mayo: becas, trámites y admisión', 6: 'Junio: admisión, notas y decidir en verano',
-  7: 'Julio: admisión y decidir en verano', 8: 'Agosto: decidir antes de septiembre', 9: 'Septiembre: el pico más alto de matriculación',
-  10: 'Octubre: todavía se puede entrar', 11: 'Noviembre: comparar y pagar', 12: 'Diciembre: comparar antes del segundo arranque'};
+/* Sugerencias del mes: quitadas el 26/10/2026 (Sandra: «ya lo desarrollaremos más adelante»; ya no se veían desde que se quitó
+   el Inicio de Carruseles). Están en el historial de git (commit anterior a este) por si vuelven. */
 // «2026-10»: clave del mes (d = desplazamiento en meses). Las ideas del mes que añade Claude cada día 25 la llevan en `mes`.
 function mesClave(d) { const x = hoy(); const f = new Date(x.getFullYear(), x.getMonth() + (d || 0), 1); return f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0'); }
 function nombreMesClave(k) { const m = +String(k || '').slice(5, 7); return m ? 'Nueva de ' + MESES_NOMBRE[m - 1] : 'Nueva'; }
 const MESES_NOMBRE = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-function candidatasMes() {
-  const acts = momentosActivos().map(m => m.k), mk = mesClave();
-  // las ideas nuevas de este mes van primero; luego el calendario académico
-  const peso = it => (it.mes === mk ? 10 : 0) + (it.funnel === 'BOFU' ? 3 : it.funnel === 'MOFU' ? 2 : 1) + (it.momentos.indexOf(acts[0]) >= 0 ? 1 : 0);
-  return IDEAS.filter(it => yaVisible(it) && estadoIdea(it) === 'porhacer' && (deTemporada(it) || it.mes === mk))
-    .sort((a, b) => peso(b) - peso(a) || a.id.localeCompare(b.id));
-}
-function tandasDeCinco() {
-  // reparte las candidatas en tandas de 5 sin repetir, cada tanda variada en objetivo y alcance
-  let pool = candidatasMes().slice(); const tandas = [];
-  while (pool.length) {
-    const out = [], nObj = {}, nAlc = {};
-    pool.forEach(it => { if (out.length >= 5) return; const o = objDe(it), a = it.alcTxt;
-      if ((nObj[o] || 0) >= 2 || (nAlc[a] || 0) >= 2) return; out.push(it); nObj[o] = (nObj[o] || 0) + 1; nAlc[a] = (nAlc[a] || 0) + 1; });
-    pool.forEach(it => { if (out.length < 5 && out.indexOf(it) < 0) out.push(it); });
-    tandas.push(out); pool = pool.filter(it => out.indexOf(it) < 0);
-  }
-  return tandas;
-}
-function elegirCinco() { const t = tandasDeCinco(); return t.length ? t[((S.sugOff % t.length) + t.length) % t.length] : []; }
-function sugerencias() {
-  const cinco = elegirCinco(); if (!cinco.length) return '';
-  const acts = momentosActivos(), nT = tandasDeCinco().length, pos = ((S.sugOff % nT) + nT) % nT + 1;
-  return '<section class="mz-sug"><header><div><h3>Sugerencias de contenido</h3>' +
-    '<p class="mz-sugmes">📅 ' + esc(MESES[mesActual()].charAt(0).toUpperCase() + MESES[mesActual()].slice(1)) + '</p></div>' +
-    (nT > 1 ? '<div class="mz-sugnav"><button id="mz-sug-ant" aria-label="Anteriores">‹</button><span>' + pos + '/' + nT + '</span><button id="mz-sug-sig" aria-label="Siguientes">›</button></div>' : '') + '</header>' +
-    '<div class="mz-sugfichas">' + cinco.map(it => {
-      return '<article class="mz-sugficha"><button class="mz-sugabrir" data-abrir="' + it.id + '">' +
-        '<b>' + esc(tituloIdea(it)) + '</b>' +
-        '<span class="mz-sugpie"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span><span class="mz-sugform">' + chipAlcance(it) + '</span></span></button>' +
-        '<button class="btn mini pri" data-producir="' + it.id + '">Producir</button></article>'; }).join('') + '</div></section>';
-}
-
 /* Buscador: una caja y dos desplegables. «Formación» junta lo que antes eran Enfoque, Rama y Ciclo. */
 function valorFormacion() { return S.f.enf === 'generico' ? 'gen' : S.f.form ? 'c:' + S.f.form : S.f.rama ? 'r:' + S.f.rama : ''; }
 /* Emojis de cada formación: los del Playbook de Notion (Wiki Ventas › Playbook), iconos de cada página.
@@ -335,7 +295,6 @@ function vMatrizDentro() {
   const filas = IDEAS.filter(it => pasaMatriz(it)).sort((a, b) => arriba(b) - arriba(a) || (arriba(a) && arriba(b) ? b.id.localeCompare(a.id) : ordenar(a, b)));
   let h = cabecera('Matriz de contenido', '', []);  // sin cifras arriba (Sandra, 19/10/2026); lo que queda por hacer ya sale en cada vista
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
-  // las sugerencias viven en Inicio (inicio.js)
   h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.filter(yaVisible).length;
   // ---- vistas: una tabla siempre visible; arriba se elige el objetivo (y se combina con formación y búsqueda) ----
@@ -591,8 +550,6 @@ document.addEventListener('click', e => {
   const vb = t.closest && t.closest('[data-vista]');
   if (vb) { S.vista = vb.dataset.vista; S.limite = 60; render(); const act = document.querySelector('.mz-vista[aria-pressed="true"]'); if (act) act.scrollIntoView({block:'nearest', inline:'center'}); return; }
   if (t.id === 'mz-vermas') { S.limite = (S.limite || 60) + 60; render(); return; }
-  if (t.id === 'mz-sug-sig') { S.sugOff++; render(); return; }
-  if (t.id === 'mz-sug-ant') { S.sugOff--; render(); return; }
   if (t.id === 'mz-abrirtodos') { const v = !OBJ_ORDEN.every(temaAbierto); OBJ_ORDEN.forEach(k => S.abiertos[k] = v); render(); return; }
   const en = t.closest('[data-enlazar]'); if (en) { e.stopImmediatePropagation(); abrirEnlazar(en.dataset.enlazar); return; }
   const ea = t.closest('[data-enlazar-a]'); if (ea) { e.stopImmediatePropagation(); enlazar(ea.dataset.clave, ea.dataset.enlazarA); return; }
@@ -755,7 +712,7 @@ function abrirBorrarIdeas() {
   $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar" role="alertdialog" aria-modal="true" aria-labelledby="mz-bor-t"><div class="cuerpo">' +
     '<h2 id="mz-bor-t">¿Borrar ' + (its.length === 1 ? 'esta idea' : 'estas ' + its.length + ' ideas') + ' de la Matriz?</h2>' +
     '<ul class="pr-dvv-lista">' + its.slice(0, 6).map(it => '<li>«' + esc(tituloIdea(it)) + '»</li>').join('') + (its.length > 6 ? '<li>y ' + (its.length - 6) + ' más</li>' : '') + '</ul>' +
-    '<p>Dejan de salir en la Matriz y en las sugerencias. Justo después puedes deshacerlo.</p></div>' +
+    '<p>Dejan de salir en la Matriz. Justo después puedes deshacerlo.</p></div>' +
     '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn ft-si" id="mz-borrar-ok">Sí, borrar' + (its.length === 1 ? '' : ' las ' + its.length) + '</button></footer></div>';
 }
 function avisoDeshacerIdeas(n) {
