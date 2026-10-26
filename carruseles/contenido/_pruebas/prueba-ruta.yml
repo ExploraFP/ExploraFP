@@ -1,0 +1,51 @@
+plantilla: ruta
+color: verde01
+slides:
+  - tipo: portada
+    titulo: Esta es la *parte mala* de estudiar _online._
+    subtitulo: "Y no, no eres tú: le pasa a todo el mundo."
+  - tipo: contenido
+    etiqueta: Así lo hacemos en Explora
+    titulo: Aquí tienes *a quién escribir.*
+    antetitulo: Un tutor que te conoce por tu *nombre* y una comunidad de gente que *está igual que tú.*
+    trazo: ovalo
+    imagen: img/plataforma-chat-tutor.webp
+  - tipo: contenido
+    numero: 2
+    etiqueta: La metodología
+    titulo: ¿Cuál es la metodología?
+    texto: No es igual estudiar por Zoom que estudiar en una plataforma propia con todo *en el mismo sitio.*
+    imagen: img/plataforma-calendario.webp
+    nota: pide que te la enseñen
+  - tipo: contenido
+    numero: 3
+    etiqueta: La continuidad
+    titulo: ¿Con qué enlaza después?
+    texto: Un grado medio da paso a un superior, y un superior da acceso a la universidad. Mira el paso siguiente *antes de dar este.*
+    imagen: img/foto-chica-gafas-portatil-parque.jpg
+    nota: hoy eliges, no cierras
+  - tipo: momento
+    hora: 07:30 · mañana
+    titulo: Abres el campus. Y sabes *exactamente* qué toca hoy.
+    texto: Sin perderte. Sin empezar por donde sea. El camino ya está trazado.
+    tarjeta: clase
+    tarjetaTitulo: Módulo 2 · Tema 1
+    tarjetaTexto: 18 min · empiezas donde lo dejaste
+    boton: Entrar
+  - tipo: lista
+    etiqueta: Antes de matricularte
+    titulo: Tres preguntas que *sí* importan
+    items:
+      - ¿El título es oficial y lo firma el Ministerio?
+      - ¿Quién te contesta cuando te atascas?
+      - ¿Puedes hacer las prácticas donde ya trabajas?
+  - tipo: dato
+    antetitulo: Estudian FP este curso
+    cifra: 1,24 M
+    texto: Nunca habían sido tantos.
+  - tipo: cierre
+    titulo: Nunca sola
+    texto: Estudiar online tiene sus pegas. Lo que cambia es quién está detrás.
+    nota: nos vemos en el terreno
+    cta: Traza tu ruta
+    cinta: Enlace en el perfil

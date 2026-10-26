@@ -31,14 +31,15 @@ const EST_PLANTILLAS = [
   {id: 'feed', nombre: 'Feed', pista: 'la de vuestro Instagram'},
   {id: 'capas', nombre: 'Capas', pista: 'caja sobre foto'},
   {id: 'cuaderno', nombre: 'Cuaderno', pista: 'libreta y checklist'},
-  {id: 'poster', nombre: 'Póster', pista: 'titular gigante'}];
+  {id: 'poster', nombre: 'Póster', pista: 'titular gigante'},
+  {id: 'ruta', nombre: 'Ruta', pista: 'la de tus referencias'}];   // 26/10/2026: réplica de las referencias de Sandra (plantillas/ruta.css)
 const EST_COLORES = [
   {id: 'verde01', nombre: 'Verde 01', hex: '#366B40'}, {id: 'verde02', nombre: 'Verde 02', hex: '#4CCD4B'},
   {id: 'blanco', nombre: 'Blanco', hex: '#FAFFFA'}, {id: 'noche', nombre: 'Noche', hex: '#1B3620'},
   {id: 'lima', nombre: 'Lima', hex: '#EDFEC3'}, {id: 'verde', nombre: 'Verde', hex: '#85E159'}];
 /* «Verde» (#85E159) sale de la web, no de la paleta de marca: sigue en el motor (no se borra nada) pero no se ofrece al elegir. */
 const EST_COLORES_ELEGIBLES = EST_COLORES.filter(c => c.id !== 'verde');
-const EST_TIPOS = {portada: 'Portada', contenido: 'Contenido', lista: 'Lista', dato: 'Dato', cierre: 'Cierre'};
+const EST_TIPOS = {portada: 'Portada', contenido: 'Contenido', lista: 'Lista', dato: 'Dato', cierre: 'Cierre', momento: 'Momento'};
 const EST_ESTADO = {pendiente: 'Sin generar', generando: 'Generando…', borrador: 'Para revisar', hecho: 'Hecho', error: 'Error'};
 /* Cabecera común de cada pestaña: título, una línea y las cifras que importan (stats: [[número, etiqueta, clase]]). */
 function cabecera(titulo, desc, stats) {
@@ -77,7 +78,7 @@ const EST_AJUSTE = '<script>document.fonts.ready.then(function(){var c=document.
   'var t=parseFloat(getComputedStyle(c).fontSize);while(a()>c.clientWidth&&t>80){t-=6;c.style.fontSize=t+"px"}}' +
   'var sb=0,fs=document.querySelector(".foto-sangre");' +
   'if(fs){var bf=document.querySelector(".bloque-foto").getBoundingClientRect();sb=Math.max(bf.bottom-1310,200-bf.top,0)}' +
-  'else{var bl=[].slice.call(document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i):not(.velo), .caja, .bloque"));' +
+  'else{var bl=[].slice.call(document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i):not(.velo):not(.r-arriba):not(.r-banda), .caja, .bloque"));' +
   'bl=bl.filter(function(b){return b.offsetParent!==null});' +
   'if(bl.length){var fo=Math.max.apply(0,bl.map(function(b){return b.getBoundingClientRect().bottom})),ar=Math.min.apply(0,bl.map(function(b){return b.getBoundingClientRect().top}));' +
   'sb=Math.max(fo-1320,30-ar,0)}' +
@@ -228,7 +229,7 @@ function promptCarrusel(c) {
     L.push('FOTOS DISPONIBLES (usa la ruta exacta):');
     FOTOS.forEach(f => L.push('- ' + f.ruta + ' → ' + f.desc));
     L.push((c.portada === 'foto' ? 'La portada lleva SIEMPRE foto: pon "imagen" con la ruta de la que mejor encaje con el tema' : 'En la portada, si una foto encaja con el tema, pon "imagen" con su ruta') +
-      (c.plantilla === 'feed' || c.plantilla === 'cuaderno' ? ' y "marco": "fondo" (foto a pantalla completa).' : '.'));
+      (c.plantilla === 'feed' || c.plantilla === 'cuaderno' || c.plantilla === 'ruta' ? ' y "marco": "fondo" (foto a pantalla completa).' : '.'));
     L.push('');
   }
   if (it) {
@@ -258,6 +259,15 @@ function promptCarrusel(c) {
   } else {
     L.push('DATOS VERIFICADOS: ninguno. No uses cifras.');
   }
+  if (c.plantilla === 'ruta') {
+    L.push('');
+    L.push('PLANTILLA «RUTA» (cómo sacarle partido):');
+    L.push('- Las slides de "contenido" pueden ir NUMERADAS por secciones: "numero" (1, 2, 3…) + "etiqueta" con el nombre de la sección (p. ej. "La metodología"); con "imagen" (foto, o captura de la plataforma) se parte en dos: imagen arriba y el texto abajo.');
+    L.push('- "nota": una frase corta «escrita a mano» (3-6 palabras, en minúscula, sin punto), p. ej. "hoy eliges, no cierras". Como mucho en 2 slides y en el cierre.');
+    L.push('- Puedes usar UNA slide "momento": una escena del día de quien estudia. Campos: "hora" ("07:30 · mañana"), "titulo", "texto" (1 frase), "tarjeta" (clase | mensaje | nota | aviso), "tarjetaTitulo" (p. ej. "Módulo 2 · Tema 1"), "tarjetaTexto" (p. ej. "18 min · empiezas donde lo dejaste") y "boton" ("Entrar"). Nunca «lección» ni «unidad».');
+    L.push('- En el titular, además del *resaltado*, puedes subrayar UNA palabra así: _online_. Solo un recurso de cada tipo por slide.');
+    L.push('- Cierre: "titulo" corto, "texto" de una línea, "nota" (frase a mano) y "cta"; "cinta": "Enlace en el perfil" solo si el cta manda al perfil.');
+  }
   L.push('');
   L.push('FORMATO DE RESPUESTA (JSON):');
   L.push('{"copy": "caption de Instagram con la IDENTIDAD VERBAL de arriba (Instagram = empatía a fuego; gerundios y glosario de Explora; nombra la barrera y desactívala): frases cortas separadas por saltos de línea, una línea en blanco entre bloques (gancho · desarrollo · coordenada final tipo «Trazar mi ruta 📍»), emojis que vibran al final de las frases (velocidad, energía, expedición; nada cuquis), y al final, en su propia línea, EXACTAMENTE 5 hashtags",');
@@ -270,7 +280,7 @@ function promptCarrusel(c) {
   L.push(' ]}');
   return L.join('\n');
 }
-const CAMPOS_SLIDE = ['tipo', 'etiqueta', 'antetitulo', 'titulo', 'subtitulo', 'numero', 'texto', 'items', 'cifra', 'fuente', 'cta', 'cinta', 'imagen', 'marco', 'nota', 'trazo', 'estilo'];
+const CAMPOS_SLIDE = ['tipo', 'etiqueta', 'antetitulo', 'titulo', 'subtitulo', 'numero', 'texto', 'items', 'cifra', 'fuente', 'cta', 'cinta', 'imagen', 'marco', 'nota', 'trazo', 'estilo', 'hora', 'tarjeta', 'tarjetaTitulo', 'tarjetaTexto', 'boton'];
 function limpiarRespuesta(r) {
   const rutas = FOTOS.map(f => f.ruta);
   let slides = (r && Array.isArray(r.slides) ? r.slides : []).filter(s => s && EST_TIPOS[s.tipo]).slice(0, 10).map(s => {
@@ -454,7 +464,7 @@ function resaltarTitular(t) {
 const FOTO_PREVIA = (FOTOS.find(f => /cascos/.test(f.ruta)) || FOTOS[0] || {}).ruta;
 function previa(id, plantilla, color, titulo, etiqueta, conFoto) {
   const s = {tipo: 'portada', etiqueta: etiqueta || '', titulo: resaltarTitular(titulo)};
-  if (conFoto && FOTO_PREVIA) { s.imagen = FOTO_PREVIA; if (plantilla === 'feed' || plantilla === 'cuaderno') s.marco = 'fondo'; }
+  if (conFoto && FOTO_PREVIA) { s.imagen = FOTO_PREVIA; if (plantilla === 'feed' || plantilla === 'cuaderno' || plantilla === 'ruta') s.marco = 'fondo'; }
   const c = {id: id, plantilla: plantilla, color: color, cinta: '', slides: [s]};
   PREVIAS[id] = c; return c;
 }

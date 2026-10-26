@@ -75,7 +75,7 @@ for (const f of ficheros) {
       const portada = document.querySelector(".tipo-portada");
       const cinta = document.querySelector(".cinta");
       const tope = (cinta.offsetParent ? cinta.getBoundingClientRect().top : 1350) - (portada ? 0 : 20);
-      const bloques = [...document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i), .caja")];
+      const bloques = [...document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i):not(.r-arriba):not(.r-banda), .caja")];
       const fondo = Math.max(...bloques.map((b) => b.getBoundingClientRect().bottom));
       const arriba = Math.min(...bloques.map((b) => b.getBoundingClientRect().top));
       return Math.round(Math.max(fondo - tope, 40 - arriba, 0));

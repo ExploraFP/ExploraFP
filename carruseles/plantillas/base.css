@@ -191,3 +191,18 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .tn-col li { font-size: 46px; padding-left: 50px; }
 .tn-cita p { font-size: 80px; }
 .tn-cita p em { color: var(--tinta-resalte); }
+/* MOMENTO (26/10/2026): la hora en píldora, el titular y una tarjeta de la plataforma dibujada (vale en todas las plantillas) */
+.r-hora { align-self: flex-start; font-family: var(--cuerpo); font-weight: 700; font-size: 30px; letter-spacing: .14em; text-transform: uppercase;
+  padding: 18px 34px; border-radius: 999px; margin-bottom: 40px; background: #10230F; color: #DCFB7F; }
+.tipo-momento .titulo { font-size: 110px; }
+.tipo-momento .subtitulo { font-family: var(--editorial); font-size: 46px; line-height: 1.25; margin-top: 40px; opacity: .8; }
+.mo-tarjeta { margin-top: 70px; background: #fff; color: #111; border: 2px solid rgba(27,54,32,.12); border-radius: 30px; padding: 40px 44px; box-shadow: 0 18px 44px rgba(27,54,32,.12); }
+.mo-cab { display: flex; align-items: center; gap: 16px; font-family: var(--cuerpo); font-weight: 700; font-size: 28px; letter-spacing: .04em; color: #7b857c; margin-bottom: 28px; }
+.mo-cab i { width: 16px; height: 16px; border-radius: 50%; background: #4CCD4B; }
+.mo-fila { display: flex; align-items: center; gap: 34px; }
+.mo-icono { flex: none; display: grid; place-items: center; width: 116px; height: 116px; border-radius: 24px; background: #DCFB7F; }
+.mo-icono svg { width: 72px; height: 72px; }
+.mo-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; font-family: var(--cuerpo); }
+.mo-txt b { font-weight: 700; font-size: 46px; line-height: 1.1; color: #000; }
+.mo-txt span { font-size: 32px; line-height: 1.35; color: #7b857c; }
+.mo-boton { flex: none; background: #4CCD4B; color: #0E1F11; font-family: var(--cuerpo); font-weight: 700; font-size: 34px; padding: 22px 38px; border-radius: 999px; }

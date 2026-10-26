@@ -10,7 +10,7 @@
    · Sin «Otra versión» (Sandra: se cambia a mano o con el chat).
    · Al recargar, la web vuelve a la pestaña (y al carrusel) donde estaba. */
 const SEL = {pop: null, diseno: false, original: null, tempo: 0};
-const SEL_NOMBRES = {titulo: 'Titular', subtitulo: 'Subtítulo', antetitulo: 'Subtítulo', etiqueta: 'Etiqueta', numero: 'Número', texto: 'Texto',
+const SEL_NOMBRES = {hora: 'Hora', tarjetaTitulo: 'Tarjeta · título', tarjetaTexto: 'Tarjeta · texto', boton: 'Tarjeta · botón', titulo: 'Titular', subtitulo: 'Subtítulo', antetitulo: 'Subtítulo', etiqueta: 'Etiqueta', numero: 'Número', texto: 'Texto',
   items: 'Punto', cifra: 'Cifra', fuente: 'Fuente', cta: 'Botón', cinta: 'Debajo del botón', nota: 'Nota'};
 const SEL_CORTOS = ['titulo', 'etiqueta', 'numero', 'cifra', 'cta', 'cinta', 'fuente'];
 
@@ -161,10 +161,10 @@ function marcarSlide(fr) {
 }
 // campo cuyo texto coincide con el del elemento (o el elemento es un trozo de ese campo)
 function campoDeElemento(s, n) {
-  const q = x => norm(String(x || '').replace(/\*/g, '')).replace(/\s+/g, ' ').trim();
+  const q = x => norm(String(x || '').replace(/[*_]/g, '')).replace(/\s+/g, ' ').trim();
   const t = q(n.textContent); if (!t) return null;
   const casa = v => v && (v === t || v.indexOf(t) >= 0 || (t.indexOf(v) >= 0 && t.length <= v.length + 12));
-  for (const k of ['titulo', 'subtitulo', 'antetitulo', 'texto', 'etiqueta', 'numero', 'cifra', 'fuente', 'cta', 'cinta', 'nota']) if (casa(q(s[k]))) return {campo: k, idx: -1};
+  for (const k of ['titulo', 'subtitulo', 'antetitulo', 'texto', 'etiqueta', 'numero', 'cifra', 'fuente', 'cta', 'cinta', 'nota', 'hora', 'tarjetaTitulo', 'tarjetaTexto', 'boton']) if (casa(q(s[k]))) return {campo: k, idx: -1};
   const i = (s.items || []).findIndex(v => casa(q(v))); if (i >= 0) return {campo: 'items', idx: i};
   return null;
 }
@@ -462,6 +462,7 @@ function textoDeNodo(el) {
       if (t === 'BR') out.push('\n');
       else if (t === 'I' && /ovalo|flecha/.test(cl)) continue;
       else if (t === 'EM' || t === 'B' || t === 'STRONG' || t === 'MARK') { out.push('*'); rec(ch); out.push('*'); }
+      else if (t === 'U' && ch.classList && ch.classList.contains('r-sub')) { out.push('_'); rec(ch); out.push('_'); }   // subrayado de la plantilla Ruta
       else if (t === 'P' || t === 'DIV') { if (hay && !/\n$/.test(out.join(''))) out.push(t === 'P' ? '\n\n' : '\n'); rec(ch); }
       else rec(ch);
     } } };

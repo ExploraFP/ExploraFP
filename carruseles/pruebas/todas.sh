@@ -17,7 +17,7 @@ if ! curl -s -o /dev/null http://127.0.0.1:8765/banco-de-carruseles.html; then
   (cd web/dist && exec python3 -m http.server 8765 --bind 127.0.0.1 >/dev/null 2>&1) & SRV=$!; sleep 1
 fi
 fallos=0
-for t in ${PRUEBAS:-minis tres dir2 gu2 mz dis nav pap audit es tj}; do
+for t in ${PRUEBAS:-minis tres dir2 gu2 mz ruta dis nav pap audit es tj}; do
   [ -f "$H2I" ] || case $t in es|tj) echo "== $t: sin html-to-image, se salta"; continue;; esac
   echo "== $t"; out=$(timeout 300 node "pruebas/$t.mjs" 2>&1); echo "$out" | grep -v '^    at' | tail -3
   echo "$out" | grep -v "CERT_AUTHORITY" | grep -qE "Error|errores [^n]|err \[[^]]" && fallos=$((fallos+1))

@@ -2,11 +2,11 @@
 // Lo comparten el generador de PNG (render.js, Node) y la herramienta web (sin dependencias).
 // R resuelve los recursos según dónde se ejecute:
 //   R.logo(color) · R.imagen(ruta) · R.postit() → URL;  R.cabeza(plantilla) → <link>/<style> de la cabeza.
-export const PLANTILLAS = ["feed", "capas", "cuaderno", "poster", "chat", "tuit", "editorial", "bloques"];
+export const PLANTILLAS = ["feed", "capas", "cuaderno", "poster", "chat", "tuit", "editorial", "bloques", "ruta"];
 export const COLORES = ["verde01", "verde02", "blanco", "noche", "lima", "verde"];
 // 23/10/2026 (Sandra: «todos los cuerpos son iguales»): tipos de cuerpo nuevos, con su estructura propia en TODAS las plantillas
-export const TIPOS = ["portada", "contenido", "lista", "dato", "cierre", "mito", "pregunta", "pasos", "comparacion", "cita"];
-const TIPOS_NUEVOS = ["mito", "pregunta", "pasos", "comparacion", "cita"];
+export const TIPOS = ["portada", "contenido", "lista", "dato", "cierre", "mito", "pregunta", "pasos", "comparacion", "cita", "momento"];
+const TIPOS_NUEVOS = ["mito", "pregunta", "pasos", "comparacion", "cita", "momento"];
 
 // Logos del catálogo de marca: uno para ir sobre la caja de color y otro sobre el fondo.
 const LOGO_CINTA = { verde01: "Verde 01", verde02: "Verde 03", noche: "Negro", lima: "Verde 03", verde: "Verde 03", blanco: "Verde 01" };
@@ -229,7 +229,64 @@ export function crearMotor(R) {
     }
   }
 
-  const COMPOSICION = { feed, capas, cuaderno, poster, chat, tuit, editorial, bloques };
+  // ===== RUTA (26/10/2026): réplica de las referencias de Sandra =====
+  // Portada «La parte mala de estudiar online» (papel con cuadrícula y lomo), cuerpo «Aquí tienes a quién escribir» (verde,
+  // titular y la plataforma en un portátil abajo), cuerpo numerado «02 · La metodología» (mitad foto/plataforma arriba con
+  // número y sección, mitad clara abajo con titular, texto y frase a mano), «momento» (hora + titular + tarjeta de la
+  // plataforma dibujada) y cierre «Nunca solo» (verde, logo centrado, frase a mano y banda lima con el CTA).
+  // Titulares siempre en minúscula salvo la inicial (Sandra: «mayúsculas en los titulares nunca»). La letra «a mano» es
+  // Besley cursiva (Sandra no sabe cuál era la de las referencias). _palabra_ = subrayado verde en el titular.
+  const esPlataforma = (s) => /plataforma-/.test(String(s.imagen || ""));
+  const rTit = (t, h = "h2") => `<${h} class="titulo">${fmt(t).replace(/_(.+?)_/g, '<u class="r-sub">$1</u>')}</${h}>`;
+  const rPill = (t) => si(t, `<div class="r-pill">${fmt(t)}</div>`);
+  const rMano = (t) => si(t, `<div class="r-mano">${fmt(t)}</div>`);
+  const rSub = (t, s) => si(t, `<div class="subtitulo">${s.trazo === "ovalo" ? fmt(t).replace(/<em>(.+?)<\/em>/, '<em class="rodeado">$1<i class="ovalo"></i></em>') : fmt(t)}</div>`);
+  const rLogo = (c, cl = "") => `<img class="r-logo ${cl}" src="${logo(c)}" alt="Explora × Ucademy">`;
+  function ruta(s) {
+    switch (s.tipo) {
+      case "portada":
+        return rPill(s.etiqueta) + rTit(s.titulo, "h1") + rSub(s.subtitulo, s) + rMano(s.nota);
+      case "contenido": {
+        if (s.numero) {
+          // numerada: arriba la foto (o la plataforma en portátil sobre verde) con «02 · SECCIÓN» y el logo; abajo, en claro, el texto
+          const arriba = s.imagen ? (esPlataforma(s) ? `<div class="r-arriba r-verde">${portatil(s)}</div>` : `<div class="r-arriba"><img class="r-foto" src="${rutaImagen(s)}" alt=""><i class="r-velo"></i></div>`)
+            : `<div class="r-arriba r-verde"></div>`;
+          return arriba + `<div class="r-seccion"><b>${esc(String(s.numero).padStart(2, "0"))}</b>${si(s.etiqueta, `<span>${fmt(s.etiqueta)}</span>`)}</div>` + rLogo("Blanco", "r-logo-arriba") +
+            `<div class="r-abajo">${rTit(s.titulo)}${texto(s.texto)}${rMano(s.nota)}</div>`;
+        }
+        const img = s.imagen ? (esPlataforma(s) ? portatil(s) : `<img class="r-foto-caja" src="${rutaImagen(s)}" alt="">`) : "";
+        return rLogo("Verde 03", "r-logo-esquina") + rPill(s.etiqueta) + rTit(s.titulo) + rSub(s.antetitulo, s) + texto(s.texto) + img + rMano(s.nota);
+      }
+      case "lista":
+        return rLogo("Verde 01", "r-logo-esquina") + rPill(s.etiqueta) + rTit(s.titulo) + rSub(s.antetitulo, s) +
+          `<ol class="r-lista">${(s.items || []).map((it, n) => `<li><b>${dos(n + 1)}</b><span>${fmt(it)}</span></li>`).join("")}</ol>` + rMano(s.nota);
+      case "dato":
+        return rLogo("Verde 03", "r-logo-esquina") + rPill(s.etiqueta) + si(s.antetitulo, `<div class="r-ante">${fmt(s.antetitulo)}</div>`) +
+          (/[a-záéíóúñ]{4,}/i.test(String(s.cifra || "")) ? rTit(s.cifra) : `<div class="cifra">${esc(s.cifra)}</div>`) + texto(s.texto) + rMano(s.nota);
+      case "cierre":
+        return rLogo("Verde 03", "r-logo-centro") + rTit(s.titulo) + texto(s.texto) + rMano(s.nota ? s.nota + " ✳" : "") +
+          si(s.cta, `<div class="r-banda"><span class="r-cta">${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}<i>→</i></div>`);
+    }
+  }
+
+  // MOMENTO (tipo nuevo, 26/10/2026, referencia de Sandra «07:30 · mañana»): la hora en píldora, el titular, un texto y una
+  // tarjeta de la plataforma DIBUJADA (no captura: se lee en el móvil). tarjeta: clase | mensaje | nota | aviso.
+  const ICONOS_TARJETA = {
+    clase: '<svg viewBox="0 0 48 48"><rect x="7" y="10" width="34" height="31" rx="5" fill="#fff" stroke="#1B3620" stroke-width="3"/><path d="M7 19h34" stroke="#1B3620" stroke-width="3"/><rect x="7" y="10" width="34" height="9" rx="4" fill="#C8433A"/><path d="M16 6v8M32 6v8" stroke="#1B3620" stroke-width="3" stroke-linecap="round"/><path d="M15 27h5M22 27h5M29 27h5M15 33h5M22 33h5" stroke="#1B3620" stroke-width="3" stroke-linecap="round"/></svg>',
+    mensaje: '<svg viewBox="0 0 48 48"><path d="M8 12a5 5 0 0 1 5-5h22a5 5 0 0 1 5 5v15a5 5 0 0 1-5 5H21l-9 8v-8h-0a4 4 0 0 1-4-4z" fill="#fff" stroke="#1B3620" stroke-width="3" stroke-linejoin="round"/><circle cx="17" cy="20" r="2.6" fill="#1B3620"/><circle cx="24" cy="20" r="2.6" fill="#1B3620"/><circle cx="31" cy="20" r="2.6" fill="#1B3620"/></svg>',
+    nota: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#1B3620" stroke-width="3"/><path d="M16 24.5l5.5 5.5L33 18.5" fill="none" stroke="#2F9B3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    aviso: '<svg viewBox="0 0 48 48"><circle cx="24" cy="26" r="15" fill="#fff" stroke="#1B3620" stroke-width="3"/><path d="M24 18v9l6 4" fill="none" stroke="#1B3620" stroke-width="3" stroke-linecap="round"/><path d="M12 9l-4 4M36 9l4 4" stroke="#1B3620" stroke-width="3" stroke-linecap="round"/></svg>'};
+  const CABEZA_TARJETA = { clase: "Tu próxima clase", mensaje: "Mensaje de tu tutor", nota: "Nueva nota", aviso: "Recordatorio" };
+  function momento(s, plantilla) {
+    const k = ICONOS_TARJETA[s.tarjeta] ? s.tarjeta : "clase";
+    const hora = si(s.hora, `<div class="r-hora">${fmt(s.hora)}</div>`);
+    const tarjeta = `<div class="mo-tarjeta"><div class="mo-cab"><i></i>${esc(s.tarjetaCabecera || CABEZA_TARJETA[k])}</div>` +
+      `<div class="mo-fila"><span class="mo-icono">${ICONOS_TARJETA[k]}</span><div class="mo-txt"><b>${fmt(s.tarjetaTitulo || "")}</b>${si(s.tarjetaTexto, `<span>${fmt(s.tarjetaTexto)}</span>`)}</div>` +
+      si(s.boton, `<span class="mo-boton">${fmt(s.boton)} →</span>`) + `</div></div>`;
+    return hora + (plantilla === "ruta" ? rTit(s.titulo) : titulo(s.titulo)) + si(s.texto, `<div class="subtitulo">${fmt(s.texto)}</div>`) + tarjeta;
+  }
+
+  const COMPOSICION = { feed, capas, cuaderno, poster, chat, tuit, editorial, bloques, ruta };
 
   // Tipos de cuerpo nuevos (23/10/2026). Misma estructura en todas las plantillas; el aspecto lo ponen los colores de cada una.
   //   mito: la frase falsa tachada y la verdad debajo · pregunta: la duda como mensaje y la respuesta
@@ -250,6 +307,8 @@ export function crearMotor(R) {
           `<div class="tn-col tn-b"><h3>${fmt(s.colB)}</h3><ul>${lis(s.itemsB)}</ul></div></div>`;
       case "cita":
         return etiqueta(s.etiqueta) + `<blockquote class="tn-cita"><p>${fmt(s.cita)}</p>${si(s.autor, `<cite>${fmt(s.autor)}</cite>`)}</blockquote>`;
+      case "momento":
+        return momento(s, plantilla);
     }
   }
 
@@ -294,7 +353,7 @@ export function crearMotor(R) {
     const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
   ${R.cabeza(plantilla)}${s.estilo ? `<style>${estiloSlide(s.estilo)}</style>` : ""}
-  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}">
+  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
   <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : LOGO_FONDO[color])}</div>
   <div class="contenido">${fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
