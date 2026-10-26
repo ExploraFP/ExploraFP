@@ -201,4 +201,4 @@ h2, h3 { text-transform: none !important; letter-spacing: 0 !important; }
 #calTitle { width: 220px; flex: none; text-align: center; white-space: nowrap; margin-left: 0 !important; }
 #calTitle::after { display: none !important; }
 html, body { overscroll-behavior-y: none; }   /* sin rebote que mueva la barra lima (23/10/2026) */
-*, *::before, *::after { overscroll-behavior: none; }   /* ningún rebote en ningún sitio (23/10/2026) */
+/* 26/10/2026: fuera el «sin rebote en todo» (`*`): las cajas recortadas se quedaban el gesto del trackpad y Pendientes no bajaba (Sandra) */

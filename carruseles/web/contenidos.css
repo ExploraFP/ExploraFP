@@ -384,4 +384,4 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
    gesto del trackpad y no se lo pasaba a la página. El rebote solo se nota en lo que tiene scroll de verdad: la página y las
    secciones con caja propia (arriba), el panel de la ficha, las ventanas y los desplegables (abajo). */
 html, body { overscroll-behavior-y: none; }
-#dbody, .onbcaja .cuerpo, .reg-fpop, .mz-flista, .mz-fmtmenu, #mchat-log { overscroll-behavior: none; }
+#dbody, .onbcaja .cuerpo, .reg-fpop, .mz-flista, .mz-fmtmenu { overscroll-behavior: none; }
