@@ -378,7 +378,10 @@ body.cnt-en-img > header.top { display: none !important; }       /* Imágenes no
 }
 /* 23/10/2026 (Sandra, Guiones a página completa: «si subo rápido se mueve la franja lima»): el rebote del scroll (Mac/iPhone) estiraba
    la zona con scroll y arrastraba la barra lima. Sin rebote en la página ni en las secciones con scroll propio. */
-html, body { overscroll-behavior-y: none; }
 #cnt-guiones, #cnt-estaticos, #cnt-directorio, #cnt-inicio { overscroll-behavior: none; }
 /* … y en TODO lo que tenga scroll (editor, panel, ventanas, listas, desplegables): ningún rebote (Sandra, 23/10/2026) */
 *, *::before, *::after { overscroll-behavior: none; }
+/* 26/10/2026 (Sandra, Mac + trackpad: «no me deja hacer scroll en la matriz», «no se mueve nada»): la página ENTERA no lleva la regla.
+   Matriz, Producción y Galería bajan moviendo la página (no tienen caja con scroll propio) y, dentro de claude.ai, sin rebote en la raíz
+   el trackpad no la movía. Las secciones con caja propia siguen sin rebote. */
+html, body { overscroll-behavior: auto; }
