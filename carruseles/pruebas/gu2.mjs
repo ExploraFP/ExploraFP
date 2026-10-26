@@ -1,0 +1,23 @@
+import { chromium } from "../node_modules/playwright/index.mjs";
+const S=process.env.SALIDA;
+const b=await chromium.launch(); const err=[]; const p=await b.newPage({viewport:{width:1440,height:950}}); p.on('pageerror',x=>err.push(x.message));
+await p.addInitScript(()=>{ if(window.parent!==window) return; const cols={}; const subs={};
+ const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>d}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
+ const col=c=>({onSnapshot:f=>{(subs[c]=subs[c]||[]).push(f);setTimeout(()=>f(snap(c)),50);return()=>{}},orderBy:()=>col(c),where:()=>col(c),get:async()=>snap(c),
+   doc:id=>({set:async d=>{(cols[c]=cols[c]||{})[id]=JSON.parse(JSON.stringify(d));avisa(c)},update:async d=>{Object.assign((cols[c]=cols[c]||{})[id]||{},d);avisa(c)},delete:async()=>{delete (cols[c]||{})[id];avisa(c)}})});
+ const sample={json:async(pr)=>({titulo:'Sin la ESO también',gancho:'¿Te dejaste la ESO?',desarrollo:'Hay una prueba de acceso…',cta:'Escríbenos RUTA',pantalla:''})};
+ window.claude={use:async k=>k==='db'?{collection:col,doc:p=>col(p.split('/')[0]).doc(p.split('/')[1])}:k==='sample'?sample:null}; });
+await p.goto('http://127.0.0.1:8765/banco-de-carruseles.html'); await p.waitForTimeout(1500);
+await p.click('#cnt-lado [data-cnt="guiones"]'); await p.waitForTimeout(400);
+console.log('pestañas:', await p.evaluate(()=>[...document.querySelectorAll('.gu-barra button')].map(b=>b.textContent+(b.getAttribute('aria-current')==='true'?'*':'')).join(' | ')));
+await p.click('[data-gu-grupo="DAM"]'); await p.click('#gu-pegar'); await p.fill('#gu-pegado','¿Te dejaste la ESO?\nHay una prueba de acceso...\nEscríbenos RUTA'); await p.click('#gu-pegar-ok'); await p.waitForTimeout(500);
+console.log('pegado:', await p.evaluate(()=>{const g=GU.lista[GU.abierto]; return [g.tipo,g.formacion,g.titulo,g.gancho].join(' / ');}));
+await p.click('#gu-volver'); await p.waitForTimeout(300);
+await p.click('[data-gu-tab="anuncio"]'); await p.click('#gu-nuevo'); await p.waitForTimeout(300); await p.click('#gu-volver'); await p.waitForTimeout(300);
+await p.screenshot({path:S+'gu-ads.png'});
+await p.click('[data-gu-tab="reel"]'); await p.waitForTimeout(300); await p.click('[data-gu-grupo="*"]'); await p.waitForTimeout(300);
+await p.screenshot({path:S+'gu-org.png'});
+console.log('filas orgánicos:', await p.evaluate(()=>document.querySelectorAll('.gu-fila:not(.gu-th)').length));
+await p.evaluate(()=>cntIr('carruseles')); await p.evaluate(()=>{S.v='ideas';render();}); await p.waitForTimeout(800);
+console.log('matriz Globales:', await p.evaluate(()=>document.body.innerText.includes('Globales')), 'Transversal visible:', await p.evaluate(()=>/Transversal/.test(document.getElementById('canvas').innerText)));
+console.log('errores', err.join(' | ')||'ninguno'); await b.close();

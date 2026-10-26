@@ -1,0 +1,47 @@
+import { chromium } from "../node_modules/playwright/index.mjs";
+import { readFileSync } from "node:fs";
+const S=process.env.SALIDA, D=process.env.COPIA+'carruseles/';
+const ids=["Cmumthpao45k","Cmun394vgpn8","Cmun394vgw4v","Cmuphs6hld8w","Cmupiiq5vk3z","homologacion-en-tramite"];
+const docs={carruseles:Object.fromEntries(ids.map(id=>{const j=JSON.parse(readFileSync(D+id+'.json','utf8'));return [id,j.data||j];}))};
+const b=await chromium.launch(); const err=[]; const p=await b.newPage({viewport:{width:1440,height:950}}); p.on('pageerror',x=>err.push(x.message));
+await p.addInitScript(([C])=>{ if(window.parent!==window) return; const cols=JSON.parse(C); const subs={};
+ const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>d}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
+ const col=c=>({onSnapshot:f=>{(subs[c]=subs[c]||[]).push(f);setTimeout(()=>f(snap(c)),50);return()=>{}},orderBy:()=>col(c),where:()=>col(c),get:async()=>snap(c),
+   doc:id=>({set:async d=>{(cols[c]=cols[c]||{})[id]=JSON.parse(JSON.stringify(d));avisa(c)},update:async d=>{Object.assign((cols[c]=cols[c]||{})[id]||{},d);avisa(c)},delete:async()=>{delete (cols[c]||{})[id];avisa(c)}})});
+ window.claude={use:async k=>k==='db'?{collection:col,doc:p=>col(p.split('/')[0]).doc(p.split('/')[1])}:null}; },[JSON.stringify(docs)]);
+await p.goto('http://127.0.0.1:8765/banco-de-carruseles.html'); await p.waitForTimeout(1500);
+const st=async m=>console.log(m, await p.evaluate(()=>({sec:CNT.sec, v:S.v, tabs:[...document.querySelectorAll('#vistas button')].filter(b=>getComputedStyle(b).display!=='none').map(b=>b.textContent).join('/'), nombre:(document.querySelector('.mk-txt b')||{}).textContent})));
+await p.click('#cnt-lado [data-cnt="matriz"]'); await p.waitForTimeout(600); await st('matriz:'); await p.screenshot({path:S+'mz-1.png'});
+await p.click('#vistas [data-v="datos"]'); await p.waitForTimeout(300); await st('datos:');
+await p.click('#cnt-lado [data-cnt="diseno"]'); await p.waitForTimeout(400); await st('carruseles:');
+await p.click('#cnt-lado [data-cnt="matriz"]'); await p.waitForTimeout(400); await st('matriz otra vez:');
+const id = await p.evaluate(()=>IDEAS.find(it=>yaVisible(it)&&estadoIdea(it)==='porhacer').id); console.log('idea', id);
+await p.evaluate(i=>abrir(i), id); await p.waitForTimeout(500);
+console.log('pie:', await p.evaluate(()=>$('#dfoot').innerText));
+await p.click('#mz-prodfmt'); await p.waitForTimeout(200); await p.screenshot({path:S+'mz-2-menu.png'});
+console.log('menu:', await p.evaluate(()=>$('#mz-fmtmenu').innerText.replace(/\n/g,' | ')));
+await p.click('[data-mz-fmt="reel"]'); await p.waitForTimeout(700); await st('tras guion:');
+console.log('guion:', await p.evaluate(()=>{const g=GU.lista[GU.abierto]; return g && [g.idea, g.titulo, g.formacion, g.tipo].join(' / ');}));
+await p.screenshot({path:S+'mz-3-guion.png'});
+await p.click('#cnt-lado [data-cnt="matriz"]'); await p.waitForTimeout(400);
+await p.evaluate(i=>abrir(i), id); await p.waitForTimeout(400);
+await p.click('#mz-prodfmt'); await p.click('[data-mz-fmt="dinamico"]'); await p.waitForTimeout(700); await st('tras dinámico:');
+console.log('est:', await p.evaluate(()=>{const e=ES.lista[ES.abierto]; return e && [e.idea, e.tipo, e.formacion, e.fondo].join(' / ');}));
+await p.click('#cnt-lado [data-cnt="matriz"]'); await p.waitForTimeout(400);
+await p.fill('#buscar', '').catch(()=>{});
+console.log('fila otras:', await p.evaluate(i=>[...document.querySelectorAll('.mz-otras')].map(x=>x.textContent).join(' ; '), id));
+await p.evaluate(i=>abrir(i), id); await p.waitForTimeout(400); await p.screenshot({path:S+'mz-4-ficha.png'});
+console.log('piezas:', await p.evaluate(()=>[...document.querySelectorAll('.mz-pieza')].map(x=>x.innerText.replace(/\n/g,' ')).join(' ; ')));
+await p.click('.mz-pieza >> nth=0'); await p.waitForTimeout(500); await st('abrir pieza:');
+// idea con carrusel: abrir carrusel desde la ficha
+await p.click('#cnt-lado [data-cnt="matriz"]'); await p.waitForTimeout(400);
+const idc = await p.evaluate(()=>{const c=Object.values(EST.lista).find(c=>c.idea&&IMAP[c.idea]&&c.slides&&c.slides.length); return c&&c.idea;}); console.log('idea con carrusel', idc);
+await p.evaluate(i=>abrir(i), idc); await p.waitForTimeout(400); console.log('pie2:', await p.evaluate(()=>$('#dfoot').innerText.replace(/\n/g,' | ')));
+await p.click('#dfoot [data-est-abrir]'); await p.waitForTimeout(800); await st('editor:'); console.log('abierto', await p.evaluate(()=>EST.abierto));
+await p.screenshot({path:S+'mz-5-editor.png'});
+// Ver su idea desde el directorio / recargar
+await p.click('#cnt-lado [data-cnt="matriz"]'); await p.waitForTimeout(400);
+await p.reload(); await p.waitForTimeout(1800); await st('recarga:');
+await p.click('#cnt-lado [data-cnt="inicio"] >> nth=0').catch(()=>{}); await p.waitForTimeout(400); await p.screenshot({path:S+'mz-6-inicio.png'});
+await p.setViewportSize({width:390,height:844}); await p.click('#cnt-lado .cnt-nav [data-cnt="matriz"]'); await p.waitForTimeout(500); await p.screenshot({path:S+'mz-7-movil.png'});
+console.log('err', err); await b.close();
