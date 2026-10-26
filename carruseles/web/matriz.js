@@ -302,6 +302,24 @@ const MZ_EJES = {
   rama: {nombre: 'Rama', filtro: 'rama2', de: it => it.ramaColor || 'Transversal', vals: () => MZ_RAMAS.map(r => [r, mzNomRama(r)])}};
 S.mzModo = S.mzModo || (function () { try { return localStorage.getItem('matriz.modo') || 'lista'; } catch (e) { return 'lista'; } })();
 S.mzFil = S.mzFil || 'tema'; S.mzCol = S.mzCol || 'etapa'; S.vista = '';
+/* «Dónde falta contenido» (26/10/2026): lo que dice el cruce tema × etapa, en frases. Tiene en cuenta la formación elegida arriba. */
+function mzFaltan() {
+  const ideas = IDEAS.filter(it => pasaMatriz(it, 'tema') && pasaMatriz(it, 'etapa'));
+  if (ideas.length < 8) return '';
+  const sin = (t, e) => ideas.filter(x => x.tema === t && (!e || x.funnel === e) && estadoIdea(x) === 'porhacer').length;
+  const temas = TEMAS.filter(t => t !== 'Más dudas del ciclo' && ideas.some(x => x.tema === t));
+  const lin = [];
+  const bofu0 = temas.filter(t => !sin(t, 'BOFU'));
+  if (bofu0.length) lin.push('Para quien ya está decidiendo (' + mzEtapaTag('BOFU') + ') no te quedan ideas de: <b>' + bofu0.map(esc).join(', ') + '</b>.');
+  const nB = ideas.filter(x => x.funnel === 'BOFU' && estadoIdea(x) === 'porhacer').length, nT = ideas.filter(x => estadoIdea(x) === 'porhacer').length;
+  if (nT && nB / nT < 0.2) lin.push('Solo <b>' + nB + ' de ' + nT + '</b> ideas sin usar son ' + mzEtapaTag('BOFU') + ': casi todo es para quien aún está descubriendo o comparando.');
+  const pocos = temas.filter(t => sin(t) > 0 && sin(t) <= 4).map(t => esc(t) + ' (' + sin(t) + ')');
+  if (pocos.length) lin.push('Temas con muy pocas ideas sin usar: <b>' + pocos.join(', ') + '</b>.');
+  const tofu0 = temas.filter(t => !sin(t, 'TOFU'));
+  if (tofu0.length) lin.push('Para quien aún no te conoce (' + mzEtapaTag('TOFU') + ') no te quedan ideas de: <b>' + tofu0.map(esc).join(', ') + '</b>.');
+  if (!lin.length) return '';
+  return '<section class="mz-faltan"><h3>Dónde falta contenido' + (S.f.form || S.f.rama ? ' · ' + esc(S.f.form || S.f.rama) : '') + '</h3><ul>' + lin.slice(0, 3).map(l => '<li>' + l + '</li>').join('') + '</ul></section>';
+}
 function mzCuadro() {
   const F = MZ_EJES[S.mzFil], C = MZ_EJES[S.mzCol];
   const ideas = IDEAS.filter(it => pasaMatriz(it, F.filtro) && pasaMatriz(it, C.filtro));
@@ -352,15 +370,15 @@ function vMatrizDentro() {
   // va aquí, se elige al producir cada pieza). El cuadro cruza dos ejes (tema, etapa del embudo, rama) y cada casilla lleva a la lista.
   const porHacerF = filas.filter(it => estadoIdea(it) === 'porhacer');
   const enVista = filas, porHacerV = porHacerF;
-  const modo = S.mzModo === 'cuadro' ? 'cuadro' : 'lista';
+  // el Cuadro se quitó el mismo día (Sandra: «no lo entiendo, no me sirve; ya me dices tú dónde falta contenido»): en su lugar,
+  // una franja «Dónde falta contenido» escrita en frases (mzFaltan). mzCuadro sigue en el código por si se recupera.
+  const modo = 'lista';
   const quita = (k, txt) => '<button type="button" class="mz-filtrochip" data-mz-quita="' + k + '">' + esc(txt) + ' <b aria-hidden="true">✕</b></button>';
   h += '<div class="mz-vistafila">' + (modo === 'lista' ? '<label class="mz-todas mz-todas-izq' + (porHacerV.length ? '' : ' off') + '" title="Seleccionar todas las sin usar"><input type="checkbox" data-selec-vista="1"' +
       (porHacerV.length && porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + (porHacerV.length ? '' : ' disabled') + '> Seleccionar</label>' : '') +
-    '<div class="mz-vistas" role="tablist" aria-label="Cómo ver la Matriz">' +
-      '<button class="mz-vista" data-mz-modo="lista" aria-pressed="' + (modo === 'lista') + '">📋 Lista <span title="sin usar">' + porHacerF.length + '</span></button>' +
-      '<button class="mz-vista" data-mz-modo="cuadro" aria-pressed="' + (modo === 'cuadro') + '">▦ Cuadro</button></div>' +
+    '<span class="mz-cuenta">' + porHacerF.length + ' ideas sin usar</span>' +
     (modo === 'lista' ? (S.f.tema ? quita('tema', 'Tema: ' + S.f.tema) : '') + (S.f.etapa ? quita('etapa', 'Etapa: ' + MZ_ETAPA[S.f.etapa]) : '') + (S.f.rama2 ? quita('rama2', 'Rama: ' + mzNomRama(S.f.rama2)) : '') : '') + '</div>';
-  if (modo === 'cuadro') return h + mzCuadro();
+  if (!S.f.tema && !S.f.etapa && !S.q) h += mzFaltan();
   if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra formación o quita la búsqueda o los filtros.</div>';
   const lim = S.limite || 60, vis = enVista.slice(0, lim);
   h += '<div class="tablawrap mz-tablavista"><form class="mz-filanueva mz-nueva" id="mz-nueva" autocomplete="off"><span class="mz-nueva-ico" aria-hidden="true">✏️</span>' +

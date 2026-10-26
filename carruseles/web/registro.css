@@ -151,3 +151,11 @@ body.cnt.cnt-en-mz #vistas [data-dis-es], body.cnt.cnt-en-img #vistas [data-dis-
 .fx-form .mz-etapa { margin-left: 4px; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mz-etapa.e-TOFU { background: #1D3247; color: #A9CCF0; } :root:not([data-theme="light"]) .mz-etapa.e-MOFU { background: #3A3015; color: #F0D58A; } :root:not([data-theme="light"]) .mz-etapa.e-BOFU { background: #1C3A20; color: #A6E0A0; } }
 :root[data-theme="dark"] .mz-etapa.e-TOFU { background: #1D3247; color: #A9CCF0; } :root[data-theme="dark"] .mz-etapa.e-MOFU { background: #3A3015; color: #F0D58A; } :root[data-theme="dark"] .mz-etapa.e-BOFU { background: #1C3A20; color: #A6E0A0; }
+/* «Dónde falta contenido» (26/10/2026) */
+.mz-cuenta { font: 600 13px var(--f-ui); color: var(--ink2); }
+.mz-faltan { background: #FFF8E6; border: 1px solid #F1D68A; border-radius: 14px; padding: 14px 18px; margin: 0 0 16px; }
+.mz-faltan h3 { font: 700 14px var(--f-ui); margin: 0 0 6px; color: #6B5310; }
+.mz-faltan ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; font: 14px/1.45 var(--f-ui); color: var(--ink); }
+.mz-faltan .mz-etapa { margin: 0 2px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mz-faltan { background: #2E2812; border-color: #5A4A1A; } :root:not([data-theme="light"]) .mz-faltan h3 { color: #F0D58A; } }
+:root[data-theme="dark"] .mz-faltan { background: #2E2812; border-color: #5A4A1A; } :root[data-theme="dark"] .mz-faltan h3 { color: #F0D58A; }
