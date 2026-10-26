@@ -1,0 +1,76 @@
+{
+  "chat": [
+    {
+      "role": "user",
+      "text": "todo cabe en la slide 01 por qué saleel fallo?"
+    },
+    {
+      "role": "bot",
+      "text": "✓ He reducido el tamaño del titular y el subtítulo de la portada y limitado su ancho para que todo el texto quepa dentro de la slide."
+    }
+  ],
+  "cinta": "",
+  "color": "blanco",
+  "copy": "¿El título te va a delatar? 📄\nSpoiler: no.\n\nPone el ciclo, la familia profesional y el centro.\nCómo lo estudiaste no aparece por ningún lado.\nMismo título. Misma validez 🎯\n\nEsto significa que eliges ruta sin miedo al papel ⚡\n\nGuárdalo para cuando alguien te lo pregunte 📌\n\n#FPOnline #FormaciónProfesional #Explora #FPaDistancia #TítuloOficial",
+  "creado": "2026-10-01T12:10:02.841Z",
+  "cta": "Guárdalo y síguenos para más",
+  "error": "",
+  "estado": "borrador",
+  "idea": "T05",
+  "num": 13,
+  "objetivo": "autoridad",
+  "plantilla": "capas",
+  "portada": "sinfoto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "marco": "fondo",
+      "subtitulo": "Antes de dudar, lee qué consta de verdad en tu título",
+      "tipo": "portada",
+      "titulo": "¿Tu título pondrá *online*? Lo que dice el papel"
+    },
+    {
+      "numero": "01",
+      "texto": "Pone el ciclo, la familia profesional y el centro. La forma en que lo cursaste no aparece por ningún lado.",
+      "tipo": "contenido",
+      "titulo": "El título no lleva *etiqueta* de modalidad"
+    },
+    {
+      "numero": "02",
+      "texto": "El plan de estudios es idéntico, lo curses como lo curses. Por eso el papel no distingue presencial de online.",
+      "tipo": "contenido",
+      "titulo": "La ley regula el *contenido*, no el método"
+    },
+    {
+      "items": [
+        "El centro que emite el título",
+        "La nota media obtenida",
+        "El ciclo y la familia profesional",
+        "El año de finalización"
+      ],
+      "tipo": "lista",
+      "titulo": "Lo que sí queda *registrado*"
+    },
+    {
+      "antetitulo": "",
+      "cifra": "Carácter oficial",
+      "fuente": "Esemtia, sept. 2026",
+      "texto": "La FP a distancia tiene carácter oficial y la misma validez académica que la presencial. La fase práctica en empresa sí es presencial.",
+      "tipo": "dato"
+    },
+    {
+      "numero": "03",
+      "texto": "La formación en empresa se hace presencial, salvo excepciones puntuales según el sector y el plan individual.",
+      "tipo": "contenido",
+      "titulo": "La parte en *empresa* sí se pisa en persona"
+    },
+    {
+      "cta": "Guárdalo y síguenos para más",
+      "texto": "Tu título cuenta lo que lograste, no el camino que elegiste para llegar.",
+      "tipo": "cierre",
+      "titulo": "El papel habla de *resultados*, no de rutas"
+    }
+  ],
+  "titulo": "¿Tu título pondrá online? Lo que dice el papel",
+  "upd": "2026-10-19T14:59:50.073Z"
+}

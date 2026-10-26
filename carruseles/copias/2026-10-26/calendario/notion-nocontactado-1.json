@@ -1,0 +1,20 @@
+{
+  "angulo": "Caso de Rosa: dos trabajos, estudió desde el móvil, título oficial",
+  "asunto": "",
+  "buyer": "Rosa, 36",
+  "creado": "2026-09-18T00:00:02.000Z",
+  "estado": "enviado",
+  "fecha": "2026-09-18",
+  "formacion": "gestion",
+  "gancho": "La persiana que lleva tres semanas sin arreglar",
+  "hubspot": "https://app-eu1.hubspot.com/email/25603833/details/473831845112/performance?returnPath=%2Fmanage%2Fstate%2Fall",
+  "metricas": {
+    "apertura": "33,47",
+    "clic": "0,56",
+    "enviados": "2507",
+    "formularios": ""
+  },
+  "notas": "",
+  "preheader": "",
+  "segmento": "nocontactado"
+}

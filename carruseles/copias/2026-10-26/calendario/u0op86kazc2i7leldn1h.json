@@ -1,0 +1,163 @@
+{
+  "angulo": "Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.",
+  "asunto": "Tienes algo esperando en el carrito",
+  "chat": [
+    {
+      "role": "user",
+      "text": "Escríbelo"
+    },
+    {
+      "role": "bot",
+      "text": "Ángulo nuevo para el segmento: la pregunta directa \"¿qué falló?\" con la salida honesta (te dejamos en paz o te llamamos), apoyada en Rubén (DAM+DAW), que también frenó por miedo a que fuera un curso flojo. Gancho del carro de la compra abandonado, sin moraleja explicada."
+    },
+    {
+      "role": "user",
+      "text": "cambia el pd sin mencionar que aun hay tiempo, porque realmente estamos ya llegando alalimite"
+    },
+    {
+      "role": "bot",
+      "text": "He cambiado la P.D.: ahora remata el gancho del carro y no habla de plazos ni de tiempo. He revisado la ficha de Rubén y he quitado \"se quedó callado\" y \"lo preguntó\", porque no constan en ella. Lo demás sigue igual."
+    },
+    {
+      "role": "user",
+      "text": "no me gusta el asunto B"
+    },
+    {
+      "role": "bot",
+      "text": "He cambiado el asunto B a \"una pregunta y te dejo\", que es el estilo seco de Rai, y lo demás de los asuntos sigue igual. También he quitado \"ahora está con el doble de Desarrollo\" de la historia de Rubén, porque su ficha no dice que esté matriculado."
+    },
+    {
+      "role": "user",
+      "text": "no me gusta ninguno de los dos preheaders"
+    },
+    {
+      "role": "bot",
+      "text": "He cambiado el preheader a \"Pediste info de una FP. Yo solo quiero saber qué pasó.\". Ancla al lead en lo que pidió y encaja con los dos asuntos. Como el preheader ya lleva la FP, ningún asunto la nombra. También he comprobado la ficha de Rubén: lo de los cuatro años programando y el miedo a los \"vídeos de YouTube\" sí constan."
+    },
+    {
+      "role": "user",
+      "text": "no me gustan los preheaders"
+    },
+    {
+      "role": "bot",
+      "text": "He cambiado el preheader a \"Tu FP sigue ahí. Yo, sin saber qué falló.\". Es más seco, suena a Rai y no repite lo que ya dice el asunto. Sigue funcionando con los dos asuntos, que no nombran la FP. También he vuelto a leer la ficha de Rubén y lo de los 4 años programando y el miedo a los \"vídeos de YouTube\" consta en ella. Si ninguno te convence, dime qué tono buscas (más borde, más cercano o más misterioso) y pruebo otro."
+    }
+  ],
+  "creado": "2026-10-08T13:55:09.804Z",
+  "email": {
+    "angulo": "Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.",
+    "asunto_a": "Tienes algo esperando en el carrito",
+    "asunto_b": "Tienes algo esperando en el carrito",
+    "asuntos_extra": [
+      {
+        "asunto": "tú también lo dejaste a medias",
+        "mecanismo": "acusación amable"
+      },
+      {
+        "asunto": "lo que tu carro abandonado dice de ti",
+        "mecanismo": "lo que dice de él"
+      },
+      {
+        "asunto": "¿cuántas veces lo has dejado para el lunes?",
+        "mecanismo": "pregunta que escuece"
+      },
+      {
+        "asunto": "a mitad del pasillo me acordé de ti",
+        "mecanismo": "imagen con él dentro"
+      },
+      {
+        "asunto": "no te voy a insistir",
+        "mecanismo": "anti-venta"
+      },
+      {
+        "asunto": "esto no va de la compra",
+        "mecanismo": "contradicción"
+      }
+    ],
+    "bloques": [
+      {
+        "contenido": "Hola, soy Rai.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\nMe fui a casa sin nada.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\nLuego, claro, cené dos huevos fritos.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": [
+          "¿El dinero? (se paga a plazos)",
+          "¿El tiempo? (son 2 años y sin soltar tu curro)",
+          "¿La duda del online? (el título oficial es el mismo que el presencial)",
+          "¿O simplemente no era el momento?"
+        ],
+        "tipo": "lista"
+      },
+      {
+        "contenido": "Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\nQuería algo serio, con práctica y con un título oficial de verdad.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Vale, que me llamen",
+        "tipo": "boton"
+      },
+      {
+        "contenido": "O si prefieres soltarlo por teléfono y acabar antes:",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Llamadme y os lo cuento",
+        "tipo": "boton"
+      }
+    ],
+    "despedida": "Sin más,",
+    "firma": "— Rai",
+    "pd": "P.D.: Si la respuesta es un \"no, gracias\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.",
+    "preheader": "Tu FP sigue ahí",
+    "revisar": [
+      "Confirmar que Rubén (damdaw-1) tiene permiso vigente para aparecer con nombre y que sigue matriculado en el doble DAM+DAW",
+      "El email es transversal salvo por la mención a Desarrollo en la historia de Rubén: validar que no chirría para leads de otras FP",
+      "Comprobar que los dos botones apuntan a la misma landing de solicitud de llamada"
+    ]
+  },
+  "estado": "enviado",
+  "fecha": "2026-10-08",
+  "gancho": "El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\nMe fui a casa sin nada.",
+  "hubspot": "https://app-eu1.hubspot.com/email/25603833/details/487813220581/performance?returnPath=%2Fmanage%2Fstate%2Fall",
+  "metricas": {
+    "apertura": "",
+    "clic": "",
+    "enviados": "",
+    "formularios": ""
+  },
+  "notas": "",
+  "preheader": "Tu FP sigue ahí",
+  "segmento": "ghosting",
+  "versiones": [
+    "{\"asunto_a\":\"lo del carro de la compra\",\"asunto_b\":\"una pregunta y te dejo\",\"preheader\":\"Lo dejé lleno en el pasillo de las conservas.\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando y también se quedó callado un tiempo. Lo que le frenaba era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nLo preguntó. Ahora está estudiando el doble de Desarrollo.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: La matrícula sigue abierta, así que no corres detrás de ninguna fecha. Yo sí tuve que volver al súper.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"lo del carro de la compra\",\"asunto_b\":\"una pregunta y te dejo\",\"preheader\":\"Lo dejé lleno en el pasillo de las conservas.\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio y con práctica, y ahora está con el doble de Desarrollo.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"tienes algo a medias (y no es la compra)\",\"asunto_b\":\"sé por qué no seguiste\",\"preheader\":\"Yo dejé el carro. Tú, la propuesta de tu FP.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio y con práctica, y ahora está con el doble de Desarrollo.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"Tu\",\"asunto_b\":\"sé por qué no seguiste\",\"preheader\":\"Yo dejé el carro. Tú, la propuesta de tu FP.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio y con práctica, y ahora está con el doble de Desarrollo.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"Tienes algo en el carrito\",\"asunto_b\":\"sé por qué no seguiste\",\"preheader\":\"Yo dejé el carro. Tú, la propuesta de tu FP.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio y con práctica, y ahora está con el doble de Desarrollo.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"Tienes algo esperando en el carrito\",\"asunto_b\":\"sé por qué no seguiste\",\"preheader\":\"Yo dejé el carro. Tú, la propuesta de tu FP.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio y con práctica, y ahora está con el doble de Desarrollo.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"tienes algo esperando en el carrito\",\"asunto_b\":\"sé por qué no seguiste\",\"preheader\":\"Yo dejé el carro. Tú, la propuesta de tu FP.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio y con práctica, y ahora está con el doble de Desarrollo.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"tienes algo esperando en el carrito\",\"asunto_b\":\"una pregunta y te dejo\",\"preheader\":\"Yo dejé el carro. Tú, la propuesta de tu FP.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio, con práctica y con un título oficial de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"tienes algo esperando en el carrito\",\"asunto_b\":\"una pregunta y te dejo\",\"preheader\":\"Pediste info de una FP. Yo solo quiero saber qué pasó.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio, con práctica y con un título oficial de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}",
+    "{\"asunto_a\":\"tienes algo esperando en el carrito\",\"asunto_b\":\"una pregunta y te dejo\",\"preheader\":\"Tu FP sigue ahí. Yo, sin saber qué falló.\",\"asuntos_extra\":[{\"asunto\":\"tú también lo dejaste a medias\",\"mecanismo\":\"acusación amable\"},{\"asunto\":\"lo que tu carro abandonado dice de ti\",\"mecanismo\":\"lo que dice de él\"},{\"asunto\":\"¿cuántas veces lo has dejado para el lunes?\",\"mecanismo\":\"pregunta que escuece\"},{\"asunto\":\"a mitad del pasillo me acordé de ti\",\"mecanismo\":\"imagen con él dentro\"},{\"asunto\":\"no te voy a insistir\",\"mecanismo\":\"anti-venta\"},{\"asunto\":\"esto no va de la compra\",\"mecanismo\":\"contradicción\"}],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"El martes llené el carro entero en el súper y lo dejé abandonado en el pasillo de las conservas.\\nMe fui a casa sin nada.\"},{\"tipo\":\"texto\",\"contenido\":\"Ni idea de por qué. Se me quitaron las ganas a mitad y ya está.\\nLuego, claro, cené dos huevos fritos.\"},{\"tipo\":\"texto\",\"contenido\":\"Pasa eso. Un día lo tienes decidido y al siguiente te da una pereza enorme explicar que ya no.\"},{\"tipo\":\"texto\",\"contenido\":\"Y aquí viene lo tuyo, {{nombre}}: te mandamos la propuesta de tu FP y desapareciste. No pasa nada, en serio. Pero me gustaría saber qué fue.\"},{\"tipo\":\"lista\",\"contenido\":[\"¿El dinero? (se paga a plazos)\",\"¿El tiempo? (son 2 años y sin soltar tu curro)\",\"¿La duda del online? (el título oficial es el mismo que el presencial)\",\"¿O simplemente no era el momento?\"]},{\"tipo\":\"texto\",\"contenido\":\"Rubén lleva cuatro años programando. Lo que le echaba para atrás era pensar que esto iban a ser vídeos de YouTube con otro nombre.\\nQuería algo serio, con práctica y con un título oficial de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"**Si me dices qué falló, un compañero del equipo te llama diez minutos y lo resolvemos o te dejamos en paz.** Las dos cosas valen.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"O si prefieres soltarlo por teléfono y acabar antes:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme y os lo cuento\"}],\"pd\":\"P.D.: Si la respuesta es un \\\"no, gracias\\\", también me sirve. Prefiero saberlo a quedarme como con el carro, sin tener ni idea de qué pasó.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Rai no reprocha el silencio: pregunta sin rodeos qué le frenó y le da dos salidas, que le llamen o que le dejen en paz.\"}"
+  ]
+}

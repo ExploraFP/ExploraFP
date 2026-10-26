@@ -1,0 +1,24 @@
+{
+  "asunto": "",
+  "creado": "2026-10-19T16:07:03.268Z",
+  "email": {
+    "asunto_a": "",
+    "asunto_b": "",
+    "bloques": [
+      {
+        "contenido": "",
+        "tipo": "texto"
+      }
+    ],
+    "despedida": "",
+    "firma": "",
+    "pd": "",
+    "preheader": ""
+  },
+  "estado": "en_redaccion",
+  "fecha": "2026-10-22",
+  "hubspot": "",
+  "metricas": {},
+  "preheader": "",
+  "segmento": "ghosting"
+}

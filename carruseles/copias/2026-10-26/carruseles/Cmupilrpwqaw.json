@@ -1,0 +1,66 @@
+{
+  "color": "blanco",
+  "copy": "¿La empresa de prácticas la buscas tú? 🤔\nNo.\n\nNosotros movemos los convenios.\nTú eliges dentro de opciones reales, según tu ciclo y tu zona 🗺️\n¿Poca oferta donde vives? Buscamos alternativas ⚡\n\nNo vas a pisar barro sola 💥\n\nEscríbenos tu ciclo por DM y trazamos tu ruta 📍\n\n#FPOnline #FormaciónEnEmpresa #Explora #Ucademy #FP",
+  "creado": "2026-10-01T12:33:03.380Z",
+  "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+  "error": "",
+  "estado": "borrador",
+  "idea": "T31",
+  "num": 17,
+  "objetivo": "informativo",
+  "plantilla": "poster",
+  "portada": "foto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "imagen": "fotos/foto-chico-saluda-portatil.jpg",
+      "marco": "fondo",
+      "subtitulo": "Te contamos cómo funciona la asignación real, sin leyendas urbanas",
+      "tipo": "portada",
+      "titulo": "Empresa de prácticas: ¿la buscas *tú*?"
+    },
+    {
+      "numero": "01",
+      "texto": "Nosotros movemos los convenios con empresas. Tú no sales a tocar puertas sola, con machete en mano.",
+      "tipo": "contenido",
+      "titulo": "El centro *gestiona* el convenio"
+    },
+    {
+      "numero": "02",
+      "texto": "Te proponemos empresas según tu ciclo y tu zona. Puedes opinar, pedir cambios, priorizar tus preferencias.",
+      "tipo": "contenido",
+      "titulo": "Tú eliges, pero *dentro* de opciones"
+    },
+    {
+      "items": [
+        "Módulos aprobados o al día",
+        "Disponibilidad de horario real",
+        "Zona donde vives o puedes moverte",
+        "Preferencia de sector si la tienes"
+      ],
+      "tipo": "lista",
+      "titulo": "Qué pide el centro para *asignarte*"
+    },
+    {
+      "antetitulo": "Lo que cambia",
+      "cifra": "LO 3/2022",
+      "fuente": "Esemtia · Alianza para la FP Dual, sept. 2026",
+      "texto": "La formación en empresa deja de ser un bloque al final del ciclo y pasa a estar integrada dentro de la formación.",
+      "tipo": "dato"
+    },
+    {
+      "numero": "03",
+      "texto": "Si vives en una zona con poca oferta, buscamos alternativas: otras localidades, otras modalidades, otro plan contigo.",
+      "tipo": "contenido",
+      "titulo": "¿Pocas empresas en tu *zona*?"
+    },
+    {
+      "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+      "texto": "Cada ciclo tiene su propio circuito de empresas y sus propias reglas de asignación",
+      "tipo": "cierre",
+      "titulo": "No vas a pisar barro *sola*"
+    }
+  ],
+  "titulo": "Empresa de prácticas: ¿la buscas tú?",
+  "upd": "2026-10-14T16:30:07.127Z"
+}

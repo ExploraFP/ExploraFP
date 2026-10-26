@@ -1,0 +1,57 @@
+{
+  "color": "verde02",
+  "copy": "¿Exámenes presenciales: sí o no? 🤔\nRespuesta directa.\n\nEl día a día es online.\nAlgunas pruebas tienen fecha y sitio, en puntos autorizados.\nTe avisamos con tiempo. Nada a ciegas 🧭\n\nCada ciclo tiene sus reglas ⚡\n\nEscríbenos tu ciclo por DM y trazamos tu ruta 📍\n\n#FPOnline #Explora #EstudiarYTrabajar #FormaciónProfesional #Ucademy",
+  "creado": "2026-10-01T12:14:02.709Z",
+  "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+  "error": "",
+  "estado": "borrador",
+  "idea": "T35",
+  "num": 14,
+  "objetivo": "informativo",
+  "plantilla": "cuaderno",
+  "portada": "sinfoto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "marco": "fondo",
+      "subtitulo": "Respuesta directa, sin letra pequeña",
+      "tipo": "portada",
+      "titulo": "¿Los exámenes son *presenciales*?"
+    },
+    {
+      "numero": "01",
+      "texto": "Clases, contenido y seguimiento los pisas desde donde quieras. Sin desplazarte, sin horarios fijos.",
+      "tipo": "contenido",
+      "titulo": "Lo online es *online*"
+    },
+    {
+      "numero": "02",
+      "texto": "Algunas evaluaciones se hacen en fechas concretas, con convocatoria marcada desde el centro.",
+      "tipo": "contenido",
+      "titulo": "Las pruebas sí tienen su *momento*"
+    },
+    {
+      "items": [
+        "DNI o documento válido",
+        "Fecha de convocatoria confirmada",
+        "Material que te indique el centro"
+      ],
+      "tipo": "lista",
+      "titulo": "Qué necesitas *preparar*"
+    },
+    {
+      "numero": "03",
+      "texto": "En puntos autorizados, nunca a ciegas. Te avisamos con tiempo del lugar exacto.",
+      "tipo": "contenido",
+      "titulo": "Dónde se *hacen*"
+    },
+    {
+      "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+      "texto": "Cada ciclo tiene sus propias reglas de examen. Te las contamos claras antes de dar el paso.",
+      "tipo": "cierre",
+      "titulo": "Tu caso, sin *suponer* nada"
+    }
+  ],
+  "titulo": "¿Los exámenes son presenciales?",
+  "upd": "2026-10-14T16:30:07.127Z"
+}
