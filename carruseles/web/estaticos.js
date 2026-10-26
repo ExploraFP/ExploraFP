@@ -113,7 +113,7 @@ function esVLista() {
     .sort((a, b) => ES_ETAPAS.findIndex(x => x[0] === esEtapa(a)) - ES_ETAPAS.findIndex(x => x[0] === esEtapa(b)) || String(b.upd || '').localeCompare(String(a.upd || '')));
   const din = ES.tab === 'dinamico';
   let h = '<div class="gu-acciones"><button class="btn pri" id="es-nuevo">+ Nuevo ' + (din ? 'dinámico' : 'estático') + '</button>' +
-    '<span class="est-pista">' + (din ? 'Vídeo vertical de 6–8 s: el fondo se mueve y la pieza entra. Sin guion ni persona.' : 'Una pieza, dos formatos: 1:1 y vertical.') + '</span></div>';
+    '</div>';
   h += '<div class="mz-vistas gu-filtros" role="tablist" aria-label="Filtrar por etapa">' +
     [['todos', 'Todos', deTipo.length]].concat(ES_ETAPAS.map(([k, t]) => [k, t, deTipo.filter(e => esEtapa(e) === k).length]))
       .map(([k, t, n]) => '<button class="mz-vista" data-es-filtro="' + k + '" aria-pressed="' + (ES.filtro === k) + '">' + t + ' <span>' + n + '</span></button>').join('') + '</div>';
