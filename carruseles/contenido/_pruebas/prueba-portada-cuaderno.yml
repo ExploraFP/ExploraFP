@@ -1,0 +1,6 @@
+plantilla: cuaderno
+color: blanco
+slides:
+  - tipo: portada
+    titulo: Esta es la *parte mala* de estudiar online.
+    subtitulo: "Y no, no eres tú: le pasa a todo el mundo."
