@@ -378,7 +378,7 @@ function vMatrizDentro() {
       (porHacerV.length && porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + (porHacerV.length ? '' : ' disabled') + '> Seleccionar</label>' : '') +
     '<span class="mz-cuenta">' + porHacerF.length + ' ideas sin usar</span>' +
     (modo === 'lista' ? (S.f.tema ? quita('tema', 'Tema: ' + S.f.tema) : '') + (S.f.etapa ? quita('etapa', 'Etapa: ' + MZ_ETAPA[S.f.etapa]) : '') + (S.f.rama2 ? quita('rama2', 'Rama: ' + mzNomRama(S.f.rama2)) : '') : '') + '</div>';
-  if (!S.f.tema && !S.f.etapa && !S.q) h += mzFaltan();
+  // (la franja «Dónde falta contenido», mzFaltan, se quitó: Sandra no la quiere, 26/10/2026)
   if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra formación o quita la búsqueda o los filtros.</div>';
   const lim = S.limite || 60, vis = enVista.slice(0, lim);
   h += '<div class="tablawrap mz-tablavista"><form class="mz-filanueva mz-nueva" id="mz-nueva" autocomplete="off"><span class="mz-nueva-ico" aria-hidden="true">✏️</span>' +
