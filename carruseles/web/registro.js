@@ -238,7 +238,7 @@ document.addEventListener('click', ev => {
     else if (k === 'e') { const e = ES.lista[id]; ES.tab = e && e.tipo === 'dinamico' ? 'dinamico' : 'normal'; ES.abierto = id; cntIr('estaticos'); }
     else if (k === 'g') { GU.tab = 'guiones'; GU.abierto = id; cntIr('guiones'); }
     return; }
-  const ir = t.closest('[data-reg-irdea]'); if (ir) { const id = ir.dataset.regIrdea; cerrarPanel(); cntIr('carruseles'); S.v = 'ideas'; render(); if (typeof abrir === 'function') abrir(id); return; }
+  const ir = t.closest('[data-reg-irdea]'); if (ir) { const id = ir.dataset.regIrdea; cerrarPanel(); cntIr('matriz'); if (typeof abrir === 'function') abrir(id); return; }
 }, true);
 document.addEventListener('input', ev => {
   const t = ev.target;
@@ -261,3 +261,87 @@ pintarEditor = function (todo) {
   if (dis) dis.insertAdjacentHTML('afterend', html); else panel.insertAdjacentHTML('afterbegin', html);
 };
 regConectar();
+
+/* ---------- La Matriz, sección propia y común a todos los formatos (26/10/2026, Sandra) ----------
+   Sale de Carruseles (en Contenidos es la sección «🧭 Matriz», con sus pestañas Matriz · Datos). Cada idea enseña lo que se ha
+   hecho con ella en cualquier formato (campo `idea` de carruseles, guiones, estáticos y piezas hechas fuera) y «Producir»
+   pregunta el formato: carrusel (como siempre), guion, estático o dinámico (crea la pieza enlazada y la abre en su sección). */
+function mzPiezasDe(ideaId) {
+  const out = [];
+  Object.values(typeof GU !== 'undefined' ? GU.lista : {}).filter(g => g.idea === ideaId).forEach(g => out.push({t: 'g', id: g.id, emo: '🎬', cod: guCod(g),
+    txt: guTit(g), et: (GU_ETAPAS.find(x => x[0] === (g.etapa || 'borrador')) || [0, ''])[1], creado: g.creado}));
+  Object.values(typeof ES !== 'undefined' ? ES.lista : {}).filter(e => e.idea === ideaId).forEach(e => out.push({t: 'e', id: e.id, emo: e.tipo === 'dinamico' ? '✨' : '🧩', cod: esCod(e),
+    txt: String(e.titulo || '').replace(/\*/g, ''), et: (ES_ETAPAS.find(x => x[0] === esEtapa(e)) || [0, ''])[1], creado: e.creado}));
+  Object.values(REG.ext).filter(x => x.idea === ideaId).forEach(x => out.push({t: 'x', id: x.id, emo: regEmo(x.formato), cod: x.num ? 'X' + String(x.num).padStart(2, '0') : '',
+    txt: x.titulo, et: 'Hecha fuera', creado: x.creado}));
+  return out.sort((a, b) => String(a.creado || '').localeCompare(String(b.creado || '')));
+}
+// en la fila, junto al carrusel: el resto de piezas en pequeño (🎬 G01 · 🧩 E03)
+const _celdaEstadoReg = celdaEstado;
+celdaEstado = function (it) {
+  const ps = mzPiezasDe(it.id);
+  return _celdaEstadoReg(it) + (ps.length ? '<button class="mz-otras" data-abrir="' + it.id + '" title="' + esc(ps.map(p => p.txt).join(' · ')) + '">' +
+    ps.slice(0, 3).map(p => p.emo + ' ' + esc(p.cod || p.et)).join(' · ') + (ps.length > 3 ? ' +' + (ps.length - 3) : '') + '</button>' : '');
+};
+const _pintarFichaReg = pintarFicha;
+pintarFicha = function () {
+  _pintarFichaReg.apply(this, arguments);
+  const it = S.sel && IMAP[S.sel]; if (!it) return;
+  const ps = mzPiezasDe(it.id), body = $('#dbody'), pie = $('#dfoot');
+  if (ps.length && body) body.insertAdjacentHTML('beforeend', '<section class="fx-sec"><h4>También con esta idea</h4><div class="mz-piezas">' +
+    ps.map(p => '<button type="button" class="mz-pieza" data-reg-abrir="' + p.t + ':' + esc(p.id) + '"><span>' + p.emo + '</span><b>' + esc(p.cod || '') + '</b> ' +
+      esc(p.txt || '(sin título)') + '<small>' + esc(p.et) + '</small></button>').join('') + '</div></section>');
+  if (!pie) return;
+  // «Producir» pregunta el formato; si ya hay carrusel, el botón sigue (para hacer la idea en otro formato)
+  const viejo = pie.querySelector('[data-producir]'), hayCarrusel = !!carruselDe(it);
+  const btn = '<button type="button" class="btn ' + (viejo || !pie.querySelector('.btn.pri') ? 'pri' : '') + '" id="mz-prodfmt" data-idea="' + it.id + '" aria-haspopup="true">' + (viejo ? 'Producir' : 'Producir en otro formato') + ' ▾</button>';
+  if (viejo) viejo.outerHTML = btn; else pie.insertAdjacentHTML('beforeend', btn);
+  pie.querySelector('#mz-prodfmt').dataset.conCarrusel = hayCarrusel ? '1' : '';
+};
+function mzMenuFormato(b) {
+  mzCerrarFormato();
+  const m = document.createElement('div'); m.id = 'mz-fmtmenu'; m.className = 'mz-fmtmenu'; m.setAttribute('role', 'menu');
+  m.innerHTML = [['carrusel', '🎠', 'Carrusel'], ['reel', '🎬', 'Guion orgánico'], ['anuncio', '🎬', 'Guion de ads'], ['normal', '🧩', 'Estático'], ['dinamico', '✨', 'Dinámico']]
+    .filter(o => !(o[0] === 'carrusel' && b.dataset.conCarrusel))
+    .map(([k, e, t]) => '<button type="button" role="menuitem" data-mz-fmt="' + k + '" data-idea="' + b.dataset.idea + '"><span>' + e + '</span>' + t + '</button>').join('');
+  document.body.appendChild(m);
+  const r = b.getBoundingClientRect();
+  m.style.left = Math.max(8, Math.min(r.left, innerWidth - m.offsetWidth - 8)) + 'px';
+  m.style.top = Math.max(8, r.top - m.offsetHeight - 6) + 'px';
+}
+function mzCerrarFormato() { const m = document.getElementById('mz-fmtmenu'); if (m) m.remove(); }
+function mzProducirEn(fmt, ideaId) {
+  const it = IMAP[ideaId]; if (!it) return;
+  mzCerrarFormato();
+  if (fmt === 'carrusel') { abrirProducir([ideaId]); return; }
+  const form = REG_FORMACIONES.indexOf(it.alcTxt) >= 0 ? it.alcTxt : '';
+  cerrarPanel();
+  if (fmt === 'reel' || fmt === 'anuncio') {
+    const g = guNuevo(Object.assign({tipo: fmt, idea: ideaId, titulo: String(tituloIdea(it) || '').replace(/\*/g, '')}, form ? {formacion: form} : {}));
+    GU.tab = 'guiones'; GU.tipo = fmt; GU.grupo = '*'; GU.abierto = g.id; cntIr('guiones');
+    toast('Guion creado con la idea. Pídele a Claude que lo escriba'); return;
+  }
+  const e = esNuevo(fmt); e.idea = ideaId;
+  if (form) { e.formacion = form; tjAlElegirForm(e); }
+  esGuardar(e); ES.tab = fmt; ES.abierto = e.id; cntIr('estaticos');
+  toast((fmt === 'dinamico' ? 'Dinámico' : 'Estático') + ' creado con la idea');
+}
+document.addEventListener('click', ev => {
+  const t = ev.target;
+  const b = t.closest && t.closest('#mz-prodfmt'); if (b) { ev.stopImmediatePropagation(); document.getElementById('mz-fmtmenu') ? mzCerrarFormato() : mzMenuFormato(b); return; }
+  const f = t.closest && t.closest('[data-mz-fmt]'); if (f) { ev.stopImmediatePropagation(); mzProducirEn(f.dataset.mzFmt, f.dataset.idea); return; }
+  if (!(t.closest && t.closest('#mz-fmtmenu'))) mzCerrarFormato();
+  // desde una pieza de la ficha: abrirla en su sección
+  const pz = t.closest && t.closest('.mz-pieza[data-reg-abrir]'); if (pz) { ev.stopImmediatePropagation(); cerrarPanel(); const [k, id] = pz.dataset.regAbrir.split(':');
+    if (k === 'g') { GU.tab = 'guiones'; GU.tipo = (GU.lista[id] || {}).tipo || 'reel'; GU.abierto = id; cntIr('guiones'); }
+    else if (k === 'e') { ES.tab = (ES.lista[id] || {}).tipo || 'normal'; ES.abierto = id; cntIr('estaticos'); }
+    else cntIr('directorio');
+    return; }
+}, true);
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') mzCerrarFormato(); });
+// un carrusel abierto desde la Matriz se edita en Carruseles
+const _abrirEditorMz = abrirEditor;
+abrirEditor = function (id) {
+  if (CNT.sec === 'matriz') { cerrarPanel(); S.v = 'producir'; cntIr('carruseles', true); }
+  return _abrirEditorMz.apply(this, arguments);
+};

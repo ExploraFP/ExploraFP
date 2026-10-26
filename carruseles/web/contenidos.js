@@ -18,9 +18,10 @@ const CNT_ICONOS = {
 // 22/10/2026 (Sandra: la barra «parece muy arcaica», «quizá un emoji a cada uno»): emoji en vez de dibujos. Los dibujos se guardan
 // en CNT_ICONOS_DIBUJO por si se quiere volver.
 const CNT_ICONOS_DIBUJO = Object.assign({}, CNT_ICONOS);
-Object.assign(CNT_ICONOS, {inicio: '🏠', carruseles: '🎠', newsletter: '💌', guiones: '🎬', estaticos: '🧩', imagenes: '🖼️', directorio: '🗂️', ajustes: '⚙️'});
+Object.assign(CNT_ICONOS, {inicio: '🏠', matriz: '🧭', carruseles: '🎠', newsletter: '💌', guiones: '🎬', estaticos: '🧩', imagenes: '🖼️', directorio: '🗂️', ajustes: '⚙️'});
 // Imágenes es la pestaña «fotos» de Carruseles sacada a sección propia (común para todas; 16/10/2026)
 const CNT_SECCIONES = [   // orden elegido por Sandra arrastrando (23/10/2026); el arrastre ya no está
+  {id: 'matriz', nombre: 'Matriz'},                        // 26/10/2026: sale de Carruseles, vale para todos los formatos (Matriz + Datos)
   {id: 'guiones', nombre: 'Guiones', beta: true},          // 22/10/2026 (guiones.js)
   {id: 'estaticos', nombre: 'Estáticos', beta: true},      // 22/10/2026 (estaticos.js): normales 1:1 + vertical y dinámicos
   {id: 'carruseles', nombre: 'Carruseles'},
@@ -74,25 +75,27 @@ function cntIr(id, inicio) {
   const es = document.getElementById('cnt-estaticos'); if (es) es.hidden = id !== 'estaticos';
   if (id === 'estaticos') setTimeout(() => { if (typeof esPintar === 'function') esPintar(true); }, 0);
   if (id === 'guiones') setTimeout(() => { if (typeof guPintar === 'function') guPintar(true); }, 0);
-  const nombre = document.querySelector('.mk-txt b'); if (nombre) nombre.textContent = id === 'imagenes' ? 'Galería' : 'Carruseles';
+  document.body.classList.toggle('cnt-en-mz', id === 'matriz');
+  const nombre = document.querySelector('.mk-txt b'); if (nombre) nombre.textContent = id === 'imagenes' ? 'Galería' : id === 'matriz' ? 'Matriz' : 'Carruseles';
   if (id === 'newsletter') cntCargarNewsletter();
   if (id === 'inicio') cntPintarInicio();
-  // Imágenes = la vista «fotos»; Carruseles = cualquier otra
-  if (typeof S !== 'undefined') {
-    if (id === 'imagenes' && S.v !== 'fotos') { S.v = 'fotos'; CNT.sincro = true; render(); CNT.sincro = false; }
-    if (id === 'carruseles' && S.v === 'fotos') { S.v = 'producir'; CNT.sincro = true; render(); CNT.sincro = false; }
-  }
+  // Galería = la vista «fotos»; Matriz = las vistas «ideas» y «datos»; Carruseles = Producción
+  if (typeof S !== 'undefined' && CNT_DE_S.indexOf(id) >= 0 && cntSecDeV(S.v) !== id) {
+    S.v = id === 'imagenes' ? 'fotos' : id === 'matriz' ? 'ideas' : 'producir'; CNT.sincro = true; render(); CNT.sincro = false;
+  } else if (typeof S !== 'undefined' && id === 'matriz' && !inicio) { CNT.sincro = true; render(); CNT.sincro = false; }   // al volver, con las piezas nuevas de otros formatos
   if (!inicio) { document.body.classList.remove('menu-abierto'); window.scrollTo(0, 0); }
 }
-// si desde Carruseles se salta a una foto (p. ej. un aviso de Inicio), la barra lateral pasa a Imágenes, y al revés
+// las tres secciones que son vistas de la misma página (S.v) y a cuál pertenece cada vista
+const CNT_DE_S = ['carruseles', 'matriz', 'imagenes'];
+const cntSecDeV = v => v === 'fotos' ? 'imagenes' : v === 'ideas' || v === 'datos' ? 'matriz' : 'carruseles';
+// si desde una de ellas se salta a una vista de otra (p. ej. «Ver su idea» desde un carrusel), el menú de arriba la sigue
 const _renderCnt = render;
 render = function () {
   // Carruseles ya no tiene pestaña Inicio (Sandra, 19/10/2026): lo que llevaba ahí se abre en Producción
   if (typeof S !== 'undefined' && S.v === 'inicio') S.v = 'producir';
   _renderCnt.apply(this, arguments);
   if (CNT.sincro || typeof S === 'undefined') return;
-  if (S.v === 'fotos' && CNT.sec !== 'imagenes') cntIr('imagenes', true);
-  else if (S.v !== 'fotos' && CNT.sec === 'imagenes') cntIr('carruseles', true);
+  if (CNT_DE_S.indexOf(CNT.sec) >= 0 && cntSecDeV(S.v) !== CNT.sec) cntIr(cntSecDeV(S.v), true);
 };
 
 /* ---------- Inicio de Contenidos: una tarjeta por sección con lo que tiene pendiente ---------- */
@@ -102,6 +105,10 @@ function cntEstado(id) {
       const cs = Object.values(EST.lista || {}).filter(c => c.estado !== 'hecho');
       const rev = cs.filter(c => !c.listo && c.slides && c.slides.length).length, listos = cs.filter(c => c.listo).length;
       return [rev + ' en borrador', listos + ' para publicar'];
+    }
+    if (id === 'matriz') {
+      const vis = IDEAS.filter(yaVisible), n = k => vis.filter(it => estadoIdea(it) === k).length;
+      return [n('porhacer') + ' ideas por hacer', n('produccion') + ' en producción'];
     }
     if (id === 'newsletter') {
       if (!CNT.cal) return ['Cargando…'];
