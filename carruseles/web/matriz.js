@@ -149,6 +149,8 @@ function pasaMatriz(it, salvo) {
   }
   if (salvo !== 'cif' && f.cif && cifraDe(it) !== f.cif) return false;
   if (salvo !== 'tema' && f.tema && it.tema !== f.tema) return false;
+  if (salvo !== 'etapa' && f.etapa && it.funnel !== f.etapa) return false;
+  if (salvo !== 'rama2' && f.rama2 && (it.ramaColor || 'Transversal') !== f.rama2) return false;
   if (salvo !== 'enf' && f.enf && enfoqueDe(it) !== f.enf) return false;
   if (salvo !== 'estado' && f.estado && estadoIdea(it) !== f.estado) return false;
   return true;
@@ -222,7 +224,7 @@ function barraBusqueda() {
     '<input type="search" id="buscar" value="' + esc(S.q) + '" placeholder="Busca una idea: convalidar, TCAE, sueldo…" aria-label="Buscar en la matriz">' +
     '<span class="mz-sep"></span><div class="mz-fsel"><button type="button" class="mz-fbtn' + (v ? ' activo' : '') + '" id="mz-fbtn" aria-haspopup="listbox" aria-expanded="' + !!S.formaAbierta + '">' + actual + '<span class="mz-fflecha" aria-hidden="true">▾</span></button>' +
     (S.formaAbierta ? '<div class="mz-flista" role="listbox">' + lista + '</div>' : '') + '</div>' +
-    (['rama', 'form', 'cif', 'tema', 'estado', 'enf'].some(k => S.f[k]) || S.q ? '<button type="button" class="mz-limpia" id="mz-limpiar" title="Quitar filtros" aria-label="Quitar filtros">✕</button>' : '') + '</div>' +
+    (['rama', 'form', 'cif', 'tema', 'estado', 'enf', 'etapa', 'rama2'].some(k => S.f[k]) || S.q ? '<button type="button" class="mz-limpia" id="mz-limpiar" title="Quitar filtros" aria-label="Quitar filtros">✕</button>' : '') + '</div>' +
     '</div></section>';
 }
 function barraMatriz() {
@@ -269,7 +271,7 @@ function filaMatriz(it) {
     '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">'
       : '') + '</td>' +   // usada: sin marca (ya lo dice la raya verde y la columna «usada en», 26/10/2026)
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
-    (S.vista ? '' : '<td class="c-obj"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span></td>') +
+    '<td class="c-obj"><span class="mz-tematag">' + esc(it.tema) + '</span><small class="mz-etapatag">' + esc(MZ_ETAPA[it.funnel] || '') + '</small></td>' +
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
       (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') + (it.origen === 'claude' ? ' <span class="mz-tend mz-delmes">🆕 ' + esc(nombreMesClave(it.mes)) + '</span>' : '') +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
@@ -283,6 +285,52 @@ function temaAbierto(t) {
   if (t in S.abiertos) return S.abiertos[t];
   return !!(S.q && S.q.trim()) || !!S.f.tema || !!S.f.enf || !!S.f.form || !!S.f.rama;
 }
+/* ---------- Cuadro de la Matriz (26/10/2026) ----------
+   Dos ejes a la vez, elegidos con dos desplegables: tema (de qué hablas: lo que le preocupa a tu cliente), etapa del embudo
+   (en qué momento está: Descubre · Compara · Decide, del campo funnel TOFU/MOFU/BOFU del banco) y rama. El filtro de formación
+   y el buscador de arriba también valen. Cada casilla: ideas sin usar en grande y el total; vacía = hueco. Al pulsarla, la lista
+   filtrada por esas dos cosas. */
+const MZ_ETAPA = {TOFU: 'Descubre', MOFU: 'Compara', BOFU: 'Decide'};
+const MZ_RAMAS = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
+const mzNomRama = r => r === 'Transversal' ? 'Globales' : r;
+const MZ_EJES = {
+  tema: {nombre: 'Tema', filtro: 'tema', de: it => it.tema, vals: () => TEMAS.map(t => [t, t])},
+  etapa: {nombre: 'Etapa', filtro: 'etapa', de: it => it.funnel, vals: () => Object.keys(MZ_ETAPA).map(k => [k, MZ_ETAPA[k]])},
+  rama: {nombre: 'Rama', filtro: 'rama2', de: it => it.ramaColor || 'Transversal', vals: () => MZ_RAMAS.map(r => [r, mzNomRama(r)])}};
+S.mzModo = S.mzModo || (function () { try { return localStorage.getItem('matriz.modo') || 'lista'; } catch (e) { return 'lista'; } })();
+S.mzFil = S.mzFil || 'tema'; S.mzCol = S.mzCol || 'etapa'; S.vista = '';
+function mzCuadro() {
+  const F = MZ_EJES[S.mzFil], C = MZ_EJES[S.mzCol];
+  const ideas = IDEAS.filter(it => pasaMatriz(it, F.filtro) && pasaMatriz(it, C.filtro));
+  const filas = F.vals().filter(([k]) => ideas.some(it => F.de(it) === k) || S.mzFil !== 'tema'), cols = C.vals();
+  const sel = (id, v, otro) => '<select id="' + id + '" aria-label="' + (id === 'mz-eje-f' ? 'Filas' : 'Columnas') + '">' + Object.keys(MZ_EJES).filter(k => k !== otro).map(k =>
+    '<option value="' + k + '"' + (k === v ? ' selected' : '') + '>' + MZ_EJES[k].nombre + '</option>').join('') + '</select>';
+  const celda = (it, fk, ck) => ideas.filter(x => F.de(x) === fk && C.de(x) === ck);
+  let h = '<div class="mz-cuadro-ejes">Filas ' + sel('mz-eje-f', S.mzFil, S.mzCol) + ' × Columnas ' + sel('mz-eje-c', S.mzCol, S.mzFil) +
+    '<span class="mz-cuadro-ley"><b>3</b> sin usar · <small>de 5</small> en total · <i class="mz-ley-hueco"></i> hueco</span></div>';
+  h += '<div class="mz-cuadro-wrap"><table class="mz-cuadro"><thead><tr><th></th>' + cols.map(([, t]) => '<th>' + esc(t) + '</th>').join('') + '<th class="mz-ctot">Total</th></tr></thead><tbody>' +
+    filas.map(([fk, ft]) => { const enFila = ideas.filter(x => F.de(x) === fk);
+      return '<tr><th>' + esc(ft) + '</th>' + cols.map(([ck]) => { const xs = celda(null, fk, ck), sin = xs.filter(x => estadoIdea(x) === 'porhacer').length;
+        return '<td class="' + (!xs.length ? 'hueco' : !sin ? 'cubierta' : '') + '"><button type="button" data-mz-celda="' + esc(fk) + '|' + esc(ck) + '"' + (xs.length ? '' : ' disabled') + ' title="' +
+          esc(ft + ' · ' + (cols.find(c => c[0] === ck) || [])[1] + ': ' + sin + ' sin usar de ' + xs.length) + '">' + (xs.length ? '<b>' + sin + '</b><small>de ' + xs.length + '</small>' : '<span>—</span>') + '</button></td>'; }).join('') +
+        '<td class="mz-ctot"><b>' + enFila.filter(x => estadoIdea(x) === 'porhacer').length + '</b> <small>de ' + enFila.length + '</small></td></tr>'; }).join('') +
+    '</tbody></table></div>';
+  return h;
+}
+document.addEventListener('click', e => {
+  const t = e.target;
+  const m = t.closest && t.closest('[data-mz-modo]');
+  if (m) { e.stopImmediatePropagation(); S.mzModo = m.dataset.mzModo; S.f.tema = ''; S.f.etapa = ''; S.f.rama2 = ''; S.limite = 60; try { localStorage.setItem('matriz.modo', S.mzModo); } catch (x) {} render(); return; }
+  const q = t.closest && t.closest('[data-mz-quita]'); if (q) { e.stopImmediatePropagation(); S.f[q.dataset.mzQuita] = ''; render(); return; }
+  const c = t.closest && t.closest('[data-mz-celda]');
+  if (c) { e.stopImmediatePropagation(); const [fk, ck] = c.dataset.mzCelda.split('|');
+    S.f.tema = ''; S.f.etapa = ''; S.f.rama2 = ''; S.f[MZ_EJES[S.mzFil].filtro] = fk; S.f[MZ_EJES[S.mzCol].filtro] = ck;
+    S.mzModo = 'lista'; S.limite = 60; render(); window.scrollTo(0, 0); return; }
+}, true);
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'mz-eje-f') { S.mzFil = t.value; render(); } else if (t.id === 'mz-eje-c') { S.mzCol = t.value; render(); }
+});
 let MZ_CLAVE = '';
 function vMatriz() { return '<div class="mz-ancho">' + vMatrizDentro() + '</div>'; }
 function vMatrizDentro() {
@@ -297,20 +345,20 @@ function vMatrizDentro() {
   h += '<div class="mz-selbar' + (SELEC.size ? ' on' : '') + '" id="mz-selbar">' + barraSeleccion() + '</div>';
   h += barraBusqueda();
   const filtrando = filas.length !== IDEAS.filter(yaVisible).length;
-  // ---- vistas: una tabla siempre visible; arriba se elige el objetivo (y se combina con formación y búsqueda) ----
-  // las cuentas de las pestañas son SOLO por hacer (cuadran con «por hacer» de la cabecera; lo hecho no suma)
-  const cuentaObj = {}, porHacerF = filas.filter(it => estadoIdea(it) === 'porhacer');
-  porHacerF.forEach(it => { const k = objDe(it); cuentaObj[k] = (cuentaObj[k] || 0) + 1; });
-  const vistaBtn = (k, txt, n) => '<button class="mz-vista" data-vista="' + k + '" aria-pressed="' + ((S.vista || '') === k) + '">' + txt + ' <span title="' + n + ' por hacer">' + n + '</span></button>';
-  const enVista = S.vista ? filas.filter(it => objDe(it) === S.vista) : filas;
-  const porHacerV = enVista.filter(i => estadoIdea(i) === 'porhacer');
-  // «Seleccionar todas» a la izquierda de las vistas (pedido de Sandra), a la altura de las casillas de la tabla
-  h += '<div class="mz-vistafila"><label class="mz-todas mz-todas-izq' + (porHacerV.length ? '' : ' off') + '" title="Seleccionar todas las de esta vista"><input type="checkbox" data-selec-vista="1"' +
-      (porHacerV.length && porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + (porHacerV.length ? '' : ' disabled') + '> Seleccionar</label>' +
-    '<div class="mz-vistas" role="tablist" aria-label="Vistas por objetivo">' + vistaBtn('', 'Todas', porHacerF.length) +
-    OBJ_ORDEN.map(k => vistaBtn(k, esc(objEt(k)), cuentaObj[k] || 0)).join('') + '</div></div>';
-  if (S.vista) h += '<div class="mz-vistabar"><div class="mz-vbder"><span class="mz-ctapill"><b>CTA</b> ' + esc(OBJETIVOS[S.vista].cta) + '</span></div></div>';
-  if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra vista, otra formación o quita la búsqueda.</div>';
+  // ---- Lista · Cuadro (26/10/2026, Sandra: la Matriz común a todos los formatos y pensada desde el cliente; el objetivo ya no
+  // va aquí, se elige al producir cada pieza). El cuadro cruza dos ejes (tema, etapa del embudo, rama) y cada casilla lleva a la lista.
+  const porHacerF = filas.filter(it => estadoIdea(it) === 'porhacer');
+  const enVista = filas, porHacerV = porHacerF;
+  const modo = S.mzModo === 'cuadro' ? 'cuadro' : 'lista';
+  const quita = (k, txt) => '<button type="button" class="mz-filtrochip" data-mz-quita="' + k + '">' + esc(txt) + ' <b aria-hidden="true">✕</b></button>';
+  h += '<div class="mz-vistafila">' + (modo === 'lista' ? '<label class="mz-todas mz-todas-izq' + (porHacerV.length ? '' : ' off') + '" title="Seleccionar todas las sin usar"><input type="checkbox" data-selec-vista="1"' +
+      (porHacerV.length && porHacerV.every(i => SELEC.has(i.id)) ? ' checked' : '') + (porHacerV.length ? '' : ' disabled') + '> Seleccionar</label>' : '') +
+    '<div class="mz-vistas" role="tablist" aria-label="Cómo ver la Matriz">' +
+      '<button class="mz-vista" data-mz-modo="lista" aria-pressed="' + (modo === 'lista') + '">📋 Lista <span title="sin usar">' + porHacerF.length + '</span></button>' +
+      '<button class="mz-vista" data-mz-modo="cuadro" aria-pressed="' + (modo === 'cuadro') + '">▦ Cuadro</button></div>' +
+    (modo === 'lista' ? (S.f.tema ? quita('tema', 'Tema: ' + S.f.tema) : '') + (S.f.etapa ? quita('etapa', 'Etapa: ' + MZ_ETAPA[S.f.etapa]) : '') + (S.f.rama2 ? quita('rama2', 'Rama: ' + mzNomRama(S.f.rama2)) : '') : '') + '</div>';
+  if (modo === 'cuadro') return h + mzCuadro();
+  if (!enVista.length) return h + '<div class="vacio"><b>Nada por aquí</b>Prueba con otra formación o quita la búsqueda o los filtros.</div>';
   const lim = S.limite || 60, vis = enVista.slice(0, lim);
   h += '<div class="tablawrap mz-tablavista"><form class="mz-filanueva mz-nueva" id="mz-nueva" autocomplete="off"><span class="mz-nueva-ico" aria-hidden="true">✏️</span>' +
     '<input type="text" id="mz-nueva-tit" maxlength="90" placeholder="Escribe tu idea y pulsa Enter" aria-label="Nueva idea">' +
@@ -482,14 +530,11 @@ pintarFicha = function () {
       (deTemporada(it) ? '<span class="fx-mes">📅 ' + esc(MESES[mesActual()]) + '</span>' : '') +
       '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div>' +
     '<h2 class="fx-tit">' + esc(tituloIdea(it)) + '</h2>' +
-    '<div class="fx-form">' + chipAlcance(it) + (extra ? '<span>' + esc(extra) + '</span>' : '') + '</div>';
+    '<div class="fx-form">' + chipAlcance(it) + (extra ? '<span>' + esc(extra) + '</span>' : '') + '<span class="mz-tematag">' + esc(it.tema) + '</span><span class="mz-etapatag">' + esc(MZ_ETAPA[it.funnel] || '') + '</span></div>';
   // cuerpo: de qué va, objetivo + CTA, y el carrusel (o cómo quedaría la portada)
   let b = '<section class="fx-sec"><h4>De qué va</h4><p class="fx-dentro">' + esc(it.dentro || it.gancho) + '</p>' +
     (it.fuentes && it.fuentes.length ? '<p class="fx-fuentes">Fuentes: ' + it.fuentes.map((u, i) => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]) + '</a>').join(' · ') + '</p>' : '') + '</section>';
-  b += '<div class="fx-par">' +
-    '<section class="fx-caja"><h4>Objetivo</h4><div class="fx-objs" role="group" aria-label="Objetivo">' + OBJ_ORDEN.map(k =>
-      '<button data-obj-idea="' + k + '" aria-pressed="' + (obj === k) + '">' + esc(objEt(k)) + '</button>').join('') + '</div></section>' +
-    '<section class="fx-caja fx-cta"><h4>CTA final</h4><p>' + esc(cta) + '</p></section></div>';
+  // objetivo y CTA ya no van en la idea: se eligen al producir cada pieza (Sandra, 26/10/2026)
   if (c && c.slides && c.slides.length)
     b += '<section class="fx-sec"><h4>El carrusel</h4><div class="mz-tira">' + c.slides.map((_, i) => '<div class="mz-tira-s"><span>' + (i + 1) + '</span>' + mini(c, i) + '</div>').join('') + '</div></section>';
   else if (c) b += '<div class="mz-sincarr">En Producción, todavía sin generar.</div>';
@@ -571,7 +616,7 @@ document.addEventListener('click', e => {
     if (!EST_PROD.ids.length) { EST_PROD = null; cerrarPanel(); render(); } else pintarProducir(); return; }
   if (t.id === 'mz-verfiltros') { S.verFiltros = !S.verFiltros; render(); return; }
   if (t.id === 'mz-agrupar') { S.agrupar = !S.agrupar; render(); return; }
-  if (t.id === 'mz-limpiar') { e.stopImmediatePropagation(); S.f = {rama: '', form: '', cif: '', tema: '', estado: '', enf: ''}; S.t.solo = false; S.q = ''; render(); return; }
+  if (t.id === 'mz-limpiar') { e.stopImmediatePropagation(); S.f = {rama: '', form: '', cif: '', tema: '', estado: '', enf: '', etapa: '', rama2: ''}; S.t.solo = false; S.q = ''; render(); return; }
 }, true);
 document.addEventListener('change', e => {
   const t = e.target;
