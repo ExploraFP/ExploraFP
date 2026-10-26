@@ -141,3 +141,13 @@ body.cnt.cnt-en-mz #vistas [data-dis-es], body.cnt.cnt-en-img #vistas [data-dis-
 :root[data-theme="dark"] .mz-cuadro td.hueco button { background: #3A2422; color: #E3A9A9; }
 .mz-cuadro td { vertical-align: middle; }
 .mz-cuadro td button { align-items: center; }
+/* Etapa del embudo como TOFU · MOFU · BOFU (26/10/2026) y tema en texto: menos píldoras en la fila */
+.mz-etapa { display: inline-block; font: 700 11px var(--f-mono, ui-monospace, monospace); letter-spacing: .04em; border-radius: 6px; padding: 3px 7px; margin-right: 8px; vertical-align: middle; }
+.mz-etapa.e-TOFU { background: #E8F1FB; color: #2C5C8A; }
+.mz-etapa.e-MOFU { background: #FFF2CC; color: #80600F; }
+.mz-etapa.e-BOFU { background: #DDF3DA; color: #2B6A31; }
+.mz-tematxt { font: 500 13px var(--f-ui); color: var(--ink2); vertical-align: middle; }
+.mz-tabla td.c-obj { width: 230px !important; white-space: normal !important; }
+.fx-form .mz-etapa { margin-left: 4px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mz-etapa.e-TOFU { background: #1D3247; color: #A9CCF0; } :root:not([data-theme="light"]) .mz-etapa.e-MOFU { background: #3A3015; color: #F0D58A; } :root:not([data-theme="light"]) .mz-etapa.e-BOFU { background: #1C3A20; color: #A6E0A0; } }
+:root[data-theme="dark"] .mz-etapa.e-TOFU { background: #1D3247; color: #A9CCF0; } :root[data-theme="dark"] .mz-etapa.e-MOFU { background: #3A3015; color: #F0D58A; } :root[data-theme="dark"] .mz-etapa.e-BOFU { background: #1C3A20; color: #A6E0A0; }

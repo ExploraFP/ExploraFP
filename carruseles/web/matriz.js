@@ -271,7 +271,7 @@ function filaMatriz(it) {
     '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">'
       : '') + '</td>' +   // usada: sin marca (ya lo dice la raya verde y la columna «usada en», 26/10/2026)
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
-    '<td class="c-obj"><span class="mz-tematag">' + esc(it.tema) + '</span><small class="mz-etapatag">' + esc(MZ_ETAPA[it.funnel] || '') + '</small></td>' +
+    '<td class="c-obj">' + mzEtapaTag(it.funnel) + '<span class="mz-tematxt">' + esc(it.tema) + '</span></td>' +
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
       (it.subtipo === 'tendencia' ? ' <span class="mz-tend">📈 Tendencia</span>' : '') + (it.nueva && it.propia ? ' <span class="mz-tend mz-propia">Tuya</span>' : '') + (it.origen === 'claude' ? ' <span class="mz-tend mz-delmes">🆕 ' + esc(nombreMesClave(it.mes)) + '</span>' : '') +
       '<div class="mz-gancho">' + marca(it.gancho, TOKENS) + '</div>' +
@@ -290,7 +290,10 @@ function temaAbierto(t) {
    (en qué momento está: Descubre · Compara · Decide, del campo funnel TOFU/MOFU/BOFU del banco) y rama. El filtro de formación
    y el buscador de arriba también valen. Cada casilla: ideas sin usar en grande y el total; vacía = hueco. Al pulsarla, la lista
    filtrada por esas dos cosas. */
-const MZ_ETAPA = {TOFU: 'Descubre', MOFU: 'Compara', BOFU: 'Decide'};
+// Sandra (26/10/2026): «mejor TOFU, BOFU… lo entiendo mejor así». Lo que significa cada una va en la ayuda al pasar el ratón.
+const MZ_ETAPA = {TOFU: 'TOFU', MOFU: 'MOFU', BOFU: 'BOFU'};
+const MZ_ETAPA_AYUDA = {TOFU: 'Arriba del embudo: descubre que existe', MOFU: 'Mitad del embudo: compara opciones', BOFU: 'Abajo del embudo: está decidiendo'};
+const mzEtapaTag = k => MZ_ETAPA[k] ? '<span class="mz-etapa e-' + k + '" title="' + MZ_ETAPA_AYUDA[k] + '">' + k + '</span>' : '';
 const MZ_RAMAS = ['Transversal', 'Sanidad', 'Tecnología', 'Comercio', 'Administración', 'Servicios Socioculturales'];
 const mzNomRama = r => r === 'Transversal' ? 'Globales' : r;
 const MZ_EJES = {
@@ -308,9 +311,9 @@ function mzCuadro() {
   const celda = (it, fk, ck) => ideas.filter(x => F.de(x) === fk && C.de(x) === ck);
   let h = '<div class="mz-cuadro-ejes">Filas ' + sel('mz-eje-f', S.mzFil, S.mzCol) + ' × Columnas ' + sel('mz-eje-c', S.mzCol, S.mzFil) +
     '<span class="mz-cuadro-ley"><b>3</b> sin usar · <small>de 5</small> en total · <i class="mz-ley-hueco"></i> hueco</span></div>';
-  h += '<div class="mz-cuadro-wrap"><table class="mz-cuadro"><thead><tr><th></th>' + cols.map(([, t]) => '<th>' + esc(t) + '</th>').join('') + '<th class="mz-ctot">Total</th></tr></thead><tbody>' +
+  h += '<div class="mz-cuadro-wrap"><table class="mz-cuadro"><thead><tr><th></th>' + cols.map(([, t]) => '<th>' + (MZ_ETAPA_AYUDA[t] ? mzEtapaTag(t) : esc(t)) + '</th>').join('') + '<th class="mz-ctot">Total</th></tr></thead><tbody>' +
     filas.map(([fk, ft]) => { const enFila = ideas.filter(x => F.de(x) === fk);
-      return '<tr><th>' + esc(ft) + '</th>' + cols.map(([ck]) => { const xs = celda(null, fk, ck), sin = xs.filter(x => estadoIdea(x) === 'porhacer').length;
+      return '<tr><th>' + (MZ_ETAPA_AYUDA[ft] ? mzEtapaTag(ft) : esc(ft)) + '</th>' + cols.map(([ck]) => { const xs = celda(null, fk, ck), sin = xs.filter(x => estadoIdea(x) === 'porhacer').length;
         return '<td class="' + (!xs.length ? 'hueco' : !sin ? 'cubierta' : '') + '"><button type="button" data-mz-celda="' + esc(fk) + '|' + esc(ck) + '"' + (xs.length ? '' : ' disabled') + ' title="' +
           esc(ft + ' · ' + (cols.find(c => c[0] === ck) || [])[1] + ': ' + sin + ' sin usar de ' + xs.length) + '">' + (xs.length ? '<b>' + sin + '</b><small>de ' + xs.length + '</small>' : '<span>—</span>') + '</button></td>'; }).join('') +
         '<td class="mz-ctot"><b>' + enFila.filter(x => estadoIdea(x) === 'porhacer').length + '</b> <small>de ' + enFila.length + '</small></td></tr>'; }).join('') +
@@ -530,7 +533,7 @@ pintarFicha = function () {
       (deTemporada(it) ? '<span class="fx-mes">📅 ' + esc(MESES[mesActual()]) + '</span>' : '') +
       '<button class="dclose" id="cerrarFicha" aria-label="Cerrar">✕</button></div>' +
     '<h2 class="fx-tit">' + esc(tituloIdea(it)) + '</h2>' +
-    '<div class="fx-form">' + chipAlcance(it) + (extra ? '<span>' + esc(extra) + '</span>' : '') + '<span class="mz-tematag">' + esc(it.tema) + '</span><span class="mz-etapatag">' + esc(MZ_ETAPA[it.funnel] || '') + '</span></div>';
+    '<div class="fx-form">' + chipAlcance(it) + (extra ? '<span>' + esc(extra) + '</span>' : '') + mzEtapaTag(it.funnel) + '<span class="mz-tematxt">' + esc(it.tema) + '</span></div>';
   // cuerpo: de qué va, objetivo + CTA, y el carrusel (o cómo quedaría la portada)
   let b = '<section class="fx-sec"><h4>De qué va</h4><p class="fx-dentro">' + esc(it.dentro || it.gancho) + '</p>' +
     (it.fuentes && it.fuentes.length ? '<p class="fx-fuentes">Fuentes: ' + it.fuentes.map((u, i) => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]) + '</a>').join(' · ') + '</p>' : '') + '</section>';
