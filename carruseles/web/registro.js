@@ -276,12 +276,21 @@ function mzPiezasDe(ideaId) {
     txt: x.titulo, et: 'Hecha fuera', creado: x.creado}));
   return out.sort((a, b) => String(a.creado || '').localeCompare(String(b.creado || '')));
 }
-// en la fila, junto al carrusel: el resto de piezas en pequeño (🎬 G01 · 🧩 E03)
-const _celdaEstadoReg = celdaEstado;
+/* «Usada en» (26/10/2026, Sandra): una idea ya no está «hecha» ni «en producción» (eso solo miraba el carrusel). Con la Matriz común
+   una idea puede ser carrusel, reel y anuncio a la vez: o está SIN USAR (por hacer) o USADA, y la fila dice en qué formatos.
+   Las sugerencias del mes, «Lo nuevo» y el Inicio cuentan solo las que no se han usado en ningún formato. */
+const _estadoIdeaReg = estadoIdea;
+estadoIdea = function (it) { return _estadoIdeaReg(it) !== 'porhacer' || mzPiezasDe(it.id).length ? 'usada' : 'porhacer'; };
+ESTADOS_IDEA.usada = 'Usada';
+ESTADOS_IDEA.porhacer = 'Sin usar';
 celdaEstado = function (it) {
-  const ps = mzPiezasDe(it.id);
-  return _celdaEstadoReg(it) + (ps.length ? '<button class="mz-otras" data-abrir="' + it.id + '" title="' + esc(ps.map(p => p.txt).join(' · ')) + '">' +
-    ps.slice(0, 3).map(p => p.emo + ' ' + esc(p.cod || p.et)).join(' · ') + (ps.length > 3 ? ' +' + (ps.length - 3) : '') + '</button>' : '');
+  const c = carruselDe(it), o = op(it.id), usos = [];
+  if (c) usos.push({emo: '🎠', cod: codigoC(c), txt: c.titulo || c.tema || 'Carrusel', et: (PASOS.find(x => x[0] === pasoDe(c)) || ['', ''])[1]});
+  else if (o && (o.url || o.hecho)) usos.push({emo: '📁', cod: 'Fuera', txt: o.notas || 'Hecho fuera de la herramienta', et: ''});
+  mzPiezasDe(it.id).forEach(p => usos.push(p));
+  if (!usos.length) return '';
+  return '<button class="mz-usos" data-abrir="' + it.id + '" title="' + esc(usos.map(u => u.txt + (u.et ? ' (' + u.et + ')' : '')).join(' · ')) + '">' +
+    usos.slice(0, 4).map(u => '<span>' + u.emo + ' ' + esc(u.cod || u.et || '') + '</span>').join('') + (usos.length > 4 ? '<span>+' + (usos.length - 4) + '</span>' : '') + '</button>';
 };
 const _pintarFichaReg = pintarFicha;
 pintarFicha = function () {

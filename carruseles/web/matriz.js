@@ -307,7 +307,7 @@ function filaMatriz(it) {
   const puede = e === 'porhacer';
   return '<tr class="mz-' + e + (sel ? ' mz-sel' : '') + (S.sel === it.id ? ' sel' : '') + '">' +
     '<td class="c-chk">' + (puede ? '<input type="checkbox" class="mz-chk" data-selec="' + it.id + '"' + (sel ? ' checked' : '') + ' aria-label="Seleccionar">'
-      : e === 'hecha' ? '<span class="mz-okchk" title="Hecha">✓</span>' : '<span class="mz-okchk prod" title="En producción">●</span>') + '</td>' +
+      : '') + '</td>' +   // usada: sin marca (ya lo dice la raya verde y la columna «usada en», 26/10/2026)
     '<td class="c-alc">' + chipAlcance(it, true) + '</td>' +
     (S.vista ? '' : '<td class="c-obj"><span class="mz-objtag">' + esc(objEt(objDe(it))) + '</span></td>') +
     '<td class="c-idea"><button class="celda" data-abrir="' + it.id + '">' + marca(tituloIdea(it), TOKENS) + '</button>' +
@@ -397,8 +397,9 @@ function pintarSeleccion() {
 
 /* ---------- producir: elegir plantilla viéndola y avisar de lo ya hecho ---------- */
 function abrirProducir(ids) {
-  ids = ids.filter(id => IMAP[id] && estadoIdea(IMAP[id]) === 'porhacer');
-  if (!ids.length) { toast('Esas ideas ya están en Producción o hechas'); return; }
+  // un carrusel por idea (aunque la idea ya se haya usado en otro formato: guion, estático…)
+  ids = ids.filter(id => IMAP[id] && !carruselDe(IMAP[id]));
+  if (!ids.length) { toast('Esas ideas ya tienen carrusel'); return; }
   const objs = Array.from(new Set(ids.map(id => objDe(IMAP[id]))));
   const obj = objs.length === 1 ? objs[0] : '';   // '' = cada una con el suyo
   EST_PROD = {ids: ids, obj: obj, cta: obj ? OBJETIVOS[obj].cta : ''};

@@ -118,7 +118,7 @@ function cntEstado(id) {
     }
     if (id === 'matriz') {
       const vis = IDEAS.filter(yaVisible), n = k => vis.filter(it => estadoIdea(it) === k).length;
-      return [n('porhacer') + ' ideas por hacer', n('produccion') + ' en producción'];
+      return [n('porhacer') + ' ideas sin usar', n('usada') + ' ya usadas'];
     }
     if (id === 'newsletter') {
       if (!CNT.cal) return ['Cargando…'];

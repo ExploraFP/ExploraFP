@@ -29,7 +29,7 @@ await p.click('#mz-prodfmt'); await p.click('[data-mz-fmt="dinamico"]'); await p
 console.log('est:', await p.evaluate(()=>{const e=ES.lista[ES.abierto]; return e && [e.idea, e.tipo, e.formacion, e.fondo].join(' / ');}));
 await p.click('#cnt-lado [data-cnt="matriz"]'); await p.waitForTimeout(400);
 await p.fill('#buscar', '').catch(()=>{});
-console.log('fila otras:', await p.evaluate(i=>[...document.querySelectorAll('.mz-otras')].map(x=>x.textContent).join(' ; '), id));
+console.log('fila otras:', await p.evaluate(i=>[...document.querySelectorAll('.mz-usos')].map(x=>x.textContent).join(' ; '), id));
 await p.evaluate(i=>abrir(i), id); await p.waitForTimeout(400); await p.screenshot({path:S+'mz-4-ficha.png'});
 console.log('piezas:', await p.evaluate(()=>[...document.querySelectorAll('.mz-pieza')].map(x=>x.innerText.replace(/\n/g,' ')).join(' ; ')));
 await p.click('.mz-pieza >> nth=0'); await p.waitForTimeout(500); await st('abrir pieza:');

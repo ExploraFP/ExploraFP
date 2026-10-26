@@ -104,3 +104,11 @@ body.cnt.cnt-en-mz #vistas [data-dis-es], body.cnt.cnt-en-img #vistas [data-dis-
 .pap-txt small { color: var(--ink2); font-size: 12px; }
 .pap-ya { border: 0; background: none; color: var(--danger); font: 13px var(--f-ui); cursor: pointer; padding: 4px 6px; white-space: nowrap; }
 .pap-lista .pap-vacia { justify-content: center; color: var(--ink2); border-style: dashed; padding: 22px; }
+/* «Usada en» (26/10/2026): la fila de la Matriz dice en qué formatos se ha usado la idea. Ya no hay amarillo (en producción) ni
+   verde (hecha): una idea usada lleva una raya verde a la izquierda y sus piezas en la columna de la derecha. */
+.cnt .mz-tabla tr.mz-usada td { background: none !important; }
+.cnt .mz-tabla tr.mz-usada td:first-child { box-shadow: inset 3px 0 0 var(--ok, #3FB54A) !important; }
+.mz-usos { display: flex; flex-wrap: wrap; gap: 4px; border: 0; background: none; padding: 0; cursor: pointer; }
+.mz-usos span { font: 600 12px var(--f-ui); color: var(--ink); background: var(--surface2, #F1F5EE); border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px; white-space: nowrap; }
+.mz-usos:hover span { border-color: var(--brand); }
+@media (max-width: 760px) { .cnt .mz-tabla tr.mz-usada td:first-child { box-shadow: none !important; } .cnt .mz-tabla tr.mz-usada { box-shadow: inset 3px 0 0 var(--ok, #3FB54A) !important; } }
