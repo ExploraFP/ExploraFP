@@ -691,3 +691,9 @@
 .mz-tabla td.c-est .mz-hecho span:last-child{font-size:12.5px;white-space:nowrap}
 @media (max-width:1180px){ .mz-tabla td.c-idea{width:auto} .mz-tabla td.c-hueco{display:none} .mz-tabla td.c-alc{width:150px} .mz-tabla td.c-obj{width:130px} }
 @media (max-width:720px){ .mz-tabla td.c-est:empty{display:none} .mz-tabla td.c-est{width:100% !important;padding:8px 14px 0} }
+/* 26/10/2026 (Sandra, Mac + trackpad: la Matriz «no se mueve nada de nada»; la Galería sí). La tabla entera va dentro de
+   .tablawrap con overflow:hidden (para las esquinas redondeadas): eso la convierte en una caja con scroll propio de 4.700 px que no
+   puede moverse y, con la regla de «sin rebote» (overscroll-behavior: none en todo), no le pasaba el gesto a la página.
+   clip recorta igual sin ser caja con scroll, y dentro de la tabla el gesto vuelve a llegar a la página. */
+.tablawrap, .mz-tablavista { overflow: clip !important; }
+.tablawrap, .tablawrap * { overscroll-behavior: auto !important; }
