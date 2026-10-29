@@ -78,7 +78,8 @@ pintarEditor = function (todo) {
     cab.innerHTML = ''; cab.appendChild(izq); cab.appendChild(centro); cab.appendChild(der);
   }
   // Listo y Terminado: solo se ven (pedido de Sandra). Para cambiar algo, «Volver a revisión».
-  const soloVer = etapaDe(c) === 'publicado';   // 22/10/2026: «Para publicar» se puede seguir editando
+  // 29/10/2026 (Sandra): aprobado = ya no se edita, tampoco en «Para publicar». Para retocarlo, «↩ Volver a borrador».
+  const soloVer = etapaDe(c) === 'publicado' || etapaDe(c) === 'listo';
   ed.classList.toggle('solo-ver', soloVer);
   if (soloVer) {
     SEL.pop = null; SEL.diseno = false;
@@ -90,7 +91,7 @@ pintarEditor = function (todo) {
       const falta = etapaDe(c) === 'listo' && c.descargado && !c.ig;
       panel.innerHTML = (falta ? '<div class="sv-enlace"><b>¿Ya lo has subido?</b><span>Pega el enlace de Instagram y queda como publicado.</span>' +
           '<div class="sv-enlace-fila"><input type="url" id="sv-ig" placeholder="https://www.instagram.com/p/…"><button type="button" class="eb-pri" id="sv-ig-ok">Publicado</button></div></div>' : '') +
-        '<div class="sv-aviso">Publicado: ya no se edita. Para cambiar algo, pulsa «Para publicar» arriba.</div>' +
+        '<div class="sv-aviso">' + (etapaDe(c) === 'listo' ? 'Aprobado: ya no se edita. Para retocarlo, pulsa «↩ Volver a borrador» arriba.' : 'Publicado: ya no se edita. Para cambiar algo, pulsa «↩ Volver a para publicar» arriba.') + '</div>' +
         '<h3 class="sv-h">Caption</h3><div class="sv-caption">' + esc(c.copy || 'Sin caption') + '</div>' +
         (c.copy ? '<button type="button" class="linkbtn sv-copiar" data-est-copiar="' + c.id + '">Copiar caption</button>' : '');
     }

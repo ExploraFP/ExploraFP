@@ -61,3 +61,9 @@
 .est-ecuerpo.lz .est-escena{position:relative}
 #sel-pop.lz-flota{position:absolute;top:12px;right:12px;width:250px;z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.14);background:var(--surface)}
 @media(max-width:1200px){.est-ecuerpo.lz.lz-abierto{grid-template-columns:72px 300px minmax(0,1fr)}}
+/* Plantilla: la forma de esta slide en miniaturas */
+.lz-formas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lz-formas button{border:1.5px solid var(--line2);background:var(--surface);border-radius:10px;padding:4px 4px 6px;cursor:pointer;font:inherit;font-size:12px;color:var(--ink);display:flex;flex-direction:column;gap:4px;align-items:stretch}
+.lz-formas button:hover{border-color:var(--brand)}
+.lz-formas button[aria-pressed="true"]{border-color:var(--brand);background:var(--limaSoft);font-weight:600}
+.lz-formas .est-mini{width:100%;aspect-ratio:4/5;pointer-events:none}

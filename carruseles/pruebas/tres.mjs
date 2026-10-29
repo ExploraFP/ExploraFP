@@ -23,13 +23,14 @@ await p.evaluate(()=>{const c=EST.lista.Cmuphxbklxte; c._qc=c._qc; });
 await p.click('#pr-ok'); await p.waitForTimeout(400); await p.click('#eb-ok-si'); await p.waitForTimeout(1500); if (await p.evaluate(()=>etapaDe(EST.lista.Cmuphxbklxte))!=='listo') { await p.click('#pr-ok'); await p.waitForTimeout(400); await p.click('#eb-ok-si'); await p.waitForTimeout(1200); }
 await bar('TRAS PASAR:'); console.log('etapa', await p.evaluate(()=>etapaDe(EST.lista.Cmuphxbklxte)), 'toast', await p.evaluate(()=>($('#toast')||{}).textContent));
 await p.screenshot({path:S+'tres-listo.png'});
+console.log('Para publicar solo se ve:', await p.evaluate(()=>document.querySelector('#est-editor').classList.contains('solo-ver')), '·', await p.evaluate(()=>($('.sv-aviso')||{}).textContent));
 // editar en Para publicar
 await p.evaluate(()=>{const c=EST.lista.Cmuphxbklxte; c.copy=(c.copy||'')+' x'; guardarC(c);});
 await p.click('.eb-volver'); await p.waitForTimeout(600); await bar('VUELTA:');
 await p.click('#pr-ok'); await p.waitForTimeout(400); await p.click('#eb-ok-si'); await p.waitForTimeout(1500); if (await p.evaluate(()=>etapaDe(EST.lista.Cmuphxbklxte))!=='listo') { await p.click('#pr-ok'); await p.waitForTimeout(400); await p.click('#eb-ok-si'); await p.waitForTimeout(1200); }
 await p.evaluate(()=>{const c=EST.lista.Cmuphxbklxte; c.copy=(c.copy||'')+' y'; guardarC(c);});
 await p.evaluate(()=>cerrarEditor()); await p.waitForTimeout(500);
-console.log('chip editado:', await p.evaluate(()=>document.querySelectorAll('.pr-editado').length));
+console.log('etiqueta «Editado después» (debe ser 0):', await p.evaluate(()=>(document.body.innerText.match(/Editado después/g)||[]).length));
 // publicado
 await p.evaluate(()=>abrirEditor('Cmun394vgw4v')); await p.waitForTimeout(1500); await bar('PUBLICADO:'); await p.screenshot({path:S+'tres-pub.png'});
 await p.click('.eb-volver'); await p.waitForTimeout(800); await bar('PUB->LISTO:');

@@ -3,7 +3,6 @@
 .pr-etapa.e-generar { background: #FFF1CC; color: #8A5A00; }
 :root[data-theme="dark"] .pr-etapa.e-generar { background: #3A2F12; color: #F5DFA0; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pr-etapa.e-generar { background: #3A2F12; color: #F5DFA0; } }
-.pr-editado { display: inline-block; font: 600 12px var(--f-ui); padding: 3px 9px; border-radius: 999px; background: var(--surface2, #F1F4EF); color: var(--ink2); border: 1px solid var(--line2, #C2CEBC); }
 
 /* barra de pasos del editor */
 .eb-pasos { display: flex; align-items: center; list-style: none; margin: 0; padding: 3px; gap: 0; border-radius: 999px; background: var(--surface2, #F1F4EF); }

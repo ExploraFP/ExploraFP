@@ -3,21 +3,14 @@
    · Por dentro no cambia nada de los datos: «Por generar» y «En revisión» se ven juntas como Borrador
      (lo que está sin generar enseña su «Generar» / «Generando…»), Listo = Para publicar (c.listo) y Publicado = c.estado 'hecho'.
      Así los carruseles que ya existían quedan en su etapa nueva sin tocarlos.
-   · Para publicar se puede seguir editando. Si cambias algo después de pasarlo, la tarjeta lo avisa («Editado después»).
+   · 29/10/2026: Para publicar YA NO se edita (antes sí, con la etiqueta «Editado después», que Sandra no quiere). Para retocar,
+     «↩ Volver a borrador».
    · En el editor, una barra de pasos arriba: pulsar un paso anterior vuelve atrás; pulsar el siguiente es avanzar.
    · Publicado sigue pidiendo el enlace de Instagram (Sandra, 19/10/2026). Sin arrastrar tarjetas. */
 ETAPAS.generar = 'Borrador'; ETAPAS.revision = 'Borrador'; ETAPAS.listo = 'Para publicar'; ETAPAS.publicado = 'Publicado';
 const PASOS = [['borrador', 'Borrador'], ['listo', 'Para publicar'], ['publicado', 'Publicado']];
 const pasoDe = c => { const e = etapaDe(c); return e === 'generar' || e === 'revision' ? 'borrador' : e; };
 function firmaOK(c) { return JSON.stringify([c.plantilla, c.color, c.slides, c.copy || '']); }
-const editadoTrasOK = c => etapaDe(c) === 'listo' && c.okFirma && c.okFirma !== firmaOK(c);
-
-// tarjeta: el aviso de «editado después de pasarlo a Para publicar»
-const _tarjetaEt = tarjeta;
-tarjeta = function (c) {
-  const h = _tarjetaEt(c);
-  return editadoTrasOK(c) ? h.replace(/(<span class="pr-etapa [^"]*">[^<]*<\/span>)/, '$1<span class="pr-editado" title="Has cambiado algo después de pasarlo a «Para publicar»">✏️ Editado después</span>') : h;
-};
 
 // Producción: tres bloques y tres filtros
 if (PR_FILTRO === 'revision' || PR_FILTRO === 'generar') PR_FILTRO = 'borrador';
@@ -147,7 +140,7 @@ window.addEventListener('click', e => {
     $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar eb-confirma" role="alertdialog" aria-modal="true" aria-labelledby="eb-ok-t"><div class="cuerpo">' +
       '<h2 id="eb-ok-t">¿Pasar a «Para publicar»?</h2><p><b>' + esc(codigoC(c) + ' · ' + String(c.titulo || 'este carrusel').replace(/\*/g, '')) + '</b> queda aprobado y listo para descargar.</p>' +
       (n ? '<p class="eb-aviso">⚠ La revisión tiene ' + n + (n === 1 ? ' cosa' : ' cosas') + ' por corregir. Si sigues, pasa igualmente.</p>' : '') +
-      '<p class="est-pista">Si luego cambias algo, la tarjeta lo marcará como <span style="white-space:nowrap">«✏️ Editado después»</span>.</p></div>' +
+      '<p class="est-pista">Una vez aprobado ya no se edita. Si hay que retocarlo, «↩ Volver a borrador».</p></div>' +
       '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" id="eb-ok-si">Sí, pasar a Para publicar</button></footer></div>';
     setTimeout(() => { const b = document.getElementById('eb-ok-si'); if (b) b.focus(); }, 30);
     return;

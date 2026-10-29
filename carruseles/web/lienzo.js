@@ -8,9 +8,24 @@
    · Lo movido y el tamaño se guardan en el `estilo` de ESA slide (CSS: translate + zoom por elemento), el mismo campo que
      usa el chat con Claude para los retoques; «↺ Recolocar» lo quita. Ctrl/⌘ + Z lo deshace como cualquier cambio. */
 const LZ = {tab: (() => { try { return localStorage.getItem('lienzo.tab') || ''; } catch (e) { return ''; } })(), arr: null, editar: false, arrastrado: false};
-const LZ_TABS = [['fotos', '🖼️', 'Fotos'], ['slides', '▦', 'Slides'], ['elementos', '✏️', 'Elementos'], ['diseno', '🎨', 'Diseño'],
-  ['revision', '✅', 'Revisión'], ['claude', '💬', 'Claude'], ['caption', '📝', 'Caption']];
+// orden de Sandra (29/10/2026): Plantilla · Elementos · Slides · Fotos | Revisión · Chat IA · Caption
+const LZ_TABS = [['plantilla', '🎨', 'Plantilla'], ['elementos', '✏️', 'Elementos'], ['slides', '▦', 'Slides'], ['fotos', '🖼️', 'Fotos'],
+  ['revision', '✅', 'Revisión'], ['claude', '💬', 'Chat IA'], ['caption', '📝', 'Caption']];
+if (LZ.tab === 'diseno') LZ.tab = 'plantilla';
 const LZ_DEL_PANEL = ['revision', 'claude', 'caption'];   // estas pestañas enseñan un trozo de #est-panel
+const LZ_FORMAS = ['portada', 'contenido', 'lista', 'dato', 'cierre', 'momento'];
+/* la misma slide con otra forma: conserva lo que tiene y solo rellena lo que a la forma nueva le falta. Lo que no usa se
+   queda guardado (si vuelves a la forma de antes, reaparece). La fuente del dato NO se inventa: la revisión la pedirá. */
+function lzComo(s, tipo) {
+  const n = JSON.parse(JSON.stringify(s || {})); n.tipo = tipo;
+  const frases = String(n.texto || '').split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
+  if (tipo !== 'dato' && !n.titulo) n.titulo = n.antetitulo || 'Nuevo *titular*';
+  if (tipo === 'lista' && !(n.items || []).length) n.items = frases.length > 1 ? frases.slice(0, 4) : ['Primer punto', 'Segundo punto'];
+  if (tipo === 'dato') { if (!n.cifra) n.cifra = '0 %'; if (!n.antetitulo) n.antetitulo = String(n.titulo || 'Qué es la cifra').replace(/[*_]/g, ''); }
+  if (tipo === 'cierre' && !n.cta) n.cta = 'Escribe aquí';
+  if (tipo === 'momento') { if (!n.hora) n.hora = '10:00'; if (!n.tarjetaTitulo) n.tarjetaTitulo = 'Escribe aquí'; }
+  return n;
+}
 const LZ_TIPOS = {portada: 'La primera: el gancho', contenido: 'Titular y texto (o foto)', lista: '2 a 4 puntos', dato: 'Una cifra con su fuente', cierre: 'La última: la llamada a la acción', momento: 'Una escena del día con la plataforma'};
 
 /* ---------- barra lateral y cajón ---------- */
@@ -23,7 +38,7 @@ function lzCajon(c) {
       (typeof FOTO_RAMAS !== 'undefined' ? '<div class="lz-filtros">' + sel('lz-fr', 'Rama', FOTO_RAMAS, EST.fr) + sel('lz-fo', 'Orientación', FOTO_ORIENT, EST.fo) + '</div>' : '') +
       '<div class="est-fotos lz-fotos">' + gridFotosEditor(s) + '</div>';
   }
-  if (LZ.tab === 'slides') return '<h3>Slides</h3><p class="lz-pista">Se añade detrás de la última.</p><div class="lz-tipos">' +
+  if (LZ.tab === 'slides') return '<h3>Slides</h3><p class="lz-pista">Añade una slide nueva detrás de la última. Para cambiar la forma de esta, Plantilla.</p><div class="lz-tipos">' +
     Object.keys(EST_TIPOS).map(k => '<button type="button" data-est-nueva="' + k + '"><b>' + esc(EST_TIPOS[k]) + '</b><span>' + esc(LZ_TIPOS[k] || '') + '</span></button>').join('') + '</div>';
   if (LZ.tab === 'elementos') {
     const deco = [].concat(s.decoracion || []), flecha = s.trazo !== 'ninguno' && (c.plantilla !== 'feed' || s.trazo === 'flecha' || s.tipo === 'portada' || s.tipo === 'cierre');
@@ -34,12 +49,20 @@ function lzCajon(c) {
       it('postit', '🟨', 'Post-it «100% online»', deco.indexOf('postit') >= 0, 'Arriba a la derecha') +
       it('notas', '✍️', 'Escrito a mano de fondo', deco.indexOf('notas') >= 0, 'La textura de la marca') + '</div><div class="lz-anadir"></div>';
   }
-  if (LZ.tab === 'diseno') return '<h3>Diseño</h3><p class="lz-pista">Se aplica a todas las slides.</p><h4>Plantilla</h4><div class="sel-pls">' +
-    EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') +
-    '</div><h4>Color</h4><div class="sel-cos">' +
-    EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-sel-co="' + x.id + '" aria-pressed="' + (c.color === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>';
+  // Plantilla, como en Canva: arriba la forma de ESTA slide (miniaturas con su propio texto), abajo plantilla y color del carrusel
+  if (LZ.tab === 'plantilla') {
+    const prev = Object.assign({}, c, {id: 'lz-formas', slides: LZ_FORMAS.map(k => lzComo(s, k))});
+    PREVIAS['lz-formas'] = prev;
+    return '<h3>Plantilla</h3><h4>Esta slide (' + (EST.sel + 1) + ')</h4><div class="lz-formas">' +
+      LZ_FORMAS.map((k, i) => '<button type="button" data-lz-forma="' + k + '" aria-pressed="' + ((s.tipo || 'contenido') === k) + '" title="' + esc(LZ_TIPOS[k] || '') + '">' +
+        mini(prev, i) + '<span>' + esc(EST_TIPOS[k]) + '</span></button>').join('') + '</div>' +
+      '<h4>Todo el carrusel</h4><div class="sel-pls">' +
+      EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') +
+      '</div><h4>Color</h4><div class="sel-cos">' +
+      EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-sel-co="' + x.id + '" aria-pressed="' + (c.color === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>';
+  }
   if (LZ.tab === 'revision') return '';   // la caja de la revisión ya lleva su título
-  if (LZ.tab === 'claude') return '<h3>Claude</h3>';
+  if (LZ.tab === 'claude') return '<h3>Chat IA</h3>';
   if (LZ.tab === 'caption') return '<h3>Caption</h3>';
   return '';
 }
@@ -69,7 +92,7 @@ pintarEditor = function (todo) {
   ed.querySelectorAll('#est-panel .sel-dis-panel').forEach(x => x.remove());
   if (solo) { if (panel) { panel.hidden = false; delete panel.dataset.lz; } return; }
   cuerpo.insertAdjacentHTML('afterbegin', '<nav class="lz-rail" aria-label="Herramientas">' + LZ_TABS.map(([k, ico, t], i) =>
-    (i === 4 ? '<hr>' : '') + '<button type="button" data-lz-tab="' + k + '" aria-pressed="' + (LZ.tab === k) + '"><span>' + ico + '</span>' + t + '</button>').join('') + '</nav>' +
+    (LZ_TABS[i][0] === 'revision' ? '<hr>' : '') + '<button type="button" data-lz-tab="' + k + '" aria-pressed="' + (LZ.tab === k) + '"><span>' + ico + '</span>' + t + '</button>').join('') + '</nav>' +
     (LZ.tab ? '<aside class="lz-cajon" aria-label="' + esc((LZ_TABS.find(x => x[0] === LZ.tab) || [])[2] || '') + '"><button type="button" class="lz-cerrar" data-lz-tab="' + LZ.tab + '" aria-label="Cerrar">✕</button>' + lzCajon(c) + '</aside>' : ''));
   if (panel) {
     panel.dataset.lz = LZ.tab || '-';
@@ -86,6 +109,15 @@ window.addEventListener('click', e => {
   const t = e.target; if (!t.closest || !EST.abierto) return;
   const tb = t.closest('[data-lz-tab]');
   if (tb) { e.stopImmediatePropagation(); LZ.tab = LZ.tab === tb.dataset.lzTab ? '' : tb.dataset.lzTab; try { localStorage.setItem('lienzo.tab', LZ.tab); } catch (x) {} pintarEditor(true); return; }
+  const fm = t.closest('[data-lz-forma]');
+  if (fm) {
+    e.stopImmediatePropagation();
+    const c = EST.lista[EST.abierto], s = c.slides[EST.sel], k = fm.dataset.lzForma; if (!s || (s.tipo || 'contenido') === k) return;
+    c.slides[EST.sel] = lzComo(s, k); SEL.pop = null; MESA.grupo = 'forma:' + EST.sel; guardarC(c); pintarEditor(true);
+    toast('Slide ' + (EST.sel + 1) + ': ' + EST_TIPOS[k] + ' · si no te gusta, Ctrl/⌘ + Z'); return;
+  }
+  // «+ Añadir» de las miniaturas abre Slides (un solo sitio para añadir)
+  if (t.closest('#est-mas') && !t.closest('#est-editor.solo-ver')) { e.stopImmediatePropagation(); EST.menuNueva = false; LZ.tab = 'slides'; try { localStorage.setItem('lienzo.tab', LZ.tab); } catch (x) {} pintarEditor(true); return; }
   const el = t.closest('[data-lz-el]');
   if (el) {
     e.stopImmediatePropagation();
