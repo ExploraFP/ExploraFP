@@ -8,6 +8,7 @@
 .lz-rail button[aria-pressed="true"]{background:var(--limaSoft);color:var(--ink)}
 .lz-cajon{position:relative;border-right:1px solid var(--line2);background:var(--surface);padding:14px 14px 20px;overflow-y:auto;min-height:0}
 .lz-cajon h3{margin:0 0 4px;font-size:16px}
+.lz-cajon #est-qc{margin-top:28px}
 .lz-cajon h4{margin:14px 0 6px;font-size:13px;color:var(--ink3)}
 .lz-cajon .sel-pls{grid-template-columns:1fr}
 .lz-pista{margin:0 0 10px;font-size:12.5px;color:var(--ink3)}
@@ -35,6 +36,28 @@
 .lz-barra{position:absolute;left:50%;top:-44px;transform:translateX(-50%);display:flex;gap:4px;background:var(--surface);border:1px solid var(--line2);border-radius:10px;padding:3px;box-shadow:0 4px 14px rgba(0,0,0,.12);white-space:nowrap;cursor:default}
 .lz-barra button{border:0;background:transparent;border-radius:7px;padding:5px 9px;font:inherit;font-size:12.5px;color:var(--ink);cursor:pointer}
 .lz-barra button:hover{background:var(--limaSoft)}
-@media(max-width:1200px){.est-ecuerpo.lz.lz-abierto{grid-template-columns:72px 260px minmax(0,1fr) 340px}}
 @media(max-width:900px){.est-ecuerpo.lz,.est-ecuerpo.lz.lz-abierto{grid-template-columns:1fr}.lz-rail{flex-direction:row;justify-content:center;border-right:0;border-bottom:1px solid var(--line2)}}
 .eb-meta .eb-tags{display:inline-flex;gap:6px;align-items:center}
+/* sin panel a la derecha: el panel (revisión, Claude, caption) vive en el cajón */
+.est-ecuerpo.lz{grid-template-columns:72px minmax(0,1fr)}
+.est-ecuerpo.lz.lz-abierto{grid-template-columns:72px 340px minmax(0,1fr)}
+.est-ecuerpo.lz > #est-panel[hidden]{display:none!important}
+.lz-cajon #est-panel{border:0;padding:0;margin:0;background:none;overflow:visible;max-height:none;position:static;width:auto}
+.lz-rail hr{width:70%;border:0;border-top:1px solid var(--line2);margin:6px auto}
+.lz-rail button{position:relative}
+.lz-num{position:absolute;top:2px;right:8px;min-width:18px;height:18px;border-radius:9px;background:var(--danger,#c62828);color:#fff;font-style:normal;font-size:11px;font-weight:700;line-height:18px;text-align:center;padding:0 4px;box-sizing:border-box}
+/* cada pestaña, su trozo */
+#est-editor .lz-cajon #est-panel[data-lz="revision"] > :not(#est-qc){display:none!important}
+#est-editor .lz-cajon #est-panel[data-lz="revision"] #est-qc > h3{display:none}
+#est-editor .lz-cajon #est-panel[data-lz="claude"] > :not(.pr-tab-slide){display:none!important}
+#est-editor .lz-cajon #est-panel[data-lz="claude"] .pr-tab-slide > :not(#mesa-claude){display:none!important}
+#est-editor .lz-cajon #est-panel[data-lz="claude"] .mchat-h{display:none}
+#est-editor .lz-cajon #est-panel[data-lz="caption"] > :not(.pr-tab-post):not(.sv-enlace){display:none!important}
+#est-editor .lz-cajon #est-panel[data-lz="caption"] .pr-tab-post{margin-top:0!important}
+#est-editor .lz-cajon #est-panel[data-lz="caption"] .pr-tab-post > h3{display:none}
+#est-editor .lz-cajon #est-panel[data-lz="caption"] .pr-tab-post textarea{min-height:340px}
+.lz-anadir .mesa-mas{margin-top:16px}
+/* lo seleccionado flota sobre la escena */
+.est-ecuerpo.lz .est-escena{position:relative}
+#sel-pop.lz-flota{position:absolute;top:12px;right:12px;width:250px;z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.14);background:var(--surface)}
+@media(max-width:1200px){.est-ecuerpo.lz.lz-abierto{grid-template-columns:72px 300px minmax(0,1fr)}}

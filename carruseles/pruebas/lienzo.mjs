@@ -15,7 +15,7 @@ await p.goto('http://127.0.0.1:8765/banco-de-carruseles.html'); await p.waitForT
 const id = await p.evaluate(() => { cntIr('carruseles'); const c = Object.values(EST.lista).find(c => c.slides.length > 2 && c.plantilla === 'feed') || Object.values(EST.lista).find(c => c.slides.length); abrirEditor(c.id); return c.id; });
 await p.waitForTimeout(2500);
 console.log('rail:', await p.evaluate(() => [...document.querySelectorAll('.lz-rail button')].map(b => b.innerText.replace(/\s+/g, ' ').trim()).join(' | ')), '· diseño en panel derecho:', await p.evaluate(() => !!document.querySelector('#est-panel .sel-dis-panel')));
-for (const t of ['fotos', 'slides', 'elementos', 'diseno']) { await p.click(`.lz-rail [data-lz-tab="${t}"]`); await p.waitForTimeout(500); console.log(t, '→', await p.evaluate(() => (document.querySelector('.lz-cajon') || {}).innerText.split('\n').slice(0, 3).join(' / '))); await p.screenshot({path: S + 'lienzo-' + t + '.png'}); }
+for (const t of ['fotos', 'slides', 'elementos', 'diseno', 'revision', 'claude', 'caption']) { await p.click(`.lz-rail [data-lz-tab="${t}"]`); await p.waitForTimeout(500); console.log(t, '→', await p.evaluate(() => (document.querySelector('.lz-cajon') || {}).innerText.split('\n').slice(0, 3).join(' / '))); await p.screenshot({path: S + 'lienzo-' + t + '.png'}); }
 // Elementos: post-it
 await p.click('.lz-rail [data-lz-tab="elementos"]'); await p.waitForTimeout(400);
 await p.click('[data-lz-el="postit"]'); await p.waitForTimeout(1200);
@@ -43,4 +43,5 @@ await p.keyboard.press('Escape'); await p.waitForTimeout(500);
 await p.mouse.click(pos2.x, pos2.y); await p.waitForTimeout(600);
 await p.click('[data-lz-reset]'); await p.waitForTimeout(1500);
 console.log('tras recolocar:', JSON.stringify(await p.evaluate(id => EST.lista[id].slides[EST.sel].estilo || null, id)));
+console.log('panel derecho:', await p.evaluate(() => { const pn = document.querySelector('#est-panel'); return pn.hidden ? 'oculto' : pn.closest('.lz-cajon') ? 'en el cajón' : 'FUERA'; }), '· aviso revisión:', await p.evaluate(() => (document.querySelector('[data-lz-tab="revision"] .lz-num') || {}).textContent || 'ninguno'));
 console.log('err', err.filter(x => !/404|CERT/.test(x))); await b.close();

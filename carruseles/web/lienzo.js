@@ -1,12 +1,16 @@
 /* ===================== Editor tipo Canva (29/10/2026, Sandra) =====================
    «Que se parezca un poco más a Canva pero sin añadir tantas opciones». Lo que eligió:
-   · Barra lateral IZQUIERDA con cajón: Fotos · Slides · Elementos · Diseño (el diseño sale del panel derecho).
+   · Barra lateral IZQUIERDA con cajón: Fotos · Slides · Elementos · Diseño · Revisión · Claude · Caption. Ya no hay panel
+     a la derecha (Sandra: «prefiero que el caption, el chat y la revisión estén en la barra izquierda»): #est-panel se
+     mete en el cajón y cada pestaña enseña su trozo; lo seleccionado (#sel-pop) flota sobre la escena.
    · En la slide: un clic SELECCIONA (marco lima con tiradores en las esquinas), se ARRASTRA para moverlo y se estira
      de una esquina para el tamaño; doble clic = escribir encima (antes el clic ya escribía).
    · Lo movido y el tamaño se guardan en el `estilo` de ESA slide (CSS: translate + zoom por elemento), el mismo campo que
      usa el chat con Claude para los retoques; «↺ Recolocar» lo quita. Ctrl/⌘ + Z lo deshace como cualquier cambio. */
 const LZ = {tab: (() => { try { return localStorage.getItem('lienzo.tab') || ''; } catch (e) { return ''; } })(), arr: null, editar: false, arrastrado: false};
-const LZ_TABS = [['fotos', '🖼️', 'Fotos'], ['slides', '▦', 'Slides'], ['elementos', '✏️', 'Elementos'], ['diseno', '🎨', 'Diseño']];
+const LZ_TABS = [['fotos', '🖼️', 'Fotos'], ['slides', '▦', 'Slides'], ['elementos', '✏️', 'Elementos'], ['diseno', '🎨', 'Diseño'],
+  ['revision', '✅', 'Revisión'], ['claude', '💬', 'Claude'], ['caption', '📝', 'Caption']];
+const LZ_DEL_PANEL = ['revision', 'claude', 'caption'];   // estas pestañas enseñan un trozo de #est-panel
 const LZ_TIPOS = {portada: 'La primera: el gancho', contenido: 'Titular y texto (o foto)', lista: '2 a 4 puntos', dato: 'Una cifra con su fuente', cierre: 'La última: la llamada a la acción', momento: 'Una escena del día con la plataforma'};
 
 /* ---------- barra lateral y cajón ---------- */
@@ -28,14 +32,27 @@ function lzCajon(c) {
       it('flecha', '↗', 'Flecha a mano', flecha, 'Luego la mueves y la estiras') +
       it('ovalo', '◯', 'Óvalo a mano', s.trazo === 'ovalo', 'Rodea la *palabra* resaltada') +
       it('postit', '🟨', 'Post-it «100% online»', deco.indexOf('postit') >= 0, 'Arriba a la derecha') +
-      it('notas', '✍️', 'Escrito a mano de fondo', deco.indexOf('notas') >= 0, 'La textura de la marca') + '</div>';
+      it('notas', '✍️', 'Escrito a mano de fondo', deco.indexOf('notas') >= 0, 'La textura de la marca') + '</div><div class="lz-anadir"></div>';
   }
   if (LZ.tab === 'diseno') return '<h3>Diseño</h3><p class="lz-pista">Se aplica a todas las slides.</p><h4>Plantilla</h4><div class="sel-pls">' +
     EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') +
     '</div><h4>Color</h4><div class="sel-cos">' +
     EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-sel-co="' + x.id + '" aria-pressed="' + (c.color === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>';
+  if (LZ.tab === 'revision') return '';   // la caja de la revisión ya lleva su título
+  if (LZ.tab === 'claude') return '<h3>Claude</h3>';
+  if (LZ.tab === 'caption') return '<h3>Caption</h3>';
   return '';
 }
+// los avisos de la barra: fallos de la revisión y «falta el enlace de Instagram»
+function lzAvisos() {
+  const ed = $('#est-editor'); if (!ed) return;
+  const n = ed.querySelectorAll('#est-qc li.ck-mal, #est-qc li.qc-error').length, en = !!ed.querySelector('#est-panel .sv-enlace');
+  const pon = (k, v, t) => { const b = ed.querySelector('.lz-rail [data-lz-tab="' + k + '"]'); if (!b) return; let i = b.querySelector('.lz-num'); if (!v) { if (i) i.remove(); return; }
+    if (!i) { i = document.createElement('i'); i.className = 'lz-num'; b.appendChild(i); } i.textContent = v; i.title = t; };
+  pon('revision', n || '', n + (n === 1 ? ' fallo' : ' fallos')); pon('caption', en ? '!' : '', 'Falta el enlace de Instagram');
+}
+const _pintarQCPanelLz = pintarQCPanel;
+pintarQCPanel = function () { _pintarQCPanelLz(); lzAvisos(); };
 const _pintarEditorLz = pintarEditor;
 pintarEditor = function (todo) {
   _pintarEditorLz(todo);
@@ -43,13 +60,26 @@ pintarEditor = function (todo) {
   const cuerpo = ed.querySelector('.est-ecuerpo'); if (!cuerpo) return;
   const solo = ed.classList.contains('solo-ver');
   cuerpo.classList.toggle('lz', !solo); cuerpo.classList.toggle('lz-abierto', !solo && !!LZ.tab);
+  const panel = ed.querySelector('#est-panel');
+  // si el editor no se ha rehecho (estás escribiendo en un campo), no se toca: moverlo quitaría el foco
+  if (!solo && ed.querySelector('.lz-rail') && panel && panel.dataset.lz === (LZ.tab || '-')) { lzAvisos(); lzCaja(); return; }
+  if (panel) cuerpo.appendChild(panel);
   ed.querySelectorAll('.lz-rail, .lz-cajon').forEach(x => x.remove());
   // el diseño ya está en la barra izquierda: fuera del panel de la derecha
   ed.querySelectorAll('#est-panel .sel-dis-panel').forEach(x => x.remove());
-  if (solo) return;
-  cuerpo.insertAdjacentHTML('afterbegin', '<nav class="lz-rail" aria-label="Herramientas">' + LZ_TABS.map(([k, ico, t]) =>
-    '<button type="button" data-lz-tab="' + k + '" aria-pressed="' + (LZ.tab === k) + '"><span>' + ico + '</span>' + t + '</button>').join('') + '</nav>' +
+  if (solo) { if (panel) { panel.hidden = false; delete panel.dataset.lz; } return; }
+  cuerpo.insertAdjacentHTML('afterbegin', '<nav class="lz-rail" aria-label="Herramientas">' + LZ_TABS.map(([k, ico, t], i) =>
+    (i === 4 ? '<hr>' : '') + '<button type="button" data-lz-tab="' + k + '" aria-pressed="' + (LZ.tab === k) + '"><span>' + ico + '</span>' + t + '</button>').join('') + '</nav>' +
     (LZ.tab ? '<aside class="lz-cajon" aria-label="' + esc((LZ_TABS.find(x => x[0] === LZ.tab) || [])[2] || '') + '"><button type="button" class="lz-cerrar" data-lz-tab="' + LZ.tab + '" aria-label="Cerrar">✕</button>' + lzCajon(c) + '</aside>' : ''));
+  if (panel) {
+    panel.dataset.lz = LZ.tab || '-';
+    const cj = ed.querySelector('.lz-cajon');
+    if (cj && LZ_DEL_PANEL.indexOf(LZ.tab) >= 0) { panel.hidden = false; cj.appendChild(panel); } else panel.hidden = true;
+    // «Añadir: + Subtítulo / + Foto…» de esta slide, en Elementos
+    const an = cj && cj.querySelector('.lz-anadir'), mas = panel.querySelector('.mesa-mas');
+    if (an && mas) an.appendChild(mas);
+  }
+  lzFlota(); lzAvisos();
   lzCaja();
 };
 window.addEventListener('click', e => {
@@ -77,6 +107,17 @@ document.addEventListener('change', e => {
   EST[t.id === 'lz-fr' ? 'fr' : 'fo'] = t.value; const c = EST.lista[EST.abierto], g = document.querySelector('.lz-fotos');
   if (c && g) g.innerHTML = gridFotosEditor(c.slides[EST.sel] || {});
 });
+
+/* lo seleccionado (nombre del campo, Quitar, Cambiar foto…) flota arriba a la derecha de la escena, no en el cajón */
+function lzFlota() {
+  const ed = $('#est-editor'), pop = ed && ed.querySelector('#sel-pop'), esc2 = ed && ed.querySelector('.est-ecuerpo.lz .est-escena'); if (!pop || !esc2) return;
+  pop.classList.add('lz-flota'); if (pop.parentElement !== esc2) esc2.appendChild(pop);
+}
+const _pintarPopLz = pintarPop;
+pintarPop = function (foco) {
+  document.querySelectorAll('#est-editor .lz-flota').forEach(x => x.remove());
+  _pintarPopLz(foco); lzFlota();
+};
 
 /* ---------- el estilo de la slide: una regla por elemento (translate + zoom) ---------- */
 const LZ_PIEZAS = ['titulo', 'subtitulo', 'texto', 'etiqueta', 'pastilla', 'r-pill', 'r-hora', 'cifra', 'ante', 'r-ante', 'nota', 'r-mano', 'portatil', 'foto-feed',
