@@ -3,7 +3,7 @@
 Actualizado: 26/10/2026. «Tú» = lo decide Sandra; «Claude» = trabajo de Claude.
 
 ## Matriz y contenido
-1. **Revisión de las Globales:** tu «ok» y las 8 dudas → descartar 20 y marcar las demás como revisadas. (Tú)
+1. **Revisión de las Globales:** aparcada (29/10: «ya iremos a la matriz»). Tu «ok» y las 8 dudas → descartar 20 y marcar las demás como revisadas. (Tú)
 2. **Marca «Revisada ✓» en la Matriz:** ahora no existe. (Claude)
 3. **Revisar el resto de ideas por formación:** unas 257. (Tú + Claude)
 4. **Temas mal clasificados:** las 18 «S» salen todas como «Calendario y trámites», y «¿Seré capaz?» sale como Dinero. Faltan temas para los frenos de tiempo, «¿seré capaz?» y estudiar sola. (Claude)
