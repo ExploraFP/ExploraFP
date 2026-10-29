@@ -2,51 +2,91 @@
  "foto-chica-agobiada-examen": {
   "cabeza": 0.0278,
   "w": 1400,
-  "h": 935
+  "h": 935,
+  "solo": {
+   "w": 907,
+   "h": 909
+  }
  },
  "foto-chica-biblioteca-portatil": {
   "cabeza": 0.0225,
   "w": 1400,
-  "h": 933
+  "h": 933,
+  "solo": {
+   "w": 989,
+   "h": 912
+  }
  },
  "foto-chica-cascos-portatil": {
   "cabeza": 0.1957,
   "w": 934,
-  "h": 1400
+  "h": 1400,
+  "solo": {
+   "w": 622,
+   "h": 886
+  }
  },
  "foto-chica-escritorio-sonrie": {
   "cabeza": 0.0675,
   "w": 1400,
-  "h": 933
+  "h": 933,
+  "solo": {
+   "w": 673,
+   "h": 756
+  }
  },
  "foto-chica-gafas-portatil-parque": {
   "cabeza": 0.1536,
   "w": 933,
-  "h": 1400
+  "h": 1400,
+  "solo": {
+   "w": 852,
+   "h": 1084
+  }
  },
  "foto-chica-riendo-exterior": {
   "cabeza": 0.0927,
   "w": 1400,
-  "h": 895
+  "h": 895,
+  "solo": {
+   "w": 1165,
+   "h": 812
+  }
  },
  "foto-chico-saluda-portatil": {
   "cabeza": 0.0,
   "w": 1400,
-  "h": 933
+  "h": 933,
+  "solo": {
+   "w": 849,
+   "h": 933
+  }
  },
  "foto-globo-diploma": {
   "cabeza": 0.3205,
   "w": 1400,
-  "h": 933
+  "h": 933,
+  "solo": {
+   "w": 355,
+   "h": 634
+  }
  },
  "foto-grupo-estudiantes": {
   "cabeza": 0.0193,
   "w": 1400,
-  "h": 933
+  "h": 933,
+  "solo": {
+   "w": 1400,
+   "h": 915
+  }
  },
  "foto-web-alumnos": {
   "cabeza": 0.0377,
   "w": 1000,
-  "h": 690
+  "h": 690,
+  "solo": {
+   "w": 928,
+   "h": 664
+  }
  }
 }

@@ -25,6 +25,20 @@ const REPASOS = {
     ['Notas a mano de fondo', 'feed', Object.assign({marco: 'notas'}, P)],
     ['Papel claro', 'ruta', P],
     ['Collage', 'feed', Object.assign({imagen: 'fotos/foto-chico-saluda-portatil.jpg', marco: 'collage'}, P, {titulo: 'La FP no es el *plan B*'})]],
+  capas: [
+    ['Actual: caja girada, foto recta', 'capas', Object.assign({imagen: FOTO}, P, {estilo: ''})],
+    ['A · las dos giradas', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { transform: rotate(4deg) }'})],
+    ['B · las dos rectas', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { transform: none } .caja-portada { transform: none }'})],
+    ['C · caja recta, foto girada', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.caja-portada { transform: none } .papel-portada.foto-papel { transform: rotate(4deg) }'})],
+    ['D · giradas al revés', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.caja-portada { transform: rotate(1.8deg); transform-origin: right bottom } .papel-portada.foto-papel { transform: rotate(-4deg) }'})],
+    ['E · foto grande a sangre arriba', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { top: 0; right: 0; width: 820px; height: 720px; transform: none; box-shadow: none }'})],
+    ['F · foto girada con celo', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { transform: rotate(4deg); overflow: visible } .papel-portada.foto-papel::after { content: ""; position: absolute; top: -26px; left: 50%; width: 190px; height: 54px; margin-left: -95px; background: rgba(245,240,220,.78); transform: rotate(-6deg); box-shadow: 0 2px 6px rgba(0,0,0,.15) }'})]],
+  sobre: [
+    ['1 + persona recortada', 'feed', Object.assign({imagen: 'fotos/foto-chico-saluda-portatil.jpg', persona: true}, P)],
+    ['1 + persona + post-it', 'feed', Object.assign({imagen: 'fotos/foto-chica-cascos-portatil.jpg', persona: true, decoracion: 'postit'}, P)],
+    ['5 + persona recortada', 'feed', Object.assign({imagen: 'fotos/foto-chica-escritorio-sonrie.jpg', persona: true, marco: 'notas'}, P)],
+    ['6 + persona recortada', 'ruta', Object.assign({imagen: 'fotos/foto-chica-biblioteca-portatil.jpg', persona: true}, P)],
+    ['6 + persona (otra foto)', 'ruta', Object.assign({imagen: 'fotos/foto-chica-agobiada-examen.jpg', persona: true}, P)]],
   propuestas: [
     ['1 ahora', 'feed', P],
     ['1 + redondel + post-it', 'feed', Object.assign({trazo: 'ovalo', decoracion: 'postit'}, P)],

@@ -53,8 +53,9 @@ const RECORTES = {};
 const RECORTES_INFO = JSON.parse(readFileSync(join(RAIZ, "contenido/img/recortes.json"), "utf8"));   // dónde empieza la persona (cabeza) y tamaño
 for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^recorte-.*\.webp$/.test(f))) {
   copyFileSync(join(RAIZ, "contenido/img", f), join(DIST, "fotos", f));
+  if (/-solo\.webp$/.test(f)) continue;   // el recorte ajustado a la silueta va dentro de la ficha de su foto
   const clave = f.replace(/^recorte-/, "").replace(/\.webp$/, "");
-  RECORTES[`fotos/${clave}.jpg`] = Object.assign({ src: `fotos/${f}` }, RECORTES_INFO[clave] || {});
+  RECORTES[`fotos/${clave}.jpg`] = Object.assign({ src: `fotos/${f}`, soloSrc: `fotos/recorte-${clave}-solo.webp` }, RECORTES_INFO[clave] || {});
 }
 
 // Logos (nombre en minúsculas y con guiones: "verde-01.webp") y trazos.

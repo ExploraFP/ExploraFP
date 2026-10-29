@@ -34,7 +34,7 @@ const { html, validar } = crearMotor({
     const f = resolve(RAIZ, "contenido/img", "recorte-" + n[1] + ".webp");
     if (!existsSync(f)) return null;
     const info = JSON.parse(readFileSync(resolve(RAIZ, "contenido/img/recortes.json"), "utf8"))[n[1]] || {};
-    return Object.assign({ src: pathToFileURL(f) }, info);
+    return Object.assign({ src: pathToFileURL(f), soloSrc: pathToFileURL(f.replace(/\.webp$/, "-solo.webp")) }, info);
   },
   postit: () => archivo("assets/trazos/postit-100-online.png"),
   cabeza: (plantilla) => `<link rel="stylesheet" href="${archivo("plantillas/base.css")}">

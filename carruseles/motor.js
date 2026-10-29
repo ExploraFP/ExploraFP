@@ -365,6 +365,9 @@ export function crearMotor(R) {
     s._color = color; s._i = i;
     const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
     const collage = s.tipo === "portada" && s.imagen && s.marco === "collage";
+    // SOBREPOSICIÓN (29/10/2026, identidad visual): `persona: true` + foto con recorte → la persona recortada sale por abajo
+    // a la derecha, por encima del fondo y por debajo del texto
+    const persona = s.persona && s.imagen && !collage && !(s.marco === "fondo") && R.recorte ? R.recorte(s.imagen) : null;
     // en feed, una slide de contenido con foto lleva la foto arriba: el logo va en blanco encima
     const fotoArriba = plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil";
     const fondoNotas = s.tipo === "portada" && !fondoFoto && (s.marco === "notas" || (plantilla === "capas" && !s.imagen));
@@ -373,9 +376,13 @@ export function crearMotor(R) {
     const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
   ${R.cabeza(plantilla)}${s.estilo ? `<style>${estiloSlide(s.estilo)}</style>` : ""}
-  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${s.trazo === "subrayado" ? " tr-subrayado" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${collage ? " foto-sangre collage" : fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
+  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${s.trazo === "subrayado" ? " tr-subrayado" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${persona && persona.soloSrc ? " con-persona" : ""}${collage ? " foto-sangre collage" : fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
   <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : fondoNotas ? "Verde 03" : LOGO_FONDO[color])}</div>
-  <div class="contenido">${collage ? portadaCollage(s) : fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
+  ${persona ? `<img class="persona-recorte" src="${persona.soloSrc}" alt="">` +
+    // la persona ocupa SOLO el hueco que deja el texto (como mucho lo roza 50 px): el texto siempre se lee
+    `<script>(function(){function f(){var p=document.querySelector('.persona-recorte'),sl=document.querySelector('.slide');if(!p||!sl)return;var y=0,top=sl.getBoundingClientRect().top;` +
+    `document.querySelectorAll('.contenido .titulo,.contenido .subtitulo,.contenido .texto,.contenido .nota,.contenido .r-mano').forEach(function(e){y=Math.max(y,e.getBoundingClientRect().bottom-top);});` +
+    `p.style.height=Math.max(380,Math.min(820,1350-y+50))+'px';}f();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);})();<\/script>` : ""}<div class="contenido">${collage ? portadaCollage(s) : fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
   <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
   </section></body></html>`;

@@ -259,3 +259,15 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .slide.tr-subrayado .titulo em::after { content: ""; position: absolute; left: -.04em; right: -.06em; bottom: -.02em; height: .17em;
   background: var(--flecha, currentColor); -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxwYXRoIGQ9Ik02IDI2IEMgNzAgMTQsIDE1MCAzMCwgMjMwIDE4IFMgMzUwIDEyLCAzOTQgMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMzAgMzMgQyAxMTAgMjQsIDIxMCAzNiwgMzAwIDI3IFMgMzcwIDI0LCAzODYgMjgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9Ii44NSIvPjwvc3ZnPg==") center / 100% 100% no-repeat; mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxwYXRoIGQ9Ik02IDI2IEMgNzAgMTQsIDE1MCAzMCwgMjMwIDE4IFMgMzUwIDEyLCAzOTQgMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMzAgMzMgQyAxMTAgMjQsIDIxMCAzNiwgMzAwIDI3IFMgMzcwIDI0LCAzODYgMjgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9Ii44NSIvPjwvc3ZnPg==") center / 100% 100% no-repeat; }
 .slide.tr-subrayado .titulo { line-height: 1.16; }   /* sitio para el trazo entre líneas */
+.slide.notas-fondo .titulo { font-size: 128px; }   /* 29/10: un poco más grande (Sandra) */
+
+/* SOBREPOSICIÓN (`persona: true`, 29/10/2026): la persona recortada sale desde abajo a la derecha, sangrando por el borde,
+   por encima del fondo, la cuadrícula y las notas, y por debajo del texto (que siempre se lee). */
+.persona-recorte { position: absolute; z-index: 1; right: -40px; bottom: -10px; height: 780px; width: auto; max-width: 760px; object-fit: contain; object-position: right bottom; pointer-events: none; }
+.slide.con-persona .contenido { z-index: 2; }
+.slide.con-persona .subtitulo, .slide.con-persona .titulo { position: relative; }
+/* con persona, el texto sube para dejarle sitio abajo */
+.slide.con-persona:not(.notas-fondo) .contenido { justify-content: flex-start; padding-top: 230px; }
+.l-ruta.con-persona .contenido { padding-top: 200px; }
+.slide.con-persona.notas-fondo .contenido { padding-top: 200px; }
+.slide.l-ruta.con-persona .contenido { justify-content: flex-start; padding-top: 170px; }
