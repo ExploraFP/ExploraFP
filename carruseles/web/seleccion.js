@@ -164,6 +164,9 @@ function campoDeElemento(s, n) {
   const q = x => norm(String(x || '').replace(/[*_]/g, '')).replace(/\s+/g, ' ').trim();
   const t = q(n.textContent); if (!t) return null;
   const casa = v => v && (v === t || v.indexOf(t) >= 0 || (t.indexOf(v) >= 0 && t.length <= v.length + 12));
+  const CAMPOS = ['titulo', 'subtitulo', 'antetitulo', 'texto', 'etiqueta', 'numero', 'cifra', 'fuente', 'cta', 'cinta', 'nota', 'hora', 'tarjetaTitulo', 'tarjetaTexto', 'boton'];
+  // primero lo que coincide entero: la etiqueta «Sanidad» no es el titular «Sanidad sin sangre…» (29/10/2026)
+  for (const k of CAMPOS) if (q(s[k]) === t) return {campo: k, idx: -1};
   for (const k of ['titulo', 'subtitulo', 'antetitulo', 'texto', 'etiqueta', 'numero', 'cifra', 'fuente', 'cta', 'cinta', 'nota', 'hora', 'tarjetaTitulo', 'tarjetaTexto', 'boton']) if (casa(q(s[k]))) return {campo: k, idx: -1};
   const i = (s.items || []).findIndex(v => casa(q(v))); if (i >= 0) return {campo: 'items', idx: i};
   return null;
@@ -329,6 +332,8 @@ window.addEventListener('click', e => {
     guardarC(c); const ed = $('#est-editor'); if (ed) pintarMinis(ed);
     return;
   }
+  // el marco con tiradores y sus botones los lleva lienzo.js
+  if (t.closest('.lz-caja')) return;
   // pulsar en la slide grande (no en Listo / Terminado: solo se ven)
   if (t.closest('#est-editor.solo-ver .est-grande')) { e.stopImmediatePropagation(); return; }
   const g = t.closest('.est-grande');
