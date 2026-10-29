@@ -57,3 +57,5 @@
 .tipo-portada.con-foto .titulo { font-size: 122px; margin-top: 30px; }
 .foto-diagonal, .con-foto .foto-diagonal { width: 790px; height: 560px; }   /* 29/10: un poco más grande (Sandra) */
 .tipo-portada.con-foto .titulo { margin-top: 90px; }   /* 29/10: más aire con la etiqueta rodeada (Sandra) */
+/* post-it pegado en la esquina de la foto inclinada */
+.tipo-portada.con-foto .postit { top: auto; bottom: 480px; right: 120px; width: 200px; transform: rotate(-10deg); }

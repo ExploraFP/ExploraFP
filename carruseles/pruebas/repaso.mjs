@@ -25,6 +25,13 @@ const REPASOS = {
     ['Notas a mano de fondo', 'feed', Object.assign({marco: 'notas'}, P)],
     ['Papel claro', 'ruta', P],
     ['Collage', 'feed', Object.assign({imagen: 'fotos/foto-chico-saluda-portatil.jpg', marco: 'collage'}, P, {titulo: 'La FP no es el *plan B*'})]],
+  propuestas: [
+    ['1 ahora', 'feed', P],
+    ['1 + redondel + post-it', 'feed', Object.assign({trazo: 'ovalo', decoracion: 'postit'}, P)],
+    ['1 + subrayado a boli + post-it', 'feed', Object.assign({trazo: 'subrayado', decoracion: 'postit'}, P)],
+    ['3 ahora', 'poster', Object.assign({imagen: FOTO}, P)],
+    ['3 + subrayado a boli', 'poster', Object.assign({imagen: FOTO, trazo: 'subrayado'}, P)],
+    ['3 + subrayado + post-it en la foto', 'poster', Object.assign({imagen: FOTO, trazo: 'subrayado', decoracion: 'postit'}, P)]],
   cierres: [
     ['Botón con flecha', 'feed', CI],
     ['Banda abajo', 'ruta', CI]]};

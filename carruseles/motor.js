@@ -131,7 +131,7 @@ export function crearMotor(R) {
     const pastilla = si(s.etiqueta, `<div class="pastilla">${fmt(s.etiqueta)}</div>`);
     // 29/10/2026 (Sandra: «la flecha de la portada no tiene sentido hacia dónde apunta»): de serie solo en el cierre, que señala el botón
     const trazo = s.trazo ?? (s.tipo === "cierre" ? "flecha" : "ninguno");
-    if (!["flecha", "ovalo", "ninguno"].includes(trazo)) throw new Error(`trazo "${trazo}" no existe (usa: flecha, ovalo, ninguno)`);
+    if (!["flecha", "ovalo", "subrayado", "ninguno"].includes(trazo)) throw new Error(`trazo "${trazo}" no existe (usa: flecha, ovalo, subrayado, ninguno)`);
     const toque = trazo === "flecha" ? flecha(`f-feed f-${s.tipo}`) : "";
     const tit = (h) => trazo === "ovalo"
       ? `<${h} class="titulo">${fmt(s.titulo).replace(/<em>(.+?)<\/em>/, '<em class="rodeado">$1<i class="ovalo"></i></em>')}</${h}>`
@@ -373,7 +373,7 @@ export function crearMotor(R) {
     const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
   ${R.cabeza(plantilla)}${s.estilo ? `<style>${estiloSlide(s.estilo)}</style>` : ""}
-  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${collage ? " foto-sangre collage" : fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
+  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${s.trazo === "subrayado" ? " tr-subrayado" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${collage ? " foto-sangre collage" : fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
   <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : fondoNotas ? "Verde 03" : LOGO_FONDO[color])}</div>
   <div class="contenido">${collage ? portadaCollage(s) : fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>

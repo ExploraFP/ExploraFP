@@ -252,3 +252,10 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .cl-recorte { z-index: 4 !important; }
 .slide.notas-fondo .contenido > .textura-notas { left: 110px; top: 360px; }   /* 29/10: más hacia la izquierda, ocupa más fondo (Sandra) */
 .slide.notas-fondo .contenido > .textura-notas { top: 470px; }   /* 29/10: el manuscrito llega hasta el borde de abajo, sin hueco (Sandra) */
+
+/* SUBRAYADO A BOLI (`trazo: subrayado`, 29/10/2026, Sandra: «el subrayado a boli debajo de la palabra»): la *palabra* del titular
+   sin bloque lima, con un trazo a mano debajo (dos pasadas de boli). Vale en cualquier plantilla. */
+.slide.tr-subrayado .titulo em { background: none !important; --hl: transparent; color: inherit; position: relative; display: inline; }
+.slide.tr-subrayado .titulo em::after { content: ""; position: absolute; left: -.04em; right: -.06em; bottom: -.02em; height: .17em;
+  background: var(--flecha, currentColor); -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxwYXRoIGQ9Ik02IDI2IEMgNzAgMTQsIDE1MCAzMCwgMjMwIDE4IFMgMzUwIDEyLCAzOTQgMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMzAgMzMgQyAxMTAgMjQsIDIxMCAzNiwgMzAwIDI3IFMgMzcwIDI0LCAzODYgMjgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9Ii44NSIvPjwvc3ZnPg==") center / 100% 100% no-repeat; mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxwYXRoIGQ9Ik02IDI2IEMgNzAgMTQsIDE1MCAzMCwgMjMwIDE4IFMgMzUwIDEyLCAzOTQgMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMzAgMzMgQyAxMTAgMjQsIDIxMCAzNiwgMzAwIDI3IFMgMzcwIDI0LCAzODYgMjgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9Ii44NSIvPjwvc3ZnPg==") center / 100% 100% no-repeat; }
+.slide.tr-subrayado .titulo { line-height: 1.16; }   /* sitio para el trazo entre líneas */
