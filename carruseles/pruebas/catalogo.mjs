@@ -32,7 +32,10 @@ const COLS = [
   ['Cierre', 'Cierre', {tipo: 'cierre', etiqueta: 'Tu turno', titulo: '¿Conoces a alguien que se *mareó*?', texto: 'Etiquétale y recalculamos su ruta.', cta: 'Pide información', cinta: 'Guárdalo para luego'}],
 ];
 const ESTILOS = [['feed', 'Feed'], ['capas', 'Capas'], ['cuaderno', 'Cuaderno'], ['poster', 'Póster'], ['ruta', 'Ruta'], ['chat', 'Chat (oculto)'], ['tuit', 'Tuit (oculto)'], ['editorial', 'Editorial (oculto)'], ['bloques', 'Bloques (oculto)']];
-const W = 150;
+// CAT=portadas | cierres → solo esas columnas, solo los estilos que se ofrecen y más grandes
+const CAT = process.env.CAT || '';
+if (CAT) { const g = CAT === 'portadas' ? 'Portada' : 'Cierre'; COLS.splice(0, COLS.length, ...COLS.filter(c => c[0] === g)); ESTILOS.splice(5); }
+const W = CAT ? 230 : 150;
 await p.evaluate(([COLS, ESTILOS, W]) => {
   const k = W / 1080;
   let h = '<style>body{margin:0;background:#fff;font:13px system-ui}table{border-collapse:collapse;margin:16px}th,td{padding:4px;vertical-align:top}th{font-size:12px;text-align:center}' +
@@ -52,6 +55,11 @@ await p.evaluate(([COLS, ESTILOS, W]) => {
     });
     h += '</tr>';
   });
+  // una sola columna (cierres): mejor en una fila, un estilo al lado del otro
+  if (COLS.length === 1) {
+    h = h.slice(0, h.indexOf('<table>')) + '<table><tr>' + ESTILOS.map(e => '<th style="font-size:15px">' + e[1] + '</th>').join('') + '</tr><tr>' +
+      window.__docs.map((d, n) => '<td><div class="c">' + (d ? '<iframe data-n="' + n + '"></iframe>' : '<div class="x">no existe</div>') + '</div></td>').join('') + '</tr>';
+  }
   document.body.innerHTML = h + '</table>';
   document.body.className = '';
   document.querySelectorAll('iframe[data-n]').forEach(f => { f.srcdoc = window.__docs[+f.dataset.n]; });
@@ -59,6 +67,6 @@ await p.evaluate(([COLS, ESTILOS, W]) => {
 await p.waitForTimeout(6000);
 const tam = await p.evaluate(() => ({w: document.querySelector('table').scrollWidth + 32, h: document.querySelector('table').scrollHeight + 32}));
 await p.setViewportSize({width: tam.w, height: tam.h}); await p.waitForTimeout(1500);
-await p.screenshot({path: S + 'catalogo.png', fullPage: true});
+await p.screenshot({path: S + 'catalogo' + (CAT ? '-' + CAT : '') + '.png', fullPage: true});
 console.log('fallos motor:', await p.evaluate(() => window.__err || []));
 console.log('err', err.filter(x => !/404|CERT/.test(x))); await b.close();
