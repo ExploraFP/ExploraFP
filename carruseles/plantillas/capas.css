@@ -66,5 +66,6 @@
 .l-capas.alterna .pila > .papel { inset: -34px 44px 34px -34px; transform: rotate(-2.2deg); }
 .l-capas.alterna .pila > .caja { transform: rotate(.8deg); }
 .con-foto .f-portada-1 { top: 210px; left: 120px; transform: rotate(-100deg) scale(.7); }   /* puesta a mano: de la etiqueta al titular */
-/* 29/10/2026 (Sandra): la caja del titular ya va girada → la foto de la portada RECTA, a la misma altura */
-.papel-portada.foto-papel, .alterna .papel-portada.foto-papel { transform: none; }
+/* 29/10/2026 (Sandra eligió entre 7 versiones la «caja recta, foto girada»): la caja del titular RECTA y la foto girada */
+.tipo-portada .caja-portada { transform: none; }
+.papel-portada.foto-papel, .alterna .papel-portada.foto-papel { transform: rotate(4deg); }
