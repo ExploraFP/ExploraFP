@@ -52,7 +52,7 @@ export function crearMotor(R) {
       case "portada":
         // Con foto: la foto ocupa el sitio del papel, torcida, y la caja de color se monta encima.
         return `<div class="papel papel-portada foto-papel"><img src="${rutaImagen(s)}" alt=""></div>` + etiqueta(s.etiqueta) +
-          si(!sinDeco, flecha("f-portada-1")) +
+          si(s.trazo === "flecha", flecha("f-portada-1")) +   // 29/10: de serie sin flecha (no señalaba nada)
           `<div class="caja caja-portada">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}${nota(s.nota)}` +
           `<img class="logo-caja" src="${logo(LOGO_CINTA[s._color])}" alt="Explora × Ucademy"></div>`;
       case "contenido": {
@@ -129,7 +129,8 @@ export function crearMotor(R) {
   // resaltado) + un solo toque a mano por slide (`trazo: flecha | ovalo | ninguno`).
   function feed(s) {
     const pastilla = si(s.etiqueta, `<div class="pastilla">${fmt(s.etiqueta)}</div>`);
-    const trazo = s.trazo ?? (s.tipo === "portada" || s.tipo === "cierre" ? "flecha" : "ninguno");
+    // 29/10/2026 (Sandra: «la flecha de la portada no tiene sentido hacia dónde apunta»): de serie solo en el cierre, que señala el botón
+    const trazo = s.trazo ?? (s.tipo === "cierre" ? "flecha" : "ninguno");
     if (!["flecha", "ovalo", "ninguno"].includes(trazo)) throw new Error(`trazo "${trazo}" no existe (usa: flecha, ovalo, ninguno)`);
     const toque = trazo === "flecha" ? flecha(`f-feed f-${s.tipo}`) : "";
     const tit = (h) => trazo === "ovalo"

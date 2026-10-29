@@ -82,3 +82,5 @@ ol.lista-feed li { font-size: 46px; }
 .tipo-dato .subtitulo { font-family: var(--cuerpo); font-weight: 700; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; opacity: 1; margin: 0 0 26px; }
 /* 29/10/2026: la flecha de la portada pisaba el logo → más abajo */
 .f-portada { top: -120px; right: -10px; }
+/* si se pone a mano en la portada, la flecha sale de abajo a la derecha y señala el subtítulo */
+.f-portada { top: auto; bottom: -190px; right: auto; left: 560px; transform: rotate(35deg) scale(.85); }

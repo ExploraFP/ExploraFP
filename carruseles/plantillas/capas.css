@@ -65,3 +65,4 @@
    no sean la misma imagen repetida (oct-2026). */
 .l-capas.alterna .pila > .papel { inset: -34px 44px 34px -34px; transform: rotate(-2.2deg); }
 .l-capas.alterna .pila > .caja { transform: rotate(.8deg); }
+.con-foto .f-portada-1 { top: 210px; left: 120px; transform: rotate(-100deg) scale(.7); }   /* puesta a mano: de la etiqueta al titular */

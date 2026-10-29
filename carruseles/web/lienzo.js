@@ -56,7 +56,7 @@ function lzCajon(c) {
       ks.map(k => '<button type="button" data-est-nueva="' + k + '"><b>' + esc(LZ_NOMBRE[k]) + '</b><span>' + esc(LZ_TIPOS[k] || '') + '</span></button>').join('') + '</div>';
   }
   if (LZ.tab === 'elementos') {
-    const deco = [].concat(s.decoracion || []), flecha = s.trazo !== 'ninguno' && (c.plantilla !== 'feed' || s.trazo === 'flecha' || s.tipo === 'portada' || s.tipo === 'cierre');
+    const deco = [].concat(s.decoracion || []), flecha = s.trazo === 'flecha' || (!s.trazo && (s.tipo === 'cierre' || (c.plantilla !== 'feed' && s.tipo !== 'portada')));
     const it = (k, ico, t, on, pista) => '<button type="button" data-lz-el="' + k + '" aria-pressed="' + !!on + '"><span class="lz-ico">' + ico + '</span><b>' + t + '</b><small>' + pista + '</small></button>';
     return '<h3>Elementos</h3><p class="lz-pista">En la slide ' + (EST.sel + 1) + '. Pulsa otra vez para quitarlo.</p><div class="lz-els">' +
       it('flecha', '↗', 'Flecha a mano', flecha, 'Luego la mueves y la estiras') +
@@ -160,7 +160,7 @@ window.addEventListener('click', e => {
     e.stopImmediatePropagation();
     const c = EST.lista[EST.abierto], s = c.slides[EST.sel]; if (!s) return;
     const k = el.dataset.lzEl, on = el.getAttribute('aria-pressed') === 'true';
-    if (k === 'flecha') { if (on) s.trazo = 'ninguno'; else if (c.plantilla === 'feed' && s.tipo !== 'portada' && s.tipo !== 'cierre') s.trazo = 'flecha'; else delete s.trazo; }
+    if (k === 'flecha') { if (on) s.trazo = 'ninguno'; else s.trazo = 'flecha'; }
     else if (k === 'ovalo') { if (on) delete s.trazo; else s.trazo = 'ovalo'; }
     else { let d = [].concat(s.decoracion || []).filter(x => x !== 'ninguna'); d = on ? d.filter(x => x !== k) : d.concat(k); if (d.length) s.decoracion = d.length === 1 ? d[0] : d; else delete s.decoracion; }
     guardarC(c); pintarEditor(true); return;
