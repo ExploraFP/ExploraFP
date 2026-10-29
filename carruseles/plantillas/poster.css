@@ -51,3 +51,9 @@
 .slide:not(.tipo-portada) .titulo { margin-top: 0; }
 .slide:not(.tipo-portada) .num { margin-bottom: 30px; }
 .tipo-lista .pildora { font-size: 44px; padding: 22px 40px 22px 30px; }
+/* 29/10/2026 (Sandra): la foto, entera e inclinada, sin cortarla por el lateral ni en diagonal: como una foto impresa ladeada */
+.foto-diagonal, .con-foto .foto-diagonal { clip-path: none; right: 80px; bottom: 100px; width: 600px; height: 420px; transform: rotate(-6deg);
+  border: 14px solid #fff; box-shadow: 0 18px 40px rgba(0,0,0,.28); box-sizing: content-box; }
+.tipo-portada.con-foto .titulo { font-size: 122px; margin-top: 30px; }
+.tipo-portada.con-foto .subtitulo { max-width: 430px; }
+.tipo-portada .foto-diagonal { width: 470px; height: 330px; right: 70px; bottom: 80px; }

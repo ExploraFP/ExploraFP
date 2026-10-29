@@ -20,7 +20,7 @@ const REPASOS = {
   portadas: [
     ['Titular sobre verde', 'feed', P],
     ['Caja oscura sobre foto', 'capas', Object.assign({imagen: FOTO}, P)],
-    ['Foto en la esquina', 'poster', Object.assign({imagen: FOTO}, P)],
+    ['Foto inclinada', 'poster', Object.assign({imagen: FOTO}, P)],
     ['Foto entera', 'feed', Object.assign({imagen: FOTO, marco: 'fondo'}, P)],
     ['Notas a mano de fondo', 'feed', Object.assign({marco: 'notas'}, P)],
     ['Papel claro', 'ruta', P]],
@@ -28,8 +28,8 @@ const REPASOS = {
     ['Botón con flecha', 'feed', CI],
     ['Banda abajo', 'ruta', CI]]};
 const R = process.env.REPASO || 'portadas', L = REPASOS[R];
-await p.evaluate(([L]) => {
-  const W = 300, k = W / 1080;
+await p.evaluate(([L, W]) => {
+  const k = W / 1080;
   let h = '<style>body{margin:0;background:#fff;font:16px system-ui;color:#1B3620}.g{display:grid;grid-template-columns:repeat(3,' + W + 'px);gap:26px 20px;padding:22px}' +
     '.n{font-size:17px;margin:0 0 8px}.n b{display:inline-block;background:#1B3620;color:#D8FF6E;border-radius:999px;width:28px;height:28px;text-align:center;line-height:28px;margin-right:8px}' +
     '.c{width:' + W + 'px;height:' + Math.round(1350 * k) + 'px;overflow:hidden;position:relative;border:1px solid #ddd;border-radius:6px}.c iframe{width:1080px;height:1350px;border:0;transform:scale(' + k + ');transform-origin:0 0;position:absolute}</style><div class="g">';
@@ -37,7 +37,7 @@ await p.evaluate(([L]) => {
   h += L.map(([n], i) => '<div><p class="n"><b>' + (i + 1) + '</b>' + n + '</p><div class="c"><iframe data-n="' + i + '"></iframe></div></div>').join('') + '</div>';
   document.body.innerHTML = h; document.body.className = '';
   document.querySelectorAll('iframe[data-n]').forEach(f => f.srcdoc = window.__d[+f.dataset.n]);
-}, [L]);
+}, [L, +(process.env.ANCHO || 300)]);
 await p.waitForTimeout(4000);
 const t = await p.evaluate(() => ({w: document.querySelector('.g').scrollWidth, h: document.querySelector('.g').scrollHeight}));
 await p.setViewportSize({width: t.w, height: t.h}); await p.waitForTimeout(800);

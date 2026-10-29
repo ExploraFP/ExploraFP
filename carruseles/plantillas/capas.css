@@ -9,7 +9,7 @@
 .f-portada-1 { top: 70px; left: 380px; transform: rotate(-150deg) scale(.9); }
 .foto-portada { position: absolute; top: 0; right: 0; width: 82%; height: 64%; object-fit: cover; }
 .con-foto .etiqueta { position: absolute; top: 70px; left: var(--m); }
-.con-foto .f-portada-1 { top: 150px; left: 40px; transform: rotate(-120deg) scale(.8); }
+.con-foto .f-portada-1 { top: 120px; left: 300px; transform: rotate(-110deg) scale(.75); }   /* 29/10: antes cruzaba la etiqueta rodeada */
 .f-portada-2 { right: 30px; top: 690px; transform: rotate(-80deg) scale(.75); }
 
 /* CONTENIDO / LISTA / DATO */

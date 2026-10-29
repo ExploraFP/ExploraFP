@@ -245,7 +245,7 @@ export function crearMotor(R) {
   function ruta(s) {
     switch (s.tipo) {
       case "portada":
-        return rPill(s.etiqueta) + rTit(s.titulo, "h1") + rSub(s.subtitulo, s) + rMano(s.nota);
+        return rPill(s.etiqueta) + rTit(s.titulo, "h1") + rSub(s.subtitulo, s) + rMano(s.nota);   // sin logo, como su referencia
       case "contenido": {
         if (s.numero) {
           // numerada: arriba la foto (o la plataforma en portátil sobre verde) con «02 · SECCIÓN» y el logo; abajo, en claro, el texto
@@ -354,7 +354,7 @@ export function crearMotor(R) {
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
   ${R.cabeza(plantilla)}${s.estilo ? `<style>${estiloSlide(s.estilo)}</style>` : ""}
   </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
-  <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : LOGO_FONDO[color])}</div>
+  <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : fondoNotas ? "Verde 03" : LOGO_FONDO[color])}</div>
   <div class="contenido">${fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
   <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>

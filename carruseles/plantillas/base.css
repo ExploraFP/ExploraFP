@@ -206,3 +206,20 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .mo-txt b { font-weight: 700; font-size: 46px; line-height: 1.1; color: #000; }
 .mo-txt span { font-size: 32px; line-height: 1.35; color: #7b857c; }
 .mo-boton { flex: none; background: #4CCD4B; color: #0E1F11; font-family: var(--cuerpo); font-weight: 700; font-size: 34px; padding: 22px 38px; border-radius: 999px; }
+
+/* ===== Repaso de portadas con Sandra (29/10/2026): «la 1 y la 5 son iguales» y errores de diseño ===== */
+/* titulares sin palabra suelta en la última línea («ti» sola) */
+.titulo { text-wrap: pretty; }
+/* 5 · NOTAS A MANO: ahora con identidad propia, sea cual sea el color del carrusel: fondo verde noche y las notas en lima
+   bien visibles (antes era la 1 con unos garabatos a la derecha). Las notas empiezan debajo del logo, sin pisarlo. */
+.slide.notas-fondo { --fondo: var(--noche); --tinta: var(--blanco); --titulo: var(--blanco); --resalte: var(--verde03); --tinta-resalte: var(--noche);
+  --acento: var(--verde03); --flecha: var(--verde03); background-color: var(--noche); background-image: none; }
+.slide.notas-fondo .contenido > .textura-notas { inset: 170px -120px 260px -60px; background: var(--verde03); opacity: .42; transform: rotate(-4deg); }
+.slide.notas-fondo .etiqueta { top: 64px; }
+/* 4 · FOTO ENTERA: el logo y el titular se perdían sobre fotos claras → velo más fuerte arriba y en la mitad de abajo */
+.velo { background: linear-gradient(180deg, rgba(10,25,14,.55) 0%, rgba(10,25,14,0) 24%, rgba(10,25,14,0) 34%, rgba(10,25,14,.88) 62%, rgba(10,25,14,.95) 100%); }
+.slide.notas-fondo .contenido > .textura-notas { inset: 150px -140px 30px -80px; opacity: .26; }
+.slide.notas-fondo .bloque-notas { background: transparent; }
+.slide.notas-fondo .bloque-notas::before { display: none; }
+.tipo-portada .titulo { text-wrap: balance; }
+.slide.notas-fondo .contenido > .textura-notas { bottom: 230px; }

@@ -80,3 +80,5 @@ ol.lista-feed li { font-size: 46px; }
 .con-foto-feed .contenido { justify-content: flex-start; padding-top: calc(52% * 1350 / 1080 + 70px); }
 /* dato: lo que es la cifra va en la letra de interfaz, como etiqueta (19/10/2026; antes en la serif del texto) */
 .tipo-dato .subtitulo { font-family: var(--cuerpo); font-weight: 700; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; opacity: 1; margin: 0 0 26px; }
+/* 29/10/2026: la flecha de la portada pisaba el logo → más abajo */
+.f-portada { top: -120px; right: -10px; }
