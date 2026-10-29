@@ -540,7 +540,9 @@ const CAMPOS_TIPO = {
   contenido: [['etiqueta', 'Etiqueta'], ['numero', 'Número'], ['titulo', 'Titular', 1], ['antetitulo', 'Subtítulo'], ['texto', 'Texto', 1]],
   lista: [['etiqueta', 'Etiqueta'], ['titulo', 'Titular', 1], ['antetitulo', 'Subtítulo'], ['items', 'Puntos (uno por línea)', 1]],
   dato: [['antetitulo', 'Qué es la cifra', 1], ['cifra', 'Cifra'], ['texto', 'Texto', 1], ['fuente', 'Fuente (obligatoria)']],
-  cierre: [['etiqueta', 'Etiqueta'], ['titulo', 'Titular', 1], ['texto', 'Texto', 1], ['cta', 'Botón'], ['cinta', 'Debajo del botón']]};
+  cierre: [['etiqueta', 'Etiqueta'], ['titulo', 'Titular', 1], ['texto', 'Texto', 1], ['cta', 'Botón'], ['cinta', 'Debajo del botón']],
+  pasos: [['etiqueta', 'Etiqueta'], ['titulo', 'Titular', 1], ['items', 'Pasos (uno por línea)', 1]],
+  momento: [['hora', 'Hora'], ['titulo', 'Titular', 1], ['texto', 'Texto', 1], ['tarjetaTitulo', 'Tarjeta · título'], ['tarjetaTexto', 'Tarjeta · texto'], ['boton', 'Tarjeta · botón']]};
 function pintarEditor(todo) {
   const c = EST.lista[EST.abierto]; if (!c) { cerrarEditor(); return; }
   if (EST.sel >= c.slides.length) EST.sel = Math.max(0, c.slides.length - 1);
@@ -571,7 +573,7 @@ function pintarEditor(todo) {
   let p = '<div id="est-qc">' + htmlQC(c) + '</div><h3>Slide ' + (EST.sel + 1) + ' de ' + c.slides.length + '</h3>' +
     '<div class="est-campos"><label>Tipo de slide<select data-est-campo="tipo">' +
       Object.keys(EST_TIPOS).map(k => '<option value="' + k + '"' + (tipo === k ? ' selected' : '') + '>' + EST_TIPOS[k] + '</option>').join('') + '</select></label>' +
-    CAMPOS_TIPO[tipo].map(f => campoE(f[0], f[1], f[0] === 'items' ? (s.items || []).join('\n') : s[f[0]], f[2])).join('') +
+    (CAMPOS_TIPO[tipo] || CAMPOS_TIPO.contenido).map(f => campoE(f[0], f[1], f[0] === 'items' ? (s.items || []).join('\n') : s[f[0]], f[2])).join('') +
     '<p class="est-pista">Rodea con *asteriscos* la palabra que quieras resaltar en verde lima.</p></div>';
   if (tipo === 'portada' || tipo === 'contenido') {
     p += '<h3>Foto</h3><div class="est-fotos"><button data-est-foto="" aria-pressed="' + !s.imagen + '">Sin foto</button>' +

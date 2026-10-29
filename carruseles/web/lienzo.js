@@ -13,20 +13,31 @@ const LZ_TABS = [['plantilla', '🎨', 'Plantilla'], ['elementos', '✏️', 'El
   ['revision', '✅', 'Revisión'], ['claude', '💬', 'Chat IA'], ['caption', '📝', 'Caption']];
 if (LZ.tab === 'diseno') LZ.tab = 'plantilla';
 const LZ_DEL_PANEL = ['revision', 'claude', 'caption'];   // estas pestañas enseñan un trozo de #est-panel
-const LZ_FORMAS = ['portada', 'contenido', 'lista', 'dato', 'cierre', 'momento'];
+const LZ_CUERPO = ['contenido', 'lista', 'pasos', 'dato', 'momento'];
+const LZ_NOMBRE = Object.assign({}, EST_TIPOS, {pasos: 'Pasos'});
+const lzRol = s => s.tipo === 'portada' ? 'portada' : s.tipo === 'cierre' ? 'cierre' : 'cuerpo';
+// los diseños entre los que puede cambiar ESTA slide: [{k, nombre, pista, on, slide (para la miniatura)}]
+function lzOpciones(s) {
+  const rol = lzRol(s), sin = o => { const n = JSON.parse(JSON.stringify(s)); if (o) n.marco = o; else delete n.marco; return n; };
+  if (rol === 'portada') return [['', 'La de la plantilla', 'El diseño de portada de la plantilla']].concat(s.imagen ? [['fondo', 'Foto entera', 'La foto a pantalla completa']] : [])
+    .concat([['notas', 'Escrito a mano', 'Textura manuscrita de fondo y el titular en una esquina']])
+    .map(([m, nombre, pista]) => ({k: 'marco:' + m, nombre: nombre, pista: pista, on: (s.marco || '') === m, slide: sin(m)}));
+  if (rol === 'cierre') return [{k: 'cierre', nombre: 'Cierre', pista: LZ_TIPOS.cierre, on: true, slide: s}];
+  return LZ_CUERPO.map(k => ({k: k, nombre: LZ_NOMBRE[k], pista: LZ_TIPOS[k], on: (s.tipo || 'contenido') === k, slide: lzComo(s, k)}));
+}
 /* la misma slide con otra forma: conserva lo que tiene y solo rellena lo que a la forma nueva le falta. Lo que no usa se
    queda guardado (si vuelves a la forma de antes, reaparece). La fuente del dato NO se inventa: la revisión la pedirá. */
 function lzComo(s, tipo) {
   const n = JSON.parse(JSON.stringify(s || {})); n.tipo = tipo;
   const frases = String(n.texto || '').split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
   if (tipo !== 'dato' && !n.titulo) n.titulo = n.antetitulo || 'Nuevo *titular*';
-  if (tipo === 'lista' && !(n.items || []).length) n.items = frases.length > 1 ? frases.slice(0, 4) : ['Primer punto', 'Segundo punto'];
+  if ((tipo === 'lista' || tipo === 'pasos') && !(n.items || []).length) n.items = frases.length > 1 ? frases.slice(0, 4) : ['Primer punto', 'Segundo punto'];
   if (tipo === 'dato') { if (!n.cifra) n.cifra = '0 %'; if (!n.antetitulo) n.antetitulo = String(n.titulo || 'Qué es la cifra').replace(/[*_]/g, ''); }
   if (tipo === 'cierre' && !n.cta) n.cta = 'Escribe aquí';
   if (tipo === 'momento') { if (!n.hora) n.hora = '10:00'; if (!n.tarjetaTitulo) n.tarjetaTitulo = 'Escribe aquí'; }
   return n;
 }
-const LZ_TIPOS = {portada: 'La primera: el gancho', contenido: 'Titular y texto (o foto)', lista: '2 a 4 puntos', dato: 'Una cifra con su fuente', cierre: 'La última: la llamada a la acción', momento: 'Una escena del día con la plataforma'};
+const LZ_TIPOS = {portada: 'La primera: el gancho', contenido: 'Titular y texto (o foto)', lista: '2 a 4 puntos', dato: 'Una cifra con su fuente', pasos: '1 → 2 → 3, en orden', cierre: 'La última: la llamada a la acción', momento: 'Una escena del día con la plataforma'};
 
 /* ---------- barra lateral y cajón ---------- */
 function lzCajon(c) {
@@ -38,8 +49,12 @@ function lzCajon(c) {
       (typeof FOTO_RAMAS !== 'undefined' ? '<div class="lz-filtros">' + sel('lz-fr', 'Rama', FOTO_RAMAS, EST.fr) + sel('lz-fo', 'Orientación', FOTO_ORIENT, EST.fo) + '</div>' : '') +
       '<div class="est-fotos lz-fotos">' + gridFotosEditor(s) + '</div>';
   }
-  if (LZ.tab === 'slides') return '<h3>Slides</h3><p class="lz-pista">Añade una slide nueva detrás de la última. Para cambiar la forma de esta, Plantilla.</p><div class="lz-tipos">' +
-    Object.keys(EST_TIPOS).map(k => '<button type="button" data-est-nueva="' + k + '"><b>' + esc(EST_TIPOS[k]) + '</b><span>' + esc(LZ_TIPOS[k] || '') + '</span></button>').join('') + '</div>';
+  if (LZ.tab === 'slides') {
+    const tiene = k => c.slides.some(x => x.tipo === k);
+    const ks = (tiene('portada') ? [] : ['portada']).concat(LZ_CUERPO, tiene('cierre') ? [] : ['cierre']);
+    return '<h3>Slides</h3><p class="lz-pista">Se añade antes del cierre. Para cambiar la forma de una que ya existe, Plantilla.</p><div class="lz-tipos">' +
+      ks.map(k => '<button type="button" data-est-nueva="' + k + '"><b>' + esc(LZ_NOMBRE[k]) + '</b><span>' + esc(LZ_TIPOS[k] || '') + '</span></button>').join('') + '</div>';
+  }
   if (LZ.tab === 'elementos') {
     const deco = [].concat(s.decoracion || []), flecha = s.trazo !== 'ninguno' && (c.plantilla !== 'feed' || s.trazo === 'flecha' || s.tipo === 'portada' || s.tipo === 'cierre');
     const it = (k, ico, t, on, pista) => '<button type="button" data-lz-el="' + k + '" aria-pressed="' + !!on + '"><span class="lz-ico">' + ico + '</span><b>' + t + '</b><small>' + pista + '</small></button>';
@@ -49,17 +64,21 @@ function lzCajon(c) {
       it('postit', '🟨', 'Post-it «100% online»', deco.indexOf('postit') >= 0, 'Arriba a la derecha') +
       it('notas', '✍️', 'Escrito a mano de fondo', deco.indexOf('notas') >= 0, 'La textura de la marca') + '</div><div class="lz-anadir"></div>';
   }
-  // Plantilla, como en Canva: arriba la forma de ESTA slide (miniaturas con su propio texto), abajo plantilla y color del carrusel
+  // Plantilla, como en Canva. Cada slide solo se cambia por diseños de SU papel (Sandra, 29/10/2026): la portada, por portadas;
+  // el cierre (CTA), por cierres; el cuerpo, por formas de cuerpo. El color, de esa slide. La plantilla (Feed, Ruta…), de todo el carrusel.
   if (LZ.tab === 'plantilla') {
-    const prev = Object.assign({}, c, {id: 'lz-formas', slides: LZ_FORMAS.map(k => lzComo(s, k))});
-    PREVIAS['lz-formas'] = prev;
-    return '<h3>Plantilla</h3><h4>Esta slide (' + (EST.sel + 1) + ')</h4><div class="lz-formas">' +
-      LZ_FORMAS.map((k, i) => '<button type="button" data-lz-forma="' + k + '" aria-pressed="' + ((s.tipo || 'contenido') === k) + '" title="' + esc(LZ_TIPOS[k] || '') + '">' +
-        mini(prev, i) + '<span>' + esc(EST_TIPOS[k]) + '</span></button>').join('') + '</div>' +
-      '<h4>Todo el carrusel</h4><div class="sel-pls">' +
-      EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') +
-      '</div><h4>Color</h4><div class="sel-cos">' +
-      EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-sel-co="' + x.id + '" aria-pressed="' + (c.color === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>';
+    const ops = lzOpciones(s), rol = lzRol(s);
+    PREVIAS['lz-formas'] = Object.assign({}, c, {id: 'lz-formas', slides: ops.map(o => o.slide)});
+    const titulo = rol === 'portada' ? 'Portada' : rol === 'cierre' ? 'Cierre (CTA)' : 'Cuerpo';
+    const colorAhora = s.color || c.color;
+    return '<h3>Plantilla</h3><h4>Slide ' + (EST.sel + 1) + ' · ' + titulo + '</h4><div class="lz-formas">' +
+      ops.map((o, i) => '<button type="button" data-lz-forma="' + o.k + '" aria-pressed="' + o.on + '" title="' + esc(o.pista || '') + '">' +
+        mini(PREVIAS['lz-formas'], i) + '<span>' + esc(o.nombre) + '</span></button>').join('') + '</div>' +
+      (ops.length < 2 ? '<p class="lz-pista">Esta plantilla tiene un solo diseño de ' + (rol === 'cierre' ? 'cierre' : 'portada') + '.</p>' : '') +
+      '<h4>Color de esta slide</h4><div class="sel-cos">' +
+      EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-lz-co="' + x.id + '" aria-pressed="' + (colorAhora === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>' +
+      '<h4>Plantilla de todo el carrusel</h4><div class="sel-pls">' +
+      EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') + '</div>';
   }
   if (LZ.tab === 'revision') return '';   // la caja de la revisión ya lleva su título
   if (LZ.tab === 'claude') return '<h3>Chat IA</h3>';
@@ -112,9 +131,27 @@ window.addEventListener('click', e => {
   const fm = t.closest('[data-lz-forma]');
   if (fm) {
     e.stopImmediatePropagation();
-    const c = EST.lista[EST.abierto], s = c.slides[EST.sel], k = fm.dataset.lzForma; if (!s || (s.tipo || 'contenido') === k) return;
-    c.slides[EST.sel] = lzComo(s, k); SEL.pop = null; MESA.grupo = 'forma:' + EST.sel; guardarC(c); pintarEditor(true);
-    toast('Slide ' + (EST.sel + 1) + ': ' + EST_TIPOS[k] + ' · si no te gusta, Ctrl/⌘ + Z'); return;
+    const c = EST.lista[EST.abierto], s = c.slides[EST.sel], k = fm.dataset.lzForma; if (!s || fm.getAttribute('aria-pressed') === 'true') return;
+    if (k.indexOf('marco:') === 0) { const m = k.slice(6); if (m) s.marco = m; else delete s.marco; }
+    else c.slides[EST.sel] = lzComo(s, k);
+    SEL.pop = null; MESA.grupo = 'forma:' + EST.sel; guardarC(c); pintarEditor(true);
+    toast('Slide ' + (EST.sel + 1) + ': ' + fm.innerText.trim() + ' · si no te gusta, Ctrl/⌘ + Z'); return;
+  }
+  const co = t.closest('[data-lz-co]');
+  if (co) {
+    e.stopImmediatePropagation();
+    const c = EST.lista[EST.abierto], s = c.slides[EST.sel]; if (!s) return;
+    if (co.dataset.lzCo === c.color) delete s.color; else s.color = co.dataset.lzCo;
+    MESA.grupo = 'color:' + EST.sel; guardarC(c); pintarEditor(true); return;
+  }
+  // Slides: solo formas de cuerpo (y portada o cierre si el carrusel no lo tiene); la nueva va antes del cierre
+  const nv = t.closest('.lz-cajon [data-est-nueva]');
+  if (nv) {
+    e.stopImmediatePropagation();
+    const c = EST.lista[EST.abierto], k = nv.dataset.estNueva;
+    const n = lzComo({titulo: 'Nuevo *titular*'}, k); if (k === 'dato') delete n.titulo;
+    let i = c.slides.length; if (k === 'portada') i = 0; else if (k !== 'cierre' && c.slides.length && c.slides[i - 1].tipo === 'cierre') i--;
+    c.slides.splice(i, 0, n); EST.sel = i; SEL.pop = null; guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' añadida'); return;
   }
   // «+ Añadir» de las miniaturas abre Slides (un solo sitio para añadir)
   if (t.closest('#est-mas') && !t.closest('#est-editor.solo-ver')) { e.stopImmediatePropagation(); EST.menuNueva = false; LZ.tab = 'slides'; try { localStorage.setItem('lienzo.tab', LZ.tab); } catch (x) {} pintarEditor(true); return; }
