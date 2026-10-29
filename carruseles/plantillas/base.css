@@ -223,3 +223,11 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .slide.notas-fondo .bloque-notas::before { display: none; }
 .tipo-portada .titulo { text-wrap: balance; }
 .slide.notas-fondo .contenido > .textura-notas { bottom: 230px; }
+/* 4 · FOTO ENTERA según la referencia de Sandra («No te matricules sin hacer esto antes», 29/10/2026): titular BLANCO con la
+   palabra clave en bloque lima, etiqueta en píldora lima redondeada, logo blanco, subtítulo en la serif. Titular en minúscula
+   (regla de siempre, aunque la referencia vaya en mayúsculas). */
+.foto-sangre .titulo { color: #fff; font-size: 132px; line-height: 1.0; }
+.foto-sangre .titulo em { --hl: var(--verde03); color: var(--noche); }
+.slide.foto-sangre .contenido .pastilla { top: 92px; background: var(--verde03); color: var(--noche); border-radius: 999px; padding: 16px 34px; font-size: 26px; }
+.slide.foto-sangre .logo-foto { top: 104px; left: auto; right: 80px; transform: none; height: 44px; }
+.foto-sangre .subtitulo { font-family: var(--editorial); font-size: 44px; line-height: 1.25; }

@@ -322,7 +322,7 @@ export function crearMotor(R) {
   // Portada de foto a sangre (como el feed actual): vale para cualquier plantilla con `marco: fondo`.
   const portadaFoto = (s, color) =>
     `<img class="foto-fondo" src="${rutaImagen(s)}" alt=""><div class="velo"></div>` +
-    `<img class="logo-foto" src="${logo("Verde 03")}" alt="Explora × Ucademy">` +
+    `<img class="logo-foto" src="${logo("Blanco")}" alt="Explora × Ucademy">` +
     si(s.etiqueta, `<div class="pastilla">${fmt(s.etiqueta)}</div>`) +
     `<div class="bloque-foto">${titulo(s.titulo, "h1")}${sub(s.subtitulo)}</div>`;
   const logo = (color) => R.logo(color);
