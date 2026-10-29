@@ -21,3 +21,6 @@
 #est-panel > .sv-enlace { margin-bottom: 14px; }
 /* sin escalar todavía: oculta, para que nunca se vea la slide a tamaño real recortada (22/10/2026) */
 .est-mini iframe:not([style*="transform"]){visibility:hidden}
+/* carrusel recién producido desde la Matriz: resaltado unos segundos (29/10/2026) */
+.est-tarjeta.pr-nuevo { outline: 4px solid #D8FF6E; outline-offset: 3px; animation: prNuevo 2.4s ease-out 3; }
+@keyframes prNuevo { 0%, 100% { outline-color: #D8FF6E; } 50% { outline-color: #4CCD4B; } }

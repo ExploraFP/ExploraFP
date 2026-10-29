@@ -27,7 +27,10 @@ vProducir = function () {
   lista.forEach(c => { const p = pasoDe(c); if (col[p]) col[p].push(c); });
   // Borrador: lo que se está generando o falta por generar, arriba; luego el último que abriste (19/10/2026)
   const vistos = prVistos(), sinGenerar = c => etapaDe(c) === 'generar' ? 0 : 1;
-  col.borrador.sort((a, b) => sinGenerar(a) - sinGenerar(b) || (vistos[b.id] || 0) - (vistos[a.id] || 0) || String(b.upd || '').localeCompare(String(a.upd || '')));
+  // 29/10/2026 (Sandra: «le he dado a generar desde la Matriz y no me sale»): un carrusel recién creado cuenta como «recién
+  // abierto», así sale arriba del todo y no al final, detrás de los que ya habías abierto alguna vez.
+  const reciente = c => Math.max(vistos[c.id] || 0, Date.parse(c.creado || '') || 0);
+  col.borrador.sort((a, b) => sinGenerar(a) - sinGenerar(b) || reciente(b) - reciente(a) || String(b.upd || '').localeCompare(String(a.upd || '')));
   col.publicado = carruselesDe('hecho').sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
   const faltan = lista.filter(c => c.estado === 'pendiente' || c.estado === 'error').length;
   let h = cabecera('Producción', '', []);
@@ -113,3 +116,18 @@ document.addEventListener('click', e => {
 }, true);
 // sin arrastrar tarjetas entre etapas (se cambia de etapa dentro del carrusel)
 document.addEventListener('dragstart', e => { if (e.target.closest && e.target.closest('[data-pr-mover]')) e.preventDefault(); }, true);
+
+// Al producir desde la Matriz: Producción con el filtro «Todos», y el carrusel nuevo resaltado y a la vista (29/10/2026)
+const _confirmarProducirEt = confirmarProducir;
+confirmarProducir = function () {
+  const antes = new Set(Object.keys(EST.lista));
+  PR_FILTRO = 'todos'; try { localStorage.setItem('explora.prFiltro', 'todos'); } catch (e) {}
+  const r = _confirmarProducirEt.apply(this, arguments);
+  const nuevos = Object.keys(EST.lista).filter(id => !antes.has(id));
+  setTimeout(() => {
+    nuevos.forEach(id => { const b = document.querySelector('#canvas [data-est-generar="' + id + '"], #canvas [data-est-abrir="' + id + '"], #canvas [data-pr-devolver="' + id + '"]');
+      const t = b && b.closest('.est-tarjeta'); if (t) t.classList.add('pr-nuevo'); });
+    const t = document.querySelector('#canvas .pr-nuevo'); if (t) t.scrollIntoView({block: 'center', behavior: 'smooth'});
+  }, 400);
+  return r;
+};
