@@ -24,3 +24,10 @@
 /* carrusel recién producido desde la Matriz: resaltado unos segundos (29/10/2026) */
 .est-tarjeta.pr-nuevo { outline: 4px solid #D8FF6E; outline-offset: 3px; animation: prNuevo 2.4s ease-out 3; }
 @keyframes prNuevo { 0%, 100% { outline-color: #D8FF6E; } 50% { outline-color: #4CCD4B; } }
+/* pasos solo para ver (29/10/2026) y enlace pequeño para volver atrás */
+.eb-pasos span { display: inline-block; color: var(--ink2); font: 600 13px var(--f-ui, inherit); padding: 6px 13px; border-radius: 999px; white-space: nowrap; cursor: default; }
+.eb-pasos span.hecho { color: var(--ok, #2E7D32); }
+.eb-pasos span.actual { background: var(--lima, #D8FF6E); color: #12200F; }
+.eb-volver { border: 0; background: none; color: var(--ink2); font: 500 12.5px var(--f-ui, inherit); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 4px 6px; margin-left: 4px; white-space: nowrap; }
+.eb-volver:hover { color: var(--ink); }
+.eb-confirma .eb-aviso { color: #9A5B00; font-weight: 600; }

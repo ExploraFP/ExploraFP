@@ -74,9 +74,12 @@ document.addEventListener('change', e => {
 // editor: barra de pasos en el centro de la barra de arriba (sustituye a la pastilla de etapa: no se repite)
 function htmlPasos(c) {
   const ahora = PASOS.findIndex(p => p[0] === pasoDe(c));
+  // 29/10/2026 (Sandra: «se puede mover de estado en dos partes distintas, no me gusta»): los pasos solo ENSEÑAN dónde está;
+  // se avanza con el botón principal (con ventana de confirmación) y se vuelve atrás con el enlace pequeño «↩ Volver a…».
+  const atras = ahora > 0 ? PASOS[ahora - 1] : null;
   return '<ol class="eb-pasos" aria-label="Etapa del carrusel">' + PASOS.map(([k, t], i) =>
-    '<li><button type="button" data-pr-paso="' + k + '" class="' + (i < ahora ? 'hecho' : i === ahora ? 'actual' : '') + '"' + (i === ahora ? ' aria-current="step"' : '') +
-    ' title="' + (i === ahora ? 'Está aquí' : i < ahora ? 'Volver a ' + t : t) + '">' + (i < ahora ? '✓ ' : '') + t + '</button></li>').join('') + '</ol>';
+    '<li><span class="' + (i < ahora ? 'hecho' : i === ahora ? 'actual' : '') + '"' + (i === ahora ? ' aria-current="step"' : '') + '>' + (i < ahora ? '✓ ' : '') + t + '</span></li>').join('') + '</ol>' +
+    (atras ? '<button type="button" class="eb-volver" data-pr-paso="' + atras[0] + '" title="Vuelve a «' + atras[1] + '»">↩ Volver a ' + atras[1].toLowerCase() + '</button>' : '');
 }
 const _pintarEditorEt = pintarEditor;
 pintarEditor = function (todo) {
@@ -131,3 +134,30 @@ confirmarProducir = function () {
   }, 400);
   return r;
 };
+
+// «Lista para publicar ✓» pide confirmación (29/10/2026, Sandra: «una ventana de confirmación para confirmar que sí se pasa»).
+// En window y en captura: así va ANTES que el clic de produccion.js (que pasaba el carrusel sin preguntar).
+window.addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest && t.closest('#pr-ok')) {
+    e.stopImmediatePropagation();
+    const c = EST.lista[EST.abierto]; if (!c) return;
+    const n = qcMedido(c) ? qcErrores(c) : 0;
+    $('#onb').hidden = false;
+    $('#onb').innerHTML = '<div class="onbcaja ft-aviso-borrar eb-confirma" role="alertdialog" aria-modal="true" aria-labelledby="eb-ok-t"><div class="cuerpo">' +
+      '<h2 id="eb-ok-t">¿Pasar a «Para publicar»?</h2><p><b>' + esc(codigoC(c) + ' · ' + String(c.titulo || 'este carrusel').replace(/\*/g, '')) + '</b> queda aprobado y listo para descargar.</p>' +
+      (n ? '<p class="eb-aviso">⚠ La revisión tiene ' + n + (n === 1 ? ' cosa' : ' cosas') + ' por corregir. Si sigues, pasa igualmente.</p>' : '') +
+      '<p class="est-pista">Si luego cambias algo, la tarjeta lo marcará como <span style="white-space:nowrap">«✏️ Editado después»</span>.</p></div>' +
+      '<footer><span class="puntos"></span><button class="btn" id="onbCerrar">Cancelar</button><button class="btn pri" id="eb-ok-si">Sí, pasar a Para publicar</button></footer></div>';
+    setTimeout(() => { const b = document.getElementById('eb-ok-si'); if (b) b.focus(); }, 30);
+    return;
+  }
+  if (t.closest && t.closest('#eb-ok-si')) {
+    e.stopImmediatePropagation();
+    const c = EST.lista[EST.abierto]; if (!c) return;
+    if (!qcMedido(c)) { cerrarPanel(); toast('Espera un segundo: estoy revisando las slides'); pedirQC(c); return; }
+    const antes = fotoEtapa(c);
+    cerrarPanel();
+    if (darOK(c, true)) { apuntarEtapa(c, antes); pintarEditor(true); toast('✓ Para publicar. Ya puedes descargarlo'); }
+  }
+}, true);

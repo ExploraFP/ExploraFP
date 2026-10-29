@@ -255,10 +255,13 @@ const _pintarEditorReg = pintarEditor;
 pintarEditor = function (todo) {
   _pintarEditorReg(todo);
   const c = EST.lista[EST.abierto]; if (!c) return;
-  const panel = document.querySelector('#est-editor #est-panel'); if (!panel || panel.querySelector('.reg-ficha')) return;
-  const html = regFicha('c', c, etapaDe(c) === 'publicado');
-  const dis = panel.querySelector('.sel-dis-panel');
-  if (dis) dis.insertAdjacentHTML('afterend', html); else panel.insertAdjacentHTML('afterbegin', html);
+  // 29/10/2026 (Sandra): en el editor ya no se cambian formación ni idea («si ya has elegido la rama y la idea, en Diseño solo
+  // retocas diseño o texto»). La formación sale como etiqueta junto al código (C06 · 📚 Globales) y la idea, al pasar el ratón.
+  const meta = document.querySelector('#est-editor .eb-meta'); if (!meta || meta.querySelector('.eb-form')) return;
+  const it = c.idea && IMAP[c.idea];
+  const cod = meta.querySelector('.eb-cod');
+  const tag = '<span class="eb-form"' + (it ? ' title="Idea de la Matriz: ' + esc(tituloIdea(it)) + '"' : '') + '>' + regChips(c) + '</span>';
+  if (cod) cod.insertAdjacentHTML('afterend', tag); else meta.insertAdjacentHTML('afterbegin', tag);
 };
 regConectar();
 

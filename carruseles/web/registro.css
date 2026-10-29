@@ -159,3 +159,5 @@ body.cnt.cnt-en-mz #vistas [data-dis-es], body.cnt.cnt-en-img #vistas [data-dis-
 .mz-faltan .mz-etapa { margin: 0 2px; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mz-faltan { background: #2E2812; border-color: #5A4A1A; } :root:not([data-theme="light"]) .mz-faltan h3 { color: #F0D58A; } }
 :root[data-theme="dark"] .mz-faltan { background: #2E2812; border-color: #5A4A1A; } :root[data-theme="dark"] .mz-faltan h3 { color: #F0D58A; }
+/* formación del carrusel junto a su código en el editor (29/10/2026) */
+.eb-meta .eb-form .chip { font-size: 12px; padding: 2px 8px; }
