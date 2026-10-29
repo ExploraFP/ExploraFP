@@ -50,9 +50,11 @@ await nav.close();
 // Recortes sin fondo de las fotos del banco (29/10/2026, portada «Collage»: la persona va por delante del titular).
 // contenido/img/recorte-<foto>.webp, hechos con rembg (isnet-general-use) desde la foto original.
 const RECORTES = {};
+const RECORTES_INFO = JSON.parse(readFileSync(join(RAIZ, "contenido/img/recortes.json"), "utf8"));   // dónde empieza la persona (cabeza) y tamaño
 for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^recorte-.*\.webp$/.test(f))) {
   copyFileSync(join(RAIZ, "contenido/img", f), join(DIST, "fotos", f));
-  RECORTES[`fotos/${f.replace(/^recorte-/, "").replace(/\.webp$/, ".jpg")}`] = `fotos/${f}`;
+  const clave = f.replace(/^recorte-/, "").replace(/\.webp$/, "");
+  RECORTES[`fotos/${clave}.jpg`] = Object.assign({ src: `fotos/${f}` }, RECORTES_INFO[clave] || {});
 }
 
 // Logos (nombre en minúsculas y con guiones: "verde-01.webp") y trazos.

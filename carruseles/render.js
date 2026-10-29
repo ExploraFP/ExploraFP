@@ -30,8 +30,11 @@ const { html, validar } = crearMotor({
     return pathToFileURL(f);
   },
   recorte(ruta) {
-    const f = resolve(RAIZ, "contenido", String(ruta || "").replace(/[^/]+$/, (n) => "recorte-" + n.replace(/\.[^.]+$/, ".webp")));
-    return existsSync(f) ? pathToFileURL(f) : "";
+    const n = String(ruta || "").match(/([^/]+)\.[^.]+$/); if (!n) return null;
+    const f = resolve(RAIZ, "contenido/img", "recorte-" + n[1] + ".webp");
+    if (!existsSync(f)) return null;
+    const info = JSON.parse(readFileSync(resolve(RAIZ, "contenido/img/recortes.json"), "utf8"))[n[1]] || {};
+    return Object.assign({ src: pathToFileURL(f) }, info);
   },
   postit: () => archivo("assets/trazos/postit-100-online.png"),
   cabeza: (plantilla) => `<link rel="stylesheet" href="${archivo("plantillas/base.css")}">

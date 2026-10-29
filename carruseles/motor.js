@@ -333,7 +333,16 @@ export function crearMotor(R) {
   const portadaCollage = (s) =>
     `<img class="cl-arriba" src="${R.imagen(libreta(s))}" alt=""><i class="cl-velo"></i><img class="cl-abajo" src="${rutaImagen(s)}" alt="">` +
     `<img class="cl-logo" src="${logo("Blanco")}" alt="Explora × Ucademy"><div class="cl-titulo">${titulo(s.titulo, "h1")}</div>` +
-    ((rec) => si(rec, `<img class="cl-recorte" src="${rec}" alt="">`))(s.recorte ? R.imagen(s.recorte) : R.recorte ? R.recorte(s.imagen) : "");
+    ((rec) => si(rec && rec.src, `<img class="cl-recorte" src="${rec && rec.src}" data-cabeza="${rec && rec.cabeza != null ? rec.cabeza : ""}" data-w="${rec && rec.w || ""}" data-h="${rec && rec.h || ""}" alt="">`))(s.recorte ? { src: R.imagen(s.recorte) } : R.recorte ? R.recorte(s.imagen) : null) +
+    // La cabeza puede tapar solo un poco la parte de abajo de la última línea (Sandra: «no puede hacer ilegible el texto»):
+    // se mide dónde acaba el titular y se sube o baja la foto para que la persona empiece ahí (si se sabe dónde está su cabeza).
+    `<script>(function(){function f(){var t=document.querySelector('.cl-titulo .titulo'),a=document.querySelector('.cl-abajo'),r=document.querySelector('.cl-recorte'),sl=document.querySelector('.slide');if(!t||!a||!sl)return;` +
+    `var fs=parseFloat(getComputedStyle(t).fontSize),arriba=sl.getBoundingClientRect().top;` +
+    // titular largo: se encoge hasta caber en el ancho y encima de la libreta (no baja de 120 px)
+    `while(fs>120&&(t.scrollWidth>t.parentNode.clientWidth+2||t.getBoundingClientRect().bottom-arriba>650)){fs-=6;t.style.fontSize=fs+'px';}` +
+    `var fin=t.getBoundingClientRect().bottom-arriba,c=r?parseFloat(r.dataset.cabeza):NaN,w=r?+r.dataset.w:0,h=r?+r.dataset.h:0,T=690;` +
+    `if(r&&!isNaN(c)&&w&&h){var obj=fin-0.16*fs;for(var i=0;i<5;i++){var H=1350-T,k=Math.max(1080/w,H/h);T=obj-c*h*k;}T=Math.max(150,Math.min(690,T));}` +
+    `[a,r].forEach(function(x){if(x){x.style.top=T+'px';x.style.height=(1350-T)+'px';}});}f();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);})();<\/script>`;   // <\/ : este motor va dentro de un <script> de la web
   const logo = (color) => R.logo(color);
 
   // Retoques de diseño de UNA slide (campo `estilo`, CSS que escribe Claude desde el chat de la web; pedido de Sandra, oct-2026).
