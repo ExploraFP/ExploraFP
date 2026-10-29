@@ -236,3 +236,14 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .slide.notas-fondo .titulo { font-size: 118px; }   /* 29/10: más pequeño, ya no pisa la etiqueta (Sandra) */
 .slide.notas-fondo .contenido { justify-content: flex-start; padding-top: 250px; }
 .slide.notas-fondo .bloque-notas { padding-bottom: 0 !important; }
+
+/* PORTADA COLLAGE (`marco: collage`, 29/10/2026): libreta arriba, foto abajo, titular gigante lima, logo blanco centrado */
+.collage .contenido > * { position: absolute; }
+.cl-arriba { left: 0; top: 0; width: 100%; height: 690px; object-fit: cover; }
+.cl-velo { left: 0; top: 0; width: 100%; height: 690px; background: rgba(10, 25, 14, .28); }
+.cl-abajo { left: 0; top: 690px; width: 100%; height: 660px; object-fit: cover; object-position: 50% 30%; }
+.cl-logo { top: 64px; left: 50%; transform: translateX(-50%); height: 54px; width: auto; }
+.cl-titulo { left: 60px; right: 60px; top: 170px; text-align: center; }
+.slide.collage .cl-titulo .titulo { font-size: 206px; line-height: .86; letter-spacing: -.02em; color: var(--verde03); text-wrap: balance; }
+.slide.collage .cl-titulo .titulo em { --hl: transparent; background: none; color: var(--verde03); }
+.cl-recorte { left: 0; top: 690px; width: 100%; height: 660px; object-fit: cover; object-position: 50% 30%; }

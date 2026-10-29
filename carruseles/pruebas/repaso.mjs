@@ -23,7 +23,8 @@ const REPASOS = {
     ['Foto inclinada', 'poster', Object.assign({imagen: FOTO}, P)],
     ['Foto entera', 'feed', Object.assign({imagen: FOTO, marco: 'fondo'}, P)],
     ['Notas a mano de fondo', 'feed', Object.assign({marco: 'notas'}, P)],
-    ['Papel claro', 'ruta', P]],
+    ['Papel claro', 'ruta', P],
+    ['Collage (nueva)', 'feed', Object.assign({imagen: 'fotos/foto-chico-saluda-portatil.jpg', marco: 'collage'}, P, {titulo: 'La FP no es el *plan B*'})]],
   cierres: [
     ['Botón con flecha', 'feed', CI],
     ['Banda abajo', 'ruta', CI]]};

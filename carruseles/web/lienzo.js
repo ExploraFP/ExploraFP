@@ -21,6 +21,7 @@ function lzOpciones(s) {
   const rol = lzRol(s), sin = o => { const n = JSON.parse(JSON.stringify(s)); if (o) n.marco = o; else delete n.marco; return n; };
   if (rol === 'portada') return [['', 'La de la plantilla', 'El diseño de portada de la plantilla']].concat(s.imagen ? [['fondo', 'Foto entera', 'La foto a pantalla completa']] : [])
     .concat([['notas', 'Escrito a mano', 'Textura manuscrita de fondo y el titular en una esquina']])
+    .concat(s.imagen ? [['collage', 'Collage', 'Libreta arriba, tu foto abajo y el titular gigante en lima']] : [])
     .map(([m, nombre, pista]) => ({k: 'marco:' + m, nombre: nombre, pista: pista, on: (s.marco || '') === m, slide: sin(m)}));
   if (rol === 'cierre') return [{k: 'cierre', nombre: 'Cierre', pista: LZ_TIPOS.cierre, on: true, slide: s}];
   return LZ_CUERPO.map(k => ({k: k, nombre: LZ_NOMBRE[k], pista: LZ_TIPOS[k], on: (s.tipo || 'contenido') === k, slide: lzComo(s, k)}));
