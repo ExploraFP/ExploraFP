@@ -251,3 +251,4 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .slide.collage .cl-titulo .titulo em { --hl: transparent; background: none; color: var(--verde03); }
 .cl-recorte { z-index: 4 !important; }
 .slide.notas-fondo .contenido > .textura-notas { left: 110px; top: 360px; }   /* 29/10: más hacia la izquierda, ocupa más fondo (Sandra) */
+.slide.notas-fondo .contenido > .textura-notas { top: 470px; }   /* 29/10: el manuscrito llega hasta el borde de abajo, sin hueco (Sandra) */
