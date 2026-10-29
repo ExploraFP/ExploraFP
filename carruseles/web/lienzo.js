@@ -71,13 +71,13 @@ function lzCajon(c) {
     PREVIAS['lz-formas'] = Object.assign({}, c, {id: 'lz-formas', slides: ops.map(o => o.slide)});
     const titulo = rol === 'portada' ? 'Portada' : rol === 'cierre' ? 'Cierre (CTA)' : 'Cuerpo';
     const colorAhora = s.color || c.color;
-    return '<h3>Plantilla</h3><h4>Slide ' + (EST.sel + 1) + ' · ' + titulo + '</h4><div class="lz-formas">' +
+    return '<h3>Plantilla</h3><h4>Diseño de esta slide · ' + titulo + '</h4><div class="lz-formas">' +
       ops.map((o, i) => '<button type="button" data-lz-forma="' + o.k + '" aria-pressed="' + o.on + '" title="' + esc(o.pista || '') + '">' +
         mini(PREVIAS['lz-formas'], i) + '<span>' + esc(o.nombre) + '</span></button>').join('') + '</div>' +
-      (ops.length < 2 ? '<p class="lz-pista">Esta plantilla tiene un solo diseño de ' + (rol === 'cierre' ? 'cierre' : 'portada') + '.</p>' : '') +
+      (ops.length < 2 ? '<p class="lz-pista">Este estilo tiene un solo diseño de ' + (rol === 'cierre' ? 'cierre' : 'portada') + '.</p>' : '') +
       '<h4>Color de esta slide</h4><div class="sel-cos">' +
       EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-lz-co="' + x.id + '" aria-pressed="' + (colorAhora === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>' +
-      '<h4>Plantilla de todo el carrusel</h4><div class="sel-pls">' +
+      '<h4>Estilo de todo el carrusel</h4><div class="sel-pls">' +
       EST_PLANTILLAS.map(p => '<button type="button" data-sel-pl="' + p.id + '" aria-pressed="' + (c.plantilla === p.id) + '"><b>' + esc(p.nombre) + '</b><span>' + esc(p.pista) + '</span></button>').join('') + '</div>';
   }
   if (LZ.tab === 'revision') return '';   // la caja de la revisión ya lleva su título
