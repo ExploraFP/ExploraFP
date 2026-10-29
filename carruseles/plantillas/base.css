@@ -233,3 +233,6 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .foto-sangre .subtitulo { font-family: var(--editorial); font-size: 44px; line-height: 1.25; }
 /* 5 · las notas salen de la esquina de abajo a la derecha, al mismo tamaño que tenían (Sandra, 29/10/2026) */
 .slide.notas-fondo .contenido > .textura-notas { inset: auto; width: 1300px; height: 970px; left: 330px; top: 470px; }
+.slide.notas-fondo .titulo { font-size: 118px; }   /* 29/10: más pequeño, ya no pisa la etiqueta (Sandra) */
+.slide.notas-fondo .contenido { justify-content: flex-start; padding-top: 250px; }
+.slide.notas-fondo .bloque-notas { padding-bottom: 0 !important; }
