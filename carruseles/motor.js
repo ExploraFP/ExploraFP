@@ -333,7 +333,7 @@ export function crearMotor(R) {
   const portadaCollage = (s) =>
     `<img class="cl-arriba" src="${R.imagen(libreta(s))}" alt=""><i class="cl-velo"></i><img class="cl-abajo" src="${rutaImagen(s)}" alt="">` +
     `<img class="cl-logo" src="${logo("Blanco")}" alt="Explora × Ucademy"><div class="cl-titulo">${titulo(s.titulo, "h1")}</div>` +
-    si(s.recorte, `<img class="cl-recorte" src="${R.imagen(s.recorte)}" alt="">`);
+    ((rec) => si(rec, `<img class="cl-recorte" src="${rec}" alt="">`))(s.recorte ? R.imagen(s.recorte) : R.recorte ? R.recorte(s.imagen) : "");
   const logo = (color) => R.logo(color);
 
   // Retoques de diseño de UNA slide (campo `estilo`, CSS que escribe Claude desde el chat de la web; pedido de Sandra, oct-2026).

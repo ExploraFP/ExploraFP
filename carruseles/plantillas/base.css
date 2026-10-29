@@ -237,13 +237,17 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .slide.notas-fondo .contenido { justify-content: flex-start; padding-top: 250px; }
 .slide.notas-fondo .bloque-notas { padding-bottom: 0 !important; }
 
-/* PORTADA COLLAGE (`marco: collage`, 29/10/2026): libreta arriba, foto abajo, titular gigante lima, logo blanco centrado */
+/* PORTADA COLLAGE (`marco: collage`, 29/10/2026): libreta arriba, foto abajo, titular gigante lima, logo blanco centrado.
+   La foto de abajo ocupa desde y=380 (su parte de arriba la tapa la libreta) y el RECORTE sin fondo, con la misma caja, va
+   por encima de todo: la cabeza de la persona asoma sobre la libreta y por delante del titular, como la referencia. */
 .collage .contenido > * { position: absolute; }
-.cl-arriba { left: 0; top: 0; width: 100%; height: 690px; object-fit: cover; }
-.cl-velo { left: 0; top: 0; width: 100%; height: 690px; background: rgba(10, 25, 14, .28); }
-.cl-abajo { left: 0; top: 690px; width: 100%; height: 660px; object-fit: cover; object-position: 50% 30%; }
-.cl-logo { top: 64px; left: 50%; transform: translateX(-50%); height: 54px; width: auto; }
-.cl-titulo { left: 60px; right: 60px; top: 170px; text-align: center; }
+.cl-abajo, .cl-recorte { left: 0; top: 380px; width: 100%; height: 970px; object-fit: cover; object-position: 50% 0%; }
+.cl-abajo { z-index: 1 !important; }
+.cl-arriba { left: 0; top: 0; width: 100%; height: 690px; object-fit: cover; z-index: 2 !important; }
+.cl-velo { left: 0; top: 0; width: 100%; height: 690px; background: rgba(10, 25, 14, .28); z-index: 2 !important; }
+.cl-logo { top: 64px; left: 50%; transform: translateX(-50%); height: 54px; width: auto; z-index: 3 !important; }
+.cl-titulo { left: 60px; right: 60px; top: 160px; text-align: center; z-index: 3 !important; }
 .slide.collage .cl-titulo .titulo { font-size: 206px; line-height: .86; letter-spacing: -.02em; color: var(--verde03); text-wrap: balance; }
 .slide.collage .cl-titulo .titulo em { --hl: transparent; background: none; color: var(--verde03); }
-.cl-recorte { left: 0; top: 690px; width: 100%; height: 660px; object-fit: cover; object-position: 50% 30%; }
+.cl-recorte { z-index: 4 !important; }
+.slide.notas-fondo .contenido > .textura-notas { left: 110px; top: 360px; }   /* 29/10: más hacia la izquierda, ocupa más fondo (Sandra) */

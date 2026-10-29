@@ -47,6 +47,13 @@ for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^(foto|p
   FOTOS.push({ ruta: `fotos/${clave}.jpg`, desc: DESC[clave] || clave.replace(/^(foto|plataforma)-/, "").replace(/-/g, " "), w: datos.w, h: datos.h, tipo: /^plataforma-/.test(clave) ? "Plataforma" : "Stock" });
 }
 await nav.close();
+// Recortes sin fondo de las fotos del banco (29/10/2026, portada «Collage»: la persona va por delante del titular).
+// contenido/img/recorte-<foto>.webp, hechos con rembg (isnet-general-use) desde la foto original.
+const RECORTES = {};
+for (const f of readdirSync(join(RAIZ, "contenido/img")).filter((f) => /^recorte-.*\.webp$/.test(f))) {
+  copyFileSync(join(RAIZ, "contenido/img", f), join(DIST, "fotos", f));
+  RECORTES[`fotos/${f.replace(/^recorte-/, "").replace(/\.webp$/, ".jpg")}`] = `fotos/${f}`;
+}
 
 // Logos (nombre en minúsculas y con guiones: "verde-01.webp") y trazos.
 for (const f of readdirSync(join(RAIZ, "assets/logos"))) {
@@ -122,7 +129,7 @@ ${readFileSync(join(WEB, "estaticos.css"), "utf8")}
 ${readFileSync(join(WEB, "registro.css"), "utf8")}
 ${readFileSync(join(WEB, "lienzo.css"), "utf8")}</style>\n<script>\nconst CATALOGO`);
 const script = `<script>\n/* ===== motor de diseño compartido (motor.js) ===== */\n${motor}\n` +
-  `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\n` +
+  `const MOTOR_CSS = ${JSON.stringify(MOTOR_CSS)};\nconst FOTOS = ${JSON.stringify(FOTOS)};\nconst RECORTES = ${JSON.stringify(RECORTES)};\n` +
   `const HOOKS = ${existsSync(join(WEB, 'hooks.json')) ? readFileSync(join(WEB, 'hooks.json'), 'utf8').trim() : '{}'};\n` +
   `const OBJ_REV = ${existsSync(join(WEB, 'objetivos-revisados.json')) ? readFileSync(join(WEB, 'objetivos-revisados.json'), 'utf8').trim() : '{}'};\n` +
   `const VOZ = ${JSON.stringify(readFileSync(join(WEB, 'identidad-verbal.md'), 'utf8'))};\n` +

@@ -29,6 +29,10 @@ const { html, validar } = crearMotor({
     if (!existsSync(f)) throw new Error(`no encuentro la imagen ${ruta} (ruta relativa a contenido/)`);
     return pathToFileURL(f);
   },
+  recorte(ruta) {
+    const f = resolve(RAIZ, "contenido", String(ruta || "").replace(/[^/]+$/, (n) => "recorte-" + n.replace(/\.[^.]+$/, ".webp")));
+    return existsSync(f) ? pathToFileURL(f) : "";
+  },
   postit: () => archivo("assets/trazos/postit-100-online.png"),
   cabeza: (plantilla) => `<link rel="stylesheet" href="${archivo("plantillas/base.css")}">
 <link rel="stylesheet" href="${archivo(`plantillas/${plantilla}.css`)}">

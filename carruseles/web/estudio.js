@@ -53,6 +53,7 @@ const nombreCo = id => (EST_COLORES.find(c => c.id === id) || {}).nombre || id;
 const recursosMotor = css => ({
   logo: c => 'logos/' + c.toLowerCase().replace(/\s+/g, '-') + '.webp',
   imagen: r => r,
+  recorte: r => (typeof RECORTES !== 'undefined' && RECORTES[r]) || '',
   postit: () => 'trazos/postit.png',
   cabeza: pl => { const k = css(); return '<style>' + k.base + k[pl] + k.colores + k.mascaras + '</style>'; }
 });
