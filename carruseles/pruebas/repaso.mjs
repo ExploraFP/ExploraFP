@@ -20,12 +20,10 @@ const REPASOS = {
   portadas: [
     ['Titular sobre verde', 'feed', P],
     ['Caja oscura sobre foto', 'capas', Object.assign({imagen: FOTO}, P)],
-    ['Foto con corte en diagonal', 'poster', Object.assign({imagen: FOTO}, P)],
+    ['Foto inclinada', 'poster', Object.assign({imagen: FOTO}, P)],
     ['Foto entera', 'feed', Object.assign({imagen: FOTO, marco: 'fondo'}, P)],
     ['Notas a mano de fondo', 'feed', Object.assign({marco: 'notas'}, P)],
-    ['Papel claro', 'ruta', P],
-    ['(1 con flecha puesta a mano)', 'feed', Object.assign({trazo: 'flecha'}, P)],
-    ['(2 con flecha puesta a mano)', 'capas', Object.assign({imagen: FOTO, trazo: 'flecha'}, P)]],
+    ['Papel claro', 'ruta', P]],
   cierres: [
     ['Botón con flecha', 'feed', CI],
     ['Banda abajo', 'ruta', CI]]};

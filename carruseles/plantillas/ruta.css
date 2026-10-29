@@ -131,3 +131,4 @@
 .l-ruta .subtitulo em.rodeado .ovalo { inset: -10px -18px -16px -16px; }
 /* 29/10/2026 (Sandra, con su referencia «La parte mala de estudiar online»): la cuadrícula de cuaderno se tiene que VER */
 .l-ruta { --rejilla-claro: rgba(27, 54, 32, .17); --papel-r: #FBFDF9; }
+.l-ruta { --rejilla-claro: rgba(27, 54, 32, .11); }   /* 29/10: la rejilla, un poco más suave (Sandra) */

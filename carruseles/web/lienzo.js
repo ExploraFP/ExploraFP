@@ -59,7 +59,7 @@ function lzCajon(c) {
     const deco = [].concat(s.decoracion || []), flecha = s.trazo === 'flecha' || (!s.trazo && (s.tipo === 'cierre' || (c.plantilla !== 'feed' && s.tipo !== 'portada')));
     const it = (k, ico, t, on, pista) => '<button type="button" data-lz-el="' + k + '" aria-pressed="' + !!on + '"><span class="lz-ico">' + ico + '</span><b>' + t + '</b><small>' + pista + '</small></button>';
     return '<h3>Elementos</h3><p class="lz-pista">En la slide ' + (EST.sel + 1) + '. Pulsa otra vez para quitarlo.</p><div class="lz-els">' +
-      it('flecha', '↗', 'Flecha a mano', flecha, 'Luego la mueves y la estiras') +
+      (s.tipo === 'portada' ? '' : it('flecha', '↗', 'Flecha a mano', flecha, 'Luego la mueves y la estiras')) +   // en portada no hay a qué apuntar (Sandra, 29/10)
       it('ovalo', '◯', 'Óvalo a mano', s.trazo === 'ovalo', 'Rodea la *palabra* resaltada') +
       it('postit', '🟨', 'Post-it «100% online»', deco.indexOf('postit') >= 0, 'Arriba a la derecha') +
       it('notas', '✍️', 'Escrito a mano de fondo', deco.indexOf('notas') >= 0, 'La textura de la marca') + '</div><div class="lz-anadir"></div>';

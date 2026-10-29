@@ -231,3 +231,5 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .slide.foto-sangre .contenido .pastilla { top: 92px; background: var(--verde03); color: var(--noche); border-radius: 999px; padding: 16px 34px; font-size: 26px; }
 .slide.foto-sangre .logo-foto { top: 104px; left: auto; right: 80px; transform: none; height: 44px; }
 .foto-sangre .subtitulo { font-family: var(--editorial); font-size: 44px; line-height: 1.25; }
+/* 5 · las notas salen de la esquina de abajo a la derecha, al mismo tamaño que tenían (Sandra, 29/10/2026) */
+.slide.notas-fondo .contenido > .textura-notas { inset: auto; width: 1300px; height: 970px; left: 330px; top: 470px; }

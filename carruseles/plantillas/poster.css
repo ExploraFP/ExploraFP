@@ -51,8 +51,7 @@
 .slide:not(.tipo-portada) .titulo { margin-top: 0; }
 .slide:not(.tipo-portada) .num { margin-bottom: 30px; }
 .tipo-lista .pildora { font-size: 44px; padding: 22px 40px 22px 30px; }
-/* 29/10/2026 (Sandra): la foto como antes (abajo, corte en diagonal arriba, sin marco) pero de lado a lado: ya no se corta
-   por la izquierda con un filo vertical. */
-.foto-diagonal { left: 0; right: 0; bottom: 0; width: 100%; height: 470px; clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 100%); }
-.con-foto .foto-diagonal { height: 440px; width: 100%; }
+/* 29/10/2026 (Sandra): la foto abajo a la derecha, INCLINADA entera (girada, sin recorte en diagonal ni marco blanco),
+   saliendo por el borde derecho y por abajo; el lado izquierdo de la foto se ve entero. */
+.foto-diagonal, .con-foto .foto-diagonal { clip-path: none; left: auto; right: -70px; bottom: -60px; width: 660px; height: 470px; transform: rotate(-8deg); transform-origin: 100% 100%; }
 .tipo-portada.con-foto .titulo { font-size: 122px; margin-top: 30px; }
