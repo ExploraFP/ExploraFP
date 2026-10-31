@@ -344,6 +344,26 @@ export function crearMotor(R) {
     `var fin=t.getBoundingClientRect().bottom-arriba,c=r?parseFloat(r.dataset.cabeza):NaN,w=r?+r.dataset.w:0,h=r?+r.dataset.h:0,T=690;` +
     `if(r&&!isNaN(c)&&w&&h){var obj=fin-0.16*fs;for(var i=0;i<5;i++){var H=1350-T,k=Math.max(1080/w,H/h);T=obj-c*h*k;}T=Math.max(150,Math.min(690,T));}` +
     `[a,r].forEach(function(x){if(x){x.style.top=T+'px';x.style.height=(1350-T)+'px';}});}f();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);})();<\/script>`;   // <\/ : este motor va dentro de un <script> de la web
+  // CIERRES NUEVOS (31/10/2026, repaso con Sandra: solo había 2 cierres distintos). `marco` en la slide de cierre; valen en
+  // cualquier estilo y llevan su propio fondo (como las portadas Foto entera / Notas a mano / Collage).
+  //   foto (con imagen) · notas · papel · postit · collage (con imagen)
+  const ctaPill = (s) => si(s.cta, `<div class="ci-cta"><span>${fmt(s.cta)}</span><b>→</b></div>`) + si(s.cinta, `<div class="ci-cinta">${fmt(s.cinta)}</div>`);
+  const CIERRES = ["foto", "notas", "papel", "postit", "collage"];
+  function cierreDiseno(s) {
+    const m = s.marco;
+    if (m === "foto") return `<img class="foto-fondo" src="${rutaImagen(s)}" alt=""><i class="ci-velo"></i><img class="ci-logo" src="${logo("Blanco")}" alt="Explora × Ucademy">` +
+      `<div class="ci-bloque">${si(s.etiqueta, `<div class="ci-pill">${fmt(s.etiqueta)}</div>`)}${titulo(s.titulo)}${texto(s.texto)}${ctaPill(s)}</div>`;
+    if (m === "notas") return `<i class="ci-notas"></i><img class="ci-logo" src="${logo("Verde 03")}" alt="Explora × Ucademy">` +
+      `<div class="ci-bloque">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${texto(s.texto)}${ctaPill(s)}</div>`;
+    if (m === "papel") return `<img class="ci-logo" src="${logo("Verde 01")}" alt="Explora × Ucademy">` +
+      `<div class="ci-bloque">${si(s.etiqueta, `<div class="ci-pill">${fmt(s.etiqueta)}</div>`)}${titulo(s.titulo)}${texto(s.texto)}${ctaPill(s)}${flecha("ci-flecha")}</div>`;
+    if (m === "postit") return `<img class="ci-logo" src="${logo(LOGO_FONDO[s._color])}" alt="Explora × Ucademy">` +
+      `<div class="ci-bloque">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${texto(s.texto)}</div>` +
+      si(s.cta, `<div class="ci-nota"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}</div>`) + flecha("ci-flecha-postit");
+    if (m === "collage") return `<img class="cl-arriba" src="${R.imagen(libreta(s))}" alt=""><i class="cl-velo"></i><img class="cl-abajo ci-abajo" src="${rutaImagen(s)}" alt="">` +
+      `<img class="cl-logo" src="${logo("Blanco")}" alt="Explora × Ucademy"><div class="cl-titulo">${titulo(s.titulo, "h2")}</div>${si(s.cta, `<div class="ci-cta ci-cta-collage"><span>${fmt(s.cta)}</span><b>→</b></div>`)}`;
+    return "";
+  }
   const logo = (color) => R.logo(color);
 
   // Retoques de diseño de UNA slide (campo `estilo`, CSS que escribe Claude desde el chat de la web; pedido de Sandra, oct-2026).
@@ -373,6 +393,7 @@ export function crearMotor(R) {
     s._color = color; s._i = i;
     const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
     const collage = s.tipo === "portada" && s.imagen && s.marco === "collage";
+    const cierreEsp = s.tipo === "cierre" && CIERRES.includes(s.marco) && (s.imagen || (s.marco !== "foto" && s.marco !== "collage")) ? s.marco : "";
     // SOBREPOSICIÓN (29/10/2026, identidad visual): `persona: true` + foto con recorte → la persona recortada sale por abajo
     // a la derecha, por encima del fondo y por debajo del texto
     const persona = s.persona && s.imagen && !collage && !(s.marco === "fondo") && R.recorte ? R.recorte(s.imagen) : null;
@@ -384,13 +405,13 @@ export function crearMotor(R) {
     const derecha = s.tipo === "cierre" && s.cinta ? `<span class="cinta-cta">${fmt(s.cinta)}</span>` : `<span class="pag">${pag}</span>`;
     return `<!doctype html><html lang="es"><head><meta charset="utf-8">
   ${R.cabeza(plantilla)}${s.estilo ? `<style>${estiloSlide(s.estilo)}</style>` : ""}
-  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${s.trazo === "subrayado" ? " tr-subrayado" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${persona && persona.soloSrc ? " con-persona" : ""}${collage ? " foto-sangre collage" : fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
+  </head><body><section${s.estilo ? ' id="estilo"' : ""} class="slide l-${plantilla} c-${color} tipo-${s.tipo}${s.trazo === "ninguno" ? " sin-trazo" : ""}${s.trazo === "subrayado" ? " tr-subrayado" : ""}${i % 2 === 1 && s.tipo !== "portada" ? " alterna" : ""}${plantilla === "feed" && s.tipo === "contenido" && s.imagen && s.marco !== "portatil" ? " con-foto-feed" : ""}${fondoNotas ? " notas-fondo" : ""}${persona && persona.soloSrc ? " con-persona" : ""}${cierreEsp ? " ci ci-" + cierreEsp + (cierreEsp === "collage" ? " collage" : "") : ""}${collage ? " foto-sangre collage" : fondoFoto ? " foto-sangre" : s.tipo === "portada" && s.imagen && s.marco !== "portatil" ? " con-foto" : ""}${plantilla === "ruta" && s.tipo === "contenido" && s.numero ? " r-numerada" : ""}">
   <div class="cabecera"><span>${pag}</span>${marca(fotoArriba ? "Blanco" : fondoNotas ? "Verde 03" : LOGO_FONDO[color])}</div>
   ${persona ? `<img class="persona-recorte" src="${persona.soloSrc}" alt="">` +
     // la persona ocupa SOLO el hueco que deja el texto (como mucho lo roza 50 px): el texto siempre se lee
     `<script>(function(){function f(){var p=document.querySelector('.persona-recorte'),sl=document.querySelector('.slide');if(!p||!sl)return;var y=0,top=sl.getBoundingClientRect().top;` +
     `document.querySelectorAll('.contenido .titulo,.contenido .subtitulo,.contenido .texto,.contenido .nota,.contenido .r-mano').forEach(function(e){y=Math.max(y,e.getBoundingClientRect().bottom-top);});` +
-    `p.style.height=Math.max(380,Math.min(820,1350-y+50))+'px';}f();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);})();<\/script>` : ""}<div class="contenido">${collage ? portadaCollage(s) : fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
+    `p.style.height=Math.max(380,Math.min(820,1350-y+50))+'px';}f();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);})();<\/script>` : ""}<div class="contenido">${cierreEsp ? cierreDiseno(s) : collage ? portadaCollage(s) : fondoFoto ? portadaFoto(s, color) : fondoNotas ? portadaNotas(s) : (TIPOS_NUEVOS.includes(s.tipo) ? tipoNuevo(s, plantilla) : COMPOSICION[plantilla](s))}</div>${decoracion(s)}
   <div class="cinta">${plantilla === "cuaderno" && s.cta ? `<span class="cinta-cta">${fmt(s.cta)}</span>` : marca(LOGO_CINTA[color])}${plantilla === "cuaderno" && s.cta ? `<span class="pag">${fmt(s.cinta ?? "")}</span>` : derecha}</div>
   <div class="pie">${marca(LOGO_FONDO[color])}<span class="pag">${dos(i + 1)} / ${dos(total)}</span></div>
   </section></body></html>`;

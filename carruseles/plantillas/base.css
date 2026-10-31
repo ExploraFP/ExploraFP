@@ -279,3 +279,58 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .c-verde02 { --linea: var(--noche); }
 .c-verde01, .c-noche, .notas-fondo { --linea: var(--verde03); }
 .slide.notas-fondo { --linea: var(--verde03); }
+
+/* ===== CIERRES NUEVOS (`marco` en el cierre, 31/10/2026): foto · notas · papel · postit · collage. Cada uno con su fondo. ===== */
+.slide.ci .cabecera { display: none !important; }
+.slide.ci .contenido { inset: 0; padding: 0; }
+.slide.ci .contenido > * { position: absolute; }
+.ci-logo { top: 70px; right: 80px; height: 46px; width: auto; z-index: 3; }
+.ci-bloque { left: var(--m); right: 90px; bottom: 150px; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; }
+.ci-bloque > * { position: relative; }
+.slide.ci .titulo { font-size: 128px; line-height: 1.02; text-wrap: balance; }
+.slide.ci .texto { font-size: 42px; margin-top: 26px; max-width: 820px; }
+.ci-pill { font-family: var(--cuerpo); font-weight: 700; font-size: 26px; letter-spacing: .14em; text-transform: uppercase; padding: 16px 32px; border-radius: 999px; margin-bottom: 34px; }
+.ci-cta { display: inline-flex; align-items: center; gap: 26px; margin-top: 56px; padding: 26px 46px; border-radius: 999px; font-family: var(--titular); font-weight: 900; font-size: 54px; line-height: 1; }
+.ci-cta b { font-size: 50px; }
+.ci-cinta { font-family: var(--cuerpo); font-weight: 700; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; margin-top: 18px; opacity: .8; }
+
+/* foto: foto a sangre, velo, titular blanco con palabra en lima y botón lima (como la portada Foto entera) */
+.ci-foto .foto-fondo { inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.ci-velo { inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(10,25,14,.5) 0%, rgba(10,25,14,0) 22%, rgba(10,25,14,.15) 38%, rgba(10,25,14,.9) 68%, rgba(10,25,14,.96) 100%); }
+.ci-foto .titulo { color: #fff; } .ci-foto .titulo em { --hl: var(--verde03); color: var(--noche); }
+.ci-foto .texto { color: #fff; font-family: var(--editorial); }
+.ci-foto .ci-pill, .ci-foto .ci-cta { background: var(--verde03); color: var(--noche); }
+.ci-foto .ci-cinta { color: #fff; }
+
+/* notas: verde noche, manuscrito lima desde la esquina de abajo, botón lima (como la portada Notas a mano) */
+.slide.ci-notas { background: var(--noche) !important; background-image: none !important; --tinta: #fff; --titulo: #fff; --acento: var(--verde03); --resalte: var(--verde03); --tinta-resalte: var(--noche); }
+.ci-notas .ci-bloque { top: 260px; bottom: auto; }
+.ci-notas .titulo { color: #fff; } .ci-notas .texto { color: #fff; }
+.ci-notas i.ci-notas { left: 300px; top: 560px; width: 1300px; height: 970px; transform: rotate(-4deg); background: var(--verde03); opacity: .24; z-index: 0;
+  -webkit-mask: var(--img-notas) center / cover no-repeat; mask: var(--img-notas) center / cover no-repeat; }
+.ci-notas .ci-cta { background: var(--verde03); color: var(--noche); }
+.ci-notas .ci-cinta { color: var(--verde03); }
+
+/* papel: papel de cuaderno con lomo, botón verde oscuro y flecha a mano que lo señala */
+.slide.ci-papel { --tinta: #111; --titulo: #000; --resalte: #DCFB7F; --tinta-resalte: #000; --flecha: var(--noche); background-color: #FBFDF9 !important;
+  background-image: linear-gradient(rgba(27,54,32,.11) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(27,54,32,.11) 1.5px, transparent 1.5px) !important; background-size: 54px 54px !important; }
+.slide.ci-papel::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 16px; background: var(--verde01); z-index: 1; }
+.ci-papel .titulo { color: #000; } .ci-papel .texto { color: #222; font-family: var(--editorial); }
+.ci-papel .ci-pill { background: #10230F; color: #DCFB7F; }
+.ci-papel .ci-cta { background: var(--noche); color: var(--verde03); }
+.ci-papel .ci-flecha { position: absolute; left: 600px; bottom: 20px; width: 200px; height: 168px; transform: rotate(-60deg) scale(.8); color: var(--noche); }
+
+/* postit: el color del carrusel, titular arriba y la llamada a la acción escrita en un post-it amarillo pegado abajo */
+.slide.ci-postit .ci-bloque { top: 230px; bottom: auto; }
+.ci-nota { right: 110px; bottom: 120px; width: 470px; min-height: 380px; z-index: 3; background: #FFE45C; color: #1B1B1B; transform: rotate(-5deg);
+  box-shadow: 0 22px 34px rgba(0,0,0,.25); padding: 60px 48px 44px; display: flex; flex-direction: column; justify-content: center; }
+.ci-nota::before { content: ""; position: absolute; top: -26px; left: 50%; width: 170px; height: 52px; margin-left: -85px; background: rgba(245,240,220,.8); transform: rotate(3deg); }
+.ci-nota span { font-family: var(--editorial); font-style: italic; font-size: 58px; line-height: 1.1; }
+.ci-nota small { font-family: var(--cuerpo); font-weight: 700; font-size: 20px; letter-spacing: .14em; text-transform: uppercase; margin-top: 26px; opacity: .7; }
+.ci-nota em { background: none; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 8px; color: inherit; }
+.ci-flecha-postit { left: 300px; bottom: 250px; width: 200px; height: 168px; transform: rotate(120deg) scale(.8); z-index: 3; color: var(--flecha, var(--noche)); }
+
+/* collage: libreta arriba, persona abajo, titular gigante lima y el botón lima montado en la costura */
+.slide.ci-collage .cl-abajo { top: 690px; height: 660px; }
+.ci-cta-collage { left: 50%; top: 650px; transform: translateX(-50%); background: var(--verde03); color: var(--noche); z-index: 5 !important; margin: 0; white-space: nowrap; box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+.slide.ci-collage .cl-titulo .titulo { font-size: 150px; }

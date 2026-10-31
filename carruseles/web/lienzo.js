@@ -35,7 +35,11 @@ function lzOpciones(s) {
     .concat([['notas', 'Escrito a mano', 'Textura manuscrita de fondo y el titular en una esquina']])
     .concat(s.imagen ? [['collage', 'Collage', 'Libreta arriba, tu foto abajo y el titular gigante en lima']] : [])
     .map(([m, nombre, pista]) => ({k: 'marco:' + m, nombre: nombre, pista: pista, on: (s.marco || '') === m, slide: sin(m)}));
-  if (rol === 'cierre') return [{k: 'cierre', nombre: 'Cierre', pista: LZ_TIPOS.cierre, on: true, slide: s}];
+  // cierres (31/10/2026): el del estilo + 5 nuevos que valen en cualquier estilo (foto y collage, si la slide tiene foto)
+  if (rol === 'cierre') return [['', 'El del estilo', 'El cierre de la plantilla del carrusel']].concat(s.imagen ? [['foto', 'Foto entera', 'Tu foto a sangre y el botón lima']] : [])
+    .concat([['notas', 'Notas a mano', 'Verde oscuro con el manuscrito lima'], ['papel', 'Papel claro', 'Cuaderno con flecha al botón'], ['postit', 'Post-it', 'La llamada a la acción en un post-it pegado']])
+    .concat(s.imagen ? [['collage', 'Collage', 'Cuaderno arriba, persona abajo y el botón en medio']] : [])
+    .map(([m, nombre, pista]) => ({k: 'marco:' + m, nombre: nombre, pista: pista, on: (s.marco || '') === m, slide: sin(m)}));
   return LZ_CUERPO.map(k => ({k: k, nombre: LZ_NOMBRE[k], pista: LZ_TIPOS[k], on: (s.tipo || 'contenido') === k, slide: lzComo(s, k)}));
 }
 /* la misma slide con otra forma: conserva lo que tiene y solo rellena lo que a la forma nueva le falta. Lo que no usa se
@@ -92,7 +96,7 @@ function lzCajon(c) {
     return '<h3>Plantilla</h3><h4>Diseño de esta slide · ' + titulo + '</h4><div class="lz-formas">' +
       ops.map((o, i) => '<button type="button" data-lz-forma="' + o.k + '" aria-pressed="' + o.on + '" title="' + esc(o.pista || '') + '">' +
         mini(PREVIAS['lz-formas'], i) + '<span>' + esc(o.nombre) + '</span></button>').join('') + '</div>' +
-      (ops.length < 2 ? '<p class="lz-pista">Este estilo tiene un solo diseño de ' + (rol === 'cierre' ? 'cierre' : 'portada') + '.</p>' : '') +
+      (rol === 'cierre' && !s.imagen ? '<p class="lz-pista">Con una foto en esta slide salen también «Foto entera» y «Collage».</p>' : '') +
       '<h4>Color de esta slide</h4><div class="sel-cos">' +
       EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-lz-co="' + x.id + '" aria-pressed="' + (colorAhora === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>' +
       '<h4>Estilo de todo el carrusel</h4><div class="sel-pls">' +

@@ -132,3 +132,4 @@
 /* 29/10/2026 (Sandra, con su referencia «La parte mala de estudiar online»): la cuadrícula de cuaderno se tiene que VER */
 .l-ruta { --rejilla-claro: rgba(27, 54, 32, .17); --papel-r: #FBFDF9; }
 .l-ruta { --rejilla-claro: rgba(27, 54, 32, .11); }   /* 29/10: la rejilla, un poco más suave (Sandra) */
+.r-banda .r-cta { white-space: nowrap; font-size: 64px; } .r-banda small { white-space: nowrap; font-size: 24px; letter-spacing: .16em; }   /* 31/10: «Pide información» ya no se parte en dos líneas */

@@ -55,7 +55,12 @@ const REPASOS = {
     ['3 + subrayado + post-it en la foto', 'poster', Object.assign({imagen: FOTO, trazo: 'subrayado', decoracion: 'postit'}, P)]],
   cierres: [
     ['Botón con flecha', 'feed', CI],
-    ['Banda abajo', 'ruta', CI]]};
+    ['Banda abajo', 'ruta', CI],
+    ['Foto entera (nuevo)', 'feed', Object.assign({imagen: FOTO, marco: 'foto'}, CI)],
+    ['Notas a mano (nuevo)', 'feed', Object.assign({marco: 'notas'}, CI)],
+    ['Papel claro (nuevo)', 'feed', Object.assign({marco: 'papel'}, CI)],
+    ['Post-it (nuevo)', 'feed', Object.assign({marco: 'postit'}, CI)],
+    ['Collage (nuevo)', 'feed', Object.assign({imagen: 'fotos/foto-chica-riendo-exterior.jpg', marco: 'collage'}, CI)]]};
 const R = process.env.REPASO || 'portadas', L = REPASOS[R];
 await p.evaluate(([L, W]) => {
   const k = W / 1080;
