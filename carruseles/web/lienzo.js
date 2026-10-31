@@ -27,18 +27,20 @@ function lzCuadernos() {
   return todas.filter(f => /libreta|cuaderno|apuntes/i.test(f.desc || '') && (/^(libreta|cuaderno|manos?\b|mano de|persona escribiendo)/i.test(f.desc || '') || f.personas === 'Sin personas'));
 }
 const lzCuadernoAzar = (menos) => { const l = lzCuadernos().filter(f => f.ruta !== menos); return l.length ? l[Math.floor(Math.random() * l.length)].ruta : ''; };
+const LZ_CHECKS = ['Lo primero que te llevas', 'Lo segundo', 'Lo tercero'];
 const lzRol = s => s.tipo === 'portada' ? 'portada' : s.tipo === 'cierre' ? 'cierre' : 'cuerpo';
 // los diseños entre los que puede cambiar ESTA slide: [{k, nombre, pista, on, slide (para la miniatura)}]
 function lzOpciones(s) {
-  const rol = lzRol(s), sin = o => { const n = JSON.parse(JSON.stringify(s)); if (o) n.marco = o; else delete n.marco; return n; };
+  const rol = lzRol(s), sin = o => { const n = JSON.parse(JSON.stringify(s)); if (o) n.marco = o; else delete n.marco; if (o === 'checklist' && !(n.items || []).length) n.items = LZ_CHECKS.slice(); return n; };
   if (rol === 'portada') return [['', 'La de la plantilla', 'El diseño de portada de la plantilla']].concat(s.imagen ? [['fondo', 'Foto entera', 'La foto a pantalla completa']] : [])
     .concat([['notas', 'Escrito a mano', 'Textura manuscrita de fondo y el titular en una esquina']])
     .concat(s.imagen ? [['collage', 'Collage', 'Libreta arriba, tu foto abajo y el titular gigante en lima']] : [])
     .map(([m, nombre, pista]) => ({k: 'marco:' + m, nombre: nombre, pista: pista, on: (s.marco || '') === m, slide: sin(m)}));
   // cierres (31/10/2026): el del estilo + 5 nuevos que valen en cualquier estilo (foto y collage, si la slide tiene foto)
-  if (rol === 'cierre') return [['', 'El del estilo', 'El cierre de la plantilla del carrusel']].concat(s.imagen ? [['foto', 'Foto entera', 'Tu foto a sangre y el botón lima']] : [])
-    .concat([['notas', 'Notas a mano', 'Verde oscuro con el manuscrito lima'], ['papel', 'Papel claro', 'Cuaderno con flecha al botón'], ['postit', 'Post-it', 'La llamada a la acción en un post-it pegado']])
-    .concat(s.imagen ? [['collage', 'Collage', 'Cuaderno arriba, persona abajo y el botón en medio']] : [])
+  // (31/10: «los cierres no tienen que ser copias de las portadas»: foto, notas, papel y collage siguen en el motor pero no se ofrecen)
+  if (rol === 'cierre') return [['', 'El del estilo', 'El cierre de la plantilla del carrusel'], ['dm', 'Mensaje directo', 'Un chat de Instagram: para «escríbenos por DM»'],
+    ['guardar', 'Guárdalo', 'El icono de guardar gigante: para lo útil'], ['etiqueta', 'Etiqueta a alguien', 'Un comentario con @: para los virales'],
+    ['checklist', 'Checklist', 'Lo del carrusel en ticks y la acción debajo'], ['postit', 'Post-it', 'La llamada a la acción en un post-it pegado']]
     .map(([m, nombre, pista]) => ({k: 'marco:' + m, nombre: nombre, pista: pista, on: (s.marco || '') === m, slide: sin(m)}));
   return LZ_CUERPO.map(k => ({k: k, nombre: LZ_NOMBRE[k], pista: LZ_TIPOS[k], on: (s.tipo || 'contenido') === k, slide: lzComo(s, k)}));
 }
@@ -96,7 +98,7 @@ function lzCajon(c) {
     return '<h3>Plantilla</h3><h4>Diseño de esta slide · ' + titulo + '</h4><div class="lz-formas">' +
       ops.map((o, i) => '<button type="button" data-lz-forma="' + o.k + '" aria-pressed="' + o.on + '" title="' + esc(o.pista || '') + '">' +
         mini(PREVIAS['lz-formas'], i) + '<span>' + esc(o.nombre) + '</span></button>').join('') + '</div>' +
-      (rol === 'cierre' && !s.imagen ? '<p class="lz-pista">Con una foto en esta slide salen también «Foto entera» y «Collage».</p>' : '') +
+
       '<h4>Color de esta slide</h4><div class="sel-cos">' +
       EST_COLORES_ELEGIBLES.map(x => '<button type="button" data-lz-co="' + x.id + '" aria-pressed="' + (colorAhora === x.id) + '" title="' + esc(x.nombre) + '"><i style="background:' + x.hex + '"></i>' + esc(x.nombre) + '</button>').join('') + '</div>' +
       '<h4>Estilo de todo el carrusel</h4><div class="sel-pls">' +
@@ -154,7 +156,7 @@ window.addEventListener('click', e => {
   if (fm) {
     e.stopImmediatePropagation();
     const c = EST.lista[EST.abierto], s = c.slides[EST.sel], k = fm.dataset.lzForma; if (!s || fm.getAttribute('aria-pressed') === 'true') return;
-    if (k.indexOf('marco:') === 0) { const m = k.slice(6); if (m) s.marco = m; else delete s.marco; if (m === 'collage' && !s.imagen2) { const r = lzCuadernoAzar(); if (r) s.imagen2 = r; } }
+    if (k.indexOf('marco:') === 0) { const m = k.slice(6); if (m) s.marco = m; else delete s.marco; if (m === 'collage' && !s.imagen2) { const r = lzCuadernoAzar(); if (r) s.imagen2 = r; } if (m === 'checklist' && !(s.items || []).length) s.items = LZ_CHECKS.slice(); }
     else c.slides[EST.sel] = lzComo(s, k);
     SEL.pop = null; MESA.grupo = 'forma:' + EST.sel; guardarC(c); pintarEditor(true);
     toast('Slide ' + (EST.sel + 1) + ': ' + fm.innerText.trim() + ' · si no te gusta, Ctrl/⌘ + Z'); return;

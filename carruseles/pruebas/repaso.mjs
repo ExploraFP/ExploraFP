@@ -63,18 +63,19 @@ const REPASOS = {
   cierres: [
     ['Botón con flecha', 'feed', CI],
     ['Banda abajo', 'ruta', CI],
-    ['Foto entera (nuevo)', 'feed', Object.assign({imagen: FOTO, marco: 'foto'}, CI)],
-    ['Notas a mano (nuevo)', 'feed', Object.assign({marco: 'notas'}, CI)],
-    ['Papel claro (nuevo)', 'feed', Object.assign({marco: 'papel'}, CI)],
-    ['Post-it (nuevo)', 'feed', Object.assign({marco: 'postit'}, CI)],
-    ['Collage (nuevo)', 'feed', Object.assign({imagen: 'fotos/foto-chica-riendo-exterior.jpg', marco: 'collage'}, CI)]]};
+    ['Post-it', 'feed', Object.assign({marco: 'postit'}, CI)],
+    ['DM (nuevo)', 'feed', Object.assign({}, CI, {marco: 'dm', titulo: '¿Dudas con tu *ciclo*?', cta: 'Escríbenos tu ciclo y te decimos tu caso', respuesta: 'Quiero hacer TCAE'})],
+    ['Guárdalo (nuevo)', 'feed', Object.assign({}, CI, {marco: 'guardar', titulo: 'Guárdalo para cuando lo *necesites*', texto: 'Y pásaselo a quien lo esté pensando.', cta: ''})],
+    ['Etiqueta a alguien (nuevo)', 'feed', Object.assign({}, CI, {marco: 'etiqueta', titulo: '¿Conoces a alguien que se *mareó*?', texto: 'Etiquétale: le recalculamos la ruta.', cta: ''})],
+    ['Checklist (nuevo)', 'feed', Object.assign({}, CI, {marco: 'checklist', titulo: '¿Lo tienes *claro*?', items: ['Hay sanidad sin pacientes', 'Laboratorio, documentación o imagen', 'Todo 100% online'], cta: 'Pide información', cinta: ''})],
+    ['DM en verde 01', 'feed', Object.assign({}, CI, {marco: 'dm', titulo: '¿Dudas con tu *ciclo*?', cta: 'Escríbenos tu ciclo y te decimos tu caso', respuesta: 'Quiero hacer TCAE', _color: 'verde01'})]]};
 const R = process.env.REPASO || 'portadas', L = REPASOS[R];
 await p.evaluate(([L, W]) => {
   const k = W / 1080;
   let h = '<style>body{margin:0;background:#fff;font:16px system-ui;color:#1B3620}.g{display:grid;grid-template-columns:repeat(3,' + W + 'px);gap:26px 20px;padding:22px}' +
     '.n{font-size:17px;margin:0 0 8px}.n b{display:inline-block;background:#1B3620;color:#D8FF6E;border-radius:999px;width:28px;height:28px;text-align:center;line-height:28px;margin-right:8px}' +
     '.c{width:' + W + 'px;height:' + Math.round(1350 * k) + 'px;overflow:hidden;position:relative;border:1px solid #ddd;border-radius:6px}.c iframe{width:1080px;height:1350px;border:0;transform:scale(' + k + ');transform-origin:0 0;position:absolute}</style><div class="g">';
-  window.__d = L.map(([n, pl, s], i) => MOTOR.html(pl, 'verde02', Object.assign({}, s), s.tipo === 'cierre' ? 6 : 0, 7, '').replace('<head>', '<head>' + EST_BASE));
+  window.__d = L.map(([n, pl, s], i) => MOTOR.html(pl, s._color || 'verde02', Object.assign({}, s), s.tipo === 'cierre' ? 6 : 0, 7, '').replace('<head>', '<head>' + EST_BASE));
   h += L.map(([n], i) => '<div><p class="n"><b>' + (i + 1) + '</b>' + n + '</p><div class="c"><iframe data-n="' + i + '"></iframe></div></div>').join('') + '</div>';
   document.body.innerHTML = h; document.body.className = '';
   document.querySelectorAll('iframe[data-n]').forEach(f => f.srcdoc = window.__d[+f.dataset.n]);

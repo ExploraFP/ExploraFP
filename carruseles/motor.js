@@ -373,7 +373,11 @@ export function crearMotor(R) {
   // cualquier estilo y llevan su propio fondo (como las portadas Foto entera / Notas a mano / Collage).
   //   foto (con imagen) · notas · papel · postit · collage (con imagen)
   const ctaPill = (s) => si(s.cta, `<div class="ci-cta"><span>${fmt(s.cta)}</span><b>→</b></div>`) + si(s.cinta, `<div class="ci-cinta">${fmt(s.cinta)}</div>`);
-  const CIERRES = ["foto", "notas", "papel", "postit", "collage"];
+  const CIERRES = ["foto", "notas", "papel", "postit", "collage", "dm", "guardar", "etiqueta", "checklist"];
+  // 31/10/2026 (Sandra: «los cierres no tienen que ser copias de las portadas»): cierres pensados desde la ACCIÓN que piden.
+  // Usan el color del carrusel (su fondo y su tinta), no un fondo propio.
+  const ICONO_TICK = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 26c5 4 8 8 11 13C24 26 31 16 42 7" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const ICONO_CORAZON = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 41S6 30 6 17a9 9 0 0 1 18-3 9 9 0 0 1 18 3c0 13-18 24-18 24z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/></svg>`;
   function cierreDiseno(s) {
     const m = s.marco;
     if (m === "foto") return `<img class="foto-fondo" src="${rutaImagen(s)}" alt=""><i class="ci-velo"></i><img class="ci-logo" src="${logo("Blanco")}" alt="Explora × Ucademy">` +
@@ -385,6 +389,19 @@ export function crearMotor(R) {
     if (m === "postit") return `<img class="ci-logo" src="${logo(LOGO_FONDO[s._color])}" alt="Explora × Ucademy">` +
       `<div class="ci-bloque">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${texto(s.texto)}</div>` +
       si(s.cta, `<div class="ci-nota"><span>${fmt(s.cta)}</span>${si(s.cinta, `<small>${fmt(s.cinta)}</small>`)}</div>`) + flecha("ci-flecha-postit");
+    const cLogo = `<img class="ci-logo" src="${logo(LOGO_FONDO[s._color])}" alt="Explora × Ucademy">`;
+    if (m === "dm") return cLogo + `<div class="ci-bloque ci-arriba">${etiqueta(s.etiqueta)}${titulo(s.titulo)}</div>` +
+      `<div class="ci-chat"><div class="ci-chat-cab"><i></i><b>explora.fp</b></div>` +
+      `<div class="ci-burbuja llega">${fmt(s.cta || "Escríbenos tu ciclo por DM")}</div>` +
+      `<div class="ci-burbuja sale">${fmt(s.respuesta || "El mío es…")}<span class="ci-cursor"></span></div>` +
+      `<div class="ci-chat-pie">Envía un mensaje…</div></div>`;
+    if (m === "guardar") return cLogo + `<div class="ci-bloque ci-centro"><div class="ci-icono">${ICONO_GUARDAR}</div>${titulo(s.titulo)}${texto(s.texto)}` +
+      si(s.cta, `<div class="ci-cta-texto">${fmt(s.cta)}</div>`) + `</div>`;
+    if (m === "etiqueta") return cLogo + `<div class="ci-bloque ci-arriba">${etiqueta(s.etiqueta)}${titulo(s.titulo)}${texto(s.texto)}</div>` +
+      `<div class="ci-comentario"><i></i><div><b>@</b><span class="ci-hueco"></span></div><span class="ci-corazon">${ICONO_CORAZON}</span></div>` +
+      si(s.cta, `<div class="ci-cta-texto ci-abajo">${fmt(s.cta)}</div>`);
+    if (m === "checklist") return cLogo + `<div class="ci-bloque ci-arriba">${etiqueta(s.etiqueta)}${titulo(s.titulo)}` +
+      `<ul class="ci-checks">${(s.items || []).map((it) => `<li><span>${ICONO_TICK}</span>${fmt(it)}</li>`).join("")}</ul>${ctaPill(s)}</div>`;
     if (m === "collage") return `<img class="cl-arriba" src="${R.imagen(libreta(s))}" alt=""><i class="cl-velo"></i><img class="cl-abajo ci-abajo" src="${rutaImagen(s)}" alt="">` +
       `<img class="cl-logo" src="${logo("Blanco")}" alt="Explora × Ucademy"><div class="cl-titulo">${titulo(s.titulo, "h2")}</div>${si(s.cta, `<div class="ci-cta ci-cta-collage"><span>${fmt(s.cta)}</span><b>→</b></div>`)}`;
     return "";
