@@ -24,7 +24,8 @@ export function crearMotor(R) {
   const etiquetaOvalo = etiqueta;
   const numero = (n) => si(n, `<div class="num"><span>${esc(n)}</span><i class="ovalo"></i></div>`);
   const flecha = (clase) => `<i class="flecha ${clase}"></i>`;
-  const titulo = (t, h = "h2") => `<${h} class="titulo">${fmt(t)}</${h}>`;
+  // `_palabra_` = LÍNEA a mano debajo (29/10/2026, la de la referencia «La parte mala de estudiar online»), en cualquier plantilla
+  const titulo = (t, h = "h2") => `<${h} class="titulo">${fmt(t).replace(/_(.+?)_/g, '<u class="linea-mano">$1</u>')}</${h}>`;
   // dato: la fuente no se enseña en la slide (Sandra, 19/10/2026); sigue siendo obligatoria en el carrusel y el control de calidad la pide
   const fuente = () => "";
   const sub = (t) => si(t, `<div class="subtitulo">${fmt(t)}</div>`);
@@ -362,6 +363,10 @@ export function crearMotor(R) {
   }
 
   function html(plantilla, color, s, i, total, etiquetaCinta) {
+    // `linea: true` → la línea a mano bajo la ÚLTIMA palabra del titular (si el titular no lleva ya su `_…_`)
+    // (si la última palabra es muy corta, «ti», «ya», va bajo las dos últimas)
+    if (s.linea && s.titulo && !/_/.test(s.titulo)) s = Object.assign({}, s, { titulo: String(s.titulo).replace(/([^\s*_]+)([*.!?…»"]*)\s*$/, (m, w, p) => "_" + w + "_" + p)
+      .replace(/([^\s*_]+) _([^\s*_]{1,3})_([*.!?…»"]*)$/, "_$1 $2_$3") });
     s._color = color; s._i = i;
     const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";
     const collage = s.tipo === "portada" && s.imagen && s.marco === "collage";

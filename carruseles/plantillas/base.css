@@ -271,3 +271,11 @@ body { font-family: var(--cuerpo); -webkit-font-smoothing: antialiased; }
 .l-ruta.con-persona .contenido { padding-top: 200px; }
 .slide.con-persona.notas-fondo .contenido { padding-top: 200px; }
 .slide.l-ruta.con-persona .contenido { justify-content: flex-start; padding-top: 170px; }
+
+/* LÍNEA A MANO bajo una palabra del titular (`_palabra_` o `linea: true` = la última; 29/10/2026, Sandra: la de su referencia
+   «La parte mala de estudiar online»): barra gruesa redondeada debajo, del color de acento según el fondo. */
+.titulo u.linea-mano { text-decoration: none; position: relative; display: inline-block; }
+.titulo u.linea-mano::after { content: ""; position: absolute; left: .02em; right: .04em; bottom: -.1em; height: .085em; border-radius: 1em; background: var(--linea, var(--verde02)); }
+.c-verde02 { --linea: var(--noche); }
+.c-verde01, .c-noche, .notas-fondo { --linea: var(--verde03); }
+.slide.notas-fondo { --linea: var(--verde03); }

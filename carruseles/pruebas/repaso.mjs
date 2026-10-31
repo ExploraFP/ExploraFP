@@ -33,6 +33,13 @@ const REPASOS = {
     ['D · giradas al revés', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.caja-portada { transform: rotate(1.8deg); transform-origin: right bottom } .papel-portada.foto-papel { transform: rotate(-4deg) }'})],
     ['E · foto grande a sangre arriba', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { top: 0; right: 0; width: 820px; height: 720px; transform: none; box-shadow: none }'})],
     ['F · foto girada con celo', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { transform: rotate(4deg); overflow: visible } .papel-portada.foto-papel::after { content: ""; position: absolute; top: -26px; left: 50%; width: 190px; height: 54px; margin-left: -95px; background: rgba(245,240,220,.78); transform: rotate(-6deg); box-shadow: 0 2px 6px rgba(0,0,0,.15) }'})]],
+  linea: [
+    ['1 + línea', 'feed', Object.assign({linea: true}, P)],
+    ['5 + línea', 'feed', Object.assign({linea: true, marco: 'notas'}, P)],
+    ['6 + línea', 'ruta', Object.assign({linea: true}, P)],
+    ['1 + línea (otro titular)', 'feed', Object.assign({linea: true}, P, {titulo: 'Esta es la *parte mala* de estudiar online.'})],
+    ['5 + línea (otro titular)', 'feed', Object.assign({linea: true, marco: 'notas'}, P, {titulo: 'Esta es la *parte mala* de estudiar online.'})],
+    ['6 + línea (otro titular)', 'ruta', Object.assign({linea: true}, P, {titulo: 'Esta es la *parte mala* de estudiar online.'})]],
   sobre: [
     ['1 + persona recortada', 'feed', Object.assign({imagen: 'fotos/foto-chico-saluda-portatil.jpg', persona: true}, P)],
     ['1 + persona + post-it', 'feed', Object.assign({imagen: 'fotos/foto-chica-cascos-portatil.jpg', persona: true, decoracion: 'postit'}, P)],
