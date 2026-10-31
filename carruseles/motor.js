@@ -365,7 +365,10 @@ export function crearMotor(R) {
   function html(plantilla, color, s, i, total, etiquetaCinta) {
     // `linea: true` → la línea a mano bajo la ÚLTIMA palabra del titular (si el titular no lleva ya su `_…_`)
     // (si la última palabra es muy corta, «ti», «ya», va bajo las dos últimas)
-    if (s.linea && s.titulo && !/_/.test(s.titulo)) s = Object.assign({}, s, { titulo: String(s.titulo).replace(/([^\s*_]+)([*.!?…»"]*)\s*$/, (m, w, p) => "_" + w + "_" + p)
+    // de serie en las portadas «Titular sobre verde» (feed), «Notas a mano» y «Papel claro» (Ruta) (Sandra, 31/10/2026); `linea: false` la quita
+    const lineaSerie = s.tipo === "portada" && s.marco !== "fondo" && s.marco !== "collage" &&
+      ((plantilla === "feed" && !s.marco) || s.marco === "notas" || (plantilla === "capas" && !s.imagen) || plantilla === "ruta");
+    if ((s.linea ?? lineaSerie) && s.titulo && !/_/.test(s.titulo)) s = Object.assign({}, s, { titulo: String(s.titulo).replace(/([^\s*_]+)([*.!?…»"]*)\s*$/, (m, w, p) => "_" + w + "_" + p)
       .replace(/([^\s*_]+) _([^\s*_]{1,3})_([*.!?…»"]*)$/, "_$1 $2_$3") });
     s._color = color; s._i = i;
     const fondoFoto = s.tipo === "portada" && s.imagen && s.marco === "fondo";

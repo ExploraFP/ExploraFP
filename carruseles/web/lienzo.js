@@ -15,6 +15,12 @@ if (LZ.tab === 'diseno') LZ.tab = 'plantilla';
 const LZ_DEL_PANEL = ['revision', 'claude', 'caption'];   // estas pestañas enseñan un trozo de #est-panel
 const LZ_CUERPO = ['contenido', 'lista', 'pasos', 'dato', 'momento'];
 const LZ_NOMBRE = Object.assign({}, EST_TIPOS, {pasos: 'Pasos'});
+// la línea a mano: ¿la lleva esta slide? (de serie en las portadas Titular sobre verde, Notas a mano y Papel claro; como en motor.js)
+function lzLinea(c, s) {
+  const pl = s.plantilla || c.plantilla;
+  const serie = s.tipo === 'portada' && s.marco !== 'fondo' && s.marco !== 'collage' && ((pl === 'feed' && !s.marco) || s.marco === 'notas' || (pl === 'capas' && !s.imagen) || pl === 'ruta');
+  return /_/.test(s.titulo || '') || (s.linea ?? serie);
+}
 const lzRol = s => s.tipo === 'portada' ? 'portada' : s.tipo === 'cierre' ? 'cierre' : 'cuerpo';
 // los diseños entre los que puede cambiar ESTA slide: [{k, nombre, pista, on, slide (para la miniatura)}]
 function lzOpciones(s) {
@@ -63,7 +69,8 @@ function lzCajon(c) {
       (s.tipo === 'portada' ? '' : it('flecha', '↗', 'Flecha a mano', flecha, 'Luego la mueves y la estiras')) +   // en portada no hay a qué apuntar (Sandra, 29/10)
       it('ovalo', '◯', 'Óvalo a mano', s.trazo === 'ovalo', 'Rodea la *palabra* resaltada') +
       it('postit', '🟨', 'Post-it «100% online»', deco.indexOf('postit') >= 0, 'Arriba a la derecha') +
-      it('notas', '✍️', 'Escrito a mano de fondo', deco.indexOf('notas') >= 0, 'La textura de la marca') + '</div><div class="lz-anadir"></div>';
+      it('notas', '✍️', 'Escrito a mano de fondo', deco.indexOf('notas') >= 0, 'La textura de la marca') +
+      (s.titulo ? it('linea', '〰', 'Línea a mano', lzLinea(c, s), 'Debajo de la última palabra del titular') : '') + '</div><div class="lz-anadir"></div>';
   }
   // Plantilla, como en Canva. Cada slide solo se cambia por diseños de SU papel (Sandra, 29/10/2026): la portada, por portadas;
   // el cierre (CTA), por cierres; el cuerpo, por formas de cuerpo. El color, de esa slide. La plantilla (Feed, Ruta…), de todo el carrusel.
@@ -163,6 +170,7 @@ window.addEventListener('click', e => {
     const k = el.dataset.lzEl, on = el.getAttribute('aria-pressed') === 'true';
     if (k === 'flecha') { if (on) s.trazo = 'ninguno'; else s.trazo = 'flecha'; }
     else if (k === 'ovalo') { if (on) delete s.trazo; else s.trazo = 'ovalo'; }
+    else if (k === 'linea') { if (on) { s.titulo = String(s.titulo || '').replace(/_/g, ''); s.linea = false; } else s.linea = true; }
     else { let d = [].concat(s.decoracion || []).filter(x => x !== 'ninguna'); d = on ? d.filter(x => x !== k) : d.concat(k); if (d.length) s.decoracion = d.length === 1 ? d[0] : d; else delete s.decoracion; }
     guardarC(c); pintarEditor(true); return;
   }
