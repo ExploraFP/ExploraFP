@@ -21,6 +21,12 @@ function lzLinea(c, s) {
   const serie = s.tipo === 'portada' && s.marco !== 'fondo' && s.marco !== 'collage' && ((pl === 'feed' && !s.marco) || s.marco === 'notas' || (pl === 'capas' && !s.imagen) || pl === 'ruta');
   return /_/.test(s.titulo || '') || (s.linea ?? serie);
 }
+// fotos de CUADERNO para la parte de arriba de la portada Collage: libretas y cuadernos sin cara (solo el cuaderno o unas manos)
+function lzCuadernos() {
+  const todas = typeof fotosCatalogo === 'function' ? fotosCatalogo().filter(f => !f.oculta) : FOTOS;
+  return todas.filter(f => /libreta|cuaderno|apuntes/i.test(f.desc || '') && (/^(libreta|cuaderno|manos?\b|mano de|persona escribiendo)/i.test(f.desc || '') || f.personas === 'Sin personas'));
+}
+const lzCuadernoAzar = (menos) => { const l = lzCuadernos().filter(f => f.ruta !== menos); return l.length ? l[Math.floor(Math.random() * l.length)].ruta : ''; };
 const lzRol = s => s.tipo === 'portada' ? 'portada' : s.tipo === 'cierre' ? 'cierre' : 'cuerpo';
 // los diseños entre los que puede cambiar ESTA slide: [{k, nombre, pista, on, slide (para la miniatura)}]
 function lzOpciones(s) {
@@ -51,7 +57,11 @@ function lzCajon(c) {
   const s = c.slides[EST.sel] || {};
   if (LZ.tab === 'fotos') {
     const sel = (id, vacio, lista, v) => '<select id="' + id + '" aria-label="' + vacio + '"><option value="">' + vacio + '</option>' + lista.map(x => '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>').join('') + '</select>';
-    return '<h3>Fotos</h3><p class="lz-pista">Pulsa una para ponerla en la slide ' + (EST.sel + 1) + '.</p>' +
+    // portada Collage: arriba SIEMPRE un cuaderno (el que elijas), abajo una persona (Sandra, 31/10/2026)
+    const arriba = s.tipo === 'portada' && s.marco === 'collage' ? '<h4>Arriba · un cuaderno</h4><div class="est-fotos lz-fotos">' +
+      lzCuadernos().map(f => '<button data-lz-arriba="' + esc(f.ruta) + '" aria-pressed="' + ((s.imagen2 || 'fotos/foto-libreta-apuntes.jpg') === f.ruta) + '" title="' + esc(f.desc) + '"><img src="' + esc(f.ruta) + '" alt="" loading="lazy"></button>').join('') +
+      '</div><h4>Abajo · una persona</h4>' : '';
+    return '<h3>Fotos</h3>' + arriba + '<p class="lz-pista">Pulsa una para ponerla en la slide ' + (EST.sel + 1) + '.</p>' +
       '<input type="search" id="lz-fq" autocomplete="off" placeholder="Busca: portátil, estrés…" value="' + esc(EST.fq || '') + '">' +
       (typeof FOTO_RAMAS !== 'undefined' ? '<div class="lz-filtros">' + sel('lz-fr', 'Rama', FOTO_RAMAS, EST.fr) + sel('lz-fo', 'Orientación', FOTO_ORIENT, EST.fo) + '</div>' : '') +
       '<div class="est-fotos lz-fotos">' + gridFotosEditor(s) + '</div>';
@@ -140,11 +150,13 @@ window.addEventListener('click', e => {
   if (fm) {
     e.stopImmediatePropagation();
     const c = EST.lista[EST.abierto], s = c.slides[EST.sel], k = fm.dataset.lzForma; if (!s || fm.getAttribute('aria-pressed') === 'true') return;
-    if (k.indexOf('marco:') === 0) { const m = k.slice(6); if (m) s.marco = m; else delete s.marco; }
+    if (k.indexOf('marco:') === 0) { const m = k.slice(6); if (m) s.marco = m; else delete s.marco; if (m === 'collage' && !s.imagen2) { const r = lzCuadernoAzar(); if (r) s.imagen2 = r; } }
     else c.slides[EST.sel] = lzComo(s, k);
     SEL.pop = null; MESA.grupo = 'forma:' + EST.sel; guardarC(c); pintarEditor(true);
     toast('Slide ' + (EST.sel + 1) + ': ' + fm.innerText.trim() + ' · si no te gusta, Ctrl/⌘ + Z'); return;
   }
+  const ar = t.closest('[data-lz-arriba]');
+  if (ar) { e.stopImmediatePropagation(); const c = EST.lista[EST.abierto], s = c.slides[EST.sel]; if (!s) return; s.imagen2 = ar.dataset.lzArriba; MESA.grupo = 'arriba:' + EST.sel; guardarC(c); pintarEditor(true); return; }
   const co = t.closest('[data-lz-co]');
   if (co) {
     e.stopImmediatePropagation();
