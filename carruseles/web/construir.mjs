@@ -77,7 +77,7 @@ if (!existsSync(join(RAIZ, "fonts/GravityCondensed.otf"))) console.warn("⚠ Sin
 const css = (f) => readFileSync(join(RAIZ, "plantillas", f), "utf8").replace(/url\("\.\.\/fonts\//g, 'url("fuentes/');
 const MOTOR_CSS = {
   base: css("base.css"), feed: css("feed.css"), capas: css("capas.css"), cuaderno: css("cuaderno.css"),
-  poster: css("poster.css"), ruta: css("ruta.css"), colores: css("colores.css"), estaticos: css("estaticos.css"),
+  poster: css("poster.css"), ruta: css("ruta.css"), guardados: css("guardados.css"), colores: css("colores.css"), estaticos: css("estaticos.css"),
   mascaras: ':root{--img-ovalo:url("trazos/ovalo.png");--img-flecha:url("trazos/flecha.png");--img-notas:url("trazos/notas.png");--img-isotipo:url("trazos/isotipo.png")}',
 };
 

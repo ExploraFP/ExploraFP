@@ -33,6 +33,13 @@ const REPASOS = {
     ['D · giradas al revés', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.caja-portada { transform: rotate(1.8deg); transform-origin: right bottom } .papel-portada.foto-papel { transform: rotate(-4deg) }'})],
     ['E · foto grande a sangre arriba', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { top: 0; right: 0; width: 820px; height: 720px; transform: none; box-shadow: none }'})],
     ['F · foto girada con celo', 'capas', Object.assign({imagen: FOTO}, P, {estilo: '.papel-portada.foto-papel { transform: rotate(4deg); overflow: visible } .papel-portada.foto-papel::after { content: ""; position: absolute; top: -26px; left: 50%; width: 190px; height: 54px; margin-left: -95px; background: rgba(245,240,220,.78); transform: rotate(-6deg); box-shadow: 0 2px 6px rgba(0,0,0,.15) }'})]],
+  guardados: [
+    ['Portada', 'guardados', {tipo: 'portada', etiqueta: 'Tecnología', titulo: '5 grados superiores con 100% de *empleabilidad*'}],
+    ['Cuerpo 01', 'guardados', {tipo: 'contenido', numero: '01', titulo: 'Ciberseguridad', texto: 'Las empresas buscan perfiles que protejan sus datos. Y faltan.'}],
+    ['Cuerpo 02', 'guardados', {tipo: 'contenido', numero: '02', titulo: 'Desarrollo web', texto: 'Webs y apps: la demanda no para de crecer.'}],
+    ['Lista', 'guardados', {tipo: 'lista', titulo: 'Qué necesitas', items: ['Bachillerato o prueba de acceso', 'Ganas de trastear', 'Un portátil']}],
+    ['Dato', 'guardados', {tipo: 'dato', antetitulo: 'Empleo a los 6 meses', cifra: '100%', texto: 'De los titulados en el último curso.'}],
+    ['Cierre', 'guardados', {tipo: 'cierre', titulo: 'Guárdalo para cuando lo necesites', texto: 'Y pásaselo a quien lo esté pensando.'}]],
   linea: [
     ['1 + línea', 'feed', Object.assign({linea: true}, P)],
     ['5 + línea', 'feed', Object.assign({linea: true, marco: 'notas'}, P)],

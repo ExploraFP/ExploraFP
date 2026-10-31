@@ -32,7 +32,8 @@ const EST_PLANTILLAS = [
   {id: 'capas', nombre: 'Capas', pista: 'caja sobre foto'},
   {id: 'cuaderno', nombre: 'Cuaderno', pista: 'libreta y checklist'},
   {id: 'poster', nombre: 'Póster', pista: 'titular gigante'},
-  {id: 'ruta', nombre: 'Ruta', pista: 'la de tus referencias'}];   // 26/10/2026: réplica de las referencias de Sandra (plantillas/ruta.css)
+  {id: 'ruta', nombre: 'Ruta', pista: 'la de tus referencias'},
+  {id: 'guardados', nombre: 'Guardados', pista: 'minimal, para que lo guarden'}];   // 31/10/2026: ficha de Sandra «Carrusel de guardados»   // 26/10/2026: réplica de las referencias de Sandra (plantillas/ruta.css)
 const EST_COLORES = [
   {id: 'verde01', nombre: 'Verde 01', hex: '#366B40'}, {id: 'verde02', nombre: 'Verde 02', hex: '#4CCD4B'},
   {id: 'blanco', nombre: 'Blanco', hex: '#FAFFFA'}, {id: 'noche', nombre: 'Noche', hex: '#1B3620'},
@@ -268,6 +269,14 @@ function promptCarrusel(c) {
     L.push('- Puedes usar UNA slide "momento": una escena del día de quien estudia. Campos: "hora" ("07:30 · mañana"), "titulo", "texto" (1 frase), "tarjeta" (clase | mensaje | nota | aviso), "tarjetaTitulo" (p. ej. "Módulo 2 · Tema 1"), "tarjetaTexto" (p. ej. "18 min · empiezas donde lo dejaste") y "boton" ("Entrar"). Nunca «lección» ni «unidad».');
     L.push('- En el titular, además del *resaltado*, puedes subrayar UNA palabra así: _online_. Solo un recurso de cada tipo por slide.');
     L.push('- Cierre: "titulo" corto, "texto" de una línea, "nota" (frase a mano) y "cta"; "cinta": "Enlace en el perfil" solo si el cta manda al perfil.');
+  }
+  if (c.plantilla === 'guardados') {
+    L.push('');
+    L.push('PLANTILLA «GUARDADOS» (objetivo: que lo GUARDEN; un guardado empuja a toda la cuenta):');
+    L.push('- 5 a 8 slides. Diseño minimalista: nada de fotos, notas ni adornos; el texto manda.');
+    L.push('- Portada = TITULAR DE PRENSA: concreto, con cifra o promesa clara (p. ej. "5 grados superiores con 100% de empleabilidad"). Sin "desliza".');
+    L.push('- Cuerpo: slides "contenido" NUMERADAS ("numero": "01", "02"…), UNA idea por slide: "titulo" de 1-4 palabras (el nombre de la idea) y "texto" con un dato o una explicación útil de 1-2 frases. Lo que la gente querrá guardar.');
+    L.push('- Cierre: llamada a GUARDAR ("titulo": p. ej. "Guárdalo para cuando lo necesites"), "texto" opcional de una línea y "cta" corto solo si hace falta.');
   }
   L.push('');
   L.push('FORMATO DE RESPUESTA (JSON):');

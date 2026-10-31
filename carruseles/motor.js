@@ -2,7 +2,7 @@
 // Lo comparten el generador de PNG (render.js, Node) y la herramienta web (sin dependencias).
 // R resuelve los recursos según dónde se ejecute:
 //   R.logo(color) · R.imagen(ruta) · R.postit() → URL;  R.cabeza(plantilla) → <link>/<style> de la cabeza.
-export const PLANTILLAS = ["feed", "capas", "cuaderno", "poster", "chat", "tuit", "editorial", "bloques", "ruta"];
+export const PLANTILLAS = ["feed", "capas", "cuaderno", "poster", "chat", "tuit", "editorial", "bloques", "ruta", "guardados"];
 export const COLORES = ["verde01", "verde02", "blanco", "noche", "lima", "verde"];
 // 23/10/2026 (Sandra: «todos los cuerpos son iguales»): tipos de cuerpo nuevos, con su estructura propia en TODAS las plantillas
 export const TIPOS = ["portada", "contenido", "lista", "dato", "cierre", "mito", "pregunta", "pasos", "comparacion", "cita", "momento"];
@@ -288,7 +288,32 @@ export function crearMotor(R) {
     return hora + (plantilla === "ruta" ? rTit(s.titulo) : titulo(s.titulo)) + si(s.texto, `<div class="subtitulo">${fmt(s.texto)}</div>`) + tarjeta;
   }
 
-  const COMPOSICION = { feed, capas, cuaderno, poster, chat, tuit, editorial, bloques, ruta };
+  // GUARDADOS (31/10/2026, ficha de Sandra «Carrusel de guardados»): objetivo = que lo guarden. Minimalista y de alto contraste.
+  // Portada verde 01 como titular de prensa · cuerpo claro con un número grande y UNA idea por slide · cierre lima «guárdalo».
+  // Sin «desliza» (regla de Sandra) y titulares en minúscula salvo la inicial. Cada tipo lleva su fondo (no depende del color).
+  const ICONO_GUARDAR = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 6h22a3 3 0 0 1 3 3v33l-14-9-14 9V9a3 3 0 0 1 3-3z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/></svg>`;
+  function guardados(s) {
+    const gLogo = (c) => `<img class="g-logo" src="${logo(c)}" alt="Explora × Ucademy">`;
+    const ante = (t) => si(t, `<div class="g-ante">${fmt(t)}</div>`);
+    const num = s.numero || dos(Math.max(1, s._i || 1));
+    switch (s.tipo) {
+      case "portada":
+        return gLogo("Blanco") + `<div class="g-bloque">${ante(s.etiqueta)}${titulo(s.titulo, "h1")}${sub(s.subtitulo)}</div>`;
+      case "contenido":
+        return gLogo("Verde 01") + `<div class="g-bloque"><div class="g-num">${esc(num)}</div>${titulo(s.titulo)}${texto(s.texto)}</div>`;
+      case "lista":
+        return gLogo("Verde 01") + `<div class="g-bloque">${si(s.numero, `<div class="g-num">${esc(s.numero)}</div>`)}${titulo(s.titulo)}` +
+          `<ol class="g-lista">${(s.items || []).map((it, n) => `<li><b>${dos(n + 1)}</b><span>${fmt(it)}</span></li>`).join("")}</ol></div>`;
+      case "dato":
+        return gLogo("Verde 01") + `<div class="g-bloque">${ante(s.antetitulo)}<div class="g-cifra">${esc(s.cifra || "")}</div>${texto(s.texto)}</div>`;
+      case "cierre":
+        return gLogo("Verde 01") + `<div class="g-bloque"><div class="g-guardar">${ICONO_GUARDAR}</div>${titulo(s.titulo)}${texto(s.texto)}` +
+          si(s.cta, `<div class="g-cta">${fmt(s.cta)}</div>`) + `</div>`;
+    }
+    return gLogo("Verde 01") + titulo(s.titulo) + texto(s.texto);
+  }
+
+  const COMPOSICION = { feed, capas, cuaderno, poster, chat, tuit, editorial, bloques, ruta, guardados };
 
   // Tipos de cuerpo nuevos (23/10/2026). Misma estructura en todas las plantillas; el aspecto lo ponen los colores de cada una.
   //   mito: la frase falsa tachada y la verdad debajo · pregunta: la duda como mensaje y la respuesta
