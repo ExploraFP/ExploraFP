@@ -1,0 +1,141 @@
+{
+  "angulo": "La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero",
+  "asunto": "{{Nombre}}, ¿sigues con lo de la FP?",
+  "chat": [
+    {
+      "role": "user",
+      "text": "Escríbelo"
+    },
+    {
+      "role": "bot",
+      "text": "Este email va sobre la duda de «ya es tarde / empiezo de cero» y cuenta el caso de Noemí (labana-2). En este segmento todavía no se había usado ese ángulo.\n\n- Gancho: cuando te preguntan la edad y tienes que pararte a hacer la cuenta. Le pasa a casi todo el mundo y conecta con la cuenta de «a mi edad ya no compensa».\n- De Noemí solo cuento lo que pone su ficha: 25 años de peluquera, 48 años, sin trabajo, le gusta estudiar, le preocupaba la edad y eligió el doble grado. No digo que lo haya terminado ni qué resultados ha tenido.\n- No le pongo los 2 años al doble grado de Noemí porque no sé cuánto dura. Los 2 años solo aparecen en la lista, hablando de la FP en general.\n- Asunto sacado del modelo de Rosa: un hecho de la ficha, y «FP» sale solo en el preheader."
+    },
+    {
+      "role": "user",
+      "text": "Otro asunto"
+    },
+    {
+      "role": "bot",
+      "text": "He cambiado el asunto y el preheader. El resto del email queda igual.\n\n- Antes: «Noemí fue peluquera 25 años», que era «nombre + hecho», el mismo tipo que los de Tamara y Rosa.\n- Ahora: «La cuenta de la edad», el tema de la historia en palabras de todos los días. El email lo cumple: el gancho y la historia de Noemí giran en torno a esa cuenta.\n- El preheader «Pediste información de una FP» da el ancla que reconoce el lead. «FP» sale una sola vez en la pareja.\n\n¿Quieres que pruebe también uno de tipo pregunta, por ejemplo «¿Seguro que es tarde?»?"
+    },
+    {
+      "role": "user",
+      "text": "Otro asunto"
+    },
+    {
+      "role": "bot",
+      "text": "He cambiado el asunto y el preheader. El resto del email queda igual.\n\n- Antes: «La cuenta de la edad», que era el tema de la historia.\n- Ahora: «{{nombre}}, ¿sigues con lo de la FP?», con su nombre delante y en forma de pregunta que se contesta. El email la responde: si sigue buscando, que diga cuándo le llamamos.\n- El preheader «Y la cuenta que hizo Noemí» adelanta la historia. «FP» sale una sola vez en la pareja, en el asunto.\n\n¿Prefieres uno muy corto, tipo «Una cosa» con el ancla en el preheader?"
+    },
+    {
+      "role": "user",
+      "text": "no tiene sentido ese preheader"
+    },
+    {
+      "role": "bot",
+      "text": "Tienes razón: el preheader no cuadraba con el asunto. Lo he cambiado y he corregido otro detalle.\n\n- Preheader nuevo: «Te llamamos y no pudimos hablar». Completa el asunto con lo que pasó y lo reconoce cualquiera que dejara sus datos. «FP» sigue saliendo solo en el asunto.\n- He releído la ficha de Noemí y he quitado una frase que no estaba en ella: que «echó la cuenta bien». Ahora el razonamiento de los años que pasan lo hace Noe, y de Noemí solo cuento lo que dice su ficha.\n- He corregido el token del asunto a {{nombre}}, que estaba con mayúscula.\n\n¿Probamos otro asunto de tipo distinto, por ejemplo «Te escribo por tu solicitud»?"
+    },
+    {
+      "role": "user",
+      "text": "quita la opción de que elijan la fecha, en nuestro formulario no pueden marcar esa opcion porfa"
+    },
+    {
+      "role": "bot",
+      "text": "He quitado la elección de fecha y hora. Ahora el email solo pide pulsar el botón para que alguien llame.\n\n- El texto antes del botón dice: «Si sigues buscando, pulsa el botón y un compañero del equipo te llama».\n- El primer botón pasa de «Vale, llamadme cuando me venga bien» a «Vale, llamadme».\n- El resto queda igual. El segundo botón y el asunto no hablaban de fecha."
+    },
+    {
+      "role": "user",
+      "text": "no tiene sentido el segundo boton osea no está bien justificado"
+    },
+    {
+      "role": "bot",
+      "text": "He reescrito el segundo botón y la línea que lo introduce. El resto queda igual.\n\n- Antes: «Y si tú también tardas un segundo en decir tu edad:» + «Llamadme, que la cuenta la hago luego». No tenía relación con lo anterior.\n- Ahora: «Si ya has hecho la cuenta y te sale que compensa:» + «Me sale a cuenta, llamadme». Retoma la cuenta de la que habla todo el email y da una razón para pulsar otra vez. El destino es el mismo.\n\n¿Te encaja, o prefieres un segundo botón con otro tono?"
+    }
+  ],
+  "creado": "2026-10-19T15:06:33.308Z",
+  "email": {
+    "angulo": "La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero",
+    "asunto_a": "{{Nombre}}, ¿sigues con lo de la FP?",
+    "asunto_b": "{{Nombre}}, ¿sigues con lo de la FP?",
+    "asuntos_extra": [],
+    "bloques": [
+      {
+        "contenido": "Hola, soy Noe.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Noemí fue peluquera durante 25 años, ahora no tiene trabajo y con 48 se preguntaba si a su edad había salida de verdad.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Le gustaba estudiar, y el doble grado de Laboratorio y Anatomía Patológica le parecía la apuesta más completa. Lo eligió empezando de cero.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Yo la cuenta la hago así: los años van a pasar igual, estudies o no.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Mira, {{nombre}}, tú también nos dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:",
+        "tipo": "texto"
+      },
+      {
+        "contenido": [
+          "Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España",
+          "2 años, a tu ritmo y sin dejar tu trabajo",
+          "Prácticas incluidas"
+        ],
+        "tipo": "lista"
+      },
+      {
+        "contenido": "**Informarte no te compromete a nada.** Si sigues buscando, pulsa el botón y un compañero del equipo te llama.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Vale, llamadme",
+        "tipo": "boton"
+      },
+      {
+        "contenido": "Si ya has hecho la cuenta y te sale que compensa:",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Me sale a cuenta, llamadme",
+        "tipo": "boton"
+      }
+    ],
+    "despedida": "Prefiero los datos a los astros,",
+    "firma": "— Noe",
+    "pd": "P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.",
+    "preheader": "Te llamamos y no pudimos hablar"
+  },
+  "estado": "en_redaccion",
+  "fecha": "2026-10-20",
+  "gancho": "Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.",
+  "hubspot": "",
+  "metricas": {},
+  "preheader": "Te llamamos y no pudimos hablar",
+  "segmento": "nocontactado",
+  "versiones": [
+    "{\"asunto_a\":\"Noemí fue peluquera 25 años\",\"asunto_b\":\"Noemí fue peluquera 25 años\",\"preheader\":\"A los 48 decidió estudiar una FP\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí la hizo. Fue peluquera durante 25 años, ahora no tenía trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar. Y al final echó la cuenta bien: los años iban a pasar igual, estudiara o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Eligió el doble grado de Laboratorio y Anatomía Patológica. Empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\",\"Matrícula abierta: entras cuando quieras\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, dinos cuándo te viene bien y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme cuando me venga bien\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empezó de cero\"}",
+    "{\"asunto_a\":\"La cuenta de la edad\",\"asunto_b\":\"La cuenta de la edad\",\"preheader\":\"Pediste información de una FP\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí la hizo. Fue peluquera durante 25 años, ahora no tenía trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar. Y al final echó la cuenta bien: los años iban a pasar igual, estudiara o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Eligió el doble grado de Laboratorio y Anatomía Patológica. Empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\",\"Matrícula abierta: entras cuando quieras\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, dinos cuándo te viene bien y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme cuando me venga bien\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empezó de cero\"}",
+    "{\"asunto_a\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"asunto_b\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"preheader\":\"Y la cuenta que hizo Noemí\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí la hizo. Fue peluquera durante 25 años, ahora no tenía trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar. Y al final echó la cuenta bien: los años iban a pasar igual, estudiara o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Eligió el doble grado de Laboratorio y Anatomía Patológica. Empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\",\"Matrícula abierta: entras cuando quieras\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, dinos cuándo te viene bien y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme cuando me venga bien\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empezó de cero\"}",
+    "{\"asunto_a\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"asunto_b\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"preheader\":\"Te llamamos y no pudimos hablar\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí la hizo. Fue peluquera durante 25 años, ahora no tiene trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar, y el doble grado de Laboratorio y Anatomía Patológica le parecía la apuesta más completa. Lo eligió empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo la cuenta la hago así: los años van a pasar igual, estudies o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\",\"Matrícula abierta: entras cuando quieras\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, dinos cuándo te viene bien y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme cuando me venga bien\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero\"}",
+    "{\"asunto_a\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"asunto_b\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"preheader\":\"Te llamamos y no pudimos hablar\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí la hizo. Fue peluquera durante 25 años, ahora no tiene trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar, y el doble grado de Laboratorio y Anatomía Patológica le parecía la apuesta más completa. Lo eligió empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo la cuenta la hago así: los años van a pasar igual, estudies o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también no dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\",\"Matrícula abierta: entras cuando quieras\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, dinos cuándo te viene bien y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme cuando me venga bien\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero\"}",
+    "{\"asunto_a\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"asunto_b\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"preheader\":\"Te llamamos y no pudimos hablar\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí la hizo. Fue peluquera durante 25 años, ahora no tiene trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar, y el doble grado de Laboratorio y Anatomía Patológica le parecía la apuesta más completa. Lo eligió empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo la cuenta la hago así: los años van a pasar igual, estudies o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también nos dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\",\"Matrícula abierta: entras cuando quieras\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, dinos cuándo te viene bien y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme cuando me venga bien\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero\"}",
+    "{\"asunto_a\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"asunto_b\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"preheader\":\"Te llamamos y no pudimos hablar\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí la hizo. Fue peluquera durante 25 años, ahora no tiene trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar, y el doble grado de Laboratorio y Anatomía Patológica le parecía la apuesta más completa. Lo eligió empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo la cuenta la hago así: los años van a pasar igual, estudies o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también nos dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, dinos cuándo te viene bien y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme cuando me venga bien\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero\"}",
+    "{\"asunto_a\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"asunto_b\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"preheader\":\"Te llamamos y no pudimos hablar\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí fue peluquera durante 25 años, ahora no tiene trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar, y el doble grado de Laboratorio y Anatomía Patológica le parecía la apuesta más completa. Lo eligió empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo la cuenta la hago así: los años van a pasar igual, estudies o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también nos dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, pulsa el botón y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme\"},{\"tipo\":\"texto\",\"contenido\":\"Y si tú también tardas un segundo en decir tu edad:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que la cuenta la hago luego\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero\"}",
+    "{\"asunto_a\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"asunto_b\":\"{{Nombre}}, ¿sigues con lo de la FP?\",\"preheader\":\"Te llamamos y no pudimos hablar\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te preguntan la edad y, durante un segundo, tienes que hacer la cuenta.\"},{\"tipo\":\"texto\",\"contenido\":\"A mí me pasó la semana pasada en el médico. Con la de números que manejo al día. En fin.\"},{\"tipo\":\"texto\",\"contenido\":\"Hay otra cuenta que hace mucha gente y casi siempre le sale mal: «a mi edad ya no me compensa empezar».\"},{\"tipo\":\"texto\",\"contenido\":\"Noemí fue peluquera durante 25 años, ahora no tiene trabajo y con 48 se preguntaba si a su edad había salida de verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Le gustaba estudiar, y el doble grado de Laboratorio y Anatomía Patológica le parecía la apuesta más completa. Lo eligió empezando de cero.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo la cuenta la hago así: los años van a pasar igual, estudies o no.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, tú también nos dejaste tus datos porque te interesaba una FP. Te llamamos y no pudimos hablar, así que te lo cuento por aquí:\"},{\"tipo\":\"lista\",\"contenido\":[\"Somos Explora: FP oficial online, con el mismo valor que la presencial en toda España\",\"2 años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\"]},{\"tipo\":\"texto\",\"contenido\":\"**Informarte no te compromete a nada.** Si sigues buscando, pulsa el botón y un compañero del equipo te llama.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, llamadme\"},{\"tipo\":\"texto\",\"contenido\":\"Si ya has hecho la cuenta y te sale que compensa:\"},{\"tipo\":\"boton\",\"contenido\":\"Me sale a cuenta, llamadme\"}],\"pd\":\"P.D.: Dentro de 2 años vas a tener 2 años más. Con título oficial o sin él.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"La duda de «ya es tarde» con la historia de Noemí, que fue peluquera 25 años y a los 48 empieza de cero\"}"
+  ]
+}

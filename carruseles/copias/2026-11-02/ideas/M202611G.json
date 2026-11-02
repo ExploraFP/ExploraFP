@@ -1,0 +1,19 @@
+{
+  "creada": "2026-10-25T09:00:00Z",
+  "dentro": "Existe un trámite oficial de homologación o convalidación de estudios extranjeros no universitarios de FP. Qué se pide, que no todo se reconoce y qué hacer si no encaja: estudiar el ciclo español de Administración y Finanzas con convalidaciones, sin prometer resultados.",
+  "formacion": "Administración y Finanzas",
+  "fuentes": [
+    "https://www.educacionfpydeportes.gob.es/servicios-al-ciudadano/catalogo/gestion-titulos/estudios-no-universitarios/titulos-extranjeros/homologacion-titulos-fp.html"
+  ],
+  "funnel": "MOFU",
+  "gancho": "«Mi título de mi país no sirve aquí: tengo que empezar de cero».",
+  "id": "M202611G",
+  "mes": "2026-11",
+  "momentos": [
+    "convalidar"
+  ],
+  "objetivo": "informativo",
+  "origen": "claude",
+  "subtipo": "tendencia",
+  "titular": "¿Tu título de otro país vale en España? Lo que dice el Ministerio"
+}

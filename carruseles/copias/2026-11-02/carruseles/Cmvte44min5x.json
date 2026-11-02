@@ -1,0 +1,66 @@
+{
+  "color": "verde01",
+  "copy": "Creen que desde FP no se llega a la universidad. Mentira. 🐊\n\nTe sacas el Grado Superior y la puerta a la carrera sigue abierta. Sin selectividad general. Tu nota media del ciclo es tu nota de acceso. Esto significa que lo que ya estás peleando cuenta. 🔥\n\n¿Quieres subir nota? La fase específica es voluntaria. Máximo dos materias y hasta 4 puntos extra. Techo de 14, igual que desde bachillerato. ⚡️\n\nOjo con el terreno: cada universidad fija sus ponderaciones y hay ramas con acceso preferente. Mira la web de la universidad de destino antes de mover ficha. 🗺️\n\nSabemos que no te da la vida. Trabajo, familia, cansancio. Por eso marcamos la ruta corta y sin humo. Probando, avanzando, abriendo brecha. 🚀\n\nEscríbenos por DM el grado que quieres y te decimos tu caso 📍\n\n#FPOnline #GradoSuperior #AccesoUniversidad #ExploraxUcademy #FormacionProfesional",
+  "creado": "2026-10-29T10:18:08.875Z",
+  "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+  "error": "",
+  "estado": "borrador",
+  "idea": "T61",
+  "listo": false,
+  "num": 21,
+  "objetivo": "informativo",
+  "okFirma": "[\"capas\",\"verde01\",[{\"etiqueta\":\"FP Online\",\"imagen\":\"/_blob/0d5879972eb6c3224851320fde5c7e2c\",\"marco\":\"fondo\",\"subtitulo\":\"Sí se puede. Así funciona el acceso.\",\"tipo\":\"portada\",\"titulo\":\"Del Grado Superior a la *carrera*, sin selectividad\"},{\"numero\":\"01\",\"texto\":\"No hay que hacer la fase general de la EBAU. Lo que ya estás peleando en el ciclo cuenta.\",\"tipo\":\"contenido\",\"titulo\":\"Tu nota media es la *nota* de acceso\"},{\"numero\":\"02\",\"texto\":\"No es obligatoria. Es tu palanca si quieres subir nota. Tú eliges si la tocas.\",\"tipo\":\"contenido\",\"titulo\":\"La fase específica es *voluntaria*\"},{\"antetitulo\":\"Puntos extra máximos\",\"cifra\":\"4\",\"fuente\":\"Cesur · Adams · Ilerna, sept. 2026\",\"texto\":\"La fase específica pondera un máximo de dos materias (0,1 o 0,2 cada una) y suma hasta 4 puntos: máximo 14, igual que desde bachillerato.\",\"tipo\":\"dato\"},{\"numero\":\"03\",\"texto\":\"Compites con la misma nota máxima que desde bachillerato. Misma meta, misma escala.\",\"tipo\":\"contenido\",\"titulo\":\"Ya no hay *cupo* reservado para FP\"},{\"items\":[\"Ponderaciones de tu universidad\",\"Ramas con acceso preferente\",\"Materias que te suman más\"],\"tipo\":\"lista\",\"titulo\":\"Antes de mover ficha, *comprueba*\"},{\"cta\":\"Escríbenos por DM el grado que quieres y te decimos tu caso\",\"tipo\":\"cierre\",\"titulo\":\"Tu ruta a la carrera empieza *ya*\"}],\"Creen que desde FP no se llega a la universidad. Mentira. 🐊\\n\\nTe sacas el Grado Superior y la puerta a la carrera sigue abierta. Sin selectividad general. Tu nota media del ciclo es tu nota de acceso. Esto significa que lo que ya estás peleando cuenta. 🔥\\n\\n¿Quieres subir nota? La fase específica es voluntaria. Máximo dos materias y hasta 4 puntos extra. Techo de 14, igual que desde bachillerato. ⚡️\\n\\nOjo con el terreno: cada universidad fija sus ponderaciones y hay ramas con acceso preferente. Mira la web de la universidad de destino antes de mover ficha. 🗺️\\n\\nSabemos que no te da la vida. Trabajo, familia, cansancio. Por eso marcamos la ruta corta y sin humo. Probando, avanzando, abriendo brecha. 🚀\\n\\nEscríbenos por DM el grado que quieres y te decimos tu caso 📍\\n\\n#FPOnline #GradoSuperior #AccesoUniversidad #ExploraxUcademy #FormacionProfesional\"]",
+  "plantilla": "capas",
+  "portada": "foto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "imagen": "/_blob/0d5879972eb6c3224851320fde5c7e2c",
+      "marco": "fondo",
+      "subtitulo": "Sí se puede. Así funciona el acceso.",
+      "tipo": "portada",
+      "titulo": "Del Grado Superior a la *carrera*, sin selectividad"
+    },
+    {
+      "numero": "01",
+      "texto": "No hay que hacer la fase general de la EBAU. Lo que ya estás peleando en el ciclo cuenta.",
+      "tipo": "contenido",
+      "titulo": "Tu nota media es la *nota* de acceso"
+    },
+    {
+      "numero": "02",
+      "texto": "No es obligatoria. Es tu palanca si quieres subir nota. Tú eliges si la tocas.",
+      "tipo": "contenido",
+      "titulo": "La fase específica es *voluntaria*"
+    },
+    {
+      "antetitulo": "Puntos extra máximos",
+      "cifra": "4",
+      "fuente": "Cesur · Adams · Ilerna, sept. 2026",
+      "texto": "La fase específica pondera un máximo de dos materias (0,1 o 0,2 cada una) y suma hasta 4 puntos: máximo 14, igual que desde bachillerato.",
+      "tipo": "dato"
+    },
+    {
+      "numero": "03",
+      "texto": "Compites con la misma nota máxima que desde bachillerato. Misma meta, misma escala.",
+      "tipo": "contenido",
+      "titulo": "Ya no hay *cupo* reservado para FP"
+    },
+    {
+      "items": [
+        "Ponderaciones de tu universidad",
+        "Ramas con acceso preferente",
+        "Materias que te suman más"
+      ],
+      "tipo": "lista",
+      "titulo": "Antes de mover ficha, *comprueba*"
+    },
+    {
+      "cta": "Escríbenos por DM el grado que quieres y te decimos tu caso",
+      "tipo": "cierre",
+      "titulo": "Tu ruta a la carrera empieza *ya*"
+    }
+  ],
+  "titulo": "Del Grado Superior a la carrera, sin selectividad",
+  "upd": "2026-10-29T12:33:16.878Z"
+}

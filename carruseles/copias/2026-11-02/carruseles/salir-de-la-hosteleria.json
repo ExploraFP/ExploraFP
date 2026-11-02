@@ -1,0 +1,56 @@
+{
+  "cinta": "Salir de la hostelería",
+  "color": "verde01",
+  "copy": "Turnos partidos. Findes fuera. La espalda pidiendo tregua 🍽️\n\nLo que has aprendido en sala vale oro:\ntratar con gente, aguantar presión, resolver en segundos 💥\n\nMarketing. Administración. Educación Infantil.\nTres rutas para cambiar de terreno sin dejar el curro 🗺️\n\nComenta RUTA y te mando el mapa de las tres rutas 📩\n\n#FP #FPOnline #CambioDeProfesión #Hostelería #Explora",
+  "creado": "2026-09-28T16:00:00.000Z",
+  "cta": "Comenta RUTA y te mando el mapa",
+  "estado": "borrador",
+  "idea": "B058",
+  "listo": false,
+  "num": 3,
+  "objetivo": "leadmagnet",
+  "plantilla": "capas",
+  "slides": [
+    {
+      "etiqueta": "Cambio de rumbo",
+      "imagen": "fotos/foto-chica-cascos-portatil.jpg",
+      "subtitulo": "Sin tirar a la basura lo que ya sabes hacer.",
+      "tipo": "portada",
+      "titulo": "3 rutas para *salir* de la hostelería"
+    },
+    {
+      "antetitulo": "Años de sala no son años perdidos.",
+      "decoracion": "postit",
+      "texto": "Tratar con clientes, aguantar presión y resolver en segundos. Eso es oro en muchas profesiones.",
+      "tipo": "contenido",
+      "titulo": "Lo que ya llevas *en la mochila*"
+    },
+    {
+      "numero": "01",
+      "texto": "Sabes lo que hace volver a un cliente. Ahora aprendes a atraerlo con campañas reales.",
+      "tipo": "contenido",
+      "titulo": "Marketing y *publicidad*"
+    },
+    {
+      "numero": "02",
+      "texto": "Caja, pedidos, proveedores. Ya has tocado números. Ahora con horario de oficina.",
+      "tipo": "contenido",
+      "titulo": "Administración y *finanzas*"
+    },
+    {
+      "numero": "03",
+      "texto": "Paciencia, energía y mil cosas a la vez. Te suena, ¿verdad?",
+      "tipo": "contenido",
+      "titulo": "Educación *infantil*"
+    },
+    {
+      "cta": "Comenta RUTA y te mando el mapa",
+      "etiqueta": "Sin dejar de currar",
+      "texto": "A tu ritmo, con guía y prácticas en empresa.",
+      "tipo": "cierre",
+      "titulo": "Estudia online mientras *sigues en sala*."
+    }
+  ],
+  "titulo": "3 rutas para salir de la hostelería",
+  "upd": "2026-10-14T16:30:07.127Z"
+}

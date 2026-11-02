@@ -1,0 +1,20 @@
+{
+  "creada": "2026-10-25T09:00:00Z",
+  "dentro": "Cómo funciona la convalidación de módulos (RD 1085/2020): una solicitud por curso, se presenta en el centro donde te matriculas y tarda hasta seis meses en resolverse. Qué se convalida (FOL, Empresa e Iniciativa Emprendedora) y qué no (la FCT va por exención, y el proyecto no se convalida). Cierre: pregunta ya, no al final.",
+  "formacion": "",
+  "fuentes": [
+    "https://www.boe.es/buscar/doc.php?id=BOE-A-2020-17274",
+    "https://www.educacionfpydeportes.gob.es/servicios-al-ciudadano/catalogo/gestion-titulos/estudios-no-universitarios/titulos-espanoles/convalidaciones/convalidacion-formacion-profesional.html"
+  ],
+  "funnel": "MOFU",
+  "gancho": "«Si cambio de ciclo o vengo de otros estudios, empiezo de cero».",
+  "id": "M202611A",
+  "mes": "2026-11",
+  "momentos": [
+    "convalidar"
+  ],
+  "objetivo": "informativo",
+  "origen": "claude",
+  "subtipo": "tendencia",
+  "titular": "Convalidar módulos de FP: lo que ya estudiaste puede contar"
+}

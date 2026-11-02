@@ -1,0 +1,20 @@
+{
+  "creada": "2026-09-30T08:00:00Z",
+  "dentro": "Los datos oficiales del curso 2026-2027: 1.248.046 alumnos (+3,1 %), récord histórico. Qué dice de la FP que tanta gente la elija y por qué ya no es «la segunda opción».",
+  "formacion": "",
+  "fuentes": [
+    "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/250926-tolon-reina-inauguracion-fp.aspx"
+  ],
+  "funnel": "TOFU",
+  "gancho": "«La FP es el plan B de quien no vale para la universidad».",
+  "id": "M202610A",
+  "mes": "2026-10",
+  "momentos": [
+    "arranque",
+    "caida"
+  ],
+  "objetivo": "autoridad",
+  "origen": "claude",
+  "subtipo": "tendencia",
+  "titular": "1,24 millones estudian FP este curso: nunca fueron tantos"
+}

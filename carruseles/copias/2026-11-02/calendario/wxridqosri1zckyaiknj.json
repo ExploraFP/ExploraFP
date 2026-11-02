@@ -1,0 +1,91 @@
+{
+  "angulo": "Le llamamos, no lo cogió (normal, era un número desconocido): Noe se presenta, le recuerda que pidió información y le pregunta si sigue buscando FP.",
+  "asunto": "Te llamamos hace unos días",
+  "chat": [
+    {
+      "role": "user",
+      "text": "Escríbelo"
+    },
+    {
+      "role": "bot",
+      "text": "He escrito el email de Noe para «No contactado». El gancho es la llamada de un número desconocido que no coges, y el ángulo es presentarse y preguntar «¿sigues buscando FP?».\n\n- No uso ninguna historia de alumno, así que es transversal y no repite a Rosa ni a Alejandro\n- No hay horóscopo ni persiana. La manía de Noe sale de pasada: googlear el número y el Excel de la P.D.\n- Primer botón: elige cuándo le llamamos. Segundo botón con guasa: «esta vez lo cojo»\n- Unas 185 palabras de cuerpo"
+    }
+  ],
+  "creado": "2026-10-15T10:58:49.470Z",
+  "email": {
+    "angulo": "Le llamamos, no lo cogió (normal, era un número desconocido): Noe se presenta, le recuerda que pidió información y le pregunta si sigue buscando FP.",
+    "asunto_a": "Te llamamos hace unos días",
+    "asunto_b": "Te llamamos hace unos días",
+    "asuntos_extra": [],
+    "bloques": [
+      {
+        "contenido": "Hola, soy Noe.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Te suena el móvil. Un número que no tienes guardado.\nLo miras vibrar encima de la mesa hasta que se calla.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Yo hago lo mismo. Y luego me tiro diez minutos buscándolo en Google para ver si era la compañía de la luz.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Pues una de esas llamadas era nuestra.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Hace unos días dejaste tus datos pidiendo información de una FP. Te llamamos y no pudimos hablar. Normal, nadie coge números raros.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Así que me presento por escrito, que molesta menos.\nSomos Explora FP. Hacemos Formación Profesional oficial online. En corto:",
+        "tipo": "texto"
+      },
+      {
+        "contenido": [
+          "Título oficial de FP, con el mismo valor que el presencial en toda España",
+          "Dos años, a tu ritmo y sin dejar tu trabajo",
+          "Prácticas incluidas"
+        ],
+        "tipo": "lista"
+      },
+      {
+        "contenido": "Mira, {{nombre}}, solo quiero saber una cosa: **¿sigues buscando FP?**",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Si es que sí, dinos a qué hora te viene bien y un compañero del equipo te llama entonces. Ya sabrás quién es. Informarte no te compromete a nada.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Sí, llamadme cuando os diga",
+        "tipo": "boton"
+      },
+      {
+        "contenido": "Y si te fías más de ti que del móvil:",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Llamadme, que esta vez lo cojo",
+        "tipo": "boton"
+      }
+    ],
+    "despedida": "Prefiero los datos a los astros,",
+    "firma": "— Noe",
+    "pd": "P.D.: Si ya no buscas, también me sirve saberlo. Solo contesta con un \"No me interesa\" Y te borramos de la lista.",
+    "preheader": "Pediste información de una FP"
+  },
+  "estado": "enviado",
+  "fecha": "2026-10-15",
+  "gancho": "Te suena el móvil. Un número que no tienes guardado.\nLo miras vibrar encima de la mesa hasta que se calla.",
+  "hubspot": "https://app-eu1.hubspot.com/email/25603833/details/491905220834/performance?showPostPublishModal=true",
+  "metricas": {},
+  "preheader": "Pediste información de una FP",
+  "segmento": "nocontactado",
+  "versiones": [
+    "{\"asunto_a\":\"Te llamamos hace unos días\",\"asunto_b\":\"Te llamamos hace unos días\",\"preheader\":\"Pediste información de una FP\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te suena el móvil. Un número que no tienes guardado.\\nLo miras vibrar encima de la mesa hasta que se calla.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo hago lo mismo. Y luego me tiro diez minutos buscándolo en Google para ver si era la compañía de la luz.\"},{\"tipo\":\"texto\",\"contenido\":\"Pues una de esas llamadas era nuestra.\"},{\"tipo\":\"texto\",\"contenido\":\"Hace unos días dejaste tus datos pidiendo información de una FP. Te llamamos y no pudimos hablar. Normal, nadie coge números raros.\"},{\"tipo\":\"texto\",\"contenido\":\"Así que me presento por escrito, que molesta menos.\\nSomos Explora FP. Hacemos Formación Profesional oficial online. En corto:\"},{\"tipo\":\"lista\",\"contenido\":[\"Título oficial de FP, con el mismo valor que el presencial en toda España\",\"Dos años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\"]},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, solo quiero saber una cosa: **¿sigues buscando FP?**\"},{\"tipo\":\"texto\",\"contenido\":\"Si es que sí, dinos a qué hora te viene bien y un compañero del equipo te llama entonces. Ya sabrás quién es. Informarte no te compromete a nada.\"},{\"tipo\":\"boton\",\"contenido\":\"Sí, llamadme cuando os diga\"},{\"tipo\":\"texto\",\"contenido\":\"Y si te fías más de ti que del móvil:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que esta vez lo cojo\"}],\"pd\":\"P.D.: Si ya no buscas, también me sirve saberlo. Yo me ahorro una fila en el Excel y tú, otra llamada de número desconocido.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"Le llamamos, no lo cogió (normal, era un número desconocido): Noe se presenta, le recuerda que pidió información y le pregunta si sigue buscando FP.\"}",
+    "{\"asunto_a\":\"Te llamamos hace unos días\",\"asunto_b\":\"Te llamamos hace unos días\",\"preheader\":\"Pediste información de una FP\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te suena el móvil. Un número que no tienes guardado.\\nLo miras vibrar encima de la mesa hasta que se calla.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo hago lo mismo. Y luego me tiro diez minutos buscándolo en Google para ver si era la compañía de la luz.\"},{\"tipo\":\"texto\",\"contenido\":\"Pues una de esas llamadas era nuestra.\"},{\"tipo\":\"texto\",\"contenido\":\"Hace unos días dejaste tus datos pidiendo información de una FP. Te llamamos y no pudimos hablar. Normal, nadie coge números raros.\"},{\"tipo\":\"texto\",\"contenido\":\"Así que me presento por escrito, que molesta menos.\\nSomos Explora FP. Hacemos Formación Profesional oficial online. En corto:\"},{\"tipo\":\"lista\",\"contenido\":[\"Título oficial de FP, con el mismo valor que el presencial en toda España\",\"Dos años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\"]},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, solo quiero saber una cosa: **¿sigues buscando FP?**\"},{\"tipo\":\"texto\",\"contenido\":\"Si es que sí, dinos a qué hora te viene bien y un compañero del equipo te llama entonces. Ya sabrás quién es. Informarte no te compromete a nada.\"},{\"tipo\":\"boton\",\"contenido\":\"Sí, llamadme cuando os diga\"},{\"tipo\":\"texto\",\"contenido\":\"Y si te fías más de ti que del móvil:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que esta vez lo cojo\"}],\"pd\":\"P.D.: Si ya no buscas, también me sirve saberlo. Solo contesta con un \\\"Ya\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"Le llamamos, no lo cogió (normal, era un número desconocido): Noe se presenta, le recuerda que pidió información y le pregunta si sigue buscando FP.\"}",
+    "{\"asunto_a\":\"Te llamamos hace unos días\",\"asunto_b\":\"Te llamamos hace unos días\",\"preheader\":\"Pediste información de una FP\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Noe.\"},{\"tipo\":\"texto\",\"contenido\":\"Te suena el móvil. Un número que no tienes guardado.\\nLo miras vibrar encima de la mesa hasta que se calla.\"},{\"tipo\":\"texto\",\"contenido\":\"Yo hago lo mismo. Y luego me tiro diez minutos buscándolo en Google para ver si era la compañía de la luz.\"},{\"tipo\":\"texto\",\"contenido\":\"Pues una de esas llamadas era nuestra.\"},{\"tipo\":\"texto\",\"contenido\":\"Hace unos días dejaste tus datos pidiendo información de una FP. Te llamamos y no pudimos hablar. Normal, nadie coge números raros.\"},{\"tipo\":\"texto\",\"contenido\":\"Así que me presento por escrito, que molesta menos.\\nSomos Explora FP. Hacemos Formación Profesional oficial online. En corto:\"},{\"tipo\":\"lista\",\"contenido\":[\"Título oficial de FP, con el mismo valor que el presencial en toda España\",\"Dos años, a tu ritmo y sin dejar tu trabajo\",\"Prácticas incluidas\"]},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, solo quiero saber una cosa: **¿sigues buscando FP?**\"},{\"tipo\":\"texto\",\"contenido\":\"Si es que sí, dinos a qué hora te viene bien y un compañero del equipo te llama entonces. Ya sabrás quién es. Informarte no te compromete a nada.\"},{\"tipo\":\"boton\",\"contenido\":\"Sí, llamadme cuando os diga\"},{\"tipo\":\"texto\",\"contenido\":\"Y si te fías más de ti que del móvil:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme, que esta vez lo cojo\"}],\"pd\":\"P.D.: Si ya no buscas, también me sirve saberlo. Solo contesta con un \\\"No me interesa\\\" Y te borramos de la lista.\",\"despedida\":\"Prefiero los datos a los astros,\",\"firma\":\"— Noe\",\"angulo\":\"Le llamamos, no lo cogió (normal, era un número desconocido): Noe se presenta, le recuerda que pidió información y le pregunta si sigue buscando FP.\"}"
+  ]
+}
