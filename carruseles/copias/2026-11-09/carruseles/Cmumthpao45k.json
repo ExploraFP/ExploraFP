@@ -1,0 +1,58 @@
+{
+  "color": "blanco",
+  "copy": "¿Te mareas con la sangre y por eso descartaste sanidad? 🩸❌\nError de mapa.\n\nHay terreno sanitario donde no tocas a nadie.\nLaboratorio. Diagnóstico. Datos clínicos.\nSe salvan vidas desde otro sitio 🔬\n\nCabeza fría > estómago de acero 💥\n\n¿Conoces a alguien que se bajó de sanidad por la sangre? Etiquétale y recalculamos su ruta 📍\n\n#FPOnline #Sanidad #FPaDistancia #Explora #FormaciónProfesional",
+  "creado": "2026-09-29T15:14:30.864Z",
+  "cta": "Comenta, etiqueta a alguien o compártelo",
+  "error": "",
+  "estado": "borrador",
+  "idea": "R014",
+  "listo": true,
+  "num": 4,
+  "objetivo": "viral",
+  "plantilla": "capas",
+  "portada": "sinfoto",
+  "slides": [
+    {
+      "etiqueta": "Sanidad",
+      "subtitulo": "El rincón de la sanidad que nadie te cuenta",
+      "tipo": "portada",
+      "titulo": "Sanidad sin *sangre* ni pacientes: existe"
+    },
+    {
+      "numero": "01",
+      "texto": "Piensas en enfermería, en urgencias, en agujas. Y cierras la puerta sin mirar más.",
+      "tipo": "contenido",
+      "titulo": "El mito: sanidad es *bata* y camilla"
+    },
+    {
+      "numero": "02",
+      "texto": "Laboratorio, diagnóstico, gestión de datos clínicos. Se salva vidas desde otro sitio.",
+      "tipo": "contenido",
+      "titulo": "La verdad: hay *terreno* sin contacto directo"
+    },
+    {
+      "items": [
+        "Analiza muestras en laboratorio",
+        "Gestiona historiales y citas",
+        "Controla calidad de procesos",
+        "Organiza logística sanitaria"
+      ],
+      "tipo": "lista",
+      "titulo": "Perfiles que *no* tocan a nadie"
+    },
+    {
+      "numero": "03",
+      "texto": "No hace falta estómago de acero. Hace falta cabeza fría y ganas de aportar.",
+      "tipo": "contenido",
+      "titulo": "Si te marea la sangre, *sigues* dentro"
+    },
+    {
+      "cta": "Comenta, etiqueta a alguien o compártelo",
+      "texto": "Otro camino dentro del mismo terreno. Existe y es real.",
+      "tipo": "cierre",
+      "titulo": "Sanidad *sin* miedo al pinchazo"
+    }
+  ],
+  "titulo": "Sanidad sin sangre ni pacientes: existe",
+  "upd": "2026-10-14T16:30:07.127Z"
+}
