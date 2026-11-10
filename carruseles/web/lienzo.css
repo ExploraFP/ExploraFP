@@ -67,3 +67,8 @@
 .lz-formas button:hover{border-color:var(--brand)}
 .lz-formas button[aria-pressed="true"]{border-color:var(--brand);background:var(--limaSoft);font-weight:600}
 .lz-formas .est-mini{width:100%;aspect-ratio:4/5;pointer-events:none}
+/* 10/11/2026 (Sandra: «no funciona el cambio de plantilla de una slide del cuerpo»): en Safari la miniatura (un iframe) se
+   puede quedar el clic. Una capa transparente encima de cada opción recoge el clic para el botón. */
+.lz-formas button { position: relative; }
+.lz-formas button::after { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+.lz-formas iframe { pointer-events: none !important; }
