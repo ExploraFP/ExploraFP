@@ -148,6 +148,20 @@ pintarEditor = function (todo) {
   lzFlota(); lzAvisos();
   lzCaja();
 };
+// 16/11/2026 (Sandra: «pincho otra plantilla de cuerpo y no se cambia»): en la herramienta real la base de datos repinta el
+// editor a menudo (cada guardado vuelve como aviso) y, si el repintado cae entre apretar y soltar, el navegador no da el «click»
+// (el botón que sueltas ya no es el que apretaste). Los botones de la barra izquierda actúan al APRETAR (pointerdown); el
+// click que llega después se ignora, y el click sin ratón (teclado) sigue funcionando.
+const LZ_BOTONES = '[data-lz-tab], [data-lz-forma], [data-lz-arriba], [data-lz-co], [data-lz-el], .lz-cajon [data-est-nueva], .lz-cajon [data-sel-pl], .lz-cajon [data-est-foto]';
+window.addEventListener('pointerdown', e => {
+  if (e.button !== 0 || !EST.abierto || !e.target.closest) return;
+  const b = e.target.closest(LZ_BOTONES); if (!b || !b.closest('#est-editor')) return;
+  e.preventDefault(); LZ.apretado = Date.now();
+  b.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
+}, true);
+window.addEventListener('click', e => {
+  if (e.isTrusted && LZ.apretado && Date.now() - LZ.apretado < 1500 && e.target.closest && e.target.closest(LZ_BOTONES)) { e.stopImmediatePropagation(); e.preventDefault(); LZ.apretado = 0; }
+}, true);
 window.addEventListener('click', e => {
   const t = e.target; if (!t.closest || !EST.abierto) return;
   const tb = t.closest('[data-lz-tab]');

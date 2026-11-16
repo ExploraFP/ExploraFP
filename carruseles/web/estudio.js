@@ -79,7 +79,7 @@ const EST_AJUSTE = '<script>document.fonts.ready.then(function(){var c=document.
   'if(c){var a=function(){var r=document.createRange();r.selectNodeContents(c);return r.getBoundingClientRect().width};' +
   'var t=parseFloat(getComputedStyle(c).fontSize);while(a()>c.clientWidth&&t>80){t-=6;c.style.fontSize=t+"px"}}' +
   'var sb=0,fs=document.querySelector(".foto-sangre");' +
-  'if(fs){var bf=document.querySelector(".bloque-foto").getBoundingClientRect();sb=Math.max(bf.bottom-1310,200-bf.top,0)}' +
+  'if(fs){var bfe=document.querySelector(".bloque-foto");if(bfe){var bf=bfe.getBoundingClientRect();sb=Math.max(bf.bottom-1310,200-bf.top,0)}}' +   // la Collage es foto-sangre sin .bloque-foto
   'else{var bl=[].slice.call(document.querySelectorAll(".contenido > :not(.papel):not(.flecha):not(img):not(i):not(.velo):not(.r-arriba):not(.r-banda), .caja, .bloque"));' +
   'bl=bl.filter(function(b){return b.offsetParent!==null});' +
   'if(bl.length){var fo=Math.max.apply(0,bl.map(function(b){return b.getBoundingClientRect().bottom})),ar=Math.min.apply(0,bl.map(function(b){return b.getBoundingClientRect().top}));' +
