@@ -1,0 +1,59 @@
+{
+  "color": "verde01",
+  "copy": "¿Crees que tienes que dejar tu curro para la formación en empresa? ✋\nPara.\n\nYa no va al final del ciclo. Va dentro.\nY a veces tu propio trabajo puede contar 💼\nDepende de un detalle: que tu empresa encaje con el ciclo 🎯\n\nEscríbenos tu ciclo por DM y miramos tu caso 📍\n\n#FPOnline #FormaciónEnEmpresa #FPDual #Explora #Ucademy",
+  "creado": "2026-10-01T12:17:57.009Z",
+  "cta": "Escríbenos tu ciclo por DM y te decimos tu caso",
+  "error": "",
+  "estado": "borrador",
+  "idea": "T30",
+  "num": 15,
+  "objetivo": "informativo",
+  "plantilla": "capas",
+  "portada": "sinfoto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "marco": "fondo",
+      "subtitulo": "Spoiler: a veces sí, pero depende de un detalle clave.",
+      "tipo": "portada",
+      "titulo": "¿La formación en empresa, *donde ya trabajas*?"
+    },
+    {
+      "numero": "01",
+      "texto": "La formación en empresa ya no es un bloque final y separado. Se integra dentro del ciclo, así que puede encajar con tu trabajo actual.",
+      "tipo": "contenido",
+      "titulo": "Olvida *dejar tu curro* para esto"
+    },
+    {
+      "antetitulo": "Cambio normativo",
+      "cifra": "LO 3/2022",
+      "fuente": "Esemtia · Alianza para la FP Dual, sept. 2026",
+      "texto": "La FP dual sustituye el antiguo módulo de FCT, que se hacía al final del ciclo. Ahora la formación en empresa va integrada.",
+      "tipo": "dato"
+    },
+    {
+      "items": [
+        "Que tenga actividad del ciclo",
+        "Que firme el convenio con el centro",
+        "Que haya alguien que te tutorice",
+        "Que cumplan los requisitos del título"
+      ],
+      "tipo": "lista",
+      "titulo": "Para que *tu empresa* cuente"
+    },
+    {
+      "numero": "02",
+      "texto": "A veces tu empresa cubre parte y completas el resto en otra. No pasa nada, se combina sin dramas.",
+      "tipo": "contenido",
+      "titulo": "¿Y si *no encaja* del todo?"
+    },
+    {
+      "cta": "Escríbenos tu ciclo por DM y te decimos tu caso.",
+      "texto": "Cada ciclo y cada empresa son un mundo. Mejor que lo miremos juntos antes de dar por hecho nada.",
+      "tipo": "cierre",
+      "titulo": "Tu caso, en *dos minutos*"
+    }
+  ],
+  "titulo": "¿La formación en empresa, donde ya trabajas?",
+  "upd": "2026-10-14T16:30:07.127Z"
+}
