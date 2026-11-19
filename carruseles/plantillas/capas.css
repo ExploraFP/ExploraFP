@@ -69,3 +69,23 @@
 /* 29/10/2026 (Sandra eligió entre 7 versiones la «caja recta, foto girada»): la caja del titular RECTA y la foto girada */
 .tipo-portada .caja-portada { transform: none; }
 .papel-portada.foto-papel, .alterna .papel-portada.foto-papel { transform: rotate(4deg); }
+
+/* 19/11/2026 (Sandra, dato del C21 «4» en verde: «mira qué mal se ve»): la cifra sola y pequeña arriba, medio slide vacío
+   y el papel blanco asomando por dos lados como un error. Ahora el bloque va centrado en vertical, la cifra corta es
+   gigante y la caja la pisa por abajo (la capa es la caja sobre la cifra, sin papel detrás). */
+.tipo-dato .contenido { justify-content: center; }
+.tipo-dato .cifra-xl { font-size: 760px; line-height: .78; }
+.tipo-dato .cifra-l { font-size: 420px; line-height: .8; }
+.tipo-dato .ante { font-size: 32px; margin-bottom: 30px; }
+.tipo-dato .pila > .papel { display: none; }
+.tipo-dato .pila { z-index: 3; }
+.tipo-dato .cabeza:has(.cifra) + .pila { margin-top: -120px; }
+.tipo-dato .cabeza:has(.titulo) + .pila { margin-top: 0; }
+.tipo-dato .pila > .caja, .l-capas.alterna.tipo-dato .pila > .caja { transform: rotate(-1.6deg); box-shadow: 0 24px 50px rgba(0,0,0,.22); }
+.tipo-dato .caja-dato { padding: 60px 64px 66px; }
+.tipo-dato .caja-dato .texto { font-size: 46px; }
+/* cifra corta: el antetitulo a su derecha, abajo, para que la cifra no quede sola con medio slide vacío al lado */
+.tipo-dato .cabeza:has(.cifra-xl) { display: grid; grid-template-columns: auto 1fr; align-items: end; column-gap: 44px; }
+.tipo-dato .cabeza:has(.cifra-xl) > :not(.ante):not(.cifra) { grid-column: 1 / -1; }
+.tipo-dato .cabeza:has(.cifra-xl) .ante { grid-column: 2; grid-row: 2; font-size: 40px; line-height: 1.15; letter-spacing: .1em; margin: 0 0 150px; }
+.tipo-dato .cabeza:has(.cifra-xl) .cifra { grid-column: 1; grid-row: 2; }

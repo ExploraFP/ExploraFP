@@ -25,4 +25,20 @@ console.log('forma con repintado entre apretar y soltar:', antes, '->', await p.
 // pestaña: un solo cambio (no se abre y se cierra)
 const tb = await p.evaluate(() => { const r = document.querySelector('.lz-rail [data-lz-tab="elementos"]').getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; }); await p.mouse.click(tb.x, tb.y); await p.waitForTimeout(500);
 console.log('pestaña abierta:', await p.evaluate(() => LZ.tab));
+// 19/11/2026: doble clic para escribir con el editor repintándose entre los dos clics («no me deja editar»)
+await p.evaluate(() => { LZ.tab = ''; pintarEditor(true); }); await p.waitForTimeout(800);
+const tt = await p.evaluate(() => { const fr = document.querySelector('#est-editor .est-grande iframe'), d = fr.contentDocument, t = d.querySelector('.titulo');
+  const a = fr.getBoundingClientRect(), r = t.getBoundingClientRect(), k = a.width / 1080; return {x: a.left + (r.left + r.width / 2) * k, y: a.top + (r.top + r.height / 2) * k}; });
+await p.waitForTimeout(600);
+await p.mouse.click(tt.x, tt.y); await p.evaluate(() => pintarEditor()); await p.waitForTimeout(60);
+await p.mouse.click(tt.x, tt.y); await p.waitForTimeout(600);
+console.log('escribir con doble clic y repintado:', await p.evaluate(() => !!SEL.inline), '(esperado true)');
+await p.keyboard.press('Escape'); await p.waitForTimeout(300);
+// y con un doble clic normal
+await p.mouse.dblclick(tt.x, tt.y); await p.waitForTimeout(600);
+console.log('escribir con doble clic normal:', await p.evaluate(() => !!SEL.inline), '(esperado true)');
+await p.keyboard.press('Escape'); await p.waitForTimeout(300);
+// un clic solo selecciona
+await p.mouse.click(tt.x, tt.y); await p.waitForTimeout(600);
+console.log('un clic solo selecciona:', await p.evaluate(() => !SEL.inline && !!document.querySelector('.lz-caja')), '(esperado true)');
 console.log('err', err.filter(x => !/404|CERT/.test(x))); await b.close();

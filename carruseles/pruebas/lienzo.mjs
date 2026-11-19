@@ -43,7 +43,7 @@ await p.mouse.dblclick(pos2.x, pos2.y); await p.waitForTimeout(600);
 console.log('doble clic → escribiendo?', await p.evaluate(() => !!SEL.inline));
 await p.keyboard.press('Escape'); await p.waitForTimeout(500);
 await p.mouse.click(pos2.x, pos2.y); await p.waitForTimeout(600);
-await p.click('[data-lz-reset]'); await p.waitForTimeout(1500);
+await pulsa('[data-lz-reset]'); await p.waitForTimeout(1500);
 console.log('tras recolocar:', JSON.stringify(await p.evaluate(id => EST.lista[id].slides[EST.sel].estilo || null, id)));
 await pulsa('.lz-rail [data-lz-tab="plantilla"]'); await p.waitForTimeout(1200);
 await p.screenshot({path: S + 'lienzo-plantilla.png'});

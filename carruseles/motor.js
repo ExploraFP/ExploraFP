@@ -74,7 +74,7 @@ export function crearMotor(R) {
         // (Sandra, 19/10/2026: «la flecha solitaria no se justifica», «demasiado vacío»). Si la «cifra» es una frase, va como titular (con su *resaltado*).
         const frase = /[a-záéíóúñ]{4,}/i.test(String(s.cifra || ""));
         return `<div class="cabeza">${etiqueta(s.etiqueta)}${si(s.antetitulo, `<div class="ante">${fmt(s.antetitulo)}</div>`)}` +
-          (frase ? titulo(s.cifra) : `<div class="cifra">${esc(s.cifra)}</div>`) + `</div>` +
+          (frase ? titulo(s.cifra) : `<div class="cifra${String(s.cifra).length <= 2 ? " cifra-xl" : String(s.cifra).length <= 4 ? " cifra-l" : ""}">${esc(s.cifra)}</div>`) + `</div>` +
           si(s.texto, `<div class="pila"><div class="papel"></div><div class="caja caja-dato">${texto(s.texto)}${fuente(s)}</div></div>`);
       }
       case "cierre":

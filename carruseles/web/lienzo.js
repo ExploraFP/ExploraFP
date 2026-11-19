@@ -152,7 +152,7 @@ pintarEditor = function (todo) {
 // editor a menudo (cada guardado vuelve como aviso) y, si el repintado cae entre apretar y soltar, el navegador no da el «click»
 // (el botón que sueltas ya no es el que apretaste). Los botones de la barra izquierda actúan al APRETAR (pointerdown); el
 // click que llega después se ignora, y el click sin ratón (teclado) sigue funcionando.
-const LZ_BOTONES = '[data-lz-tab], [data-lz-forma], [data-lz-arriba], [data-lz-co], [data-lz-el], .lz-cajon [data-est-nueva], .lz-cajon [data-sel-pl], .lz-cajon [data-est-foto]';
+const LZ_BOTONES = '[data-lz-tab], [data-lz-forma], [data-lz-arriba], [data-lz-co], [data-lz-el], .lz-cajon [data-est-nueva], .lz-cajon [data-sel-pl], .lz-cajon [data-est-foto], [data-lz-editar], [data-lz-reset]';
 window.addEventListener('pointerdown', e => {
   if (e.button !== 0 || !EST.abierto || !e.target.closest) return;
   const b = e.target.closest(LZ_BOTONES); if (!b || !b.closest('#est-editor')) return;
@@ -300,7 +300,31 @@ function lzEscribirAqui() {
   LZ.editar = true; try { abrirPop({tipo: 'texto', campo: SEL.pop.campo, idx: SEL.pop.idx}); } finally { LZ.editar = false; }
   const g = document.querySelector('#est-editor .est-grande .lz-caja'); if (g) g.remove();
 }
+// 19/11/2026 (Sandra: «desde el editor no me deja editar»): si el editor se repinta entre los dos clics, el navegador no da el
+// doble clic (el segundo cae en otro elemento). El doble clic se cuenta a mano: dos apretones seguidos y cerca en la slide.
+function lzEscribirEn(g, x, y) {
+  const fr = g.querySelector('iframe'), o = fr && objetivoEn(fr, x, y);
+  if (!o || o.tipo !== 'texto') return false;
+  SEL.clic = {x: x, y: y}; LZ.escrito = Date.now();
+  LZ.editar = true; try { abrirPop(o); } finally { LZ.editar = false; }
+  const cj = document.querySelector('#est-editor .est-grande .lz-caja'); if (cj) cj.remove();
+  return true;
+}
+window.addEventListener('pointerdown', e => {
+  if (e.button !== 0 || SEL.inline || !e.target.closest) return;
+  const g = e.target.closest('#est-editor:not(.solo-ver) .est-grande'); if (!g || e.target.closest('.lz-barra, .sel-paso')) return;
+  const a = LZ.apreton, ahora = Date.now();
+  LZ.apreton = {t: ahora, x: e.clientX, y: e.clientY};
+  if (!a || ahora - a.t > 450 || Math.abs(a.x - e.clientX) + Math.abs(a.y - e.clientY) > 20) return;
+  // el segundo apretón: no se arrastra ni se vuelve a seleccionar; se escribe al soltar, cuando ya ha pasado el click
+  LZ.apreton = null; LZ.doble = {x: e.clientX, y: e.clientY}; e.stopImmediatePropagation(); e.preventDefault();
+}, true);
+window.addEventListener('pointerup', () => {
+  const D = LZ.doble; if (!D) return;
+  setTimeout(() => { LZ.doble = null; const g = document.querySelector('#est-editor:not(.solo-ver) .est-grande'); if (g && !SEL.inline) lzEscribirEn(g, D.x, D.y); }, 0);
+}, true);
 window.addEventListener('dblclick', e => {
+  if (LZ.doble || SEL.inline || (LZ.escrito && Date.now() - LZ.escrito < 800)) { e.stopImmediatePropagation(); return; }
   const g = e.target.closest && e.target.closest('#est-editor:not(.solo-ver) .est-grande'); if (!g) return;
   const fr = g.querySelector('iframe'), o = fr && objetivoEn(fr, e.clientX, e.clientY);
   if (!o || o.tipo !== 'texto') return;
