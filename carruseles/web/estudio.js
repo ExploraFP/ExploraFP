@@ -129,6 +129,15 @@ const MINI_RO = typeof ResizeObserver === 'function' ? new ResizeObserver(es => 
 window.addEventListener('resize', () => pintarMinis());
 
 /* ---------- datos: base compartida (db) o este navegador ---------- */
+// 20/11/2026 (Sandra: un clic no hace nada y el doble clic pinta la slide de azul): si el editor se repinta mientras se escribe sobre
+// la slide, `SEL.inline` se quedaba apuntando a un texto que ya no existe y TODOS los clics se ignoraban («ya estás escribiendo»).
+// Antes de cualquier otro manejador: si lo que se está escribiendo ya no está en la página, se olvida.
+window.addEventListener('pointerdown', () => {
+  if (typeof SEL === 'undefined' || !SEL.inline) return;
+  const I = SEL.inline; let vivo = false;
+  try { vivo = !!(I.el && I.el.isConnected && I.doc && I.doc.defaultView && I.doc.defaultView.frameElement && I.doc.defaultView.frameElement.isConnected); } catch (e) {}
+  if (!vivo) { SEL.inline = null; if (typeof DG !== 'undefined') dgApunta({e: 'inline-muerto-limpiado'}); }
+}, true);
 let EST_DB = null;
 // JSON con las claves ordenadas: el db puede devolver los mismos campos en otro orden
 function firmaEstable(v) { return JSON.stringify(v, (k, x) => x && typeof x === 'object' && !Array.isArray(x) ? Object.keys(x).sort().reduce((o, q) => (o[q] = x[q], o), {}) : x); }
