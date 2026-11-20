@@ -332,8 +332,27 @@ promptSlide = function (c, i, peticion) {
 const _pedirChat = pedirCambioSlide;
 pedirCambioSlide = async function (peticion) {
   const c = EST.lista[EST.abierto], t = String(peticion || '').trim();
-  if (!c || !t || MESA.pidiendo || !EST.sample) return _pedirChat(peticion);
-  c.chat = (c.chat || []).concat([{role: 'user', text: t}]).slice(-CHAT_MAX);
+  if (!c || !t) return _pedirChat(peticion);
+  // 20/11/2026 (Sandra: «le pido que borre una slide, apruebo, y no la borra»; en el db no quedó ni su mensaje): quitar una
+  // slide lo hace la herramienta AL MOMENTO, sin esperar a Claude (que reescribe el carrusel entero y tarda).
+  const qm = t.match(/^\s*(?:por favor,?\s*)?(?:borra|bórrame|borrame|quita|quítame|quitame|elimina|elimíname|eliminame)\s+(?:la\s+)?(?:slide|diapositiva|página|pagina)s?\s+(?:n[ºo.]?\s*)?((?:\d+\s*(?:,|y|e)?\s*)+)\.?\s*$/i);
+  if (qm) {
+    const nums = [...new Set((qm[1].match(/\d+/g) || []).map(Number))].filter(n => n >= 1 && n <= c.slides.length).sort((a, b) => b - a);
+    let resp;
+    if (!nums.length) resp = 'No hay ninguna slide con ese número: este carrusel tiene ' + c.slides.length + '.';
+    else if (nums.length >= c.slides.length) resp = 'No puedo dejar el carrusel sin slides.';
+    else {
+      nums.forEach(n => c.slides.splice(n - 1, 1));
+      if (EST.sel >= c.slides.length) EST.sel = c.slides.length - 1;
+      SEL.pop = null; MESA.grupo = 'quitar:' + Date.now();
+      resp = '✓ ' + (nums.length === 1 ? 'Quitada la slide ' + nums[0] : 'Quitadas las slides ' + nums.slice().reverse().join(', ')) + '. Si no querías, Ctrl/⌘ + Z';
+    }
+    c.chat = (c.chat || []).concat([{role: 'user', text: t}, {role: 'bot', text: resp}]).slice(-CHAT_MAX);
+    MESA.respuesta = resp; guardarC(c); pintarEditor(true); toast(resp); return;
+  }
+  if (MESA.pidiendo || !EST.sample) return _pedirChat(peticion);
+  // tu mensaje se guarda ya, aunque Claude tarde o se cierre la página antes de que conteste
+  c.chat = (c.chat || []).concat([{role: 'user', text: t}]).slice(-CHAT_MAX); guardarC(c);
   await _pedirChat(peticion);
   const cc = EST.lista[c.id] || c;
   if (cc !== c) cc.chat = c.chat;

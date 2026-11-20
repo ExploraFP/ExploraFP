@@ -663,3 +663,23 @@ document.addEventListener('click', e => {
   cerrarEditor(); toast('✓ Publicado. Lo tienes en «Publicado»');
 });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'sv-ig') { e.preventDefault(); const b = $('#sv-ig-ok'); if (b) b.click(); } });
+
+// 20/11/2026 (Sandra: «le doy a borrar una slide, apruebo, y no la borra»; en el db no quedó ningún cambio): «Sí, quitar»
+// quita la slide al APRETAR el botón, sin esperar al «click» (que se pierde si algo repinta entre apretar y soltar).
+function quitarSlideYa(i) {
+  const c = EST.lista[EST.abierto]; cerrarPanel();
+  if (!c || c.slides.length < 2 || !c.slides[i]) return;
+  terminarInline(false);
+  c.slides.splice(i, 1); if (EST.sel >= c.slides.length || EST.sel > i) EST.sel = Math.max(0, EST.sel - 1); SEL.pop = null;
+  MESA.grupo = 'quitar:' + Date.now(); guardarC(c); pintarEditor(true); toast('Slide ' + (i + 1) + ' quitada · si te has equivocado: Ctrl/⌘ + Z');
+}
+let SEL_QUITA_APRETADO = 0;
+window.addEventListener('pointerdown', e => {
+  if (e.button !== 0 || !e.target.closest) return;
+  const b = e.target.closest('[data-sel-quita-ok]'); if (!b || !EST.abierto) return;
+  e.preventDefault(); e.stopImmediatePropagation(); SEL_QUITA_APRETADO = Date.now();
+  quitarSlideYa(+b.dataset.selQuitaOk);
+}, true);
+window.addEventListener('click', e => {
+  if (e.isTrusted && Date.now() - SEL_QUITA_APRETADO < 1500 && e.target.closest && e.target.closest('[data-sel-quita-ok], #onb')) { e.stopImmediatePropagation(); e.preventDefault(); SEL_QUITA_APRETADO = 0; }
+}, true);

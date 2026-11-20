@@ -41,4 +41,14 @@ await p.keyboard.press('Escape'); await p.waitForTimeout(300);
 // un clic solo selecciona
 await p.mouse.click(tt.x, tt.y); await p.waitForTimeout(600);
 console.log('un clic solo selecciona:', await p.evaluate(() => !SEL.inline && !!document.querySelector('.lz-caja')), '(esperado true)');
+// 20/11/2026: quitar una slide con la papelera de la miniatura y «Sí, quitar», con repintado entre apretar y soltar
+const nAntes = await p.evaluate(id => EST.lista[id].slides.length, id);
+await p.evaluate(() => { $('#onb').hidden = false; });
+const qb = await p.evaluate(() => { const b = document.querySelector('[data-est-quita="1"]'); b.style.visibility = 'visible'; b.style.opacity = 1; const r = b.getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; });
+await p.evaluate(() => { $('#onb').hidden = true; });
+await p.mouse.click(qb.x, qb.y); await p.waitForTimeout(500);
+const si = await p.evaluate(() => { const b = document.querySelector('[data-sel-quita-ok]'); if (!b) return null; const r = b.getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; });
+console.log('ventana de quitar:', !!si);
+if (si) { await p.mouse.move(si.x, si.y); await p.mouse.down(); await p.evaluate(() => pintarEditor()); await p.waitForTimeout(80); await p.mouse.up(); await p.waitForTimeout(1200); }
+console.log('quitar slide:', nAntes, '->', await p.evaluate(id => EST.lista[id].slides.length, id), '(esperado ' + (nAntes - 1) + ') · ventana cerrada:', await p.evaluate(() => $('#onb').hidden));
 console.log('err', err.filter(x => !/404|CERT/.test(x))); await b.close();
