@@ -136,7 +136,7 @@ window.addEventListener('pointerdown', () => {
   if (typeof SEL === 'undefined' || !SEL.inline) return;
   const I = SEL.inline; let vivo = false;
   try { vivo = !!(I.el && I.el.isConnected && I.doc && I.doc.defaultView && I.doc.defaultView.frameElement && I.doc.defaultView.frameElement.isConnected); } catch (e) {}
-  if (!vivo) { SEL.inline = null; if (typeof DG !== 'undefined') dgApunta({e: 'inline-muerto-limpiado'}); }
+  if (!vivo) { SEL.inline = null; }
 }, true);
 let EST_DB = null;
 // JSON con las claves ordenadas: el db puede devolver los mismos campos en otro orden

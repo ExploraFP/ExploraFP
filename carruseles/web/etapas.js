@@ -69,10 +69,12 @@ function htmlPasos(c) {
   const ahora = PASOS.findIndex(p => p[0] === pasoDe(c));
   // 29/10/2026 (Sandra: «se puede mover de estado en dos partes distintas, no me gusta»): los pasos solo ENSEÑAN dónde está;
   // se avanza con el botón principal (con ventana de confirmación) y se vuelve atrás con el enlace pequeño «↩ Volver a…».
-  const atras = ahora > 0 ? PASOS[ahora - 1] : null;
+  // 20/11/2026 (Sandra: «no se puede editar nada»; el C13 y el C21 estaban Publicados y el editor no decía nada): desde
+  // «Para publicar» y «Publicado», que solo se pueden ver, se vuelve DIRECTO a borrador (antes Publicado → Para publicar, que tampoco se edita).
+  const atras = ahora > 0 ? PASOS[0] : null;
   return '<ol class="eb-pasos" aria-label="Etapa del carrusel">' + PASOS.map(([k, t], i) =>
     '<li><span class="' + (i < ahora ? 'hecho' : i === ahora ? 'actual' : '') + '"' + (i === ahora ? ' aria-current="step"' : '') + '>' + (i < ahora ? '✓ ' : '') + t + '</span></li>').join('') + '</ol>' +
-    (atras ? '<button type="button" class="eb-volver" data-pr-paso="' + atras[0] + '" title="Vuelve a «' + atras[1] + '»">↩ Volver a ' + atras[1].toLowerCase() + '</button>' : '');
+    (atras ? '<button type="button" class="eb-volver" data-pr-paso="' + atras[0] + '" title="Vuelve a «' + atras[1] + '»">↩ Volver a ' + atras[1].toLowerCase() + ' para editar</button>' : '');
 }
 const _pintarEditorEt = pintarEditor;
 pintarEditor = function (todo) {
@@ -153,4 +155,13 @@ window.addEventListener('click', e => {
     cerrarPanel();
     if (darOK(c, true)) { apuntarEtapa(c, antes); pintarEditor(true); toast('✓ Para publicar. Ya puedes descargarlo'); }
   }
+}, true);
+
+// 20/11/2026: pinchar una slide que solo se puede ver no hacía NADA (Sandra pensó que el editor estaba roto). Ahora lo dice.
+let SOLO_AVISO = 0;
+window.addEventListener('pointerdown', e => {
+  if (!e.target.closest || !e.target.closest('#est-editor.solo-ver .est-grande')) return;
+  if (Date.now() - SOLO_AVISO < 4000) return; SOLO_AVISO = Date.now();
+  const c = EST.lista[EST.abierto]; if (!c) return;
+  toast('Está en «' + (pasoDe(c) === 'publicado' ? 'Publicado' : 'Para publicar') + '»: solo se puede ver. Para cambiarlo, pulsa «↩ Volver a borrador para editar» arriba');
 }, true);

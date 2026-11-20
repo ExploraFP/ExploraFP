@@ -33,6 +33,7 @@ await p.evaluate(()=>cerrarEditor()); await p.waitForTimeout(500);
 console.log('etiqueta «Editado después» (debe ser 0):', await p.evaluate(()=>(document.body.innerText.match(/Editado después/g)||[]).length));
 // publicado
 await p.evaluate(()=>abrirEditor('Cmun394vgw4v')); await p.waitForTimeout(1500); await bar('PUBLICADO:'); await p.screenshot({path:S+'tres-pub.png'});
-await p.click('.eb-volver'); await p.waitForTimeout(800); await bar('PUB->LISTO:');
+await p.click('.eb-volver'); await p.waitForTimeout(800); await bar('PUB->BORRADOR:');
+await p.click('#pr-ok'); await p.waitForTimeout(400); await p.click('#eb-ok-si'); await p.waitForTimeout(1500);
 await p.click('#est-editor [data-pr-publicar]'); await p.waitForTimeout(500); console.log('dialogo publicar:', await p.evaluate(()=>!!document.querySelector('.pr-publicar')));
 console.log('errores', err.join('|')||'ninguno'); await b.close();
