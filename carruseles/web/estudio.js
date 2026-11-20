@@ -150,7 +150,7 @@ async function conectarEstudio() {
   }
   EST_DB.collection('carruseles').onSnapshot(snap => {
     const m = {};
-    snap.docs.forEach(d => { const v = d.data(); if (v) m[d.id] = Object.assign({id: d.id}, v); });
+    snap.docs.forEach(d => { const v = copiaDb(d.data()); if (v) m[d.id] = Object.assign({id: d.id}, v); });
     // lo que se está generando en esta vista manda sobre lo que llega
     Object.keys(EST.lista).forEach(id => { if (EST.lista[id].estado === 'generando' && m[id]) m[id].estado = 'generando'; });
     // si llega la confirmación de un guardado ANTERIOR (el db va con retraso) no pisa lo último que has escrito en esta vista

@@ -446,6 +446,11 @@ const CATALOGO={"ideas":[{"id":"T01","cat":"TRANSVERSAL","titular":"La palabra '
 <div class="onb" id="onb" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
+// 20/11/2026: la base de datos de claude.ai entrega los documentos BLOQUEADOS (solo lectura): modificarlos fallaba en silencio
+// o con «Cannot assign to read only property» (no se borraban slides, no se guardaba lo arrastrado). Todo lo que llega del db
+// se copia antes de usarlo.
+function copiaDb(v) { try { return v == null ? v : JSON.parse(JSON.stringify(v)); } catch (e) { return v; } }
+
 /* ===================== modelo ===================== */
 const IDEAS = CATALOGO.ideas, DATOS = CATALOGO.datos, CANON = CATALOGO.formaciones;
 const MOMENTOS = CATALOGO.momentos, MESES = CATALOGO.meses;
@@ -546,7 +551,7 @@ async function conectar(){
   if (!DB){ setModo('local'); return; }
   DB.collection('ops').onSnapshot(snap => {
     const m = {};
-    snap.docs.forEach(d => { const v = d.data(); if (v) m[d.id] = v; });
+    snap.docs.forEach(d => { const v = copiaDb(d.data()); if (v) m[d.id] = v; });
     S.ops = m; setModo('equipo'); render();
   }, () => setModo('local', 'No he podido leer el estado del equipo en esta vista.'));
 }

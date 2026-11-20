@@ -41,7 +41,7 @@ function guConectar() {
   const db = guDb(); if (!db) return setTimeout(guConectar, 1200);
   const leer = (col, dest) => db.collection(col).onSnapshot(snap => {
     const m = {};
-    snap.docs.forEach(d => { const v = d.data(); if (v) m[d.id] = Object.assign({id: d.id}, v); });
+    snap.docs.forEach(d => { const v = copiaDb(d.data()); if (v) m[d.id] = Object.assign({id: d.id}, v); });
     // una confirmación vieja del db no pisa lo que acabas de escribir (como en Carruseles)
     Object.keys(GU[dest]).forEach(id => { const loc = GU[dest][id]; if (m[id] && loc.upd && m[id].upd && m[id].upd < loc.upd) m[id] = loc; });
     GU[dest] = m; GU.listo = true;

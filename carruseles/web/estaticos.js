@@ -30,7 +30,7 @@ function esConectar() {
   const db = guDb(); if (!db) return setTimeout(esConectar, 1200);
   db.collection('estaticos').onSnapshot(snap => {
     const m = {};
-    snap.docs.forEach(d => { const v = d.data(); if (v) m[d.id] = Object.assign({id: d.id}, v); });
+    snap.docs.forEach(d => { const v = copiaDb(d.data()); if (v) m[d.id] = Object.assign({id: d.id}, v); });
     Object.keys(ES.lista).forEach(id => { const loc = ES.lista[id]; if (m[id] && loc.upd && m[id].upd && m[id].upd < loc.upd) m[id] = loc; });
     ES.lista = m; ES.listo = true;
     if (CNT.sec === 'estaticos') esPintar(false);

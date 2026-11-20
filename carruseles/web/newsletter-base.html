@@ -2248,10 +2248,10 @@ renderPreview(); renderCal(); renderBuyers(); renderReglas(true);
   if (!sample) { $("noSample").hidden = false; $("goBtn").disabled = true; }
   db = await window.claude.use("db");
   if (!db) { $("noDb").hidden = false; return; }
-  db.collection("config").onSnapshot((snap) => { const d = snap.docs.find((x) => x.id === "reglas"); state.reglasDoc = d ? d.data() : null; renderReglas(); });
-  db.collection("ejemplos").onSnapshot((snap) => { state.likes = snap.docs.map((d) => ({ id: d.id, ...d.data() })); likeUi(); });
+  db.collection("config").onSnapshot((snap) => { const d = snap.docs.find((x) => x.id === "reglas"); state.reglasDoc = d ? JSON.parse(JSON.stringify(d.data())) : null; renderReglas(); });
+  db.collection("ejemplos").onSnapshot((snap) => { state.likes = snap.docs.map((d) => ({ id: d.id, ...JSON.parse(JSON.stringify(d.data() || {})) })); likeUi(); });
   db.collection("calendario").orderBy("fecha", "asc").onSnapshot((snap) => {
-    state.cal = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderCal();
+    state.cal = snap.docs.map((d) => ({ id: d.id, ...JSON.parse(JSON.stringify(d.data() || {})) })); renderCal();
     if (pendingWriter) {
       const v = pendingWriter; pendingWriter = null;
       const e = v.id ? state.cal.find((c) => c.id === v.id) : state.cal.find((c) => c.segmento === v.seg && c.fecha === v.fecha);

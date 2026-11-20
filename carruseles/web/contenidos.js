@@ -165,7 +165,7 @@ function cntPintarInicio() {
 (function cntLeerCalendario() {
   const db = (typeof EST_DB !== 'undefined' && EST_DB) || (typeof DB !== 'undefined' && DB);
   if (!db) return setTimeout(cntLeerCalendario, 1500);
-  try { db.collection('calendario').onSnapshot(snap => { CNT.cal = snap.docs.map(d => d.data()); cntPintarInicio(); }); } catch (e) {}
+  try { db.collection('calendario').onSnapshot(snap => { CNT.cal = snap.docs.map(d => copiaDb(d.data())); cntPintarInicio(); }); } catch (e) {}
 })();
 setInterval(cntPintarInicio, 15000);
 

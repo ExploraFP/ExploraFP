@@ -53,7 +53,7 @@ function rehacerFotos() {
   let n = 0; const t = setInterval(async () => {
     if (++n > 40) return clearInterval(t);
     if (!DB) return; clearInterval(t);
-    DB.collection('fotos').onSnapshot(snap => { const d = {}; snap.docs.forEach(x => { d[x.id] = x.data(); }); FT.docs = d; rehacerFotos(); if (S.v === 'fotos') render(); }, () => {});
+    DB.collection('fotos').onSnapshot(snap => { const d = {}; snap.docs.forEach(x => { d[x.id] = copiaDb(x.data()); }); FT.docs = d; rehacerFotos(); if (S.v === 'fotos') render(); }, () => {});
     try { FT.assets = await claude.use('assets'); } catch (e) { FT.assets = null; }
     if (S.v === 'fotos') render();
   }, 300);

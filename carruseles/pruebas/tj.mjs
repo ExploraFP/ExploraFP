@@ -7,7 +7,7 @@ await p.route(/html-to-image/, r=>r.fulfill({contentType:'application/javascript
 await p.route(/mp4-muxer/, r=>r.fulfill({contentType:'application/javascript',body:readFileSync(process.env.MUX,'utf8')}));
 await p.exposeFunction('__guarda', (name, b64)=>{ writeFileSync(S+fondo+'-'+name.replace(/^.*_/, ''), Buffer.from(b64,'base64')); return true; });
 await p.addInitScript(()=>{ if(window.parent!==window) return; const cols={}; const subs={};
- const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>d}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
+ const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>(function f(o){if(o&&typeof o==="object"){Object.values(o).forEach(f);Object.freeze(o)}return o})(JSON.parse(JSON.stringify(d)))}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
  const col=c=>({onSnapshot:f=>{(subs[c]=subs[c]||[]).push(f);setTimeout(()=>f(snap(c)),50);return()=>{}},orderBy:()=>col(c),where:()=>col(c),get:async()=>snap(c),
    doc:id=>({set:async d=>{(cols[c]=cols[c]||{})[id]=JSON.parse(JSON.stringify(d));avisa(c)},update:async d=>{},delete:async()=>{}})});
  const down={save:async({filename,data})=>{const buf=await (data instanceof Blob?data:new Blob([data])).arrayBuffer(); let s=''; const u=new Uint8Array(buf); for(let i=0;i<u.length;i+=32768) s+=String.fromCharCode.apply(null,u.subarray(i,i+32768)); await window.__guarda(filename, btoa(s)); return {status:'saved'};}};

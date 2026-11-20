@@ -2,7 +2,7 @@ import { chromium } from "../node_modules/playwright/index.mjs";
 const S=process.env.SALIDA;
 const b=await chromium.launch(); const err=[]; const p=await b.newPage({viewport:{width:1440,height:950}}); p.on('pageerror',x=>err.push(x.message));
 await p.addInitScript(()=>{ if(window.parent!==window) return; const cols={}; const subs={};
- const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>d}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
+ const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>(function f(o){if(o&&typeof o==="object"){Object.values(o).forEach(f);Object.freeze(o)}return o})(JSON.parse(JSON.stringify(d)))}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
  const col=c=>({onSnapshot:f=>{(subs[c]=subs[c]||[]).push(f);setTimeout(()=>f(snap(c)),50);return()=>{}},orderBy:()=>col(c),where:()=>col(c),get:async()=>snap(c),
    doc:id=>({set:async d=>{(cols[c]=cols[c]||{})[id]=JSON.parse(JSON.stringify(d));avisa(c)},update:async d=>{Object.assign((cols[c]=cols[c]||{})[id]||{},d);avisa(c)},delete:async()=>{delete (cols[c]||{})[id];avisa(c)}})});
  const sample={json:async(pr)=>({titulo:'Sin la ESO también',gancho:'¿Te dejaste la ESO?',desarrollo:'Hay una prueba de acceso…',cta:'Escríbenos RUTA',pantalla:''})};

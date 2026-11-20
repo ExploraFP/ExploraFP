@@ -10,7 +10,7 @@ http.createServer((q,r)=>{r.end('<html><body style="margin:0"><iframe id="ap" sa
 const W=+(process.env.W||1440), H=+(process.env.H||900); const b=await chromium.launch(); const err=[]; const p=await b.newPage({viewport:{width:W,height:H}, deviceScaleFactor:+(process.env.DPR||1)}); p.on('pageerror',x=>err.push(x.message)); p.on('console',m=>{if(m.type()==='error')err.push('c:'+m.text())});
 await p.addInitScript(([Cs])=>{ if(location.port!=='8765'||window.parent.parent!==window.parent) return; const cols=JSON.parse(Cs); const subs={};
  window.__escrituras=0; window.__subs=subs; window.__snap=c=>snap(c);
- const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>JSON.parse(JSON.stringify(d))}))});
+ const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>(function f(o){if(o&&typeof o==="object"){Object.values(o).forEach(f);Object.freeze(o)}return o})(JSON.parse(JSON.stringify(d)))}))});
  // como la base de datos real: cada escritura vuelve como aviso, con retraso, y repinta
  const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),250+Math.random()*400));
  const col=c=>({onSnapshot:f=>{(subs[c]=subs[c]||[]).push(f);setTimeout(()=>f(snap(c)),50);return()=>{}},orderBy:()=>col(c),where:()=>col(c),get:async()=>snap(c),

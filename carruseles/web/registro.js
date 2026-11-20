@@ -99,7 +99,7 @@ const regEmo = f => (REG_FORMATOS.find(x => x[0] === f) || REG_FORMATOS[4])[1];
 function regConectar() {
   const db = guDb(); if (!db) return setTimeout(regConectar, 1200);
   db.collection('externas').onSnapshot(snap => {
-    const m = {}; snap.docs.forEach(d => { const v = d.data(); if (v) m[d.id] = Object.assign({id: d.id}, v); });
+    const m = {}; snap.docs.forEach(d => { const v = copiaDb(d.data()); if (v) m[d.id] = Object.assign({id: d.id}, v); });
     REG.ext = m; REG.listo = true; if (CNT.sec === 'directorio') regPintar();
   }, () => { REG.listo = true; });
 }
@@ -380,7 +380,7 @@ guBorrar = function (col, id) { const x = (col === 'guiones' ? GU.lista : GU.com
 (function papConectar() {
   const db = guDb(); if (!db) return setTimeout(papConectar, 1300);
   db.collection('papelera').onSnapshot(snap => {
-    const m = {}; snap.docs.forEach(d => { const v = d.data(); if (v && v.col) m[d.id] = v; });
+    const m = {}; snap.docs.forEach(d => { const v = copiaDb(d.data()); if (v && v.col) m[d.id] = v; });
     PAP.docs = m;
     // se vacía sola a los 30 días
     const tope = Date.now() - PAP_DIAS * 864e5;

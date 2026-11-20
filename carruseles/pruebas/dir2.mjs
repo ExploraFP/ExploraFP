@@ -5,7 +5,7 @@ const ids=['Cmumthpao45k','Cmun394vgpn8','Cmun394vgw4v','Cmuphs6hld8w','Cmupiiq5
 const docs={carruseles:Object.fromEntries(ids.map(id=>{const j=JSON.parse(readFileSync(D+id+'.json','utf8'));return [id,j.data||j];}))};
 const b=await chromium.launch(); const err=[]; const p=await b.newPage({viewport:{width:1440,height:950}}); p.on('pageerror',x=>err.push(x.message));
 await p.addInitScript(([C])=>{ if(window.parent!==window) return; const cols=JSON.parse(C); const subs={};
- const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>d}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
+ const snap=c=>({docs:Object.entries(cols[c]||{}).map(([id,d])=>({id,data:()=>(function f(o){if(o&&typeof o==="object"){Object.values(o).forEach(f);Object.freeze(o)}return o})(JSON.parse(JSON.stringify(d)))}))}); const avisa=c=>(subs[c]||[]).forEach(f=>setTimeout(()=>f(snap(c)),30));
  const col=c=>({onSnapshot:f=>{(subs[c]=subs[c]||[]).push(f);setTimeout(()=>f(snap(c)),50);return()=>{}},orderBy:()=>col(c),where:()=>col(c),get:async()=>snap(c),
    doc:id=>({set:async d=>{(cols[c]=cols[c]||{})[id]=JSON.parse(JSON.stringify(d));avisa(c)},update:async d=>{Object.assign((cols[c]=cols[c]||{})[id]||{},d);avisa(c)},delete:async()=>{delete (cols[c]||{})[id];avisa(c)}})});
  window.claude={use:async k=>k==='db'?{collection:col,doc:p=>col(p.split('/')[0]).doc(p.split('/')[1])}:null}; },[JSON.stringify(docs)]);

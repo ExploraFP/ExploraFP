@@ -705,7 +705,7 @@ function cargarIdeasPropias() {
   let n = 0; const t = setInterval(() => {
     if (++n > 40) return clearInterval(t);
     if (!DB) return; clearInterval(t);
-    DB.collection('ideas').onSnapshot(snap => { let nuevas = 0; snap.docs.forEach(x => { if (anadirIdea(Object.assign({id: x.id}, x.data()), true)) nuevas++; }); if (nuevas) render(); }, () => {});
+    DB.collection('ideas').onSnapshot(snap => { let nuevas = 0; snap.docs.forEach(x => { if (anadirIdea(Object.assign({id: x.id}, copiaDb(x.data())), true)) nuevas++; }); if (nuevas) render(); }, () => {});
   }, 300);
 }
 cargarIdeasPropias();
