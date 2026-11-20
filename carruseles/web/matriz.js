@@ -600,7 +600,7 @@ render = function () {
 function marcarPestana() { document.querySelectorAll('#vistas button').forEach(x => x.setAttribute('aria-current', String(x.dataset.v === S.v))); }
 const _refrescarEstudioMz = refrescarEstudio;
 refrescarEstudio = function () {
-  if (S.v === 'hechos' || S.v === 'ideas') { if (!EST.abierto) render(); else pintarEditor(); return; }
+  if (S.v === 'hechos' || S.v === 'ideas') { if (!EST.abierto) render(); else if (!EST.sinEditor) pintarEditor(); return; }
   _refrescarEstudioMz();
 };
 document.addEventListener('click', e => {

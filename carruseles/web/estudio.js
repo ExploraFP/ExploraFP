@@ -130,6 +130,8 @@ window.addEventListener('resize', () => pintarMinis());
 
 /* ---------- datos: base compartida (db) o este navegador ---------- */
 let EST_DB = null;
+// JSON con las claves ordenadas: el db puede devolver los mismos campos en otro orden
+function firmaEstable(v) { return JSON.stringify(v, (k, x) => x && typeof x === 'object' && !Array.isArray(x) ? Object.keys(x).sort().reduce((o, q) => (o[q] = x[q], o), {}) : x); }
 async function conectarEstudio() {
   try { if (typeof claude !== 'undefined' && claude.use) EST_DB = await claude.use('db'); } catch (e) { EST_DB = null; }
   try { if (typeof claude !== 'undefined' && claude.use) EST.sample = await claude.use('sample'); } catch (e) { EST.sample = null; }
@@ -144,7 +146,11 @@ async function conectarEstudio() {
     Object.keys(EST.lista).forEach(id => { if (EST.lista[id].estado === 'generando' && m[id]) m[id].estado = 'generando'; });
     // si llega la confirmación de un guardado ANTERIOR (el db va con retraso) no pisa lo último que has escrito en esta vista
     Object.keys(EST.lista).forEach(id => { const loc = EST.lista[id]; if (m[id] && loc.upd && m[id].upd && m[id].upd < loc.upd) m[id] = loc; });
-    EST.lista = m; EST.conectado = true; refrescarEstudio();
+    // 20/11/2026 (Sandra: «no se puede editar nada», un clic no hace nada): cada aviso del db repintaba el editor entero aunque
+    // el carrusel abierto no hubiera cambiado; el repintado recarga la slide y se lleva lo seleccionado. Solo se repinta si cambia.
+    const ab = EST.abierto, igual = ab && EST.lista[ab] && m[ab] && firmaEstable(EST.lista[ab]) === firmaEstable(m[ab]);
+    EST.lista = m; EST.conectado = true; EST.sinEditor = !!igual;
+    try { refrescarEstudio(); } finally { EST.sinEditor = false; }
   }, () => { EST.conectado = true; refrescarEstudio(); });
   refrescarEstudio();
 }
@@ -534,7 +540,7 @@ function refrescarEstudio() {
   }
   const n = carruselesDe('pendientes').length, b = document.querySelector('#vistas [data-v="producir"]');
   if (b) b.textContent = 'Carruseles';   // dentro de «Diseño» (26/10/2026)
-  if (EST.abierto) pintarEditor();
+  if (EST.abierto && !EST.sinEditor) pintarEditor();
 }
 
 /* ---------- editor ---------- */
