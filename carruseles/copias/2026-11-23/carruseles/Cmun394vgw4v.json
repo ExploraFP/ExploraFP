@@ -1,0 +1,89 @@
+{
+  "chat": [
+    {
+      "role": "user",
+      "text": "en la slide 04: green flags: y metele el aqui en la linea siguiente junto al sí"
+    },
+    {
+      "role": "bot",
+      "text": "✓ En la slide 04 el titular pasa a dos líneas: «Green flags:» arriba y «aquí sí» debajo."
+    },
+    {
+      "role": "user",
+      "text": "no me gusta el caption"
+    },
+    {
+      "role": "bot",
+      "text": "✓ He reescrito el caption con más complicidad, la situación de elegir por el anuncio y una sola llamada a etiquetar al final."
+    },
+    {
+      "role": "user",
+      "text": "no podemos tirar piedras sobre nuestro propio tejado, nosotros hacemos anuncios..."
+    },
+    {
+      "role": "bot",
+      "text": "✓ He quitado del caption la pulla a los anuncios y ahora habla de comparar centros y mirar la letra pequeña; las slides quedan igual."
+    }
+  ],
+  "cinta": "",
+  "color": "verde02",
+  "copy": "Comparando centros de FP online a las tantas, con mil pestañas abiertas. Muchos hemos estado ahí 🐊\n\nY justo ahí toca mirar la letra pequeña. ¿Código de centro? ¿Título oficial o «título propio»? ¿Prácticas explicadas?\n\nNo es un detalle. Es tu brújula ⚡️\n\nAntes de pagar nada, pide el código y pregunta si el título es oficial. Un centro serio responde a la primera 🚩\n\n¿Qué pregunta te hubiera gustado hacer antes de elegir? Etiqueta a quien esté buscando centro 👇\n\n#FPOnline #FormaciónProfesional #RedFlags #Explora #FPaDistancia",
+  "creado": "2026-09-29T19:47:47.308Z",
+  "cta": "Etiqueta a quien esté buscando centro",
+  "error": "",
+  "estado": "hecho",
+  "fecha": "2026-10-19",
+  "idea": "V21",
+  "ig": "https://www.instagram.com/p/DeryF4sCN_B/?img_index=1",
+  "listo": true,
+  "num": 7,
+  "objetivo": "viral",
+  "plantilla": "capas",
+  "portada": "foto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "imagen": "fotos/foto-chica-agobiada-examen.jpg",
+      "marco": "fondo",
+      "subtitulo": "Antes de trazar tu ruta, lee esto",
+      "tipo": "portada",
+      "titulo": "Red flags de un centro de FP *online*"
+    },
+    {
+      "numero": "01",
+      "texto": "Todo centro oficial tiene código de centro. Pídelo y comprueba que existe. Si te da largas, desconfía y sigue buscando.",
+      "tipo": "contenido",
+      "titulo": "Si no sale el *código*, huye"
+    },
+    {
+      "numero": "02",
+      "texto": "Pregunta sin rodeos: ¿el título es oficial? Si te responden «título propio», no es el título oficial de FP.",
+      "tipo": "contenido",
+      "titulo": "Título *propio*: no es el oficial"
+    },
+    {
+      "items": [
+        "Título oficial, misma validez que presencial",
+        "Te ayudan a encontrar prácticas en empresa",
+        "Código de centro a la vista",
+        "Tutores que responden de verdad"
+      ],
+      "tipo": "lista",
+      "titulo": "Green flags:\naquí *sí*"
+    },
+    {
+      "cifra": "Misma *validez* académica",
+      "fuente": "Esemtia, sept. 2026",
+      "texto": "La FP a distancia tiene carácter oficial. La fase práctica en empresa sí es presencial.",
+      "tipo": "dato"
+    },
+    {
+      "cta": "Etiqueta a quien esté buscando centro",
+      "texto": "Un centro serio no se esconde. Lo demuestra.",
+      "tipo": "cierre",
+      "titulo": "No pises *barro* por elegir mal"
+    }
+  ],
+  "titulo": "Red flags de un centro de FP online",
+  "upd": "2026-10-19T17:24:49.190Z"
+}

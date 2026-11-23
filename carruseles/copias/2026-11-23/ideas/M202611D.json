@@ -1,0 +1,19 @@
+{
+  "creada": "2026-10-25T09:00:00Z",
+  "dentro": "Las vías para entrar sin el título de acceso: prueba de acceso a grado medio (17 años en el año de la prueba) o a grado superior (19), cursos gratuitos de preparación que organizan las comunidades y la prueba de acceso a la universidad para mayores de 25. Se ofrece como mapa descargable por DM; recuerda que cada comunidad gestiona su convocatoria.",
+  "formacion": "",
+  "fuentes": [
+    "https://www.todofp.es/como-cuando-y-donde-estudiar/acceso-fp-desde-fp/como-accedo-a-fp.html",
+    "https://todofp.es/como-cuando-y-donde-estudiar/acceso-fp-desde-fp/ciclos-grado-medio.html",
+    "https://www.todofp.es/como-cuando-y-donde-estudiar/acceso-fp-desde-fp/ciclos-grado-superior.html"
+  ],
+  "funnel": "MOFU",
+  "gancho": "«Sin el título de la ESO o el Bachillerato ya no puedo estudiar una FP».",
+  "id": "M202611D",
+  "mes": "2026-11",
+  "momentos": [],
+  "objetivo": "leadmagnet",
+  "origen": "claude",
+  "subtipo": "tendencia",
+  "titular": "¿Te falta el título para entrar a una FP? Hay 3 vías"
+}

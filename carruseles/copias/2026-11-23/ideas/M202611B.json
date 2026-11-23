@@ -1,0 +1,20 @@
+{
+  "creada": "2026-10-25T09:00:00Z",
+  "dentro": "Con un título de Técnico Superior se accede a la universidad sin hacer la prueba de acceso (RD 534/2024); la nota de admisión sale del título y cada universidad pone sus reglas. Explica la ruta FP superior sanitaria → grado, y avisa de que las carreras muy demandadas piden nota alta: también se puede presentar la fase voluntaria para subirla.",
+  "formacion": "Sanidad",
+  "fuentes": [
+    "https://www.todofp.es/como-cuando-y-donde-estudiar/acceso-fp-desde-fp/acceso-a-la-universidad.html",
+    "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2024-11858"
+  ],
+  "funnel": "TOFU",
+  "gancho": "«Sin pasar por selectividad, la universidad no es para mí».",
+  "id": "M202611B",
+  "mes": "2026-11",
+  "momentos": [
+    "admision"
+  ],
+  "objetivo": "autoridad",
+  "origen": "claude",
+  "subtipo": "tendencia",
+  "titular": "FP superior de sanidad y luego enfermería: sin selectividad"
+}

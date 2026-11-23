@@ -1,0 +1,97 @@
+{
+  "angulo": "Si lo que te frenó fue el tiempo, tiene arreglo: online, a tu ritmo y sin dejar el trabajo",
+  "asunto": "Una pregunta y te dejo",
+  "chat": [
+    {
+      "role": "user",
+      "text": "Escríbelo"
+    },
+    {
+      "role": "bot",
+      "text": "He escrito el email de Ghosting para el 22/10. Va por el ángulo del tiempo: estudiar sin dejar el trabajo.\n\n- Gancho de Netflix con su «¿sigues ahí?». No se ha usado en este segmento.\n- Cuento la historia de Alejandro (damdaw-0) solo con lo que pone en su ficha. No digo que haya terminado ni que tenga trabajo nuevo.\n- El asunto es de curiosidad corta, al estilo de Rai. Es de otro tipo que los dos últimos (carrito y Tamara).\n- En la P.D. resuelvo la duda del precio sin dar importes."
+    }
+  ],
+  "creado": "2026-10-19T16:07:03.268Z",
+  "email": {
+    "angulo": "Si lo que te frenó fue el tiempo, tiene arreglo: online, a tu ritmo y sin dejar el trabajo",
+    "asunto_a": "Una pregunta y te dejo",
+    "asunto_b": "Una pregunta y te dejo",
+    "asuntos_extra": [],
+    "bloques": [
+      {
+        "contenido": "Hola, soy Rai.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Anoche Netflix me preguntó si seguía ahí.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Seguía. Dormido en el sofá desde el minuto diez, con el mando en la mano.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Entre semana llego así a las once. Y no creo que sea el único.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Por eso, cuando alguien me dice «no tengo tiempo para estudiar», no lo tomo como una excusa. Casi siempre es verdad.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Alejandro, por ejemplo. Carrocero, con una hernia en la espalda y unos horarios que no le dejaban ir a clase a ningún sitio.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Quería un trabajo sentado, que no le pasara factura. Y con sus horarios, la única opción era estudiar online.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Mira, {{nombre}}, si lo que no te encajó fue el tiempo, esto es lo que hay:",
+        "tipo": "texto"
+      },
+      {
+        "contenido": [
+          "Son 2 años, no 4",
+          "Vas a tu ritmo, cuando puedas",
+          "No tienes que dejar tu trabajo"
+        ],
+        "tipo": "lista"
+      },
+      {
+        "contenido": "Y si fue otra cosa, el precio, dudas con lo del online o que no era el momento, también vale. **Con que nos lo digas, ya podemos ayudarte.**",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Pulsa y un compañero del equipo te llama para ver cómo te cuadra con tus horarios. Si no te cuadra, aquí paz.",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Vale, que me llamen",
+        "tipo": "boton"
+      },
+      {
+        "contenido": "Y si lo vas a leer a las once con el sofá esperando, también tienes este:",
+        "tipo": "texto"
+      },
+      {
+        "contenido": "Llamadme antes de que me duerma",
+        "tipo": "boton"
+      }
+    ],
+    "despedida": "Sin más,",
+    "firma": "— Rai",
+    "pd": "P.D.: Si lo que te frenó fue el dinero, se paga a plazos. El compañero te lo explica cuando te llame.",
+    "preheader": "Sobre tu propuesta de FP"
+  },
+  "estado": "en_redaccion",
+  "fecha": "2026-10-22",
+  "gancho": "Anoche Netflix me preguntó si seguía ahí.",
+  "hubspot": "",
+  "metricas": {},
+  "preheader": "Sobre tu propuesta de FP",
+  "segmento": "ghosting",
+  "versiones": [
+    "{\"asunto_a\":\"Una pregunta y te dejo\",\"asunto_b\":\"Una pregunta y te dejo\",\"preheader\":\"Sobre tu propuesta de FP\",\"asuntos_extra\":[],\"bloques\":[{\"tipo\":\"texto\",\"contenido\":\"Hola, soy Rai.\"},{\"tipo\":\"texto\",\"contenido\":\"Anoche Netflix me preguntó si seguía ahí.\"},{\"tipo\":\"texto\",\"contenido\":\"Seguía. Dormido en el sofá desde el minuto diez, con el mando en la mano.\"},{\"tipo\":\"texto\",\"contenido\":\"Entre semana llego así a las once. Y no creo que sea el único.\"},{\"tipo\":\"texto\",\"contenido\":\"Por eso, cuando alguien me dice «no tengo tiempo para estudiar», no lo tomo como una excusa. Casi siempre es verdad.\"},{\"tipo\":\"texto\",\"contenido\":\"Alejandro, por ejemplo. Carrocero, con una hernia en la espalda y unos horarios que no le dejaban ir a clase a ningún sitio.\"},{\"tipo\":\"texto\",\"contenido\":\"Quería un trabajo sentado, que no le pasara factura. Y con sus horarios, la única opción era estudiar online.\"},{\"tipo\":\"texto\",\"contenido\":\"Mira, {{nombre}}, si lo que no te encajó fue el tiempo, esto es lo que hay:\"},{\"tipo\":\"lista\",\"contenido\":[\"Son 2 años, no 4\",\"Vas a tu ritmo, cuando puedas\",\"No tienes que dejar tu trabajo\"]},{\"tipo\":\"texto\",\"contenido\":\"Y si fue otra cosa, el precio, dudas con lo del online o que no era el momento, también vale. **Con que nos lo digas, ya podemos ayudarte.**\"},{\"tipo\":\"texto\",\"contenido\":\"Pulsa y un compañero del equipo te llama para ver cómo te cuadra con tus horarios. Si no te cuadra, aquí paz.\"},{\"tipo\":\"boton\",\"contenido\":\"Vale, que me llamen\"},{\"tipo\":\"texto\",\"contenido\":\"Y si lo vas a leer a las once con el sofá esperando, también tienes este:\"},{\"tipo\":\"boton\",\"contenido\":\"Llamadme antes de que me duerma\"}],\"pd\":\"P.D.: Si lo que te frenó fue el dinero, se paga a plazos. El compañero te lo explica cuando te llame.\",\"despedida\":\"Sin más,\",\"firma\":\"— Rai\",\"angulo\":\"Si lo que te frenó fue el tiempo, tiene arreglo: online, a tu ritmo y sin dejar el trabajo\"}"
+  ]
+}

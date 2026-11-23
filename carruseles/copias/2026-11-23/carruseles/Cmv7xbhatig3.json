@@ -1,0 +1,65 @@
+{
+  "color": "verde01",
+  "copy": "Elegir ciclo a ciegas sale caro 🐊\n\nSuspendiste selectividad. O dejaste una rama técnica. Y ahora te piden elegir otra vez sin saber qué quieres hacer con tu vida. Normal que te bloquees.\n\nLa verdad sin filtros: mucha gente elige por lo que suena bien. Y a los 3 meses abandona. No es falta de ganas. Es ruta mal trazada ⚡️\n\nLos 4 errores típicos: elegir por moda. Ignorar la carga práctica. No mirar el acceso. No mirar las salidas de tu zona. Uno de ellos se paga con tiempo y dinero.\n\nAntes de elegir ciclo, ponte machete en mano. Pisando barro, comparando y descartando. Así abres brecha y cazas el botín ⚔️\n\nTe hemos preparado el checklist para no equivocarte de ciclo. Comenta CICLO y te mando el checklist para elegir tu ciclo 📍\n\n#FPOnline #FormaciónProfesional #ElegirCiclo #Explora #Ucademy",
+  "creado": "2026-10-14T09:44:48.725Z",
+  "cta": "Comenta PALABRA y te mando [recurso]",
+  "error": "",
+  "estado": "borrador",
+  "idea": "T59",
+  "num": 19,
+  "objetivo": "leadmagnet",
+  "plantilla": "capas",
+  "portada": "foto",
+  "slides": [
+    {
+      "etiqueta": "FP Online",
+      "imagen": "/_blob/65b0f42b6627f0f93acb20057cef827f",
+      "marco": "fondo",
+      "subtitulo": "El tercero sale caro. Y casi nadie lo ve venir.",
+      "tipo": "portada",
+      "titulo": "4 errores al elegir *ciclo*"
+    },
+    {
+      "numero": "01",
+      "texto": "Suena bien. Todo el mundo habla de él. Pero a los 3 meses te pesa. Elige lo que puedas ejercer, no lo que luce.",
+      "tipo": "contenido",
+      "titulo": "Elegir por *moda*"
+    },
+    {
+      "numero": "02",
+      "texto": "Un ciclo no es solo teoría. Mira cuánto toca pisar barro: casos reales, empresa, manos a la obra. Si no te ensucia las manos, no te engancha.",
+      "tipo": "contenido",
+      "titulo": "Ignorar la carga *práctica*"
+    },
+    {
+      "numero": "03",
+      "texto": "El que sale caro. Eliges, te ilusionas y descubres que no cumples el requisito. Esto significa que pierdes tiempo antes de empezar.",
+      "tipo": "contenido",
+      "titulo": "No mirar el *acceso*"
+    },
+    {
+      "numero": "04",
+      "texto": "Un buen ciclo no sirve si en tu zona nadie contrata. Rastrea las empresas de tu ciudad antes de decidir.",
+      "tipo": "contenido",
+      "titulo": "Pasar de las salidas *locales*"
+    },
+    {
+      "items": [
+        "¿Cumplo el acceso?",
+        "¿Cuánta práctica real hay?",
+        "¿Quién contrata en mi zona?",
+        "¿Me cuadra con mi vida?"
+      ],
+      "tipo": "lista",
+      "titulo": "Antes de elegir, *comprueba*"
+    },
+    {
+      "cta": "Comenta CICLO y te mando el checklist para elegir tu ciclo",
+      "texto": "No eliges a ciegas. Te damos el checklist para trazar tu ruta y no abandonar a los 3 meses.",
+      "tipo": "cierre",
+      "titulo": "Elige con *mapa*"
+    }
+  ],
+  "titulo": "4 errores al elegir ciclo",
+  "upd": "2026-10-14T16:30:07.127Z"
+}
